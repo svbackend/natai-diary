@@ -42,22 +42,29 @@ class MainActivity : AppCompatActivity() {
         val tv: TextView = findViewById(R.id.text_view)
         tv.text = greet()
 
+        val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
+
         account = Auth0(
             "3VokevDUxFNDqNQYLPb0kviShzoXvjyL",
             "natai.eu.auth0.com"
         )
+
 
         binding.loginBtn.setOnClickListener {
             WebAuthProvider.login(account)
                 .withScheme("natai")
                 .withScope("openid profile email")
                 // Launch the authentication passing the callback where the results will be received
-                .start(this, object  : Callback<Credentials, AuthenticationException> {
+                .start(this, object : Callback<Credentials, AuthenticationException> {
                     // Called when there is an authentication failure
                     override fun onFailure(error: AuthenticationException) {
                         // Something went wrong!
                         Toast
-                            .makeText(this@MainActivity, "Login Error: \n${error.message}", Toast.LENGTH_LONG)
+                            .makeText(
+                                this@MainActivity,
+                                "Login Error: \n${error.message}",
+                                Toast.LENGTH_LONG
+                            )
                             .show()
                     }
 
@@ -67,12 +74,23 @@ class MainActivity : AppCompatActivity() {
                         // This can be used to call APIs
                         val accessToken = result.accessToken
                         showUserProfile(accessToken)
+                        with(prefs.edit()) {
+                            putString("access_token", accessToken)
+                            apply()
+                        }
                     }
                 })
         }
 
         binding.logoutBtn.setOnClickListener {
             logout()
+        }
+
+
+        val storedAccessToken = prefs.getString("access_token", null)
+
+        if (null != storedAccessToken) {
+            showUserProfile(storedAccessToken)
         }
 
         addReminder()

@@ -2,6 +2,7 @@
 <resources>
     <string name="com_auth0_domain">natai.eu.auth0.com</string>
     <string name="com_auth0_scheme">natai</string>
+    <string name="preference_file_key">com.svbackend.natai.PREFS</string>
     <string name="john_doe">John Doe</string>
     <string name="email">Email</string>
     <string name="login">Login</string>
