@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
 }
 
 android {
@@ -30,4 +31,13 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("com.auth0.android:auth0:2.6.0")
+
+    val roomVersion = "2.4.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+
+    val fragmentVersion = "1.4.1"
+    implementation("androidx.fragment:fragment:$fragmentVersion")
+    implementation("androidx.fragment:fragment-ktx:$fragmentVersion")
 }

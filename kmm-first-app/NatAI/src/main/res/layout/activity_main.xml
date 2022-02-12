@@ -54,6 +54,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/logout" />
+
+        <Button
+            android:id="@+id/addNoteBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/addNote" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/NotesRecyclerView"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

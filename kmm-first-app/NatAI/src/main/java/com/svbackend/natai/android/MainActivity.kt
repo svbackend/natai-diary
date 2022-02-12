@@ -1,6 +1,5 @@
 package com.svbackend.natai.android
 
-import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -8,30 +7,42 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
+import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
-import com.auth0.android.callback.Callback
 import com.auth0.android.result.UserProfile
 import com.svbackend.natai.Greeting
 import com.svbackend.natai.android.databinding.ActivityMainBinding
+import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
-import com.svbackend.natai.android.service.ReminderService
+import com.svbackend.natai.android.viewmodel.NoteViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 fun greet(): String {
     return Greeting().greeting()
 }
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ScopedActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var account: Auth0
+
+    private val viewModel by viewModels<NoteViewModel>()
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +60,16 @@ class MainActivity : AppCompatActivity() {
             "natai.eu.auth0.com"
         )
 
+        binding.addNoteBtn.setOnClickListener {
+            launch {
+                viewModel.repository.insert(
+                    Note(
+                        title = UUID.randomUUID().toString(),
+                        content = "Some dummy note content",
+                    )
+                )
+            }
+        }
 
         binding.loginBtn.setOnClickListener {
             WebAuthProvider.login(account)
@@ -94,11 +115,36 @@ class MainActivity : AppCompatActivity() {
         }
 
         addReminder()
+        loadNotes()
+    }
+
+    private fun loadNotes() = launch {
+
+        viewModel.notes.collect { notes ->
+            viewManager = GridLayoutManager(applicationContext, 1)
+            viewAdapter = NoteAdapter(notes)
+
+            println("=========Collect called============")
+
+            recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
+                // use this setting to improve performance if you know that changes
+                // in content do not change the layout size of the RecyclerView
+                setHasFixedSize(true)
+
+                // use a linear layout manager
+                layoutManager = viewManager
+
+                // specify an viewAdapter (see also next example)
+                adapter = viewAdapter
+            }
+
+            return@collect
+        }
     }
 
     private fun addReminder() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val reminderService = ReminderService()
+        //val reminderService = ReminderService()
         val reminderReceiverIntent = Intent(this, AlarmReceiver::class.java)
 
         reminderReceiverIntent.putExtra("reminderId", REMINDER_ID)
