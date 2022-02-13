@@ -1,17 +1,15 @@
 package com.svbackend.natai.android.repository
 
-import android.app.Application
-import androidx.room.Room
 import com.svbackend.natai.android.DiaryDatabase
 import com.svbackend.natai.android.entity.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class DiaryDbRepository(app: Application) : IDiaryRepository {
-    private val db = Room
-        .databaseBuilder(app, DiaryDatabase::class.java, "DIARY")
-        .build()
+class DiaryDbRepository(
+    private val db: DiaryDatabase
+) : IDiaryRepository {
+
 
     override val notes: Flow<List<Note>> = db.dao().getAllNotes()
 

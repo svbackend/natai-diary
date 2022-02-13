@@ -8,4 +8,6 @@
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="addNote">Add Note</string>
+    <string name="noteContent">How was your day?</string>
+    <string name="noteTitle">Title</string>
 </resources>

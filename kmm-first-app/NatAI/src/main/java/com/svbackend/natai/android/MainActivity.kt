@@ -55,20 +55,20 @@ class MainActivity : ScopedActivity() {
 
         val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
 
-        account = Auth0(
-            "3VokevDUxFNDqNQYLPb0kviShzoXvjyL",
-            "natai.eu.auth0.com"
-        )
+        account = (application as DiaryApplication).appContainer.auth0
 
         binding.addNoteBtn.setOnClickListener {
-            launch {
-                viewModel.repository.insert(
-                    Note(
-                        title = UUID.randomUUID().toString(),
-                        content = "Some dummy note content",
-                    )
-                )
-            }
+            val intent = Intent(this, NewNoteActivity::class.java)
+            startActivity(intent)
+
+//            launch {
+//                viewModel.repository.insert(
+//                    Note(
+//                        title = UUID.randomUUID().toString(),
+//                        content = "Some dummy note content",
+//                    )
+//                )
+//            }
         }
 
         binding.loginBtn.setOnClickListener {
@@ -121,7 +121,7 @@ class MainActivity : ScopedActivity() {
     private fun loadNotes() = launch {
 
         viewModel.notes.collect { notes ->
-            viewManager = GridLayoutManager(applicationContext, 1)
+            viewManager = GridLayoutManager(application, 1)
             viewAdapter = NoteAdapter(notes)
 
             println("=========Collect called============")
