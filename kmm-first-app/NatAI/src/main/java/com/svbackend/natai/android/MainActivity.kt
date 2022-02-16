@@ -71,6 +71,11 @@ class MainActivity : ScopedActivity() {
 //            }
         }
 
+        binding.homeBtn.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.loginBtn.setOnClickListener {
             WebAuthProvider.login(account)
                 .withScheme("natai")

@@ -62,6 +62,13 @@
             android:layout_marginTop="10dp"
             android:text="@string/addNote" />
 
+        <Button
+            android:id="@+id/homeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/home" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/NotesRecyclerView"
             android:scrollbars="vertical"
