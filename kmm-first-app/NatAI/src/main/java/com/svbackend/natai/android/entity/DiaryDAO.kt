@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class DiaryDAO {
-    @Query("SELECT * FROM Note")
+    @Query("SELECT * FROM Note ORDER BY addedAt DESC")
     abstract fun getAllNotes(): Flow<List<Note>>
 
     @Query("SELECT * FROM Note WHERE id = :id")
