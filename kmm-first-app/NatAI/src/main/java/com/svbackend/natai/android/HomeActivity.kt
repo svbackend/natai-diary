@@ -3,12 +3,14 @@ package com.svbackend.natai.android
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.svbackend.natai.android.databinding.ActivityHomeBinding
+import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -21,6 +23,7 @@ class HomeActivity : ScopedActivity() {
     private lateinit var viewManager: RecyclerView.LayoutManager
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var navController: NavController
 
     private val viewModel by viewModels<NoteViewModel>()
 
@@ -32,7 +35,7 @@ class HomeActivity : ScopedActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_home)
+        navController = findNavController(R.id.nav_host_fragment_content_home)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
@@ -47,10 +50,13 @@ class HomeActivity : ScopedActivity() {
     }
 
     private fun loadNotes() = launch {
+        val onClick = OnClickListener<Note> {
+            navController.navigate(R.id.action_NoteListFragment_to_NoteDetailsFragment)
+        }
 
         viewModel.notes.collect { notes ->
             viewManager = GridLayoutManager(application, 1)
-            viewAdapter = NoteAdapter(notes)
+            viewAdapter = NoteAdapter(notes, onClick)
 
             recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
                 // use this setting to improve performance if you know that changes

@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.svbackend.natai.android.databinding.NotePreviewCardBinding
 import com.svbackend.natai.android.entity.Note
 
-class NoteAdapter(private val notes: List<Note>) : RecyclerView.Adapter<NoteAdapter.NoteCardViewHolder>() {
+class NoteAdapter(
+    private val notes: List<Note>,
+    private val onClickListener: OnClickListener<Note>,
+) : RecyclerView.Adapter<NoteAdapter.NoteCardViewHolder>() {
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -37,6 +40,11 @@ class NoteAdapter(private val notes: List<Note>) : RecyclerView.Adapter<NoteAdap
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         val note = notes[position]
+
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(note)
+        }
+
         holder.bind(note)
     }
 

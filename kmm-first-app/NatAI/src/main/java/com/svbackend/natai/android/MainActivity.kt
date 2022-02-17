@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.Auth0
@@ -124,10 +125,13 @@ class MainActivity : ScopedActivity() {
     }
 
     private fun loadNotes() = launch {
+        val onClick = OnClickListener<Note> {
+            findNavController(R.id.nav_host_fragment_content_home).navigate(R.id.action_NoteListFragment_to_NoteDetailsFragment)
+        }
 
         viewModel.notes.collect { notes ->
             viewManager = GridLayoutManager(application, 1)
-            viewAdapter = NoteAdapter(notes)
+            viewAdapter = NoteAdapter(notes, onClick)
 
             println("=========Collect called============")
 
