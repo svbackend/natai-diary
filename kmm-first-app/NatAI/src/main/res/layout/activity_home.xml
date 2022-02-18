@@ -20,7 +20,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_home" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/NotesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNoteBtn"
@@ -29,7 +39,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        android:contentDescription="@string/addNote" />
+        android:contentDescription="@string/addNote"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

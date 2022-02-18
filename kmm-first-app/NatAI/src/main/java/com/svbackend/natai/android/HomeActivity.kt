@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,14 +19,14 @@ import kotlinx.coroutines.launch
 class HomeActivity : ScopedActivity() {
     private lateinit var binding: ActivityHomeBinding
 
+//    private lateinit var appBarConfiguration: AppBarConfiguration
+//    private lateinit var navController: NavController
+
+    private val viewModel by viewModels<NoteViewModel>()
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navController: NavController
-
-    private val viewModel by viewModels<NoteViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +36,9 @@ class HomeActivity : ScopedActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        navController = findNavController(R.id.nav_host_fragment_content_home)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+//        navController = findNavController(R.id.nav_host_fragment_content_home)
+//        appBarConfiguration = AppBarConfiguration(navController.graph)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.addNoteBtn.setOnClickListener {
             val intent = Intent(this, NewNoteActivity::class.java)
@@ -51,24 +52,27 @@ class HomeActivity : ScopedActivity() {
 
     private fun loadNotes() = launch {
         val onClick = OnClickListener<Note> {
-            navController.navigate(R.id.action_NoteListFragment_to_NoteDetailsFragment)
+            val intent = Intent(this@HomeActivity, NewNoteActivity::class.java)
+            startActivity(intent)
         }
 
         viewModel.notes.collect { notes ->
             viewManager = GridLayoutManager(application, 1)
             viewAdapter = NoteAdapter(notes, onClick)
 
+            println("=============COLLECT CALLED FROM FRAGMENT=============")
+
             recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
-                // use this setting to improve performance if you know that changes
-                // in content do not change the layout size of the RecyclerView
-                setHasFixedSize(true)
+                    // use this setting to improve performance if you know that changes
+                    // in content do not change the layout size of the RecyclerView
+                    setHasFixedSize(true)
 
-                // use a linear layout manager
-                layoutManager = viewManager
+                    // use a linear layout manager
+                    layoutManager = viewManager
 
-                // specify an viewAdapter (see also next example)
-                adapter = viewAdapter
-            }
+                    // specify an viewAdapter (see also next example)
+                    adapter = viewAdapter
+                }
 
             return@collect
         }

@@ -126,7 +126,7 @@ class MainActivity : ScopedActivity() {
 
     private fun loadNotes() = launch {
         val onClick = OnClickListener<Note> {
-            findNavController(R.id.nav_host_fragment_content_home).navigate(R.id.action_NoteListFragment_to_NoteDetailsFragment)
+           // findNavController(R.id.nav_host_fragment_content_home).navigate(R.id.action_NoteListFragment_to_NoteDetailsFragment)
         }
 
         viewModel.notes.collect { notes ->
