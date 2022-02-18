@@ -16,6 +16,9 @@ import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+
+const val PARAM_NOTE_ID = "com.svbackend.natai.NOTE_ID"
+
 class HomeActivity : ScopedActivity() {
     private lateinit var binding: ActivityHomeBinding
 
@@ -52,15 +55,15 @@ class HomeActivity : ScopedActivity() {
 
     private fun loadNotes() = launch {
         val onClick = OnClickListener<Note> {
-            val intent = Intent(this@HomeActivity, NewNoteActivity::class.java)
+            val intent = Intent(this@HomeActivity, NoteDetailsActivity::class.java).apply {
+                putExtra(PARAM_NOTE_ID, it.id)
+            }
             startActivity(intent)
         }
 
         viewModel.notes.collect { notes ->
             viewManager = GridLayoutManager(application, 1)
             viewAdapter = NoteAdapter(notes, onClick)
-
-            println("=============COLLECT CALLED FROM FRAGMENT=============")
 
             recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
                     // use this setting to improve performance if you know that changes

@@ -15,7 +15,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun getNote(id: String) = repository.getNote(id)
     suspend fun delete(id: String) = repository.delete(repository.getNote(id))
 
-    private val selectedNote = MutableSharedFlow<Note?>()
+    val selectedNote = MutableSharedFlow<Note?>()
 
     suspend fun selectNote(id: String) = selectedNote.emit(getNote(id))
 }

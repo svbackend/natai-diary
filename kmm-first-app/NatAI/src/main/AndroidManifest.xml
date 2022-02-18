@@ -20,6 +20,9 @@
             android:name=".NewNoteActivity"
             android:exported="false" />
         <activity
+            android:name=".NoteDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
