@@ -1,0 +1,11 @@
+{
+  "name": "kotlin-wrappers-kotlin-extensions-js-legacy",
+  "version": "1.0.1-pre.206-kotlin-1.5.10",
+  "customFields": {},
+  "main": "kotlin-wrappers-kotlin-extensions-js-legacy.js",
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

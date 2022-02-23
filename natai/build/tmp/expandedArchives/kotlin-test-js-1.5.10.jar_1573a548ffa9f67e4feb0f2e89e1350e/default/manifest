@@ -1,0 +1,7 @@
+builtins_platform=JS
+unique_name=kotlin-test
+ir_version=1.0.0
+compiler_version=1.5.0-RC-556
+depends=kotlin
+abi_version=1.4.2
+metadata_version=1.4.1

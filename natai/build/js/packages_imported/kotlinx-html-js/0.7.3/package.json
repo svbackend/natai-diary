@@ -1,0 +1,11 @@
+{
+  "name": "kotlinx-html-js",
+  "version": "0.7.3",
+  "customFields": {},
+  "main": "kotlinx-html-js.js",
+  "devDependencies": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}
