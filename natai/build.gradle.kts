@@ -3,6 +3,7 @@ plugins {
     application
 }
 
+val ktorVersion = "1.5.2"
 val jdbiVersion = "3.27.2"
 
 group = "com.svbackend"
@@ -40,8 +41,9 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-server-netty:1.5.2")
-                implementation("io.ktor:ktor-html-builder:1.5.2")
+                implementation("io.ktor:ktor-server-netty:$ktorVersion")
+                implementation("io.ktor:ktor-html-builder:$ktorVersion")
+                implementation("io.ktor:ktor-jackson:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
                 implementation("org.kodein.di:kodein-di:7.10.0")
                 implementation("com.zaxxer:HikariCP:5.0.1")
@@ -69,6 +71,7 @@ application {
 tasks.named<Copy>("jvmProcessResources") {
     val jsBrowserDistribution = tasks.named("jsBrowserDistribution")
     from(jsBrowserDistribution)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.named<JavaExec>("run") {

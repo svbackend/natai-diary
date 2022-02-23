@@ -1,5 +1,6 @@
 package com.svbackend.application.routes.v1
 
+import com.svbackend.application.routes.*
 import io.ktor.routing.*
 import org.kodein.di.*
 

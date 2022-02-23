@@ -1,18 +1,23 @@
 package com.svbackend.application
 
+import com.sun.security.ntlm.*
 import com.svbackend.application.config.*
 import com.svbackend.application.routes.*
 import com.typesafe.config.*
-import io.ktor.application.call
+import io.ktor.application.*
 import io.ktor.config.*
+import io.ktor.features.*
 import io.ktor.html.respondHtml
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
+import io.ktor.jackson.*
 import io.ktor.routing.*
+import io.ktor.application.*
 import kotlinx.html.*
+import org.kodein.di.*
 
 fun HTML.index() {
     head {
@@ -35,6 +40,8 @@ fun main() {
     embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
         val context = context(config)
 
+        configurePlugins(context)
+
         routing {
             get("/") {
                 call.respondHtml(HttpStatusCode.OK, HTML::index)
@@ -47,4 +54,11 @@ fun main() {
             }
         }
     }.start(wait = true)
+}
+
+private fun Application.configurePlugins(context: DirectDI) {
+    install(Compression)
+    install(ContentNegotiation) {
+        register(ContentType.Application.Json, JacksonConverter(context.instance()))
+    }
 }
