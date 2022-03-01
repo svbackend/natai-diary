@@ -1,21 +1,18 @@
 package com.svbackend.application
 
-import com.sun.security.ntlm.*
 import com.svbackend.application.config.*
 import com.svbackend.application.routes.*
 import com.typesafe.config.*
 import io.ktor.application.*
 import io.ktor.config.*
 import io.ktor.features.*
-import io.ktor.html.respondHtml
+import io.ktor.html.*
 import io.ktor.http.*
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
+import io.ktor.http.content.*
 import io.ktor.jackson.*
 import io.ktor.routing.*
-import io.ktor.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import kotlinx.html.*
 import org.kodein.di.*
 
