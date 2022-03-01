@@ -8,7 +8,6 @@ import org.jdbi.v3.core.*
 import org.jdbi.v3.core.kotlin.*
 import org.jdbi.v3.jackson2.*
 import org.kodein.di.*
-import java.lang.Compiler.disable
 
 fun context(config: ApplicationConfig): DirectDI = DI.direct {
     import(commonModule(config))
