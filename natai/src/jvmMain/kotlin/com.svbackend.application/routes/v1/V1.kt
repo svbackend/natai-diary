@@ -6,6 +6,6 @@ import org.kodein.di.*
 
 fun Route.v1(context: DirectDI) {
     route("/notes") {
-        notes(context)
+        notes(context.instance())
     }
 }

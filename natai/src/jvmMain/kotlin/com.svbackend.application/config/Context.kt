@@ -2,6 +2,7 @@ package com.svbackend.application.config
 
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.module.kotlin.*
+import com.svbackend.application.repository.*
 import com.zaxxer.hikari.*
 import io.ktor.config.*
 import org.jdbi.v3.core.*
@@ -33,4 +34,6 @@ fun commonModule(config: ApplicationConfig) = DI.Module("common") {
                 getConfig(Jackson2Config::class.java).mapper = instance()
             }
     }
+
+    bindSingleton { NoteRepository(instance()) }
 }
