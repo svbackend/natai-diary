@@ -9,6 +9,7 @@ import org.jdbi.v3.core.*
 import org.jdbi.v3.core.kotlin.*
 import org.jdbi.v3.jackson2.*
 import org.kodein.di.*
+import javax.sql.DataSource
 
 fun context(config: ApplicationConfig): DirectDI = DI.direct {
     import(commonModule(config))
@@ -22,12 +23,17 @@ fun commonModule(config: ApplicationConfig) = DI.Module("common") {
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
 
-    bindSingleton {
+    bindSingleton<DataSource> {
         val dataSourceConfig = HikariConfig().apply {
             jdbcUrl = config.property("app_db.uri").getString()
+            isAutoCommit = false
         }
 
-        Jdbi.create(HikariDataSource(dataSourceConfig))
+        HikariDataSource(dataSourceConfig)
+    }
+
+    bindSingleton {
+        Jdbi.create(instance<DataSource>())
             .apply {
                 installPlugin(KotlinPlugin())
                 installPlugin(Jackson2Plugin())

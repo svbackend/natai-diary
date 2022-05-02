@@ -1,9 +1,9 @@
 package com.svbackend.natai
 
 import com.svbackend.natai.config.*
+import com.svbackend.natai.db.*
 import com.svbackend.natai.plugins.*
 import com.typesafe.config.*
-import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.config.*
@@ -18,6 +18,7 @@ fun main() {
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
         val di = context(config)
+        configurePlugins(di)
         //configureHTTP()
         configureRouting(di)
     }.start(wait = true)
@@ -28,4 +29,5 @@ private fun Application.configurePlugins(context: DirectDI) {
     install(ContentNegotiation) {
         jackson()
     }
+    DatabaseFactory.connectAndMigrate(context.instance())
 }

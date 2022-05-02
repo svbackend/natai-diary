@@ -1,10 +1,10 @@
-import org.jetbrains.kotlin.ir.backend.js.*
-
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 
 val jdbiVersion = "3.27.2"
+val flywayVersion = "8.5.10"
+val exposedVersion = "0.38.2"
 
 plugins {
     application
@@ -42,6 +42,9 @@ dependencies {
     implementation("org.jdbi:jdbi3-kotlin:$jdbiVersion")
     implementation("org.jdbi:jdbi3-jackson2:$jdbiVersion")
     implementation("org.jdbi:jdbi3-postgres:$jdbiVersion")
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

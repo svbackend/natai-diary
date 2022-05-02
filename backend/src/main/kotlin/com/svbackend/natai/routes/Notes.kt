@@ -12,7 +12,7 @@ fun Route.notes(noteRepository: NoteRepository) {
             NoteDto(id = 1),
             NoteDto(id = 2),
             NoteDto(id = 3),
-        ) + noteRepository.getAllNotes()
+        )
 
         call.respond(notes)
     }
