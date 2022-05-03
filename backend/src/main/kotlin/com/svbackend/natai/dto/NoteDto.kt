@@ -5,3 +5,8 @@ data class NoteDto(
     val title: String = "Hello World",
     val content: String = "Note content",
 )
+
+data class NewNote(
+    val title: String,
+    val content: String
+)
