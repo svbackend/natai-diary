@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.*
 
 class NoteRepository(private val jdbi: Jdbi) {
     fun getAllNotes(): List<NoteDto> = jdbi.withHandle<List<NoteDto>, Exception> {
-        it.createQuery("SELECT * FROM notes ORDER BY createdAt DESC")
+        it.createQuery("SELECT * FROM notes ORDER BY created_at DESC")
             .map { rs, _ ->
                 NoteDto(
                     rs.getInt("id"),
