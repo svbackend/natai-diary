@@ -100,9 +100,11 @@ class MainActivity : ScopedActivity() {
                         // Get the access token from the credentials object.
                         // This can be used to call APIs
                         val accessToken = result.accessToken
+                        val idToken = result.idToken
                         showUserProfile(accessToken)
                         with(prefs.edit()) {
                             putString("access_token", accessToken)
+                            putString("id_token", idToken)
                             apply()
                         }
                     }
