@@ -23,6 +23,7 @@ class NoteRepository(private val jdbi: Jdbi) {
             val id = (Notes.insert {
                 it[title] = note.title
                 it[content] = note.content
+                it[userId] = note.userId
             } get Notes.id)
         }
     }

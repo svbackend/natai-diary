@@ -5,6 +5,7 @@ import com.svbackend.natai.repository.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -18,11 +19,20 @@ fun Route.notes(noteRepository: NoteRepository) {
         }
 
         post {
-            val newNote = call.receive<NewNote>()
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("sub").asString()
+
+            val draft = call.receive<NewNoteDraft>()
+
+            val newNote = NewNote(
+                userId = userId,
+                title = draft.title,
+                content = draft.content
+            )
 
             noteRepository.createNote(newNote)
 
-            call.response.status(HttpStatusCode.NoContent)
+            call.response.status(HttpStatusCode.Created)
         }
     }
 }
