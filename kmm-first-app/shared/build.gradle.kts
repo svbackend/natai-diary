@@ -59,4 +59,5 @@ android {
         minSdk = 29
         targetSdk = 31
     }
+    namespace = "com.svbackend.natai"
 }
