@@ -50,4 +50,11 @@ dependencies {
     val fragmentVersion = "1.4.1"
     implementation("androidx.fragment:fragment:$fragmentVersion")
     implementation("androidx.fragment:fragment-ktx:$fragmentVersion")
+
+    val ktorVersion = "2.0.1"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 }
