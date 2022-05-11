@@ -127,8 +127,13 @@ class MainActivity : ScopedActivity() {
     }
 
     private fun loadNotes() = launch {
+        viewModel.repository.loadNotes()
+
         val onClick = OnClickListener<Note> {
-           // findNavController(R.id.nav_host_fragment_content_home).navigate(R.id.action_NoteListFragment_to_NoteDetailsFragment)
+            val intent = Intent(this@MainActivity, NoteDetailsActivity::class.java).apply {
+                putExtra(PARAM_NOTE_ID, it.id)
+            }
+            startActivity(intent)
         }
 
         viewModel.notes.collect { notes ->
