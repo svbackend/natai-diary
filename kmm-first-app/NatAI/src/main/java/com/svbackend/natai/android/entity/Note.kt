@@ -11,7 +11,7 @@ data class Note(
     var cloudId: String? = null,
     var title: String,
     var content: String,
-    var addedAt: Date = Date(),
+    var createdAt: Date = Date(),
     var updatedAt: Date = Date(),
 ) {
     fun sync(cloudNote: CloudNote) {
@@ -21,6 +21,11 @@ data class Note(
             throw Exception("Cant sync notes with different IDs (local cloud id = $cloudId vs cloud id = ${cloudNote.id}")
         }
 
+        title = cloudNote.title
+        content = cloudNote.content
+    }
+
+    fun sync(cloudNote: Note) {
         title = cloudNote.title
         content = cloudNote.content
     }

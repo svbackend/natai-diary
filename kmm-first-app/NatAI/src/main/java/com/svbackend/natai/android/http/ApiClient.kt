@@ -39,6 +39,8 @@ class ApiClient(
                 id = it.id,
                 title = it.title,
                 content = it.content,
+                createdAt = it.createdAt,
+                updatedAt = it.updatedAt,
             )
         }
     }

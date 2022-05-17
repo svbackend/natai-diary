@@ -4,16 +4,18 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
+import com.auth0.android.authentication.storage.CredentialsManager
+import com.auth0.android.authentication.storage.CredentialsManagerException
 import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
@@ -23,8 +25,9 @@ import com.svbackend.natai.android.databinding.ActivityMainBinding
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
+import com.svbackend.natai.android.service.ApiSyncService
+import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.viewmodel.NoteViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,6 +41,10 @@ class MainActivity : ScopedActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var account: Auth0
+    private lateinit var credsManager: CredentialsManager
+    private lateinit var authClient: AuthenticationAPIClient
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var apiSyncService: ApiSyncService
 
     private val viewModel by viewModels<NoteViewModel>()
 
@@ -56,7 +63,14 @@ class MainActivity : ScopedActivity() {
 
         val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
 
-        account = (application as DiaryApplication).appContainer.auth0
+        (application as DiaryApplication).let {
+            account = it.appContainer.auth0
+            credsManager = it.appContainer.credentialsManager
+            authClient = it.appContainer.auth0ApiClient
+            connectivityManager = it.appContainer.connectivityManager
+            apiSyncService = it.appContainer.apiSyncService
+        }
+
 
         binding.addNoteBtn.setOnClickListener {
             val intent = Intent(this, NewNoteActivity::class.java)
@@ -80,7 +94,7 @@ class MainActivity : ScopedActivity() {
         binding.loginBtn.setOnClickListener {
             WebAuthProvider.login(account)
                 .withScheme("natai")
-                .withScope("openid profile email")
+                .withScope("openid profile email offline_access")
                 // Launch the authentication passing the callback where the results will be received
                 .start(this, object : Callback<Credentials, AuthenticationException> {
                     // Called when there is an authentication failure
@@ -97,8 +111,7 @@ class MainActivity : ScopedActivity() {
 
                     // Called when authentication completed successfully
                     override fun onSuccess(result: Credentials) {
-                        // Get the access token from the credentials object.
-                        // This can be used to call APIs
+
                         val accessToken = result.accessToken
                         val idToken = result.idToken
                         showUserProfile(accessToken)
@@ -107,6 +120,8 @@ class MainActivity : ScopedActivity() {
                             putString("id_token", idToken)
                             apply()
                         }
+
+                        credsManager.saveCredentials(result)
                     }
                 })
         }
@@ -116,14 +131,36 @@ class MainActivity : ScopedActivity() {
         }
 
 
-        val storedAccessToken = prefs.getString("access_token", null)
+        credsManager.getCredentials(object : Callback<Credentials, CredentialsManagerException> {
+            override fun onFailure(error: CredentialsManagerException) {
 
-        if (null != storedAccessToken) {
-            showUserProfile(storedAccessToken)
-        }
+            }
 
+            override fun onSuccess(result: Credentials) {
+                showUserProfile(result.accessToken)
+                with(prefs.edit()) {
+                    putString("access_token", result.accessToken)
+                    putString("id_token", result.idToken)
+                    apply()
+                }
+            }
+        })
+
+        syncWithApi()
         addReminder()
         loadNotes()
+    }
+
+    private fun syncWithApi() = launch {
+        if (!hasInternetConnection(connectivityManager)) {
+            return@launch
+        }
+
+        try {
+            apiSyncService.syncNotes()
+        } catch (e: Exception) {
+            println(e.stackTrace)
+        }
     }
 
     private fun loadNotes() = launch {
@@ -188,10 +225,8 @@ class MainActivity : ScopedActivity() {
     }
 
     private fun showUserProfile(accessToken: String) {
-        val client = AuthenticationAPIClient(account)
-
         // With the access token, call `userInfo` and get the profile from Auth0.
-        client.userInfo(accessToken)
+        authClient.userInfo(accessToken)
             .start(object : Callback<UserProfile, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     // Something went wrong!

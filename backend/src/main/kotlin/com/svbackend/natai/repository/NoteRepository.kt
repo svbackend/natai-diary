@@ -11,9 +11,11 @@ class NoteRepository(private val jdbi: Jdbi) {
         it.createQuery("SELECT * FROM notes ORDER BY created_at DESC")
             .map { rs, _ ->
                 NoteDto(
-                    rs.getString("id"),
-                    rs.getString("title"),
-                    rs.getString("content")
+                    id = rs.getString("id"),
+                    title = rs.getString("title"),
+                    content = rs.getString("content"),
+                    createdAt = rs.getDate("created_at"),
+                    updatedAt = rs.getDate("updated_at"),
                 )
             }.list()
     }
