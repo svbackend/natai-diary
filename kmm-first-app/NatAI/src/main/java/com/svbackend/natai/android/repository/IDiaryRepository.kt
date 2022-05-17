@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface IDiaryRepository {
     val notes: Flow<List<Note>>
 
-    suspend fun loadNotes()
-
     suspend fun getNote(id: String): Note
 
     suspend fun insert(note: Note)

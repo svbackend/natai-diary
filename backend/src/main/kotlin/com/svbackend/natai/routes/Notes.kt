@@ -9,6 +9,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.util.*
 
 fun Route.notes(noteRepository: NoteRepository) {
     authenticate("auth0") {
@@ -25,6 +26,7 @@ fun Route.notes(noteRepository: NoteRepository) {
             val draft = call.receive<NewNoteDraft>()
 
             val newNote = NewNote(
+                id = UUID.randomUUID(),
                 userId = userId,
                 title = draft.title,
                 content = draft.content
@@ -33,6 +35,7 @@ fun Route.notes(noteRepository: NoteRepository) {
             noteRepository.createNote(newNote)
 
             call.response.status(HttpStatusCode.Created)
+            call.respond(newNote)
         }
     }
 }

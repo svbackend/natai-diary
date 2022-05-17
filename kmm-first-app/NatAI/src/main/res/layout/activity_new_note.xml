@@ -36,6 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <EditText
+                        android:textSize="18sp"
                         android:id="@+id/txtNoteTitle"
                         style="@style/modifiedEditText"
                         android:hint="@string/noteTitle"
@@ -47,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <EditText
+                        android:textSize="16sp"
                         android:id="@+id/txtNoteContent"
                         style="@style/modifiedEditText"
                         android:hint="@string/noteContent"
@@ -57,10 +59,12 @@
                 <Button
                     android:id="@+id/addNoteBtn"
                     android:layout_width="100dp"
+                    android:textSize="16sp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:background="@drawable/centre_button"
                     android:text="@string/addNote"
+                    android:layout_marginTop="12sp"
                     android:textColor="@color/whiteTextColor" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>

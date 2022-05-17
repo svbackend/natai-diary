@@ -1,7 +1,9 @@
 package com.svbackend.natai.dto
 
+import java.util.UUID
+
 data class NoteDto(
-    val id: Int,
+    val id: String,
     val title: String,
     val content: String,
 )
@@ -12,6 +14,7 @@ data class NewNoteDraft(
 )
 
 data class NewNote(
+    val id: UUID,
     val userId: String,
     val title: String,
     val content: String

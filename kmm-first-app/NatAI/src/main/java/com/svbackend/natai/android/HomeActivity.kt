@@ -54,9 +54,6 @@ class HomeActivity : ScopedActivity() {
     }
 
     private fun loadNotes() = launch {
-        // todo add spinner?
-        viewModel.repository.loadNotes()
-
         val onClick = OnClickListener<Note> {
             val intent = Intent(this@HomeActivity, NoteDetailsActivity::class.java).apply {
                 putExtra(PARAM_NOTE_ID, it.id)

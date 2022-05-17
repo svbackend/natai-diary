@@ -127,8 +127,6 @@ class MainActivity : ScopedActivity() {
     }
 
     private fun loadNotes() = launch {
-        viewModel.repository.loadNotes()
-
         val onClick = OnClickListener<Note> {
             val intent = Intent(this@MainActivity, NoteDetailsActivity::class.java).apply {
                 putExtra(PARAM_NOTE_ID, it.id)

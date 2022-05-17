@@ -15,7 +15,7 @@
         <TextView
             android:id="@+id/noteTitle"
             android:textColor="#2d2d2d"
-            android:textSize="13sp"
+            android:textSize="16sp"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

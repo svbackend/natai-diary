@@ -10,10 +10,6 @@ class DiaryDbRepository(
     private val db: DiaryDatabase
 ) : IDiaryRepository {
 
-    override suspend fun loadNotes() {
-        // nothing to do here
-    }
-
     override val notes: Flow<List<Note>> = db.dao().getAllNotes()
 
     override suspend fun getNote(id: String): Note = withContext(Dispatchers.IO) {

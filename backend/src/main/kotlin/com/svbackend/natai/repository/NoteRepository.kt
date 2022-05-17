@@ -11,7 +11,7 @@ class NoteRepository(private val jdbi: Jdbi) {
         it.createQuery("SELECT * FROM notes ORDER BY created_at DESC")
             .map { rs, _ ->
                 NoteDto(
-                    rs.getInt("id"),
+                    rs.getString("id"),
                     rs.getString("title"),
                     rs.getString("content")
                 )
@@ -20,11 +20,12 @@ class NoteRepository(private val jdbi: Jdbi) {
 
     suspend fun createNote(note: NewNote) {
         dbQuery {
-            val id = (Notes.insert {
+            Notes.insert {
+                it[id] = note.id
                 it[title] = note.title
                 it[content] = note.content
                 it[userId] = note.userId
-            } get Notes.id)
+            }
         }
     }
 }

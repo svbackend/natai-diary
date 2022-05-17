@@ -2,6 +2,8 @@ package com.svbackend.natai.android.http
 
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.dto.NewNoteRequest
+import com.svbackend.natai.android.http.exception.NewNoteErrorException
+import com.svbackend.natai.android.http.model.CloudNote
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -41,7 +43,7 @@ class ApiClient(
         }
     }
 
-    suspend fun addNote(note: Note) {
+    suspend fun addNote(note: Note): CloudNote {
         val body = NewNoteRequest(
             title = note.title,
             content = note.content,
@@ -52,7 +54,9 @@ class ApiClient(
         }
 
         if (response.status != HttpStatusCode.Created) {
-            throw Exception("New note error! Expected ${HttpStatusCode.Created} but ${response.status} given")
+            throw NewNoteErrorException(response)
         }
+
+        return response.body<CloudNote>()
     }
 }
