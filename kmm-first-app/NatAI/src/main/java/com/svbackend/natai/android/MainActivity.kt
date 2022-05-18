@@ -2,6 +2,7 @@ package com.svbackend.natai.android
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -205,7 +206,7 @@ class MainActivity : ScopedActivity() {
 
         reminderReceiverIntent.putExtra("reminderId", REMINDER_ID)
         val pendingIntent =
-            PendingIntent.getBroadcast(this, REMINDER_ID.toInt(), reminderReceiverIntent, 0)
+            PendingIntent.getBroadcast(this, REMINDER_ID.toInt(), reminderReceiverIntent, FLAG_IMMUTABLE)
 
         val firstNotificationDate: Calendar = Calendar.getInstance()
         firstNotificationDate.set(Calendar.HOUR, 21) // 9pm
