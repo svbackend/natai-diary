@@ -2,7 +2,10 @@ package com.svbackend.natai.android.http
 
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.dto.NewNoteRequest
+import com.svbackend.natai.android.http.dto.UpdateNoteRequest
+import com.svbackend.natai.android.http.exception.CloudIdMissingException
 import com.svbackend.natai.android.http.exception.NewNoteErrorException
+import com.svbackend.natai.android.http.exception.UpdateNoteErrorException
 import com.svbackend.natai.android.http.model.CloudNote
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -51,12 +54,33 @@ class ApiClient(
             content = note.content,
         )
 
-        val response = client.post("notes") {
+        val response = client.post("notes/${note.id}") {
             setBody(body)
         }
 
         if (response.status != HttpStatusCode.Created) {
             throw NewNoteErrorException(response)
+        }
+
+        return response.body<CloudNote>()
+    }
+
+    suspend fun updateNote(note: Note): CloudNote {
+        if (note.cloudId == null) {
+            throw CloudIdMissingException()
+        }
+
+        val body = UpdateNoteRequest(
+            title = note.title,
+            content = note.content,
+        )
+
+        val response = client.put("notes/${note.cloudId}") {
+            setBody(body)
+        }
+
+        if (response.status != HttpStatusCode.OK) {
+            throw UpdateNoteErrorException(response)
         }
 
         return response.body<CloudNote>()
