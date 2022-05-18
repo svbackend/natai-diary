@@ -9,8 +9,6 @@ services:
             - "80"
         env_file:
             - .env.local
-        volumes:
-            - .:/app
         depends_on:
             - backend-db
         networks:
