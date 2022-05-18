@@ -22,7 +22,9 @@ import java.util.concurrent.*
 fun main() {
     val config = HoconApplicationConfig(ConfigFactory.load("application.conf"))
 
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+    val port = config.property("ktor.port").getString().toInt()
+
+    embeddedServer(Netty, port = port, host = "0.0.0.0") {
         val di = context(config)
         configurePlugins(di)
         //configureHTTP()
