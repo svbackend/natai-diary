@@ -54,7 +54,7 @@ class ApiClient(
             content = note.content,
         )
 
-        val response = client.post("notes/${note.id}") {
+        val response = client.post("notes") {
             setBody(body)
         }
 

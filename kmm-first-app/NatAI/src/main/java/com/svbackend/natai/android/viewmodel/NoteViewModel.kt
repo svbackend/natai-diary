@@ -4,11 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.Note
-import com.svbackend.natai.android.repository.IDiaryRepository
+import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
-    val repository: IDiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
+    val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
 
     val notes = repository.notes
 

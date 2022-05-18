@@ -3,6 +3,7 @@ package com.svbackend.natai.android.service
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
+import kotlinx.coroutines.flow.toList
 
 class ApiSyncService(
     private val apiClient: ApiClient,
@@ -14,16 +15,16 @@ class ApiSyncService(
             .getNotes()
             .associateBy { it.id }
 
-        repository.notes.collect { notes ->
-            notes.forEach {
-                val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
-                if (cloudNote == null) {
-                    insertToCloud(it)
-                } else if (cloudNote.updatedAt.after(it.updatedAt)) {
-                    updateToCloud(it)
-                }
-                // todo insertToLocal, updateToLocal, deleteToCloud, deleteToLocal
+        val localNotes = repository.getAllNotesForSync()
+
+        localNotes.forEach {
+            val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
+            if (cloudNote == null) {
+                insertToCloud(it)
+            } else if (cloudNote.updatedAt.after(it.updatedAt)) {
+                updateToCloud(it)
             }
+            // todo insertToLocal, updateToLocal, deleteToCloud, deleteToLocal
         }
     }
 

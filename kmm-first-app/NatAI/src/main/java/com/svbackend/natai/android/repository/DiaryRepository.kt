@@ -10,16 +10,19 @@ import kotlinx.coroutines.withContext
 class DiaryRepository(
     private val db: DiaryDatabase,
     private val api: ApiClient
-) : IDiaryRepository {
+) {
 
-    override val notes: Flow<List<Note>> = db.dao().getAllNotes()
+    val notes: Flow<List<Note>> = db.dao().getAllNotes()
 
+    suspend fun getAllNotesForSync(): List<Note> = withContext(Dispatchers.IO) {
+        db.dao().getAllNotesForSync()
+    }
 
-    override suspend fun getNote(id: String): Note = withContext(Dispatchers.IO) {
+    suspend fun getNote(id: String): Note = withContext(Dispatchers.IO) {
         db.dao().getNote(id)
     }
 
-    override suspend fun insert(note: Note) = withContext(Dispatchers.IO) {
+    suspend fun insert(note: Note) = withContext(Dispatchers.IO) {
         db.dao().insert(note)
         try {
             val cloudNote = api.addNote(note) // todo handle http err
@@ -30,11 +33,11 @@ class DiaryRepository(
         }
     }
 
-    override suspend fun update(note: Note) = withContext(Dispatchers.IO) {
+    suspend fun update(note: Note) = withContext(Dispatchers.IO) {
         db.dao().update(note)
     }
 
-    override suspend fun delete(note: Note) = withContext(Dispatchers.IO) {
+    suspend fun delete(note: Note) = withContext(Dispatchers.IO) {
         db.dao().delete(note)
     }
 }

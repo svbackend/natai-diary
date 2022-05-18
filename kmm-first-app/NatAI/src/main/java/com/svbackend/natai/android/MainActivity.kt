@@ -146,13 +146,21 @@ class MainActivity : ScopedActivity() {
             }
         })
 
+        if (!prefs.getBoolean("is_reminder_enabled", false)) {
+            addReminder()
+            with(prefs.edit()) {
+                putBoolean("is_reminder_enabled", true)
+                apply()
+            }
+        }
+
         syncWithApi()
-        addReminder()
         loadNotes()
     }
 
     private fun syncWithApi() = launch {
-        if (!hasInternetConnection(connectivityManager)) {
+        val hasInternet = hasInternetConnection(connectivityManager)
+        if (!hasInternet) {
             return@launch
         }
 
@@ -175,8 +183,6 @@ class MainActivity : ScopedActivity() {
             viewManager = GridLayoutManager(application, 1)
             viewAdapter = NoteAdapter(notes, onClick)
 
-            println("=========Collect called============")
-
             recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
                 // use this setting to improve performance if you know that changes
                 // in content do not change the layout size of the RecyclerView
@@ -195,28 +201,18 @@ class MainActivity : ScopedActivity() {
 
     private fun addReminder() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        //val reminderService = ReminderService()
         val reminderReceiverIntent = Intent(this, AlarmReceiver::class.java)
 
         reminderReceiverIntent.putExtra("reminderId", REMINDER_ID)
-        //reminderReceiverIntent.putExtra("isServiceRunning", isServiceRunning(reminderService))
         val pendingIntent =
             PendingIntent.getBroadcast(this, REMINDER_ID.toInt(), reminderReceiverIntent, 0)
 
-        val date: Calendar = Calendar.getInstance()
-        println("Current Date and TIme : " + date.getTime())
-        val timeInSecs: Long = date.getTimeInMillis()
-        val afterAdding1Min = Date(timeInSecs + 10 * 1000)
-        println("After adding 1 min : $afterAdding1Min")
+        val firstNotificationDate: Calendar = Calendar.getInstance()
+        firstNotificationDate.set(Calendar.HOUR, 21) // 9pm
 
-        val formattedDate = formatDate(afterAdding1Min.time, "dd/MM/YYYY HH:mm")
-
-        alarmManager.setAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, afterAdding1Min.time, pendingIntent
+        alarmManager.setRepeating(
+            AlarmManager.RTC, firstNotificationDate.timeInMillis, 24 * 60 * 60 * 1000, pendingIntent
         )
-
-        Toast.makeText(this, "Alarm is set at : $formattedDate", Toast.LENGTH_SHORT).show()
-        //finish()
     }
 
     private fun formatDate(timeInMillis: Long, format: String): String {
