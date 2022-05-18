@@ -30,7 +30,7 @@ services:
         env_file:
             - .env.local
         ports:
-            - "15432:5432"
+            - "25432:5432"
         restart: unless-stopped
         networks:
             - default
