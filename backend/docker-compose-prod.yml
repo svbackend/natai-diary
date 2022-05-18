@@ -1,0 +1,44 @@
+version: "3.7"
+services:
+    ktor:
+        restart: always
+        build:
+            context: docker
+            dockerfile: Dockerfile
+        expose:
+            - "80"
+        env_file:
+            - .env.local
+        volumes:
+            - .:/app
+        depends_on:
+            - backend-db
+        networks:
+            - default
+            - vps-traefik
+        labels:
+            - "traefik.docker.network=vps-traefik"
+            - "traefik.enable=true"
+            - "traefik.http.routers.natai.rule=Host(`natai.app`)"
+            - "traefik.http.routers.natai.entrypoints=websecure"
+            - "traefik.http.routers.natai.tls.certresolver=myresolver"
+
+    backend-db:
+        image: postgres:13-alpine
+        volumes:
+            - backend-db:/var/lib/postgresql/data:rw
+        env_file:
+            - .env.local
+        ports:
+            - "15432:5432"
+        restart: unless-stopped
+        networks:
+            - default
+
+volumes:
+    backend-db:
+
+networks:
+    default:
+    vps-traefik:
+        external: true
