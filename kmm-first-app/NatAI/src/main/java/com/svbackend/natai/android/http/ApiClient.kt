@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.http
 
+import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
@@ -17,8 +18,8 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import com.svbackend.natai.android.http.dto.Note as NoteDto
 
-//const val BASE_URL = "http://10.0.2.2:8080/api/v1/"
-const val BASE_URL = "https://natai.app/api/v1/"
+const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
+//const val BASE_URL = "https://natai.app/api/v1/"
 
 class ApiClient(
     private val getApiToken: () -> String?

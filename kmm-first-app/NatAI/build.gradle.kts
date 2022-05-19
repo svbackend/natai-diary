@@ -14,10 +14,12 @@ android {
         versionName = "1.0"
         manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
         manifestPlaceholders["auth0Scheme"] = "@string/com_auth0_scheme"
+        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
     }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
         }
     }
     buildFeatures {
@@ -35,12 +37,12 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.6.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("com.auth0.android:auth0:2.6.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
 
     val roomVersion = "2.4.1"
     implementation("androidx.room:room-runtime:$roomVersion")
