@@ -37,7 +37,7 @@ class HomeActivity : ScopedActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+        setActionBar(binding.toolbar)
 
 //        navController = findNavController(R.id.nav_host_fragment_content_home)
 //        appBarConfiguration = AppBarConfiguration(navController.graph)

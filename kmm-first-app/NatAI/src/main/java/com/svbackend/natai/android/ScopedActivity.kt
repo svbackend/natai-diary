@@ -1,13 +1,14 @@
 package com.svbackend.natai.android
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-abstract class ScopedActivity : AppCompatActivity(), CoroutineScope {
+abstract class ScopedActivity : ComponentActivity(), CoroutineScope {
     private lateinit var job : Job
 
     override val coroutineContext: CoroutineContext

@@ -21,7 +21,7 @@ class NoteDetailsActivity : ScopedActivity() {
         binding = ActivityNoteDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+        setActionBar(binding.toolbar)
 
 //        navController = findNavController(R.id.nav_host_fragment_content_home)
 //        appBarConfiguration = AppBarConfiguration(navController.graph)

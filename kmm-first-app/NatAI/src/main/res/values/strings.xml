@@ -10,6 +10,7 @@
     <string name="addNote">Add Note</string>
     <string name="noteContent">How was your day?</string>
     <string name="noteTitle">Title</string>
+    <string name="newNote">New Note</string>
     <string name="title_activity_basic">Notes</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

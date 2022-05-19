@@ -1,3 +1,5 @@
+val composeVersion = "1.2.0-beta02"
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -24,6 +26,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        compose = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -31,6 +34,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = composeVersion
     }
     namespace = "com.svbackend.natai.android"
 }
@@ -59,4 +65,13 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha12")
+    implementation("androidx.compose.animation:animation:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling:$composeVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.9")
 }
