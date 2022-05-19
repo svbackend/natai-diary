@@ -28,8 +28,8 @@ class DiaryRepository(
             val cloudNote = api.addNote(note) // todo handle http err
             note.sync(cloudNote) // todo handle different ids err
             db.dao().update(note)
-        } catch (e: Exception) {
-            println(e.message)
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 

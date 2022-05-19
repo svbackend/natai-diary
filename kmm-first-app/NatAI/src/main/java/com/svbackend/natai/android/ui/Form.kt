@@ -11,20 +11,17 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun NTextField(
+    value: TextFieldValue,
     label: String,
-    initialValue: String = "",
-    onChange: (newValue: String) -> Unit = { },
+    onChange: (TextFieldValue) -> Unit,
     singleLine: Boolean = true,
     maxLines: Int = 1
 ) {
-    var text by remember { mutableStateOf(TextFieldValue(initialValue)) }
-
     TextField(
-        value = text,
+        value = value,
         label = @Composable { Text(label) },
         onValueChange = {
-            text = it
-            onChange(it.text)
+            onChange(it)
         },
         singleLine = singleLine,
         modifier = Modifier
@@ -36,13 +33,14 @@ fun NTextField(
 
 @Composable
 fun NTextarea(
+    value: TextFieldValue,
     label: String,
     initialValue: String = "",
-    onChange: (newValue: String) -> Unit = { }
+    onChange: (TextFieldValue) -> Unit
 ) {
     NTextField(
+        value = value,
         label = label,
-        initialValue = initialValue,
         onChange = onChange,
         singleLine = false,
         maxLines = 6

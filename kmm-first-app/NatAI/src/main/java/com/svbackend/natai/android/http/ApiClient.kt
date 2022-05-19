@@ -34,6 +34,10 @@ class ApiClient(
         install(ContentNegotiation) {
             jackson()
         }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 4350
+        }
+
     }
 
     suspend fun getNotes(): List<Note> {
