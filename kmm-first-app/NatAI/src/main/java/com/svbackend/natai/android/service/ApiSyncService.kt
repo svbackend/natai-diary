@@ -24,7 +24,38 @@ class ApiSyncService(
             } else if (cloudNote.updatedAt.after(it.updatedAt)) {
                 updateToCloud(it)
             }
-            // todo insertToLocal, updateToLocal, deleteToCloud, deleteToLocal
+            // deleteToCloud
+        }
+
+        cloudNotes.forEach { kv ->
+            val cloudNoteId = kv.key
+            val cloudNote = kv.value
+            val localNote = localNotes.find { it.cloudId == cloudNoteId }
+            if (localNote == null) {
+                insertToLocal(cloudNote)
+            } else if (cloudNote.updatedAt.after(localNote.updatedAt)) {
+                updateToLocal(localNote, cloudNote)
+            }
+            // todo deleteToLocal
+        }
+    }
+
+    private suspend fun insertToLocal(cloudNote: Note) {
+        val newLocalNote = Note.createByCloudNote(cloudNote)
+        try {
+            repository.insert(newLocalNote)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+
+    private suspend fun updateToLocal(localNote: Note, cloudNote: Note) {
+        localNote.sync(cloudNote)
+        try {
+            repository.update(localNote)
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 
@@ -34,7 +65,7 @@ class ApiSyncService(
             localNote.cloudId = insertedCloudNote.id
             repository.update(localNote)
         } catch (e: Throwable) {
-            println(e.stackTraceToString())
+            e.printStackTrace()
         }
     }
 
@@ -42,7 +73,7 @@ class ApiSyncService(
         try {
             apiClient.updateNote(localNote)
         } catch (e: Throwable) {
-            println(e.stackTraceToString())
+            e.printStackTrace()
         }
     }
 }

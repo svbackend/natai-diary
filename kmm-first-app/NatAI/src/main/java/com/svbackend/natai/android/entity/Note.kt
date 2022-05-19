@@ -29,4 +29,14 @@ data class Note(
         title = cloudNote.title
         content = cloudNote.content
     }
+
+    companion object {
+        fun createByCloudNote(cloudNote: Note) = Note(
+            cloudId = cloudNote.id,
+            title = cloudNote.title,
+            content = cloudNote.content,
+            createdAt = cloudNote.createdAt,
+            updatedAt = cloudNote.updatedAt
+        )
+    }
 }

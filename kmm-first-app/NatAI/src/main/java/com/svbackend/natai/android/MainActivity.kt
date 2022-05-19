@@ -123,6 +123,7 @@ class MainActivity : ScopedActivity() {
                         }
 
                         credsManager.saveCredentials(result)
+                        syncWithApi()
                     }
                 })
         }
@@ -144,6 +145,7 @@ class MainActivity : ScopedActivity() {
                     putString("id_token", result.idToken)
                     apply()
                 }
+                syncWithApi()
             }
         })
 
@@ -155,7 +157,6 @@ class MainActivity : ScopedActivity() {
             }
         }
 
-        syncWithApi()
         loadNotes()
     }
 
