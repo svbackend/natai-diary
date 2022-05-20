@@ -3,13 +3,26 @@ package com.svbackend.natai.android
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
-import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.Auth0
@@ -21,22 +34,18 @@ import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
-import com.svbackend.natai.Greeting
 import com.svbackend.natai.android.databinding.ActivityMainBinding
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
 import com.svbackend.natai.android.service.ApiSyncService
+import com.svbackend.natai.android.ui.HorizontalDivider
+import com.svbackend.natai.android.ui.NataiTheme
 import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-
-
-fun greet(): String {
-    return Greeting().greeting()
-}
 
 class MainActivity : ScopedActivity() {
 
@@ -53,14 +62,63 @@ class MainActivity : ScopedActivity() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
+    @Composable
+    fun MainScreen() {
+        val notes by viewModel.notes.collectAsState(initial = emptyList())
+
+        LazyColumn {
+            items(notes) { note ->
+                NoteCard(note)
+                HorizontalDivider()
+            }
+        }
+    }
+
+    @Composable
+    fun NoteCard(note: Note) {
+        // card with date and title
+        Surface(color = MaterialTheme.colorScheme.surface) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Text(
+                        text = SimpleDateFormat("dd").format(note.createdAt),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Text(
+                        text = SimpleDateFormat("MMM").format(note.createdAt),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+                Spacer(modifier = Modifier.width(24.dp))
+                Text(
+                    text = note.title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContent {
+            NataiTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MainScreen()
+                }
+            }
+        }
 
-        val tv: TextView = findViewById(R.id.text_view)
-        tv.text = greet()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        //setContentView(binding.root)
 
         val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
 
@@ -76,15 +134,6 @@ class MainActivity : ScopedActivity() {
         binding.addNoteBtn.setOnClickListener {
             val intent = Intent(this, NewNoteActivity::class.java)
             startActivity(intent)
-
-//            launch {
-//                viewModel.repository.insert(
-//                    Note(
-//                        title = UUID.randomUUID().toString(),
-//                        content = "Some dummy note content",
-//                    )
-//                )
-//            }
         }
 
         binding.homeBtn.setOnClickListener {
@@ -169,7 +218,7 @@ class MainActivity : ScopedActivity() {
         try {
             apiSyncService.syncNotes()
         } catch (e: Exception) {
-            println(e.stackTrace)
+            e.printStackTrace()
         }
     }
 
@@ -181,33 +230,38 @@ class MainActivity : ScopedActivity() {
             startActivity(intent)
         }
 
-        viewModel.notes.collect { notes ->
-            viewManager = GridLayoutManager(application, 1)
-            viewAdapter = NoteAdapter(notes, onClick)
-
-            recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
-                // use this setting to improve performance if you know that changes
-                // in content do not change the layout size of the RecyclerView
-                setHasFixedSize(true)
-
-                // use a linear layout manager
-                layoutManager = viewManager
-
-                // specify an viewAdapter (see also next example)
-                adapter = viewAdapter
-            }
-
-            return@collect
-        }
+//        viewModel.notes.collect { notes ->
+//            viewManager = GridLayoutManager(application, 1)
+//            viewAdapter = NoteAdapter(notes, onClick)
+//
+//            recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
+//                // use this setting to improve performance if you know that changes
+//                // in content do not change the layout size of the RecyclerView
+//                setHasFixedSize(true)
+//
+//                // use a linear layout manager
+//                layoutManager = viewManager
+//
+//                // specify an viewAdapter (see also next example)
+//                adapter = viewAdapter
+//            }
+//
+//            return@collect
+//        }
     }
 
     private fun addReminder() {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val reminderReceiverIntent = Intent(this, AlarmReceiver::class.java)
 
         reminderReceiverIntent.putExtra("reminderId", REMINDER_ID)
         val pendingIntent =
-            PendingIntent.getBroadcast(this, REMINDER_ID.toInt(), reminderReceiverIntent, FLAG_IMMUTABLE)
+            PendingIntent.getBroadcast(
+                this,
+                REMINDER_ID.toInt(),
+                reminderReceiverIntent,
+                FLAG_IMMUTABLE
+            )
 
         val firstNotificationDate: Calendar = Calendar.getInstance()
         firstNotificationDate.set(Calendar.HOUR, 21) // 9pm

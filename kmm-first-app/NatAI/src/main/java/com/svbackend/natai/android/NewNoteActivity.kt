@@ -4,20 +4,19 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.entity.Note
-import com.svbackend.natai.android.ui.NButton
+import com.svbackend.natai.android.ui.NProgressBtn
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
 import com.svbackend.natai.android.ui.NataiTheme
 import com.svbackend.natai.android.viewmodel.NewNoteViewModel
-import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.launch
 
 class NewNoteActivity : ScopedActivity() {
@@ -81,8 +80,8 @@ class NewNoteActivity : ScopedActivity() {
                             onChange = { viewModel.content.value = it }
                         )
                         if (viewModel.isLoading.value) {
-                            OutlinedButton(onClick = {}) {
-                                CircularProgressIndicator()
+                            Button(onClick = {}) {
+                                NProgressBtn()
                                 Text(
                                     text = getString(R.string.saving),
                                     modifier = Modifier.padding(start = 8.dp)
