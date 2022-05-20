@@ -9,10 +9,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.compose.material3.*
+import androidx.compose.runtime.rememberCoroutineScope
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -28,6 +26,7 @@ import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.NataiTheme
+import com.svbackend.natai.android.ui.component.DefaultLayout
 import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.launch
@@ -45,17 +44,20 @@ class MainActivity : ScopedActivity() {
 
     private val viewModel by viewModels<NoteViewModel>()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val drawerState = rememberDrawerState(DrawerValue.Closed)
+            val scope = rememberCoroutineScope()
             NataiTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Navigation()
-                }
+                DefaultLayout(
+                    drawerState = drawerState,
+                    scope = scope,
+                    content = {
+                        Navigation()
+                    })
             }
         }
 
@@ -124,21 +126,22 @@ class MainActivity : ScopedActivity() {
         }
 
 
-        credsManager.getCredentials(object : Callback<Credentials, CredentialsManagerException> {
-            override fun onFailure(error: CredentialsManagerException) {
+        credsManager.getCredentials(
+            object : Callback<Credentials, CredentialsManagerException> {
+                override fun onFailure(error: CredentialsManagerException) {
 
-            }
-
-            override fun onSuccess(result: Credentials) {
-                showUserProfile(result.accessToken)
-                with(prefs.edit()) {
-                    putString("access_token", result.accessToken)
-                    putString("id_token", result.idToken)
-                    apply()
                 }
-                syncWithApi()
-            }
-        })
+
+                override fun onSuccess(result: Credentials) {
+                    showUserProfile(result.accessToken)
+                    with(prefs.edit()) {
+                        putString("access_token", result.accessToken)
+                        putString("id_token", result.idToken)
+                        apply()
+                    }
+                    syncWithApi()
+                }
+            })
 
         if (!prefs.getBoolean("is_reminder_enabled", false)) {
             addReminder()
