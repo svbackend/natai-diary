@@ -1,0 +1,15 @@
+package com.svbackend.natai.android
+
+sealed class Route(val route: String) {
+    fun withArgs(): String = route
+
+    object MainRoute : Route("main")
+
+    object NewNoteRoute : Route("new_note")
+
+    object NoteDetailsRoute : Route("note_details/{noteId}") {
+        fun withArgs(noteId: String): String {
+            return route.replace("{noteId}", noteId)
+        }
+    }
+}

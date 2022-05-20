@@ -74,4 +74,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     implementation("com.google.android.material:compose-theme-adapter-3:1.0.9")
+
+    val navVersion = "2.4.2"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 }

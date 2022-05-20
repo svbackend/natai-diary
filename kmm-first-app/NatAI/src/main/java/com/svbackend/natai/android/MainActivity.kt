@@ -9,22 +9,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -39,7 +27,6 @@ import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
 import com.svbackend.natai.android.service.ApiSyncService
-import com.svbackend.natai.android.ui.HorizontalDivider
 import com.svbackend.natai.android.ui.NataiTheme
 import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.viewmodel.NoteViewModel
@@ -58,51 +45,6 @@ class MainActivity : ScopedActivity() {
 
     private val viewModel by viewModels<NoteViewModel>()
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
-
-    @Composable
-    fun MainScreen() {
-        val notes by viewModel.notes.collectAsState(initial = emptyList())
-
-        LazyColumn {
-            items(notes) { note ->
-                NoteCard(note)
-                HorizontalDivider()
-            }
-        }
-    }
-
-    @Composable
-    fun NoteCard(note: Note) {
-        // card with date and title
-        Surface(color = MaterialTheme.colorScheme.surface) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                Column {
-                    Text(
-                        text = SimpleDateFormat("dd").format(note.createdAt),
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                    Text(
-                        text = SimpleDateFormat("MMM").format(note.createdAt),
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-                Spacer(modifier = Modifier.width(24.dp))
-                Text(
-                    text = note.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -112,7 +54,7 @@ class MainActivity : ScopedActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen()
+                    Navigation()
                 }
             }
         }
