@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.*
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.compose.rememberNavController
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -51,13 +52,27 @@ class MainActivity : ScopedActivity() {
         setContent {
             val drawerState = rememberDrawerState(DrawerValue.Closed)
             val scope = rememberCoroutineScope()
+            val controller = rememberNavController()
+
             NataiTheme {
                 DefaultLayout(
                     drawerState = drawerState,
                     scope = scope,
+                    toggleDrawer = {
+                        scope.launch {
+                            if (drawerState.isOpen)
+                                drawerState.close()
+                            else
+                                drawerState.open()
+                        }
+                    },
+                    addNote = {
+                        controller.navigate(Route.NewNoteRoute.withArgs())
+                    },
                     content = {
-                        Navigation()
-                    })
+                        Navigation(controller)
+                    }
+                )
             }
         }
 

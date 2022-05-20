@@ -114,13 +114,20 @@ fun AddDrawerContentView(title: String, selected: Boolean) {
 fun DefaultLayout(
     drawerState: DrawerState,
     scope: CoroutineScope,
+    toggleDrawer: () -> Unit,
+    addNote: () -> Unit,
     content: @Composable() () -> Unit
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         content = {
             Scaffold(
-                bottomBar = { BottomBar() },
+                bottomBar = {
+                    BottomBar(
+                        toggleDrawer = toggleDrawer,
+                        addNote = addNote
+                    )
+                },
             ) {
                 Surface(
                     modifier = Modifier
@@ -138,13 +145,15 @@ fun DefaultLayout(
     )
 }
 
-@Preview
 @Composable
-fun BottomBar() {
+fun BottomBar(
+    toggleDrawer: () -> Unit,
+    addNote: () -> Unit
+) {
     BottomAppBar(
         icons = {
             IconButton(
-                onClick = {},
+                onClick = { toggleDrawer() },
                 modifier = Modifier.fillMaxHeight(),
             ) {
                 Icon(
@@ -166,7 +175,7 @@ fun BottomBar() {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* do something */ },
+                onClick = { addNote() },
                 elevation = BottomAppBarDefaults.floatingActionButtonElevation()
             ) {
                 Icon(Icons.Filled.Add, "Add Note")
