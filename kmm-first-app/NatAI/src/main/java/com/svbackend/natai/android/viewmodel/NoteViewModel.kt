@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
 
+    val isLoggedIn = MutableSharedFlow<Boolean>(replay = 1)
+    //val currentRoute = MutableSharedFlow<String?>() // todo
+
     val notes = repository.notes
 
     suspend fun getNote(id: String) = repository.getNote(id)
@@ -18,4 +21,12 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val selectedNote = MutableSharedFlow<Note?>()
 
     suspend fun selectNote(id: String) = selectedNote.emit(getNote(id))
+
+    suspend fun login() {
+        isLoggedIn.emit(true)
+    }
+
+    suspend fun credsFailure() {
+        isLoggedIn.emit(false)
+    }
 }

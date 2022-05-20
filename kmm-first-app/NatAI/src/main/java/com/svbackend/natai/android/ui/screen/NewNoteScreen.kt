@@ -46,6 +46,8 @@ fun NewNoteScreen(
                         content = vm.content.value.text,
                     )
                 )
+
+                onSuccess()
             }.invokeOnCompletion {
                 vm.isLoading.value = false
             }

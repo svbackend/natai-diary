@@ -23,7 +23,7 @@ fun Navigation(controller: NavHostController) {
 
         composable(route = Route.NewNoteRoute.route) {
             NewNoteScreen(onSuccess = {
-                controller.navigate(Route.MainRoute.withArgs())
+                controller.popBackStack()
             })
         }
 

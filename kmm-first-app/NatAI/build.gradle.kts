@@ -16,7 +16,7 @@ android {
         versionName = "1.0"
         manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
         manifestPlaceholders["auth0Scheme"] = "@string/com_auth0_scheme"
-        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
     }
     buildTypes {
         getByName("release") {

@@ -4,12 +4,15 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
 import com.auth0.android.Auth0
@@ -22,7 +25,6 @@ import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
 import com.svbackend.natai.android.databinding.ActivityMainBinding
-import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
 import com.svbackend.natai.android.service.ApiSyncService
@@ -49,13 +51,26 @@ class MainActivity : ScopedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        (application as DiaryApplication).let {
+            account = it.appContainer.auth0
+            credsManager = it.appContainer.credentialsManager
+            authClient = it.appContainer.auth0ApiClient
+            connectivityManager = it.appContainer.connectivityManager
+            apiSyncService = it.appContainer.apiSyncService
+        }
+
+        val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
+
         setContent {
             val drawerState = rememberDrawerState(DrawerValue.Closed)
             val scope = rememberCoroutineScope()
             val controller = rememberNavController()
 
+            val isLoggedIn = viewModel.isLoggedIn
+
             NataiTheme {
                 DefaultLayout(
+                    vm = viewModel,
                     drawerState = drawerState,
                     scope = scope,
                     toggleDrawer = {
@@ -67,7 +82,13 @@ class MainActivity : ScopedActivity() {
                         }
                     },
                     addNote = {
-                        controller.navigate(Route.NewNoteRoute.withArgs())
+                        val currentRoute = controller.currentBackStackEntry?.destination?.route
+                        if (currentRoute != Route.NewNoteRoute.route) {
+                            controller.navigate(Route.NewNoteRoute.withArgs())
+                        }
+                    },
+                    onLogin = {
+                        onLogin(prefs)
                     },
                     content = {
                         Navigation(controller)
@@ -77,84 +98,19 @@ class MainActivity : ScopedActivity() {
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        //setContentView(binding.root)
-
-        val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
-
-        (application as DiaryApplication).let {
-            account = it.appContainer.auth0
-            credsManager = it.appContainer.credentialsManager
-            authClient = it.appContainer.auth0ApiClient
-            connectivityManager = it.appContainer.connectivityManager
-            apiSyncService = it.appContainer.apiSyncService
-        }
-
-
-        binding.addNoteBtn.setOnClickListener {
-            val intent = Intent(this, NewNoteActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.homeBtn.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.loginBtn.setOnClickListener {
-            WebAuthProvider.login(account)
-                .withScheme("natai")
-                .withScope("openid profile email offline_access")
-                // Launch the authentication passing the callback where the results will be received
-                .start(this, object : Callback<Credentials, AuthenticationException> {
-                    // Called when there is an authentication failure
-                    override fun onFailure(error: AuthenticationException) {
-                        // Something went wrong!
-                        Toast
-                            .makeText(
-                                this@MainActivity,
-                                "Login Error: \n${error.message}",
-                                Toast.LENGTH_LONG
-                            )
-                            .show()
-                    }
-
-                    // Called when authentication completed successfully
-                    override fun onSuccess(result: Credentials) {
-
-                        val accessToken = result.accessToken
-                        val idToken = result.idToken
-                        showUserProfile(accessToken)
-                        with(prefs.edit()) {
-                            putString("access_token", accessToken)
-                            putString("id_token", idToken)
-                            apply()
-                        }
-
-                        credsManager.saveCredentials(result)
-                        syncWithApi()
-                    }
-                })
-        }
 
         binding.logoutBtn.setOnClickListener {
             logout()
         }
 
-
         credsManager.getCredentials(
             object : Callback<Credentials, CredentialsManagerException> {
                 override fun onFailure(error: CredentialsManagerException) {
-
+                    onCredsFailure()
                 }
 
                 override fun onSuccess(result: Credentials) {
-                    showUserProfile(result.accessToken)
-                    with(prefs.edit()) {
-                        putString("access_token", result.accessToken)
-                        putString("id_token", result.idToken)
-                        apply()
-                    }
-                    syncWithApi()
+                    onCredsSuccess(prefs = prefs, creds = result)
                 }
             })
 
@@ -165,8 +121,47 @@ class MainActivity : ScopedActivity() {
                 apply()
             }
         }
+    }
 
-        loadNotes()
+    private fun onLogin(prefs: SharedPreferences) {
+        WebAuthProvider.login(account)
+            .withScheme("natai")
+            .withScope("openid profile email offline_access")
+            // Launch the authentication passing the callback where the results will be received
+            .start(this, object : Callback<Credentials, AuthenticationException> {
+                // Called when there is an authentication failure
+                override fun onFailure(error: AuthenticationException) {
+                    // Something went wrong!
+                    Toast
+                        .makeText(
+                            this@MainActivity,
+                            "Login Error: \n${error.message}",
+                            Toast.LENGTH_LONG
+                        )
+                        .show()
+                }
+
+                // Called when authentication completed successfully
+                override fun onSuccess(result: Credentials) {
+                    onCredsSuccess(prefs, result)
+                    credsManager.saveCredentials(result)
+                }
+            })
+    }
+
+    private fun onCredsFailure() = launch {
+        viewModel.credsFailure()
+    }
+
+    private fun onCredsSuccess(prefs: SharedPreferences, creds: Credentials) = launch {
+        showUserProfile(creds.accessToken)
+        with(prefs.edit()) {
+            putString("access_token", creds.accessToken)
+            putString("id_token", creds.idToken)
+            apply()
+        }
+        syncWithApi()
+        viewModel.login()
     }
 
     private fun syncWithApi() = launch {
@@ -180,34 +175,6 @@ class MainActivity : ScopedActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    private fun loadNotes() = launch {
-        val onClick = OnClickListener<Note> {
-            val intent = Intent(this@MainActivity, NoteDetailsActivity::class.java).apply {
-                putExtra(PARAM_NOTE_ID, it.id)
-            }
-            startActivity(intent)
-        }
-
-//        viewModel.notes.collect { notes ->
-//            viewManager = GridLayoutManager(application, 1)
-//            viewAdapter = NoteAdapter(notes, onClick)
-//
-//            recyclerView = (findViewById<RecyclerView>(R.id.NotesRecyclerView)).apply {
-//                // use this setting to improve performance if you know that changes
-//                // in content do not change the layout size of the RecyclerView
-//                setHasFixedSize(true)
-//
-//                // use a linear layout manager
-//                layoutManager = viewManager
-//
-//                // specify an viewAdapter (see also next example)
-//                adapter = viewAdapter
-//            }
-//
-//            return@collect
-//        }
     }
 
     private fun addReminder() {

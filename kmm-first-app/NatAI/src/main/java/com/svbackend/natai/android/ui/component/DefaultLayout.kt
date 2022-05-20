@@ -19,103 +19,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddDrawerHeader(
-    title: String,
-    titleColor: Color = Color.Black,
-) {
-    Card(
-        elevation = CardDefaults.cardElevation(),
-        modifier = Modifier
-            .fillMaxWidth(),
-        border = BorderStroke(1.dp, color = Color.Gray),
-
-
-        ) {
-        Text(
-            text = title,
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = titleColor
-            ),
-            modifier = Modifier.padding(14.dp)
-        )
-
-    }
-}
-
-@Composable
-fun DrawerView() {
-    val language = listOf("English ", "Hindi", "Arabic")
-    val category = listOf("Cloth", "electronics", "fashion", "Food")
-    LazyColumn {
-        item {
-            AddDrawerHeader(title = "Language")
-        }
-        items(language.size) { index ->
-
-            AddDrawerContentView(
-                title = language[index],
-                selected = if (index == 1) true else false
-            )
-        }
-        item {
-            AddDrawerHeader(title = "Category")
-        }
-
-        items(category.size) { index ->
-
-            AddDrawerContentView(
-                title = category[index],
-                selected = if (index == 2) true else false
-            )
-        }
-    }
-
-}
-
-@Composable
-fun AddDrawerContentView(title: String, selected: Boolean) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clickable {}
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-
-
-        ) {
-
-        if (title.isNotEmpty()) {
-            if (selected)
-                Text(
-                    text = title,
-                    modifier = Modifier.weight(1f),
-                    color = Color.Black,
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
-                )
-            else
-                Text(text = title, modifier = Modifier.weight(1f), fontSize = 12.sp)
-        }
-
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun DefaultLayout(
+    vm: NoteViewModel,
     drawerState: DrawerState,
     scope: CoroutineScope,
     toggleDrawer: () -> Unit,
     addNote: () -> Unit,
+    onLogin: () -> Unit,
     content: @Composable() () -> Unit
 ) {
     ModalNavigationDrawer(
@@ -140,49 +56,7 @@ fun DefaultLayout(
             }
         },
         drawerContent = {
-            DrawerView()
+            NavDrawer(onLogin = onLogin, vm = vm)
         },
     )
 }
-
-@Composable
-fun BottomBar(
-    toggleDrawer: () -> Unit,
-    addNote: () -> Unit
-) {
-    BottomAppBar(
-        icons = {
-            IconButton(
-                onClick = { toggleDrawer() },
-                modifier = Modifier.fillMaxHeight(),
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Menu,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    contentDescription = "Open/Close Menu",
-                )
-            }
-            IconButton(
-                onClick = {},
-                modifier = Modifier.fillMaxHeight(),
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Search,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    contentDescription = "Search",
-                )
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { addNote() },
-                elevation = BottomAppBarDefaults.floatingActionButtonElevation()
-            ) {
-                Icon(Icons.Filled.Add, "Add Note")
-            }
-        }
-    )
-}
-
-
-
