@@ -11,14 +11,22 @@ import androidx.navigation.navArgument
 import com.svbackend.natai.android.ui.screen.MainScreen
 import com.svbackend.natai.android.ui.screen.NewNoteScreen
 import com.svbackend.natai.android.ui.screen.NoteDetailsScreen
+import com.svbackend.natai.android.utils.go
+import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 
 @Composable
-fun Navigation(controller: NavHostController) {
+fun Navigation(controller: NavHostController, vm: NoteViewModel, onLoginClick: () -> Unit) {
 
     NavHost(navController = controller, startDestination = Route.MainRoute.route) {
         composable(route = Route.MainRoute.route) {
-            MainScreen()
+            MainScreen(
+                vm = vm,
+                onAddClick = {
+                             controller.go(Route.NewNoteRoute.route)
+                },
+                onLoginClick = onLoginClick
+            )
         }
 
         composable(route = Route.NewNoteRoute.route) {

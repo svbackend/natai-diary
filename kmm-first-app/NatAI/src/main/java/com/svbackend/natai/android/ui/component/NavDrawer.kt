@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -24,12 +25,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.svbackend.natai.android.Route
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 @Composable
 fun NavDrawer(
     modifier: Modifier = Modifier,
     onLogin: () -> Unit,
+    onClick: (route: String) -> Unit,
     vm: NoteViewModel
 ) {
     val cnt = vm.notes.collectAsState(initial = emptyList()).value.size
@@ -51,13 +54,27 @@ fun NavDrawer(
         item { AccountItem(onLogin, vm) }
 
         item { Spacer(modifier.padding(top = 8.dp)) }
-        item { DrawerItem(icon = Icons.Filled.Email, title = "All Notes", "$cnt") }
+        item {
+            DrawerItem(icon = Icons.Filled.Email,
+                title = "All Notes", "$cnt",
+                onClick = {
+                    onClick(Route.MainRoute.withArgs())
+                })
+        }
         item { Spacer(modifier.padding(top = 8.dp)) }
         item { Divider(thickness = 0.3.dp) }
 
         item { Spacer(modifier.padding(top = 8.dp)) }
-        item { DrawerItem(icon = Icons.Outlined.AccountBox, title = "Account") }
-        item { DrawerItem(icon = Icons.Outlined.Build, title = "Settings") }
+        item {
+            DrawerItem(icon = Icons.Outlined.Star, title = "Analytics", onClick = {
+                onClick(Route.MainRoute.withArgs())
+            })
+        }
+        item {
+            DrawerItem(icon = Icons.Outlined.Build, title = "Settings", onClick = {
+                onClick(Route.MainRoute.withArgs())
+            })
+        }
 
 //        item { DrawerCategory(title = "RECENT LABELS") }
 //        item { DrawerItem(icon = Icons.Outlined.Send, title = "[Imap]/Trash") }
@@ -72,13 +89,12 @@ fun NavDrawer(
 //        item { DrawerItem(icon = Icons.Outlined.MailOutline, title = "Outbox", "10") }
 
     }
-
 }
 
 @Composable
-fun DrawerItem(icon: ImageVector, title: String, msgCount: String = "") {
+fun DrawerItem(icon: ImageVector, title: String, msgCount: String = "", onClick: () -> Unit) {
 
-    Row {
+    Row(modifier = Modifier.clickable { onClick() }) {
         Icon(imageVector = icon, modifier = Modifier.padding(16.dp), contentDescription = null)
         Text(
             modifier = Modifier
@@ -125,10 +141,38 @@ fun AccountItem(
     onLogin: () -> Unit,
     vm: NoteViewModel
 ) {
-    val isLoggedIn = vm.isLoggedIn.collectAsState(initial = false).value
+    val isLoggedIn by vm.isLoggedIn.collectAsState(initial = false)
+    val profile = vm.user.collectAsState(initial = null).value
 
-    if (isLoggedIn) {
-        Text(text = "Logged!")
+    if (isLoggedIn && profile != null) {
+        Row(
+            Modifier.clickable(onClick = { /* todo open account screen */ })
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.AccountBox,
+                modifier = Modifier.padding(16.dp),
+                contentDescription = ""
+            )
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 8.dp),
+                text = profile.name,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Start
+            )
+
+            Icon(
+                imageVector = Icons.Filled.ArrowForward,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(16.dp),
+                contentDescription = ""
+            )
+        }
     } else {
         Row(
             Modifier.clickable(onClick = onLogin)

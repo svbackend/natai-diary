@@ -10,10 +10,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.*
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
@@ -24,21 +25,21 @@ import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
-import com.svbackend.natai.android.databinding.ActivityMainBinding
 import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.NataiTheme
 import com.svbackend.natai.android.ui.component.DefaultLayout
+import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.viewmodel.NoteViewModel
+import com.svbackend.natai.android.viewmodel.SplashViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : ScopedActivity() {
 
-    private lateinit var binding: ActivityMainBinding
     private lateinit var account: Auth0
     private lateinit var credsManager: CredentialsManager
     private lateinit var authClient: AuthenticationAPIClient
@@ -46,10 +47,15 @@ class MainActivity : ScopedActivity() {
     private lateinit var apiSyncService: ApiSyncService
 
     private val viewModel by viewModels<NoteViewModel>()
+    private val splashViewModel by viewModels<SplashViewModel>()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition { !splashViewModel.isLoading.value }
+        //onLoading()
 
         (application as DiaryApplication).let {
             account = it.appContainer.auth0
@@ -66,8 +72,6 @@ class MainActivity : ScopedActivity() {
             val scope = rememberCoroutineScope()
             val controller = rememberNavController()
 
-            val isLoggedIn = viewModel.isLoggedIn
-
             NataiTheme {
                 DefaultLayout(
                     vm = viewModel,
@@ -82,27 +86,29 @@ class MainActivity : ScopedActivity() {
                         }
                     },
                     addNote = {
-                        val currentRoute = controller.currentBackStackEntry?.destination?.route
-                        if (currentRoute != Route.NewNoteRoute.route) {
-                            controller.navigate(Route.NewNoteRoute.withArgs())
-                        }
+                        controller.go(Route.NewNoteRoute.withArgs())
                     },
                     onLogin = {
                         onLogin(prefs)
                     },
+                    onNavigateTo = {
+                        controller.go(it)
+                    },
                     content = {
-                        Navigation(controller)
+//                        if (isLoading.value) {
+//                            LoadingScreen()
+//                        } else {
+                            Navigation(controller, onLoginClick = { onLogin(prefs) }, vm = viewModel)
+                        //}
                     }
                 )
             }
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        loadCreds(prefs)
+    }
 
-        binding.logoutBtn.setOnClickListener {
-            logout()
-        }
-
+    private fun loadCreds(prefs: SharedPreferences) = launch {
         credsManager.getCredentials(
             object : Callback<Credentials, CredentialsManagerException> {
                 override fun onFailure(error: CredentialsManagerException) {
@@ -120,6 +126,14 @@ class MainActivity : ScopedActivity() {
                 putBoolean("is_reminder_enabled", true)
                 apply()
             }
+        }
+    }
+
+    private fun onLoading() = launch {
+        viewModel.onLoading()
+
+        viewModel.notes.collect {
+            viewModel.onLoaded()
         }
     }
 
@@ -153,14 +167,18 @@ class MainActivity : ScopedActivity() {
         viewModel.credsFailure()
     }
 
+    private fun onProfileLoaded(profile: UserProfile) = launch {
+        viewModel.userProfileLoaded(profile)
+    }
+
     private fun onCredsSuccess(prefs: SharedPreferences, creds: Credentials) = launch {
-        showUserProfile(creds.accessToken)
+        loadUserProfile(creds.accessToken)
         with(prefs.edit()) {
             putString("access_token", creds.accessToken)
             putString("id_token", creds.idToken)
             apply()
         }
-        syncWithApi()
+        //syncWithApi()
         viewModel.login()
     }
 
@@ -203,7 +221,7 @@ class MainActivity : ScopedActivity() {
         return sdf.format(timeInMillis)
     }
 
-    private fun showUserProfile(accessToken: String) {
+    private fun loadUserProfile(accessToken: String) {
         // With the access token, call `userInfo` and get the profile from Auth0.
         authClient.userInfo(accessToken)
             .start(object : Callback<UserProfile, AuthenticationException> {
@@ -217,9 +235,7 @@ class MainActivity : ScopedActivity() {
                 }
 
                 override fun onSuccess(result: UserProfile) {
-                    // We have the user's profile!
-                    binding.nameTv.text = result.name
-                    binding.emailTv.text = result.email
+                    onProfileLoaded(result)
                     Toast.makeText(
                         this@MainActivity,
                         "Login Successful!",
@@ -229,6 +245,7 @@ class MainActivity : ScopedActivity() {
             })
     }
 
+    // todo call this
     private fun logout() {
         WebAuthProvider.logout(account)
             .withScheme("natai")
@@ -242,8 +259,6 @@ class MainActivity : ScopedActivity() {
                             "Successfully logged out!",
                             Toast.LENGTH_SHORT
                         ).show()
-                        binding.nameTv.text = resources.getString(R.string.john_doe)
-                        binding.emailTv.text = resources.getString(R.string.email)
                     }
 
                     override fun onFailure(error: AuthenticationException) {

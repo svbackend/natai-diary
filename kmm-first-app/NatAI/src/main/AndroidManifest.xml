@@ -10,21 +10,11 @@
         android:allowBackup="false"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/SplashScreenTheme">
 
         <activity
-            android:name=".HomeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_basic"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".NewNoteActivity"
-            android:exported="false" />
-        <activity
-            android:name=".NoteDetailsActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
+            android:theme="@style/SplashScreenTheme"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

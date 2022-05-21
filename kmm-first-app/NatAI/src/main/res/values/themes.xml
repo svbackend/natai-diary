@@ -5,4 +5,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="SplashScreenTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/colorPrimaryDark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/app_logo</item>
+        <item name="windowSplashScreenAnimationDuration">600</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+
 </resources>
