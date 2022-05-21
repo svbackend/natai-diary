@@ -26,4 +26,5 @@
     <string name="editNote">Edit Note</string>
     <string name="noNotesTitle">No notes yet</string>
     <string name="noNotesText">You can add your first note and it will appear here</string>
+    <string name="appName">Natai Diary</string>
 </resources>
