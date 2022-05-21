@@ -1,6 +1,5 @@
 package com.svbackend.natai.android.ui.screen
 
-import android.widget.Space
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.ui.HorizontalDivider
