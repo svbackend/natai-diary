@@ -51,11 +51,12 @@ class MainActivity : ScopedActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        installSplashScreen()
+            .apply {
+                setKeepOnScreenCondition { !splashViewModel.isLoading.value }
+            }
 
-        val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { !splashViewModel.isLoading.value }
-        //onLoading()
+        super.onCreate(savedInstanceState)
 
         (application as DiaryApplication).let {
             account = it.appContainer.auth0
@@ -98,7 +99,7 @@ class MainActivity : ScopedActivity() {
 //                        if (isLoading.value) {
 //                            LoadingScreen()
 //                        } else {
-                            Navigation(controller, onLoginClick = { onLogin(prefs) }, vm = viewModel)
+                        Navigation(controller, onLoginClick = { onLogin(prefs) }, vm = viewModel)
                         //}
                     }
                 )
