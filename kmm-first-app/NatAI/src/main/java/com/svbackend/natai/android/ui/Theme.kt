@@ -23,6 +23,23 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80
 )
 
+//private val DarkPinkColorScheme = darkColorScheme(
+//    primary = GramotnyiRozovyi40,
+//    primaryContainer = Lavanda100,
+//    onPrimaryContainer = Color(0xFFfff1ff),
+//    secondary = GramotnyiRozovyiPink40,
+//    tertiary = GramotnyiRozovyiGrey40,
+//    onPrimary = Color(0xFFffebee),
+//    background = GramotnyiRozovyi40,
+//    surface = Color(0xFFFFFBFE),
+//    surfaceVariant = Color(0xFFFFFBFE),
+//    onSecondary = Color.White,
+//    onTertiary = Color.White,
+//    onBackground = Color(0xFF1C1B1F),
+//    onSurface = Color(0xFF1C1B1F),
+//    inverseOnSurface = Color(0xFFFFFFFF),
+//)
+
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
