@@ -24,12 +24,15 @@ class DiaryRepository(
 
     suspend fun insert(note: Note) = withContext(Dispatchers.IO) {
         db.dao().insert(note)
-        try {
-            val cloudNote = api.addNote(note) // todo handle http err
-            note.sync(cloudNote) // todo handle different ids err
-            db.dao().update(note)
-        } catch (e: Throwable) {
-            e.printStackTrace()
+
+        if (note.cloudId == null) {
+            try {
+                val cloudNote = api.addNote(note) // todo handle http err
+                note.sync(cloudNote) // todo handle different ids err
+                db.dao().update(note)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
         }
     }
 

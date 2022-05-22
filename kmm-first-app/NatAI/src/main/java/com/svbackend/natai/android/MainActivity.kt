@@ -236,6 +236,7 @@ class MainActivity : ScopedActivity() {
                         "Login Successful!",
                         Toast.LENGTH_SHORT
                     ).show()
+                    syncWithApi()
                 }
             })
     }
