@@ -17,9 +17,7 @@ import kotlinx.coroutines.launch
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
 
-    val isLoggedIn = MutableSharedFlow<Boolean>(replay = 2)
-    var isLoggedIn1 by mutableStateOf(false)
-    val isLoading = MutableSharedFlow<Boolean>(replay = 1)
+    val isLoggedIn = MutableSharedFlow<Boolean>()
     val user = MutableSharedFlow<LoggedUserInfo>()
     //val currentRoute = MutableSharedFlow<String?>() // todo
 
@@ -44,20 +42,10 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun login() {
         isLoggedIn.emit(true)
-        isLoggedIn1 = true
     }
 
     suspend fun credsFailure() {
         isLoggedIn.emit(false)
-        isLoggedIn1 = false
-    }
-
-    suspend fun onLoading() {
-        isLoading.emit(true)
-    }
-
-    suspend fun onLoaded() {
-        isLoading.emit(false)
     }
 
     init {

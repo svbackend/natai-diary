@@ -53,7 +53,7 @@ class MainActivity : ScopedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
             .apply {
-                setKeepOnScreenCondition { !splashViewModel.isLoading.value }
+                setKeepOnScreenCondition { splashViewModel.isLoading.value }
             }
 
         super.onCreate(savedInstanceState)
@@ -114,10 +114,12 @@ class MainActivity : ScopedActivity() {
             object : Callback<Credentials, CredentialsManagerException> {
                 override fun onFailure(error: CredentialsManagerException) {
                     onCredsFailure()
+                    splashViewModel.loaded()
                 }
 
                 override fun onSuccess(result: Credentials) {
                     onCredsSuccess(prefs = prefs, creds = result)
+                    splashViewModel.loaded()
                 }
             })
 
@@ -127,14 +129,6 @@ class MainActivity : ScopedActivity() {
                 putBoolean("is_reminder_enabled", true)
                 apply()
             }
-        }
-    }
-
-    private fun onLoading() = launch {
-        viewModel.onLoading()
-
-        viewModel.notes.collect {
-            viewModel.onLoaded()
         }
     }
 

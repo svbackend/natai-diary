@@ -23,7 +23,7 @@ fun Navigation(controller: NavHostController, vm: NoteViewModel, onLoginClick: (
             MainScreen(
                 vm = vm,
                 onAddClick = {
-                             controller.go(Route.NewNoteRoute.route)
+                    controller.go(Route.NewNoteRoute.withArgs())
                 },
                 onLoginClick = onLoginClick
             )
