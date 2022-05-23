@@ -24,7 +24,6 @@ class ApiSyncService(
             } else if (cloudNote.updatedAt.after(it.updatedAt)) {
                 updateToCloud(it)
             }
-            // deleteToCloud
         }
 
         cloudNotes.forEach { kv ->
@@ -36,7 +35,6 @@ class ApiSyncService(
             } else if (cloudNote.updatedAt.after(localNote.updatedAt)) {
                 updateToLocal(localNote, cloudNote)
             }
-            // todo deleteToLocal
         }
     }
 

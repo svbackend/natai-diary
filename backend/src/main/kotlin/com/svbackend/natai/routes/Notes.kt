@@ -19,6 +19,12 @@ fun Route.notes(noteRepository: NoteRepository) {
             call.respond(notes)
         }
 
+        get("/sync") {
+            val notes = noteRepository.getAllNotesForSync()
+
+            call.respond(notes)
+        }
+
         post {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal!!.payload.getClaim("sub").asString()
@@ -29,13 +35,42 @@ fun Route.notes(noteRepository: NoteRepository) {
                 id = UUID.randomUUID(),
                 userId = userId,
                 title = draft.title,
-                content = draft.content
+                content = draft.content,
+                deletedAt = draft.deletedAt,
             )
 
             noteRepository.createNote(newNote)
 
             call.response.status(HttpStatusCode.Created)
             call.respond(newNote)
+        }
+
+        put("/{noteId}") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("sub").asString()
+
+            val noteId = call.parameters["noteId"]
+
+            if (noteId == null) {
+                call.response.status(HttpStatusCode.BadRequest)
+                return@put
+            }
+
+            val draft = call.receive<UpdateNoteDraft>()
+
+            val updateNote = UpdateNote(
+                id = UUID.fromString(noteId),
+                userId = userId,
+                title = draft.title,
+                content = draft.content,
+                deletedAt = draft.deletedAt,
+                updatedAt = draft.updatedAt,
+            )
+
+            noteRepository.updateNote(updateNote)
+
+            call.response.status(HttpStatusCode.OK)
+            call.respond(updateNote)
         }
     }
 }

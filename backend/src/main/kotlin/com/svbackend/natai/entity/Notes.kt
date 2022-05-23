@@ -10,5 +10,6 @@ object Notes : Table() {
     val content = text("content")
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
     val updatedAt = datetime("updated_at").defaultExpression(CurrentDateTime)
+    val deletedAt = datetime("deleted_at").nullable().default(null)
     override val primaryKey = PrimaryKey(id)
 }

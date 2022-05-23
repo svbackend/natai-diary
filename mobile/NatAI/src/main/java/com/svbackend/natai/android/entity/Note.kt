@@ -13,6 +13,7 @@ data class Note(
     var content: String,
     var createdAt: Date = Date(),
     var updatedAt: Date = Date(),
+    var deletedAt: Date? = null,
 ) {
     fun sync(cloudNote: CloudNote) {
         if (cloudId == null) {
@@ -28,6 +29,7 @@ data class Note(
     fun sync(cloudNote: Note) {
         title = cloudNote.title
         content = cloudNote.content
+        deletedAt = cloudNote.deletedAt
     }
 
     companion object {

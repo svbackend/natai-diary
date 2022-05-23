@@ -58,6 +58,7 @@ class ApiClient(
         val body = NewNoteRequest(
             title = note.title,
             content = note.content,
+            deletedAt = note.deletedAt,
         )
 
         val response = client.post("notes") {
@@ -71,7 +72,7 @@ class ApiClient(
         return response.body<CloudNote>()
     }
 
-    suspend fun updateNote(note: Note): CloudNote {
+    suspend fun updateNote(note: Note) {
         if (note.cloudId == null) {
             throw CloudIdMissingException()
         }
@@ -79,6 +80,8 @@ class ApiClient(
         val body = UpdateNoteRequest(
             title = note.title,
             content = note.content,
+            updatedAt = note.updatedAt,
+            deletedAt = note.deletedAt,
         )
 
         val response = client.put("notes/${note.cloudId}") {
@@ -88,7 +91,5 @@ class ApiClient(
         if (response.status != HttpStatusCode.OK) {
             throw UpdateNoteErrorException(response)
         }
-
-        return response.body<CloudNote>()
     }
 }
