@@ -8,6 +8,6 @@ class DiaryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        appContainer = AppContainer(this)
+        appContainer = AppContainer.getInstance(this)
     }
 }

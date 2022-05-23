@@ -67,7 +67,7 @@ class ReminderService : Service() {
         notificationIntent.putExtra("from", "Notification")
 
         val pendingIntent = PendingIntent.getActivity(
-            applicationContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            applicationContext, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE
         )
         builder.setContentIntent(pendingIntent)
         val notification = builder.build()

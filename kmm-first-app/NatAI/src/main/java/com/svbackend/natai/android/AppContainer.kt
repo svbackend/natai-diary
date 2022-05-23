@@ -1,8 +1,10 @@
 package com.svbackend.natai.android
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.net.ConnectivityManager
+import androidx.activity.ComponentActivity
 import androidx.room.Room
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
@@ -13,9 +15,9 @@ import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.service.ApiSyncService
 
 class AppContainer(context: Context) {
-    private val db = Room
-        .databaseBuilder(context, DiaryDatabase::class.java, "DIARY")
-        .build()
+    private val db = DiaryDatabase.getInstance(context)
+
+    val alarmManager = context.getSystemService(ComponentActivity.ALARM_SERVICE) as AlarmManager
 
     val auth0 = Auth0(
         "3VokevDUxFNDqNQYLPb0kviShzoXvjyL",
@@ -39,4 +41,14 @@ class AppContainer(context: Context) {
     val apiSyncService = ApiSyncService(
         apiClient, diaryRepository
     )
+
+    companion object {
+        @Volatile private var instance: AppContainer? = null
+
+        fun getInstance(context: Context): AppContainer {
+            return instance ?: synchronized(this) {
+                instance ?: AppContainer(context).also { instance = it }
+            }
+        }
+    }
 }

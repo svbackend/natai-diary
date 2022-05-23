@@ -77,6 +77,10 @@ dependencies {
 
     val navVersion = "2.4.2"
     implementation("androidx.navigation:navigation-compose:$navVersion")
-
     implementation("androidx.core:core-splashscreen:1.0.0-rc01")
+
+    val workVersion = "2.7.1"
+
+    // implementation("androidx.work:work-runtime:$workVersion")
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
 }

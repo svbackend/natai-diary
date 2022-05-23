@@ -16,6 +16,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import androidx.work.*
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -28,6 +29,8 @@ import com.auth0.android.result.UserProfile
 import com.svbackend.natai.android.model.REMINDER_ID
 import com.svbackend.natai.android.service.AlarmReceiver
 import com.svbackend.natai.android.service.ApiSyncService
+import com.svbackend.natai.android.service.ApiSyncWorker
+import com.svbackend.natai.android.service.ReminderWorker
 import com.svbackend.natai.android.ui.NataiTheme
 import com.svbackend.natai.android.ui.component.DefaultLayout
 import com.svbackend.natai.android.utils.go
@@ -36,6 +39,7 @@ import com.svbackend.natai.android.viewmodel.NoteViewModel
 import com.svbackend.natai.android.viewmodel.SplashViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.*
 
 class MainActivity : ScopedActivity() {
@@ -123,13 +127,27 @@ class MainActivity : ScopedActivity() {
                 }
             })
 
-        if (!prefs.getBoolean("is_reminder_enabled", false)) {
-            addReminder()
-            with(prefs.edit()) {
-                putBoolean("is_reminder_enabled", true)
-                apply()
-            }
-        }
+        val workManager = WorkManager.getInstance(this@MainActivity)
+
+        val apiSyncWorkRequest: PeriodicWorkRequest =
+            PeriodicWorkRequestBuilder<ApiSyncWorker>(Duration.ofHours(4))
+                .build()
+
+        val reminderWorkRequest: PeriodicWorkRequest =
+            PeriodicWorkRequestBuilder<ReminderWorker>(Duration.ofHours(12))
+                .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            "api_sync_work",
+            ExistingPeriodicWorkPolicy.KEEP,
+            apiSyncWorkRequest
+        )
+
+        workManager.enqueueUniquePeriodicWork(
+            "reminder_work",
+            ExistingPeriodicWorkPolicy.KEEP,
+            reminderWorkRequest
+        )
     }
 
     private fun onLogin(prefs: SharedPreferences) {
@@ -188,32 +206,6 @@ class MainActivity : ScopedActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    private fun addReminder() {
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        val reminderReceiverIntent = Intent(this, AlarmReceiver::class.java)
-
-        reminderReceiverIntent.putExtra("reminderId", REMINDER_ID)
-        val pendingIntent =
-            PendingIntent.getBroadcast(
-                this,
-                REMINDER_ID.toInt(),
-                reminderReceiverIntent,
-                FLAG_IMMUTABLE
-            )
-
-        val firstNotificationDate: Calendar = Calendar.getInstance()
-        firstNotificationDate.set(Calendar.HOUR, 21) // 9pm
-
-        alarmManager.setRepeating(
-            AlarmManager.RTC, firstNotificationDate.timeInMillis, 24 * 60 * 60 * 1000, pendingIntent
-        )
-    }
-
-    private fun formatDate(timeInMillis: Long, format: String): String {
-        val sdf = SimpleDateFormat(format, Locale.getDefault())
-        return sdf.format(timeInMillis)
     }
 
     private fun loadUserProfile(accessToken: String) {
