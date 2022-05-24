@@ -20,7 +20,9 @@ fun Route.notes(noteRepository: NoteRepository) {
         }
 
         get("/sync") {
-            val notes = noteRepository.getAllNotesForSync()
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("sub").asString()
+            val notes = noteRepository.getAllNotesForSync(userId)
 
             call.respond(notes)
         }

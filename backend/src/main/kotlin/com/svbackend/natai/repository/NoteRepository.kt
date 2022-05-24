@@ -15,22 +15,23 @@ class NoteRepository(private val jdbi: Jdbi) {
                     id = rs.getString("id"),
                     title = rs.getString("title"),
                     content = rs.getString("content"),
-                    createdAt = rs.getDate("created_at"),
-                    updatedAt = rs.getDate("updated_at"),
+                    createdAt = rs.getTimestamp("created_at").toInstant(),
+                    updatedAt = rs.getTimestamp("updated_at").toInstant(),
                 )
             }.list()
     }
 
-    fun getAllNotesForSync(): List<NoteDto> = jdbi.withHandle<List<NoteDto>, Exception> {
-        it.createQuery("SELECT * FROM notes ORDER BY created_at DESC")
+    fun getAllNotesForSync(userId: String): List<NoteDto> = jdbi.withHandle<List<NoteDto>, Exception> {
+        it.createQuery("SELECT * FROM notes WHERE user_id = :userId ORDER BY created_at DESC")
+            .bind("userId", userId)
             .map { rs, _ ->
                 NoteDto(
                     id = rs.getString("id"),
                     title = rs.getString("title"),
                     content = rs.getString("content"),
-                    createdAt = rs.getDate("created_at"),
-                    updatedAt = rs.getDate("updated_at"),
-                    deletedAt = rs.getDate("deleted_at"),
+                    createdAt = rs.getTimestamp("created_at").toInstant(),
+                    updatedAt = rs.getTimestamp("updated_at").toInstant(),
+                    deletedAt = rs.getTimestamp("deleted_at")?.toInstant(),
                 )
             }.list()
     }
@@ -38,7 +39,7 @@ class NoteRepository(private val jdbi: Jdbi) {
     suspend fun createNote(note: NewNote) {
         val deletedDateTime = if (note.deletedAt == null) {
             null
-        } else LocalDateTime.ofInstant(note.deletedAt.toInstant(), ZoneId.systemDefault())
+        } else LocalDateTime.ofInstant(note.deletedAt, ZoneId.systemDefault())
         dbQuery {
             Notes.insert {
                 it[id] = note.id
@@ -53,7 +54,7 @@ class NoteRepository(private val jdbi: Jdbi) {
     suspend fun updateNote(note: UpdateNote) {
         val deletedDateTime = if (note.deletedAt == null) {
             null
-        } else LocalDateTime.ofInstant(note.deletedAt.toInstant(), ZoneId.systemDefault())
+        } else LocalDateTime.ofInstant(note.deletedAt, ZoneId.systemDefault())
 
         dbQuery {
             Notes.update({ Notes.id eq note.id and (Notes.userId eq note.userId) })  {

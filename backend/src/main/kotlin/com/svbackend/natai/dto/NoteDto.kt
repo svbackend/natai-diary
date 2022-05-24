@@ -1,21 +1,21 @@
 package com.svbackend.natai.dto
 
-import java.util.Date
-import java.util.UUID
+import java.time.*
+import java.util.*
 
 data class NoteDto(
     val id: String,
     val title: String,
     val content: String,
-    val createdAt: Date,
-    val updatedAt: Date,
-    val deletedAt: Date? = null,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val deletedAt: Instant? = null,
 )
 
 data class NewNoteDraft(
     val title: String,
     val content: String,
-    val deletedAt: Date? = null,
+    val deletedAt: Instant? = null,
 )
 
 data class NewNote(
@@ -23,21 +23,21 @@ data class NewNote(
     val userId: String,
     val title: String,
     val content: String,
-    val deletedAt: Date? = null,
+    val deletedAt: Instant? = null,
 )
 
 data class UpdateNoteDraft(
     val title: String,
     val content: String,
-    val deletedAt: Date? = null,
-    val updatedAt: Date,
+    val deletedAt: Instant? = null,
+    val updatedAt: Instant,
 )
 
 data class UpdateNote(
     val id: UUID,
     val title: String,
     val content: String,
-    val deletedAt: Date? = null,
-    val updatedAt: Date,
+    val deletedAt: Instant? = null,
+    val updatedAt: Instant,
     val userId: String,
 )

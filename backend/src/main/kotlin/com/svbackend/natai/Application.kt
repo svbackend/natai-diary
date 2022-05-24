@@ -1,6 +1,7 @@
 package com.svbackend.natai
 
 import com.auth0.jwk.*
+import com.fasterxml.jackson.datatype.jsr310.*
 import com.svbackend.natai.config.*
 import com.svbackend.natai.db.*
 import com.svbackend.natai.plugins.*
@@ -60,7 +61,9 @@ private fun Application.configureAuth0(config: HoconApplicationConfig) {
 private fun Application.configurePlugins(context: DirectDI) {
     install(Compression)
     install(ContentNegotiation) {
-        jackson()
+        jackson {
+            registerModule(JavaTimeModule())
+        }
     }
 
     DatabaseFactory.connectAndMigrate(context.instance())
