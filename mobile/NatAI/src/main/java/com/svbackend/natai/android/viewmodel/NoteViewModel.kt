@@ -12,6 +12,7 @@ import com.svbackend.natai.android.LoggedUserInfo
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -24,12 +25,16 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val notes = repository.notes
     var notesState by mutableStateOf(emptyList<Note>())
 
-    suspend fun getNote(id: String) = repository.getNote(id)
-    suspend fun delete(id: String) = repository.delete(repository.getNote(id))
+    //suspend fun delete(id: String) = repository.delete(repository.getNote(id))
 
-    val selectedNote = MutableSharedFlow<Note?>()
+    val selectedNote = MutableSharedFlow<Note?>(replay = 1)
 
-    suspend fun selectNote(id: String) = selectedNote.emit(getNote(id))
+    fun selectNote(id: String) = viewModelScope.launch {
+        repository.getNote(id)
+            .collect {
+                selectedNote.emit(it)
+            }
+    }
 
     suspend fun userProfileLoaded(profile: UserProfile) {
         val userInfo = LoggedUserInfo(

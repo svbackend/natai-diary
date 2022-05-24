@@ -12,7 +12,7 @@ abstract class DiaryDAO {
     abstract fun getAllNotesForSync(): List<Note>
 
     @Query("SELECT * FROM Note WHERE id = :id")
-    abstract fun getNote(id: String): Note
+    abstract fun getNote(id: String): Flow<Note>
 
     @Insert
     abstract fun insert(note: Note)

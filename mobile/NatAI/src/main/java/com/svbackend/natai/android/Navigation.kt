@@ -25,7 +25,11 @@ fun Navigation(controller: NavHostController, vm: NoteViewModel, onLoginClick: (
                 onAddClick = {
                     controller.go(Route.NewNoteRoute.withArgs())
                 },
-                onLoginClick = onLoginClick
+                onLoginClick = onLoginClick,
+                onNoteClick = {
+                    vm.selectNote(it.id)
+                    controller.go(Route.NoteDetailsRoute.withArgs(noteId = it.id))
+                }
             )
         }
 
@@ -44,6 +48,7 @@ fun Navigation(controller: NavHostController, vm: NoteViewModel, onLoginClick: (
             )
         ) { entry ->
             NoteDetailsScreen(
+                vm = vm,
                 noteId = entry.arguments!!["noteId"] as String
             )
         }

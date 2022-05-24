@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.ui.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,14 +28,19 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun MainScreen(vm: NoteViewModel, onAddClick: () -> Unit, onLoginClick: () -> Unit) {
+fun MainScreen(
+    vm: NoteViewModel,
+    onAddClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    onNoteClick: (Note) -> Unit
+) {
     val notes = vm.notesState
     val isLoggedIn by vm.isLoggedIn.collectAsState(initial = false)
 
     if (notes.isNotEmpty()) {
         LazyColumn {
             items(notes) { note ->
-                NoteCard(note)
+                NoteCard(note, onNoteClick)
                 HorizontalDivider()
             }
         }
@@ -116,7 +122,7 @@ fun MainScreen(vm: NoteViewModel, onAddClick: () -> Unit, onLoginClick: () -> Un
 }
 
 @Composable
-fun NoteCard(note: Note) {
+fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
     val dateFormatter: DateTimeFormatter = DateTimeFormatter
         .ofPattern("dd")
         .withZone(ZoneId.systemDefault())
@@ -124,8 +130,12 @@ fun NoteCard(note: Note) {
         .ofPattern("MMM")
         .withZone(ZoneId.systemDefault())
 
-    // card with date and title
-    Surface(color = MaterialTheme.colorScheme.surface) {
+    Surface(
+        modifier = Modifier.clickable {
+            onNoteClick(note)
+        },
+        color = MaterialTheme.colorScheme.surface
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()

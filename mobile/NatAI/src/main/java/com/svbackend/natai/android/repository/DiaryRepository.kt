@@ -18,8 +18,8 @@ class DiaryRepository(
         db.dao().getAllNotesForSync()
     }
 
-    suspend fun getNote(id: String): Note = withContext(Dispatchers.IO) {
-        db.dao().getNote(id)
+    fun getNote(id: String): Flow<Note> {
+        return db.dao().getNote(id)
     }
 
     suspend fun insert(note: Note) = withContext(Dispatchers.IO) {
