@@ -1,20 +1,25 @@
 package com.svbackend.natai.android.room
 
 import androidx.room.TypeConverter
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 class Converters {
-    private val df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ", Locale.US)
+    private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
+    fun toInstant(value: String?): Instant? {
+        return value?.let {
+            return formatter.parse(value, OffsetDateTime::from).toInstant()
+        }
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time?.toLong()
+    fun fromInstant(date: Instant?): String? {
+        return date?.let {
+            return formatter.format(OffsetDateTime.ofInstant(date, ZoneOffset.UTC))
+        }
     }
 }

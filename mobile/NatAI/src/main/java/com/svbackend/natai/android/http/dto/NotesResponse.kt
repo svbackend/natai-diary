@@ -1,11 +1,12 @@
 package com.svbackend.natai.android.http.dto
 
-import java.util.*
+import java.time.Instant
 
-data class Note(
+data class NoteDto(
     val id: String,
     val title: String,
     val content: String,
-    val createdAt: Date,
-    val updatedAt: Date,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+    val deletedAt: Instant? = null,
 )

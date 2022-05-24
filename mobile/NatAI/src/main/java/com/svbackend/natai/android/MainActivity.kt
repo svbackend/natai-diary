@@ -114,6 +114,8 @@ class MainActivity : ScopedActivity() {
     }
 
     private fun loadCreds(prefs: SharedPreferences) = launch {
+        val workManager = WorkManager.getInstance(this@MainActivity)
+
         credsManager.getCredentials(
             object : Callback<Credentials, CredentialsManagerException> {
                 override fun onFailure(error: CredentialsManagerException) {
@@ -124,24 +126,22 @@ class MainActivity : ScopedActivity() {
                 override fun onSuccess(result: Credentials) {
                     onCredsSuccess(prefs = prefs, creds = result)
                     splashViewModel.loaded()
+
+                    val apiSyncWorkRequest: PeriodicWorkRequest =
+                        PeriodicWorkRequestBuilder<ApiSyncWorker>(Duration.ofHours(4))
+                            .build()
+
+                    workManager.enqueueUniquePeriodicWork(
+                        "api_sync_work",
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        apiSyncWorkRequest
+                    )
                 }
             })
-
-        val workManager = WorkManager.getInstance(this@MainActivity)
-
-        val apiSyncWorkRequest: PeriodicWorkRequest =
-            PeriodicWorkRequestBuilder<ApiSyncWorker>(Duration.ofHours(4))
-                .build()
 
         val reminderWorkRequest: PeriodicWorkRequest =
             PeriodicWorkRequestBuilder<ReminderWorker>(Duration.ofHours(12))
                 .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            "api_sync_work",
-            ExistingPeriodicWorkPolicy.KEEP,
-            apiSyncWorkRequest
-        )
 
         workManager.enqueueUniquePeriodicWork(
             "reminder_work",
@@ -162,7 +162,7 @@ class MainActivity : ScopedActivity() {
                     Toast
                         .makeText(
                             this@MainActivity,
-                            "Login Error: \n${error.message}",
+                            "Error: ${error.message}",
                             Toast.LENGTH_LONG
                         )
                         .show()
@@ -191,7 +191,6 @@ class MainActivity : ScopedActivity() {
             putString("id_token", creds.idToken)
             apply()
         }
-        //syncWithApi()
         viewModel.login()
     }
 

@@ -12,7 +12,7 @@ class ApiSyncService(
     suspend fun syncNotes() {
 
         val cloudNotes = apiClient
-            .getNotes()
+            .getNotesForSync()
             .associateBy { it.id }
 
         val localNotes = repository.getAllNotesForSync()
@@ -21,7 +21,7 @@ class ApiSyncService(
             val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
             if (cloudNote == null) {
                 insertToCloud(it)
-            } else if (cloudNote.updatedAt.after(it.updatedAt)) {
+            } else if (it.updatedAt.isAfter(cloudNote.updatedAt)) {
                 updateToCloud(it)
             }
         }
@@ -32,7 +32,7 @@ class ApiSyncService(
             val localNote = localNotes.find { it.cloudId == cloudNoteId }
             if (localNote == null) {
                 insertToLocal(cloudNote)
-            } else if (cloudNote.updatedAt.after(localNote.updatedAt)) {
+            } else if (cloudNote.updatedAt.isAfter(localNote.updatedAt)) {
                 updateToLocal(localNote, cloudNote)
             }
         }

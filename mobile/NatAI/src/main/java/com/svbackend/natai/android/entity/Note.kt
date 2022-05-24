@@ -3,6 +3,7 @@ package com.svbackend.natai.android.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.svbackend.natai.android.http.model.CloudNote
+import java.time.Instant
 import java.util.*
 
 @Entity
@@ -11,9 +12,9 @@ data class Note(
     var cloudId: String? = null,
     var title: String,
     var content: String,
-    var createdAt: Date = Date(),
-    var updatedAt: Date = Date(),
-    var deletedAt: Date? = null,
+    var createdAt: Instant = Instant.now(),
+    var updatedAt: Instant = Instant.now(),
+    var deletedAt: Instant? = null,
 ) {
     fun sync(cloudNote: CloudNote) {
         if (cloudId == null) {
@@ -29,6 +30,7 @@ data class Note(
     fun sync(cloudNote: Note) {
         title = cloudNote.title
         content = cloudNote.content
+        updatedAt = cloudNote.updatedAt
         deletedAt = cloudNote.deletedAt
     }
 
@@ -38,7 +40,8 @@ data class Note(
             title = cloudNote.title,
             content = cloudNote.content,
             createdAt = cloudNote.createdAt,
-            updatedAt = cloudNote.updatedAt
+            updatedAt = cloudNote.updatedAt,
+            deletedAt = cloudNote.deletedAt,
         )
     }
 }

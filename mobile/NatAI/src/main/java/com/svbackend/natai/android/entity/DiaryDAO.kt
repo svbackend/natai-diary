@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class DiaryDAO {
-    @Query("SELECT * FROM Note ORDER BY createdAt DESC")
+    @Query("SELECT * FROM Note WHERE deletedAt IS NULL ORDER BY datetime(createdAt) DESC")
     abstract fun getAllNotes(): Flow<List<Note>>
 
     @Query("SELECT * FROM Note ORDER BY createdAt DESC")

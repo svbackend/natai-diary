@@ -1,10 +1,10 @@
 package com.svbackend.natai.android.http.dto
 
-import java.util.*
+import java.time.Instant
 
 data class UpdateNoteRequest(
     val title: String,
     val content: String,
-    val updatedAt: Date,
-    val deletedAt: Date? = null
+    val updatedAt: Instant,
+    val deletedAt: Instant? = null
 )

@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.http
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.dto.NewNoteRequest
@@ -16,7 +17,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import com.svbackend.natai.android.http.dto.Note as NoteDto
+import com.svbackend.natai.android.http.dto.NoteDto as NoteDto
 
 const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
 //const val BASE_URL = "https://natai.app/api/v1/"
@@ -32,7 +33,9 @@ class ApiClient(
             url(BASE_URL)
         }
         install(ContentNegotiation) {
-            jackson()
+            jackson {
+                registerModule(JavaTimeModule())
+            }
         }
         install(HttpTimeout) {
             requestTimeoutMillis = 4350
@@ -50,6 +53,22 @@ class ApiClient(
                 content = it.content,
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
+                deletedAt = it.deletedAt,
+            )
+        }
+    }
+
+    suspend fun getNotesForSync(): List<Note> {
+        val notes: List<NoteDto> = client.get("notes/sync").body()
+
+        return notes.map {
+            Note(
+                id = it.id,
+                title = it.title,
+                content = it.content,
+                createdAt = it.createdAt,
+                updatedAt = it.updatedAt,
+                deletedAt = it.deletedAt,
             )
         }
     }

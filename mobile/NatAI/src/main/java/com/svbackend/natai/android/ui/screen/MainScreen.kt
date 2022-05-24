@@ -22,6 +22,8 @@ import com.svbackend.natai.android.ui.HorizontalDivider
 import com.svbackend.natai.android.utils.gradientBackground
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -115,6 +117,13 @@ fun MainScreen(vm: NoteViewModel, onAddClick: () -> Unit, onLoginClick: () -> Un
 
 @Composable
 fun NoteCard(note: Note) {
+    val dateFormatter: DateTimeFormatter = DateTimeFormatter
+        .ofPattern("dd")
+        .withZone(ZoneId.systemDefault())
+    val monthFormatter: DateTimeFormatter = DateTimeFormatter
+        .ofPattern("MMM")
+        .withZone(ZoneId.systemDefault())
+
     // card with date and title
     Surface(color = MaterialTheme.colorScheme.surface) {
         Row(
@@ -124,11 +133,11 @@ fun NoteCard(note: Note) {
         ) {
             Column {
                 Text(
-                    text = SimpleDateFormat("dd").format(note.createdAt),
+                    text = dateFormatter.format(note.createdAt),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = SimpleDateFormat("MMM").format(note.createdAt),
+                    text = monthFormatter.format(note.createdAt),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
