@@ -1,8 +1,5 @@
 package com.svbackend.natai.android.service
 
-//import com.geeklabs.remindme.activities.MainActivity
-//import com.geeklabs.remindme.database.DatabaseHandler
-//import com.geeklabs.remindme.models.Reminder
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -10,12 +7,10 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.svbackend.natai.android.R
 import com.svbackend.natai.android.MainActivity
+import com.svbackend.natai.android.R
 import com.svbackend.natai.android.model.Reminder
-import java.util.*
 
 
 class ReminderService : Service() {
@@ -54,7 +49,7 @@ class ReminderService : Service() {
         createNotificationChannel(reminder.id.toInt())
         // build notification
         val builder = NotificationCompat.Builder(this, reminder.id.toString())
-            .setSmallIcon(R.drawable.app_logo) //set icon for notification
+            .setSmallIcon(R.drawable.ic_baseline_filter_vintage_24) //set icon for notification
             .setContentTitle(reminder.title) //set title of notification
             .setContentText(reminder.description)//this is notification message
             .setAutoCancel(true) // makes auto cancel of notification

@@ -200,10 +200,14 @@ class MainActivity : ScopedActivity() {
             return@launch
         }
 
+        viewModel.startSync()
+
         try {
             apiSyncService.syncNotes()
         } catch (e: Exception) {
             e.printStackTrace()
+        } finally {
+            viewModel.finishSync()
         }
     }
 

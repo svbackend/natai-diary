@@ -53,6 +53,16 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         isLoggedIn.emit(false)
     }
 
+    val isSyncing = MutableSharedFlow<Boolean>()
+
+    suspend fun startSync() {
+        isSyncing.emit(true)
+    }
+
+    suspend fun finishSync() {
+        isSyncing.emit(false)
+    }
+
     init {
         viewModelScope.launch {
             notes.collect {
