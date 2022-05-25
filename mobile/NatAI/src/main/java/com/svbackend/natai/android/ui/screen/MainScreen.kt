@@ -1,5 +1,7 @@
 package com.svbackend.natai.android.ui.screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,8 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.Note
@@ -44,13 +48,25 @@ fun MainScreen(
 
     if (notes.isNotEmpty()) {
         val groups = mapNotes(notes)
+        Surface(
+            color = MaterialTheme.colorScheme.background,
+            shape = MaterialTheme.shapes.large,
+            modifier = Modifier.fillMaxWidth(),
+            content = {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Wallpaper()
+                }
+            }
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(top = 240.dp)) {
             items(groups) { group ->
-                Row {
-                    Column(modifier = Modifier.padding(8.dp)) {
+                Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+                    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                         Text(
                             text = LocalDateTimeFormatter.day.format(group.date),
                             style = MaterialTheme.typography.headlineSmall,
@@ -74,10 +90,23 @@ fun MainScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    VerticalDivider()
+                    VerticalDivider(
+                        thickness = 4.dp,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .clip(CircleShape),
+                    )
                     Column {
-                        group.notes.forEach { note ->
+                        group.notes.forEachIndexed { i, note ->
                             NoteCard(note, onNoteClick)
+                            if (i != group.notes.lastIndex) {
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .padding(horizontal = 12.dp)
+                                        .clip(CircleShape),
+                                    thickness = 2.dp,
+                                )
+                            }
                         }
                     }
                 }
@@ -95,17 +124,7 @@ fun MainScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Box(
-                        Modifier
-                            .clip(CircleShape)
-                            .size(200.dp)
-                            .gradientBackground(
-                                listOf(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    MaterialTheme.colorScheme.secondary,
-                                ), angle = 45f
-                            )
-                    )
+                    Wallpaper()
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = stringResource(id = R.string.noNotesTitle),
@@ -173,15 +192,17 @@ fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
     val time = LocalDateTimeFormatter.time.format(note.createdAt)
 
     Surface(
-        modifier = Modifier.clickable {
-            onNoteClick(note)
-        },
+        modifier = Modifier
+            .clickable {
+                onNoteClick(note)
+            }
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
         color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .padding(vertical = 12.dp)
         ) {
             Column {
                 Text(
@@ -193,13 +214,13 @@ fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
                 )
                 Text(
                     text = note.title,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
                     text = contentPreview,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
@@ -220,4 +241,25 @@ fun mapNotes(notes: List<Note>): List<NotesGroup> {
     }
 
     return groupedNotes.values.toList()
+}
+
+@Composable
+fun Wallpaper() {
+    Box(
+        Modifier
+            .clip(CircleShape)
+            .size(200.dp)
+            .gradientBackground(
+                listOf(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.colorScheme.secondary,
+                ), angle = 45f
+            )
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.forest2),
+            contentDescription = "Forest wallpaper",
+            modifier = Modifier.matchParentSize(),
+        )
+    }
 }

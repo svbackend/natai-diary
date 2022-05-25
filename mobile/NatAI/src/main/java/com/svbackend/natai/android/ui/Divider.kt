@@ -16,20 +16,14 @@ private const val DividerAlpha = 0.12f
 fun VerticalDivider(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = DividerAlpha),
-    thickness: Dp = 3.dp
+    thickness: Dp = 1.dp
 ) {
-        Divider(
-            color = color,
-            modifier = modifier
-                .fillMaxHeight()
-                .width(thickness)
-        )
-//    Box(
-//        modifier
-//            .fillMaxHeight()
-//            .width(thickness)
-//            .background(color = color)
-//    )
+    Box(
+        modifier
+            .fillMaxHeight()
+            .width(thickness)
+            .background(color = color),
+    )
 }
 
 @Composable
