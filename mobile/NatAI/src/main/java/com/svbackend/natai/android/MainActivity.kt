@@ -100,11 +100,7 @@ class MainActivity : ScopedActivity() {
                         controller.go(it)
                     },
                     content = {
-//                        if (isLoading.value) {
-//                            LoadingScreen()
-//                        } else {
                         Navigation(controller, onLoginClick = { onLogin(prefs) }, vm = viewModel)
-                        //}
                     }
                 )
             }

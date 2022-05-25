@@ -16,16 +16,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.ui.HorizontalDivider
+import com.svbackend.natai.android.ui.VerticalDivider
+import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.gradientBackground
 import com.svbackend.natai.android.viewmodel.NoteViewModel
-import java.text.SimpleDateFormat
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
+import java.time.Instant
 
+data class NotesGroup(
+    val date: Instant,
+    val notes: MutableList<Note>
+)
 
 @Composable
 fun MainScreen(
@@ -38,10 +43,46 @@ fun MainScreen(
     val isLoggedIn by vm.isLoggedIn.collectAsState(initial = false)
 
     if (notes.isNotEmpty()) {
+        val groups = mapNotes(notes)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         LazyColumn {
-            items(notes) { note ->
-                NoteCard(note, onNoteClick)
+            items(groups) { group ->
+                Row {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Text(
+                            text = LocalDateTimeFormatter.day.format(group.date),
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 5.dp),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text = LocalDateTimeFormatter.monthShortName.format(group.date),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 2.dp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = LocalDateTimeFormatter.year.format(group.date),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    VerticalDivider()
+                    Column {
+                        group.notes.forEach { note ->
+                            NoteCard(note, onNoteClick)
+                        }
+                    }
+                }
                 HorizontalDivider()
+
             }
         }
     } else {
@@ -123,12 +164,13 @@ fun MainScreen(
 
 @Composable
 fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
-    val dateFormatter: DateTimeFormatter = DateTimeFormatter
-        .ofPattern("dd")
-        .withZone(ZoneId.systemDefault())
-    val monthFormatter: DateTimeFormatter = DateTimeFormatter
-        .ofPattern("MMM")
-        .withZone(ZoneId.systemDefault())
+    var contentPreview = note.content.substring(0, minOf(note.content.length, 100))
+
+    if (contentPreview.length < note.content.length) {
+        contentPreview += "..."
+    }
+
+    val time = LocalDateTimeFormatter.time.format(note.createdAt)
 
     Surface(
         modifier = Modifier.clickable {
@@ -143,20 +185,39 @@ fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
         ) {
             Column {
                 Text(
-                    text = dateFormatter.format(note.createdAt),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    text = time,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = monthFormatter.format(note.createdAt),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    text = note.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = contentPreview,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(24.dp))
-            Text(
-                text = note.title,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
         }
     }
+}
+
+fun mapNotes(notes: List<Note>): List<NotesGroup> {
+    val groupedNotes = mutableMapOf<String, NotesGroup>()
+    notes.forEach {
+        val idx = LocalDateTimeFormatter.fullDate.format(it.createdAt)
+        val notesGroup = groupedNotes[idx]
+        if (notesGroup == null) {
+            groupedNotes[idx] = NotesGroup(it.createdAt, mutableListOf(it))
+        } else {
+            notesGroup.notes.add(it)
+        }
+    }
+
+    return groupedNotes.values.toList()
 }

@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.svbackend.natai.android.utils.localDateTimeFormatter
+import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 @Composable
@@ -39,7 +39,7 @@ fun NoteDetailsScreen(
         }
 
         Text(
-            text = localDateTimeFormatter.format(note.createdAt),
+            text = LocalDateTimeFormatter.fullDateTime.format(note.createdAt),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
