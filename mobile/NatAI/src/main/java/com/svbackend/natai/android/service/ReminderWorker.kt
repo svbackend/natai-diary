@@ -17,6 +17,11 @@ class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
         val di = AppContainer.getInstance(applicationContext)
 
         val currentDate = Calendar.getInstance()
+
+        if (itsLate(currentDate)) {
+            return@withContext Result.success()
+        }
+
         val reminderId = buildString {
             append(currentDate.get(Calendar.YEAR))
             append(currentDate.get(Calendar.MONTH))
@@ -45,5 +50,21 @@ class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
         )
 
         Result.success()
+    }
+
+    private fun itsLate(currentDate: Calendar): Boolean {
+        if (currentDate.get(Calendar.AM_PM) != Calendar.PM) {
+            return false
+        }
+
+        if (currentDate.get(Calendar.HOUR) < 9) {
+            return false
+        }
+
+        if (currentDate.get(Calendar.HOUR) == 9 && currentDate.get(Calendar.MINUTE) < 30) {
+            return false
+        }
+
+        return true
     }
 }
