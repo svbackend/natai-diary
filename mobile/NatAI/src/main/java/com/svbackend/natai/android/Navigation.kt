@@ -61,6 +61,10 @@ fun Navigation(
                 onEditClick = {
                     editNoteViewModel.loadNote(it)
                     controller.go(Route.EditNoteRoute.withArgs(noteId = it))
+                },
+                onDeleteClick = {
+                    vm.deleteNote(it)
+                    controller.popBackStack()
                 }
             )
         }

@@ -136,7 +136,7 @@ class MainActivity : ScopedActivity() {
 
         workManager.enqueueUniquePeriodicWork(
             "reminder_work",
-            ExistingPeriodicWorkPolicy.KEEP,
+            ExistingPeriodicWorkPolicy.REPLACE,
             reminderWorkRequest
         )
     }

@@ -63,6 +63,12 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         isSyncing.emit(false)
     }
 
+    fun deleteNote(note: Note) {
+        viewModelScope.launch {
+            repository.delete(note)
+        }
+    }
+
     init {
         viewModelScope.launch {
             notes.collect {

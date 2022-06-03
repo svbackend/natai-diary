@@ -1,4 +1,4 @@
-val composeVersion = "1.2.0-beta02"
+val composeVersion = "1.2.0-beta03"
 
 plugins {
     id("com.android.application")
@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 32
     defaultConfig {
         applicationId = "com.svbackend.natai"
         minSdk = 29
@@ -43,9 +43,9 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation("com.google.android.material:material:1.6.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("com.google.android.material:material:1.6.1")
+    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.auth0.android:auth0:2.6.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
@@ -68,20 +68,16 @@ dependencies {
 
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha12")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha13")
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.9")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.10")
 
-    val navVersion = "2.4.2"
-    implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation("androidx.navigation:navigation-compose:2.4.2")
     implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 
-    val workVersion = "2.7.1"
-
-    // implementation("androidx.work:work-runtime:$workVersion")
-    implementation("androidx.work:work-runtime-ktx:$workVersion")
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
 }
