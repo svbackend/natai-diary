@@ -1,9 +1,5 @@
 package com.svbackend.natai.android
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_IMMUTABLE
-import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
@@ -16,7 +12,10 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import androidx.work.*
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -26,8 +25,6 @@ import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
-import com.svbackend.natai.android.model.REMINDER_ID
-import com.svbackend.natai.android.service.AlarmReceiver
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.service.ApiSyncWorker
 import com.svbackend.natai.android.service.ReminderWorker
@@ -38,9 +35,7 @@ import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import com.svbackend.natai.android.viewmodel.SplashViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.time.Duration
-import java.util.*
 
 class MainActivity : ScopedActivity() {
 

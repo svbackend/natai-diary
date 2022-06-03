@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -11,6 +12,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun NTextField(
+    modifier: Modifier = Modifier,
     value: TextFieldValue,
     label: String,
     onChange: (TextFieldValue) -> Unit,
@@ -24,7 +26,7 @@ fun NTextField(
             onChange(it)
         },
         singleLine = singleLine,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp),
         maxLines = maxLines
@@ -35,7 +37,6 @@ fun NTextField(
 fun NTextarea(
     value: TextFieldValue,
     label: String,
-    initialValue: String = "",
     onChange: (TextFieldValue) -> Unit
 ) {
     NTextField(
@@ -43,6 +44,7 @@ fun NTextarea(
         label = label,
         onChange = onChange,
         singleLine = false,
-        maxLines = 6
+        maxLines = 6,
+        modifier = Modifier.height(200.dp)
     )
 }

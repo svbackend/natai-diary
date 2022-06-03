@@ -12,4 +12,10 @@ sealed class Route(val route: String) {
             return route.replace("{noteId}", noteId)
         }
     }
+
+    object EditNoteRoute : Route("edit_note/{noteId}") {
+        fun withArgs(noteId: String): String {
+            return route.replace("{noteId}", noteId)
+        }
+    }
 }

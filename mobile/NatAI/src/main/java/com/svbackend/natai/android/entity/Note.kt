@@ -34,6 +34,12 @@ data class Note(
         deletedAt = cloudNote.deletedAt
     }
 
+    fun update(title: String, content: String) {
+        this.title = title
+        this.content = content
+        this.updatedAt = Instant.now()
+    }
+
     companion object {
         fun createByCloudNote(cloudNote: Note) = Note(
             cloudId = cloudNote.id,

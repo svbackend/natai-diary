@@ -4,45 +4,39 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.NProgressBtn
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
-import com.svbackend.natai.android.viewmodel.NewNoteViewModel
-import com.svbackend.natai.android.utils.throttleLatest
+import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun NewNoteScreen(
-    vm: NewNoteViewModel = viewModel(),
+fun EditNoteScreen(
+    vm: EditNoteViewModel,
     onSuccess: () -> Unit
 ) {
+    val note = vm.note.collectAsState(initial = null).value
+
+    if (note == null) {
+        LoadingScreen()
+        return
+    }
+
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val onTitleChange: (String) -> Unit = throttleLatest(
-        intervalMs = 350L,
-        coroutineScope = scope,
-        destinationFunction = vm::saveTitle
-    )
-
-    val onContentChange: (String) -> Unit = throttleLatest(
-        intervalMs = 350L,
-        coroutineScope = scope,
-        destinationFunction = vm::saveContent
-    )
-
-    fun addNote(): () -> Unit {
+    fun saveNote(): () -> Unit {
         if (vm.title.value.text.isEmpty() || vm.content.value.text.isEmpty()) {
             return {
                 Toast
@@ -53,18 +47,21 @@ fun NewNoteScreen(
 
         return {
             scope.launch {
-                vm.addNote()
+                vm.saveNote(
+                    note = note,
+                    newTitle = vm.title.value.text,
+                    newContent = vm.content.value.text
+                )
                 onSuccess()
             }
         }
-
     }
 
     Column(
         Modifier.padding(16.dp)
     ) {
         Text(
-            text = stringResource(R.string.newNote),
+            text = stringResource(R.string.editNote),
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier
                 .fillMaxWidth()
@@ -75,7 +72,6 @@ fun NewNoteScreen(
             label = stringResource(R.string.noteTitle),
             onChange = {
                 vm.title.value = it
-                onTitleChange(it.text)
             }
         )
         NTextarea(
@@ -83,31 +79,38 @@ fun NewNoteScreen(
             label = stringResource(R.string.noteContent),
             onChange = {
                 vm.content.value = it
-                onContentChange(it.text)
             }
         )
         if (vm.isLoading.value) {
-            Button(onClick = {}) {
-                NProgressBtn()
-                Text(
-                    text = stringResource(R.string.saving),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+            ExtendedFloatingActionButton(
+                text = {
+                    Text(
+                        text = stringResource(R.string.saving),
+                    )
+                },
+                icon = {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 1.dp,
+                        modifier = Modifier.size(14.dp)
+                    )
+                },
+                onClick = {}
+            )
         } else {
             ExtendedFloatingActionButton(
                 text = {
                     Text(
-                        text = stringResource(R.string.addNote),
+                        text = stringResource(R.string.saveNote),
                     )
                 },
                 icon = {
                     Icon(
-                        Icons.Filled.Add,
-                        stringResource(R.string.addNote)
+                        Icons.Filled.Edit,
+                        stringResource(R.string.saveNote)
                     )
                 },
-                onClick = addNote()
+                onClick = saveNote()
             )
 
         }

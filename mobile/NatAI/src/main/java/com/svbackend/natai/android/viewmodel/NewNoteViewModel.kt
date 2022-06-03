@@ -8,28 +8,6 @@ import com.auth0.android.authentication.storage.SharedPreferencesStorage
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.repository.DiaryRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-fun <T> throttleLatest(
-    intervalMs: Long = 300L,
-    coroutineScope: CoroutineScope,
-    destinationFunction: (T) -> Unit
-): (T) -> Unit {
-    var throttleJob: Job? = null
-    var latestParam: T
-    return { param: T ->
-        latestParam = param
-        if (throttleJob?.isCompleted != false) {
-            throttleJob = coroutineScope.launch {
-                delay(intervalMs)
-                latestParam.let(destinationFunction)
-            }
-        }
-    }
-}
 
 class NewNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository

@@ -2,21 +2,29 @@ package com.svbackend.natai.android
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.svbackend.natai.android.ui.screen.EditNoteScreen
 import com.svbackend.natai.android.ui.screen.MainScreen
 import com.svbackend.natai.android.ui.screen.NewNoteScreen
 import com.svbackend.natai.android.ui.screen.NoteDetailsScreen
 import com.svbackend.natai.android.utils.go
+import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 
 @Composable
-fun Navigation(controller: NavHostController, vm: NoteViewModel, onLoginClick: () -> Unit) {
+fun Navigation(
+    controller: NavHostController,
+    vm: NoteViewModel,
+    onLoginClick: () -> Unit,
+    editNoteViewModel: EditNoteViewModel = viewModel(),
+) {
 
     NavHost(navController = controller, startDestination = Route.MainRoute.route) {
         composable(route = Route.MainRoute.route) {
@@ -49,7 +57,27 @@ fun Navigation(controller: NavHostController, vm: NoteViewModel, onLoginClick: (
         ) { entry ->
             NoteDetailsScreen(
                 vm = vm,
-                noteId = entry.arguments!!["noteId"] as String
+                noteId = entry.arguments!!["noteId"] as String,
+                onEditClick = {
+                    editNoteViewModel.loadNote(it)
+                    controller.go(Route.EditNoteRoute.withArgs(noteId = it))
+                }
+            )
+        }
+
+        composable(
+            route = Route.EditNoteRoute.route,
+            arguments = listOf(
+                navArgument("noteId") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            EditNoteScreen(
+                vm = editNoteViewModel,
+                onSuccess = {
+                    controller.popBackStack()
+                }
             )
         }
     }
