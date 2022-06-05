@@ -71,7 +71,7 @@ fun NoteDetailsScreen(
         SelectionContainer {
             Text(
                 text = note.content,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
