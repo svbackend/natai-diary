@@ -29,6 +29,7 @@ import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.service.ApiSyncWorker
 import com.svbackend.natai.android.service.ReminderWorker
 import com.svbackend.natai.android.ui.NataiTheme
+import com.svbackend.natai.android.ui.UserTheme
 import com.svbackend.natai.android.ui.component.DefaultLayout
 import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.utils.hasInternetConnection
@@ -66,13 +67,15 @@ class MainActivity : ScopedActivity() {
         }
 
         val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
+        val theme = prefs.getString(getString(R.string.pref_theme_key), null) ?: "Pink"
+        val userTheme: UserTheme = UserTheme.strToTheme(theme)
 
         setContent {
             val drawerState = rememberDrawerState(DrawerValue.Closed)
             val scope = rememberCoroutineScope()
             val controller = rememberNavController()
 
-            NataiTheme {
+            NataiTheme(userTheme = userTheme) {
                 DefaultLayout(
                     vm = viewModel,
                     drawerState = drawerState,

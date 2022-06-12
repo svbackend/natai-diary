@@ -83,6 +83,7 @@ fun NoteDetailsScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(bottom = 16.dp),
         ) {
             ExtendedFloatingActionButton(
                 text = {

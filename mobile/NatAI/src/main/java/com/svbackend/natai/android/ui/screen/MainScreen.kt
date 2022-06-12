@@ -48,7 +48,6 @@ fun MainScreen(
         val groups = mapNotes(notes)
         Surface(
             color = MaterialTheme.colorScheme.background,
-            shape = MaterialTheme.shapes.large,
             modifier = Modifier.fillMaxWidth(),
             content = {
                 Column(
@@ -61,57 +60,65 @@ fun MainScreen(
             }
         )
 
-        LazyColumn(modifier = Modifier.padding(top = 240.dp)) {
-            items(groups) { group ->
-                Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-                        Text(
-                            text = LocalDateTimeFormatter.day.format(group.date),
-                            style = MaterialTheme.typography.headlineSmall,
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 240.dp),
+        ) {
+            LazyColumn() {
+                items(groups) { group ->
+                    Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+                        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                            Text(
+                                text = LocalDateTimeFormatter.day.format(group.date),
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(bottom = 5.dp),
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                text = LocalDateTimeFormatter.monthShortName.format(group.date),
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(bottom = 2.dp),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = LocalDateTimeFormatter.year.format(group.date),
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        VerticalDivider(
+                            thickness = 4.dp,
                             modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(bottom = 5.dp),
-                            color = MaterialTheme.colorScheme.onSurface,
+                                .padding(vertical = 8.dp)
+                                .clip(CircleShape),
                         )
-                        Text(
-                            text = LocalDateTimeFormatter.monthShortName.format(group.date),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(bottom = 2.dp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = LocalDateTimeFormatter.year.format(group.date),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    VerticalDivider(
-                        thickness = 4.dp,
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .clip(CircleShape),
-                    )
-                    Column {
-                        group.notes.forEachIndexed { i, note ->
-                            NoteCard(note, onNoteClick)
-                            if (i != group.notes.lastIndex) {
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .padding(horizontal = 12.dp)
-                                        .clip(CircleShape),
-                                    thickness = 2.dp,
-                                )
+                        Column {
+                            group.notes.forEachIndexed { i, note ->
+                                NoteCard(note, onNoteClick)
+                                if (i != group.notes.lastIndex) {
+                                    HorizontalDivider(
+                                        modifier = Modifier
+                                            .padding(horizontal = 12.dp)
+                                            .clip(CircleShape),
+                                        thickness = 2.dp,
+                                    )
+                                }
                             }
                         }
                     }
-                }
-                HorizontalDivider()
+                    HorizontalDivider()
 
+                }
             }
         }
+
     } else {
         Surface(
             color = MaterialTheme.colorScheme.background,
