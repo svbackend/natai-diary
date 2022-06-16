@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.ui.UserTheme
+import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 @Composable
 fun SettingsScreen(

@@ -91,6 +91,7 @@ fun Navigation(
 
         composable(route = Route.SettingsThemesRoute.route) {
             ThemesScreen(
+                vm = vm,
                 onThemeChanged = {
                     vm.changeTheme(it)
                 }

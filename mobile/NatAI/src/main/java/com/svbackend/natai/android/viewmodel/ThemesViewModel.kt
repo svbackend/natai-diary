@@ -19,4 +19,8 @@ class ThemesViewModel(application: Application) : AndroidViewModel(application) 
                 .apply()
         }
     }
+
+    fun getCurrentTheme(): UserTheme {
+        return UserTheme.strToTheme(prefs.getString(app.getString(R.string.pref_theme_key), null) ?: "Default")
+    }
 }
