@@ -13,11 +13,12 @@ import androidx.core.view.ViewCompat
 import androidx.compose.ui.graphics.Color
 
 enum class UserTheme {
-    Default, Pink;
+    Dynamic, Default, Pink;
 
     companion object {
         fun strToTheme(str: String): UserTheme {
             return when (str) {
+                "Dynamic" -> Dynamic
                 "Default" -> Default
                 "Pink" -> Pink
                 else -> Default
@@ -70,17 +71,15 @@ private val LightColorScheme = lightColorScheme(
 fun NataiTheme(
     userTheme: UserTheme,
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        userTheme == UserTheme.Default -> if (darkTheme) DarkColorScheme else LightColorScheme
+        userTheme == UserTheme.Pink -> LightPinkColorScheme
+        userTheme == UserTheme.Dynamic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        userTheme == UserTheme.Default -> if (darkTheme) DarkColorScheme else LightColorScheme
-        userTheme == UserTheme.Pink -> LightPinkColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current
