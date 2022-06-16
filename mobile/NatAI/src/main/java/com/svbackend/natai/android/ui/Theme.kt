@@ -76,7 +76,7 @@ fun NataiTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val themeName = vm.currentTheme.collectAsState(initial = UserTheme.Default).value
+    val themeName = vm.currentTheme.collectAsState(initial = userTheme).value
 
     val colorScheme = when {
         themeName == UserTheme.Default -> if (darkTheme) DarkColorScheme else LightColorScheme
