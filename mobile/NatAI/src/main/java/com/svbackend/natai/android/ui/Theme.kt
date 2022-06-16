@@ -18,6 +18,7 @@ enum class UserTheme {
     Dynamic, Default, Pink;
 
     companion object {
+        val numberOfThemes = values().size
         fun strToTheme(str: String): UserTheme {
             return when (str) {
                 "Dynamic" -> Dynamic

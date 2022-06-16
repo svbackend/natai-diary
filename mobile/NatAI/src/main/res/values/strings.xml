@@ -30,4 +30,6 @@
     <string name="noNotesText">You can add your first note and it will appear here</string>
     <string name="appName">Natai Diary</string>
     <string name="saveNote">Save</string>
+    <string name="settingsTitle">Settings</string>
+    <string name="settingsThemesTitle">Themes / Appearance</string>
 </resources>
