@@ -11,8 +11,8 @@ import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.LoggedUserInfo
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.ui.UserTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -20,6 +20,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     val isLoggedIn = MutableSharedFlow<Boolean>()
     val user = MutableSharedFlow<LoggedUserInfo>()
+    val currentTheme = MutableSharedFlow<UserTheme>(replay = 1)
     //val currentRoute = MutableSharedFlow<String?>() // todo
 
     val notes = repository.notes
@@ -66,6 +67,12 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             repository.delete(note)
+        }
+    }
+
+    fun changeTheme(theme: UserTheme) {
+        viewModelScope.launch {
+            currentTheme.emit(theme)
         }
     }
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.Route
+import com.svbackend.natai.android.ui.UserTheme
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 @Composable
@@ -72,7 +73,7 @@ fun NavDrawer(
         }
         item {
             DrawerItem(icon = Icons.Outlined.Build, title = "Settings", onClick = {
-                onClick(Route.MainRoute.withArgs())
+                onClick(Route.SettingsRoute.withArgs())
             })
         }
 

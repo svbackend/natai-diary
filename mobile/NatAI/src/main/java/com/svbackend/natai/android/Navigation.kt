@@ -1,18 +1,14 @@
 package com.svbackend.natai.android
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.svbackend.natai.android.ui.screen.EditNoteScreen
-import com.svbackend.natai.android.ui.screen.MainScreen
-import com.svbackend.natai.android.ui.screen.NewNoteScreen
-import com.svbackend.natai.android.ui.screen.NoteDetailsScreen
+import com.svbackend.natai.android.ui.screen.*
+import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import com.svbackend.natai.android.viewmodel.NoteViewModel
@@ -81,6 +77,22 @@ fun Navigation(
                 vm = editNoteViewModel,
                 onSuccess = {
                     controller.popBackStack()
+                }
+            )
+        }
+
+        composable(route = Route.SettingsRoute.route) {
+            SettingsScreen(
+                onThemeClick = {
+                    controller.go(Route.SettingsThemesRoute.withArgs())
+                },
+            )
+        }
+
+        composable(route = Route.SettingsThemesRoute.route) {
+            ThemesScreen(
+                onThemeChanged = {
+                    vm.changeTheme(it)
                 }
             )
         }

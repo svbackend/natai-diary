@@ -7,6 +7,10 @@ sealed class Route(val route: String) {
 
     object NewNoteRoute : Route("new_note")
 
+    object SettingsRoute : Route("settings")
+
+    object SettingsThemesRoute : Route("settings_themes")
+
     object NoteDetailsRoute : Route("note_details/{noteId}") {
         fun withArgs(noteId: String): String {
             return route.replace("{noteId}", noteId)

@@ -6,11 +6,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.compose.ui.graphics.Color
+import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 enum class UserTheme {
     Dynamic, Default, Pink;
@@ -69,14 +71,17 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun NataiTheme(
+    vm: NoteViewModel,
     userTheme: UserTheme,
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val themeName = vm.currentTheme.collectAsState(initial = UserTheme.Default).value
+
     val colorScheme = when {
-        userTheme == UserTheme.Default -> if (darkTheme) DarkColorScheme else LightColorScheme
-        userTheme == UserTheme.Pink -> LightPinkColorScheme
-        userTheme == UserTheme.Dynamic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        themeName == UserTheme.Default -> if (darkTheme) DarkColorScheme else LightColorScheme
+        themeName == UserTheme.Pink -> LightPinkColorScheme
+        themeName == UserTheme.Dynamic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }

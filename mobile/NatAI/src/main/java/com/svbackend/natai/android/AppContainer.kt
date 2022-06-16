@@ -3,6 +3,7 @@ package com.svbackend.natai.android
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.activity.ComponentActivity
 import androidx.room.Room
@@ -25,12 +26,11 @@ class AppContainer(context: Context) {
     )
 
     val auth0ApiClient = AuthenticationAPIClient(auth0)
-    val sharedPrefs = SharedPreferencesStorage(context, context.getString(R.string.preference_file_key))
-    val credentialsManager = CredentialsManager(auth0ApiClient, sharedPrefs)
+    val sharedPrefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), MODE_PRIVATE)
+    val credentialsManager = CredentialsManager(auth0ApiClient, SharedPreferencesStorage(context, context.getString(R.string.preference_file_key)))
 
     private val getApiToken = {
-        val prefs = context.getSharedPreferences(context.getString(R.string.preference_file_key), MODE_PRIVATE)
-        prefs.getString("id_token", null)
+        sharedPrefs.getString("id_token", null)
     }
     private val apiClient = ApiClient(getApiToken)
 

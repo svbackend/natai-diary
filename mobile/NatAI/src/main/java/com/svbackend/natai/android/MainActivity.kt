@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
@@ -45,6 +46,7 @@ class MainActivity : ScopedActivity() {
     private lateinit var authClient: AuthenticationAPIClient
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var apiSyncService: ApiSyncService
+    private lateinit var prefs: SharedPreferences
 
     private val viewModel by viewModels<NoteViewModel>()
     private val splashViewModel by viewModels<SplashViewModel>()
@@ -64,9 +66,10 @@ class MainActivity : ScopedActivity() {
             authClient = it.appContainer.auth0ApiClient
             connectivityManager = it.appContainer.connectivityManager
             apiSyncService = it.appContainer.apiSyncService
+            prefs = it.appContainer.sharedPrefs
         }
 
-        val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
+        //val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
         val theme = prefs.getString(getString(R.string.pref_theme_key), null) ?: "Pink"
         val userTheme: UserTheme = UserTheme.strToTheme(theme)
 
@@ -75,7 +78,7 @@ class MainActivity : ScopedActivity() {
             val scope = rememberCoroutineScope()
             val controller = rememberNavController()
 
-            NataiTheme(userTheme = userTheme) {
+            NataiTheme(userTheme = userTheme, vm = viewModel) {
                 DefaultLayout(
                     vm = viewModel,
                     drawerState = drawerState,
@@ -95,6 +98,9 @@ class MainActivity : ScopedActivity() {
                         onLogin(prefs)
                     },
                     onNavigateTo = {
+                        scope.launch {
+                            if (drawerState.isOpen) drawerState.close()
+                        }
                         controller.go(it)
                     },
                     content = {
