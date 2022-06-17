@@ -39,6 +39,7 @@ fun Route.notes(noteRepository: NoteRepository) {
                 title = draft.title,
                 content = draft.content,
                 deletedAt = draft.deletedAt,
+                actualDate = draft.actualDate,
             )
 
             noteRepository.createNote(newNote)
@@ -67,6 +68,7 @@ fun Route.notes(noteRepository: NoteRepository) {
                 content = draft.content,
                 deletedAt = draft.deletedAt,
                 updatedAt = draft.updatedAt,
+                actualDate = draft.actualDate,
             )
 
             noteRepository.updateNote(updateNote)

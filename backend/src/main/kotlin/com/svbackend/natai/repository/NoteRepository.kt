@@ -15,6 +15,7 @@ class NoteRepository(private val jdbi: Jdbi) {
                     id = rs.getString("id"),
                     title = rs.getString("title"),
                     content = rs.getString("content"),
+                    actualDate = rs.getDate("actual_date").toLocalDate(),
                     createdAt = rs.getTimestamp("created_at").toInstant(),
                     updatedAt = rs.getTimestamp("updated_at").toInstant(),
                 )
@@ -29,6 +30,7 @@ class NoteRepository(private val jdbi: Jdbi) {
                     id = rs.getString("id"),
                     title = rs.getString("title"),
                     content = rs.getString("content"),
+                    actualDate = rs.getDate("actual_date").toLocalDate(),
                     createdAt = rs.getTimestamp("created_at").toInstant(),
                     updatedAt = rs.getTimestamp("updated_at").toInstant(),
                     deletedAt = rs.getTimestamp("deleted_at")?.toInstant(),
@@ -45,6 +47,7 @@ class NoteRepository(private val jdbi: Jdbi) {
                 it[id] = note.id
                 it[title] = note.title
                 it[content] = note.content
+                it[actualDate] = note.actualDate
                 it[userId] = note.userId
                 it[deletedAt] = deletedDateTime
             }
@@ -60,6 +63,7 @@ class NoteRepository(private val jdbi: Jdbi) {
             Notes.update({ Notes.id eq note.id and (Notes.userId eq note.userId) })  {
                 it[title] = note.title
                 it[content] = note.content
+                it[actualDate] = note.actualDate
                 it[deletedAt] = deletedDateTime
                 it[updatedAt] = LocalDateTime.now()
             }
