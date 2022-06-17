@@ -70,6 +70,7 @@ class ApiClient(
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
                 deletedAt = it.deletedAt,
+                actualDate = it.actualDate,
             )
         }
     }

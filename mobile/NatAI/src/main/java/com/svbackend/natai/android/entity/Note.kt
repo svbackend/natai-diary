@@ -27,6 +27,7 @@ data class Note(
 
         title = cloudNote.title
         content = cloudNote.content
+        actualDate = cloudNote.actualDate
     }
 
     fun sync(cloudNote: Note) {
