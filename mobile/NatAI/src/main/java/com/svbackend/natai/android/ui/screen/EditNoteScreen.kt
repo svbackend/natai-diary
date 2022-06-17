@@ -16,10 +16,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.ui.NDateField
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @Composable
 fun EditNoteScreen(
@@ -47,14 +49,15 @@ fun EditNoteScreen(
 
         return {
             scope.launch {
-                vm.saveNote(
-                    note = note,
-                    newTitle = vm.title.value.text,
-                    newContent = vm.content.value.text
-                )
+                vm.saveNote(note = note)
                 onSuccess()
             }
         }
+    }
+
+    val actualDate = vm.actualDate.value
+    val onDateChange = { date: LocalDate ->
+        vm.actualDateChanged(date)
     }
 
     Column(
@@ -67,6 +70,7 @@ fun EditNoteScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
         )
+        NDateField(context = context, value = actualDate, onChange = onDateChange)
         NTextField(
             value = vm.title.value,
             label = stringResource(R.string.noteTitle),

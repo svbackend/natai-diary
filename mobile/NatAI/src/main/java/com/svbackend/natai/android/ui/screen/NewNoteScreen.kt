@@ -15,12 +15,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.ui.NDateField
 import com.svbackend.natai.android.ui.NProgressBtn
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
-import com.svbackend.natai.android.viewmodel.NewNoteViewModel
 import com.svbackend.natai.android.utils.throttleLatest
+import com.svbackend.natai.android.viewmodel.NewNoteViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.util.*
 
 @Composable
 fun NewNoteScreen(
@@ -41,6 +44,11 @@ fun NewNoteScreen(
         coroutineScope = scope,
         destinationFunction = vm::saveContent
     )
+
+    val actualDate = vm.actualDate.value
+    val onDateChange = { date: LocalDate ->
+        vm.actualDateChanged(date)
+    }
 
     fun addNote(): () -> Unit {
         if (vm.title.value.text.isEmpty() || vm.content.value.text.isEmpty()) {
@@ -70,6 +78,7 @@ fun NewNoteScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
         )
+        NDateField(context = context, value = actualDate, onChange = onDateChange)
         NTextField(
             value = vm.title.value,
             label = stringResource(R.string.noteTitle),

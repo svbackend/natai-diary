@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.svbackend.natai.android.http.model.CloudNote
 import java.time.Instant
+import java.time.LocalDate
 import java.util.*
 
 @Entity
@@ -12,6 +13,7 @@ data class Note(
     var cloudId: String? = null,
     var title: String,
     var content: String,
+    var actualDate: LocalDate = LocalDate.now(),
     var createdAt: Instant = Instant.now(),
     var updatedAt: Instant = Instant.now(),
     var deletedAt: Instant? = null,
@@ -32,11 +34,13 @@ data class Note(
         content = cloudNote.content
         updatedAt = cloudNote.updatedAt
         deletedAt = cloudNote.deletedAt
+        actualDate = cloudNote.actualDate
     }
 
-    fun update(title: String, content: String) {
+    fun update(title: String, content: String, actualDate: LocalDate) {
         this.title = title
         this.content = content
+        this.actualDate = actualDate
         this.updatedAt = Instant.now()
     }
 
@@ -48,6 +52,7 @@ data class Note(
             createdAt = cloudNote.createdAt,
             updatedAt = cloudNote.updatedAt,
             deletedAt = cloudNote.deletedAt,
+            actualDate = cloudNote.actualDate,
         )
     }
 }

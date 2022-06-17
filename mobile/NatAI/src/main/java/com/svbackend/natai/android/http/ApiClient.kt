@@ -51,6 +51,7 @@ class ApiClient(
                 id = it.id,
                 title = it.title,
                 content = it.content,
+                actualDate = it.actualDate,
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
                 deletedAt = it.deletedAt,
@@ -78,6 +79,7 @@ class ApiClient(
             title = note.title,
             content = note.content,
             deletedAt = note.deletedAt,
+            actualDate = note.actualDate,
         )
 
         val response = client.post("notes") {
@@ -101,6 +103,7 @@ class ApiClient(
             content = note.content,
             updatedAt = note.updatedAt,
             deletedAt = note.deletedAt,
+            actualDate = note.actualDate,
         )
 
         val response = client.put("notes/${note.cloudId}") {

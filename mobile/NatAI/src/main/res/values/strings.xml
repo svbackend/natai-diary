@@ -33,4 +33,6 @@
     <string name="settingsTitle">Settings</string>
     <string name="settingsThemesTitle">Themes / Appearance</string>
     <string name="settingsThemesCurrent">(current)</string>
+    <string name="date">Date</string>
+    <string name="addedAt">Added at</string>
 </resources>

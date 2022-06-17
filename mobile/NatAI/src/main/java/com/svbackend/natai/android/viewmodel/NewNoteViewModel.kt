@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.repository.DiaryRepository
+import java.time.LocalDate
 
 class NewNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
@@ -19,6 +20,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     val content = mutableStateOf(
         TextFieldValue(prefs.getString("new_note_content", null) ?: "")
     )
+    val actualDate = mutableStateOf(LocalDate.now())
 
     val isLoading = mutableStateOf(false)
 
@@ -48,9 +50,14 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
             Note(
                 title = title.value.text,
                 content = content.value.text,
+                actualDate = actualDate.value,
             )
         )
         clearStoredData()
         isLoading.value = false
+    }
+
+    fun actualDateChanged(newDate: LocalDate) {
+        actualDate.value = newDate
     }
 }

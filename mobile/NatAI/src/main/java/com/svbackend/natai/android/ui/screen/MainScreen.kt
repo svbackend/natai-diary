@@ -28,9 +28,10 @@ import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.gradientBackground
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import java.time.Instant
+import java.time.LocalDate
 
 data class NotesGroup(
-    val date: Instant,
+    val date: LocalDate,
     val notes: MutableList<Note>
 )
 
@@ -236,10 +237,10 @@ fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
 fun mapNotes(notes: List<Note>): List<NotesGroup> {
     val groupedNotes = mutableMapOf<String, NotesGroup>()
     notes.forEach {
-        val idx = LocalDateTimeFormatter.fullDate.format(it.createdAt)
+        val idx = LocalDateTimeFormatter.fullDate.format(it.actualDate)
         val notesGroup = groupedNotes[idx]
         if (notesGroup == null) {
-            groupedNotes[idx] = NotesGroup(it.createdAt, mutableListOf(it))
+            groupedNotes[idx] = NotesGroup(it.actualDate, mutableListOf(it))
         } else {
             notesGroup.notes.add(it)
         }

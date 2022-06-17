@@ -61,7 +61,7 @@ fun NoteDetailsScreen(
         }
 
         Text(
-            text = LocalDateTimeFormatter.fullDateTime.format(note.createdAt),
+            text = LocalDateTimeFormatter.fullDate.format(note.actualDate),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
