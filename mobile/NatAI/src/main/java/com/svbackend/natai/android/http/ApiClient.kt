@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.http
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.Note
@@ -34,6 +35,7 @@ class ApiClient(
         }
         install(ContentNegotiation) {
             jackson {
+                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 registerModule(JavaTimeModule())
             }
         }
