@@ -11,6 +11,7 @@ data class NoteDto(
     val createdAt: Instant,
     val updatedAt: Instant,
     val deletedAt: Instant? = null,
+    val tags: TagSet,
 )
 
 data class NewNoteDraft(
@@ -18,6 +19,7 @@ data class NewNoteDraft(
     val content: String,
     val actualDate: LocalDate,
     val deletedAt: Instant? = null,
+    val tags: TagSet,
 )
 
 data class NewNote(
@@ -27,6 +29,7 @@ data class NewNote(
     val content: String,
     val actualDate: LocalDate,
     val deletedAt: Instant? = null,
+    val tags: TagSet,
 )
 
 data class UpdateNoteDraft(
@@ -35,6 +38,7 @@ data class UpdateNoteDraft(
     val actualDate: LocalDate,
     val deletedAt: Instant? = null,
     val updatedAt: Instant,
+    val tags: TagSet,
 )
 
 data class UpdateNote(
@@ -45,4 +49,5 @@ data class UpdateNote(
     val deletedAt: Instant? = null,
     val updatedAt: Instant,
     val userId: String,
+    val tags: TagSet,
 )

@@ -14,7 +14,9 @@ import java.util.*
 fun Route.notes(noteRepository: NoteRepository) {
     authenticate("auth0") {
         get {
-            val notes = noteRepository.getAllNotes()
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal!!.payload.getClaim("sub").asString()
+            val notes = noteRepository.getAllNotes(userId)
 
             call.respond(notes)
         }
@@ -40,6 +42,7 @@ fun Route.notes(noteRepository: NoteRepository) {
                 content = draft.content,
                 deletedAt = draft.deletedAt,
                 actualDate = draft.actualDate,
+                tags = draft.tags,
             )
 
             noteRepository.createNote(newNote)
@@ -69,6 +72,7 @@ fun Route.notes(noteRepository: NoteRepository) {
                 deletedAt = draft.deletedAt,
                 updatedAt = draft.updatedAt,
                 actualDate = draft.actualDate,
+                tags = draft.tags,
             )
 
             noteRepository.updateNote(updateNote)

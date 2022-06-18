@@ -1,17 +1,15 @@
 package com.svbackend.natai.entity
 
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.javatime.*
-import java.time.LocalDate
+import org.jetbrains.exposed.dao.id.*
 
-object Tags : Table() {
-    val id = uuid("id").uniqueIndex("idx_notes_id")
-    val userId = varchar("user_id", 255).index("idx_notes__user_id")
-    val title = varchar("title", 255)
-    val content = text("content")
-    val actualDate = date("actual_date").default(LocalDate.now())
-    val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
-    val updatedAt = datetime("updated_at").defaultExpression(CurrentDateTime)
-    val deletedAt = datetime("deleted_at").nullable().default(null)
-    override val primaryKey = PrimaryKey(id)
+// {name}.{score}
+// weather.10 == Sunny
+// weather.4 == Rain
+// mood.10 == Awesome mood
+// mood.6 == :)
+// mood.2 == ='(
+object Tags : IntIdTable() {
+    val noteId = reference("note_id", Notes.id)
+    val name = varchar("name", 255)
+    val score = integer("score").nullable()
 }

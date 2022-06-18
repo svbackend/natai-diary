@@ -41,5 +41,5 @@ fun commonModule(config: ApplicationConfig) = DI.Module("common") {
             }
     }
 
-    bindSingleton { NoteRepository(instance()) }
+    bindSingleton { NoteRepository(instance(), instance()) }
 }
