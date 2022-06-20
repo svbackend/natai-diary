@@ -15,10 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.entity.TagDto
 import com.svbackend.natai.android.ui.NDateField
 import com.svbackend.natai.android.ui.NProgressBtn
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
+import com.svbackend.natai.android.ui.component.TagsField
 import com.svbackend.natai.android.utils.throttleLatest
 import com.svbackend.natai.android.viewmodel.NewNoteViewModel
 import kotlinx.coroutines.launch
@@ -95,6 +97,14 @@ fun NewNoteScreen(
                 onContentChange(it.text)
             }
         )
+
+        val tags = mutableListOf<TagDto>()
+        TagsField(
+            tags,
+            onAddTag = { tags.add(it) },
+            onDeleteTag = { tags.remove(it) }
+        )
+
         if (vm.isLoading.value) {
             Button(onClick = {}) {
                 NProgressBtn()

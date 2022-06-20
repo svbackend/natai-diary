@@ -15,11 +15,11 @@ abstract class DiaryDAO {
     abstract fun getNote(id: String): Flow<Note>
 
     @Insert
-    abstract fun insert(note: Note)
+    abstract fun insertNote(note: Note)
 
     @Update
-    abstract fun update(note: Note)
+    abstract fun updateNote(note: Note)
 
     @Delete
-    abstract fun delete(note: Note)
+    abstract fun deleteNote(note: Note)
 }

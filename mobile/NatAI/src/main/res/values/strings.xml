@@ -12,6 +12,7 @@
     <string name="saving">Saving..</string>
     <string name="noteContent">How was your day?</string>
     <string name="noteTitle">Title</string>
+    <string name="noteTags">Tags</string>
     <string name="newNote">New Note</string>
     <string name="title_activity_basic">Notes</string>
     <!-- Strings used for fragments for navigation -->

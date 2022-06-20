@@ -25,7 +25,8 @@ fun NTextField(
     label: String,
     onChange: (TextFieldValue) -> Unit,
     singleLine: Boolean = true,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     TextField(
         value = value,
@@ -37,7 +38,8 @@ fun NTextField(
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp),
-        maxLines = maxLines
+        maxLines = maxLines,
+        trailingIcon = trailingIcon,
     )
 }
 

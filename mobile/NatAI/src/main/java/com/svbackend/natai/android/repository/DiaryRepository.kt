@@ -23,13 +23,13 @@ class DiaryRepository(
     }
 
     suspend fun insert(note: Note) = withContext(Dispatchers.IO) {
-        db.dao().insert(note)
+        db.dao().insertNote(note)
 
         if (note.cloudId == null) {
             try {
                 val cloudNote = api.addNote(note) // todo handle http err
                 note.sync(cloudNote) // todo handle different ids err
-                db.dao().update(note)
+                db.dao().updateNote(note)
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
@@ -37,10 +37,10 @@ class DiaryRepository(
     }
 
     suspend fun update(note: Note) = withContext(Dispatchers.IO) {
-        db.dao().update(note)
+        db.dao().updateNote(note)
     }
 
     suspend fun delete(note: Note) = withContext(Dispatchers.IO) {
-        db.dao().delete(note)
+        db.dao().deleteNote(note)
     }
 }
