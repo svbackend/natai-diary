@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.auth0.android.result.UserProfile
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.LoggedUserInfo
+import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.ui.UserTheme
@@ -24,16 +25,16 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     //val currentRoute = MutableSharedFlow<String?>() // todo
 
     val notes = repository.notes
-    var notesState by mutableStateOf(emptyList<Note>())
+    var notesState by mutableStateOf(emptyList<LocalNote>())
 
     //suspend fun delete(id: String) = repository.delete(repository.getNote(id))
 
-    val selectedNote = MutableSharedFlow<Note?>(replay = 1)
+    val selectedNote = MutableSharedFlow<LocalNote?>(replay = 1)
 
     fun selectNote(id: String) = viewModelScope.launch {
         repository.getNote(id)
             .collect {
-                selectedNote.emit(it)
+                selectedNote.emit(LocalNote.create(it))
             }
     }
 
@@ -64,9 +65,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         isSyncing.emit(false)
     }
 
-    fun deleteNote(note: Note) {
+    fun deleteNote(note: LocalNote) {
         viewModelScope.launch {
-            repository.delete(note)
+            repository.deleteNote(Note.create(note))
         }
     }
 

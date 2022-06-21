@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.entity.Note
+import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.repository.DiaryRepository
 import java.time.LocalDate
 
@@ -21,6 +21,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
         TextFieldValue(prefs.getString("new_note_content", null) ?: "")
     )
     val actualDate = mutableStateOf(LocalDate.now())
+    val tags = mutableStateOf(emptyList<TagEntityDto>())
 
     val isLoading = mutableStateOf(false)
 
@@ -46,18 +47,29 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
 
     suspend fun addNote() {
         isLoading.value = true
-        repository.insert(
-            Note(
-                title = title.value.text,
-                content = content.value.text,
-                actualDate = actualDate.value,
-            )
+        val note = LocalNote(
+            title = title.value.text,
+            content = content.value.text,
+            actualDate = actualDate.value,
+            tags = tags.value
         )
+
+        repository.insert(note)
         clearStoredData()
         isLoading.value = false
     }
 
     fun actualDateChanged(newDate: LocalDate) {
         actualDate.value = newDate
+    }
+
+    fun addTag(tag: TagEntityDto) {
+        if (!tags.value.contains(tag)) {
+            tags.value = tags.value.plus(tag)
+        }
+    }
+
+    fun deleteTag(tag: TagEntityDto) {
+        tags.value = tags.value.minus(tag)
     }
 }

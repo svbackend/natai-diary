@@ -2,6 +2,7 @@ package com.svbackend.natai.android.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.svbackend.natai.android.entity.relation.NoteWithTags
 import com.svbackend.natai.android.http.model.CloudNote
 import java.time.Instant
 import java.time.LocalDate
@@ -28,14 +29,8 @@ data class Note(
         title = cloudNote.title
         content = cloudNote.content
         actualDate = cloudNote.actualDate
-    }
-
-    fun sync(cloudNote: Note) {
-        title = cloudNote.title
-        content = cloudNote.content
-        updatedAt = cloudNote.updatedAt
         deletedAt = cloudNote.deletedAt
-        actualDate = cloudNote.actualDate
+        updatedAt = cloudNote.updatedAt
     }
 
     fun update(title: String, content: String, actualDate: LocalDate) {
@@ -46,14 +41,91 @@ data class Note(
     }
 
     companion object {
-        fun createByCloudNote(cloudNote: Note) = Note(
-            cloudId = cloudNote.id,
-            title = cloudNote.title,
-            content = cloudNote.content,
-            createdAt = cloudNote.createdAt,
-            updatedAt = cloudNote.updatedAt,
-            deletedAt = cloudNote.deletedAt,
-            actualDate = cloudNote.actualDate,
+        fun create(dto: LocalNote) = Note(
+            id = dto.id,
+            cloudId = dto.cloudId,
+            title = dto.title,
+            content = dto.content,
+            createdAt = dto.createdAt,
+            updatedAt = dto.updatedAt,
+            deletedAt = dto.deletedAt,
+            actualDate = dto.actualDate,
         )
+    }
+}
+
+data class NoteEntityDto(
+    val cloudId: String? = null,
+    val title: String,
+    val content: String,
+    val actualDate: LocalDate = LocalDate.now(),
+    val createdAt: Instant = Instant.now(),
+    val updatedAt: Instant = Instant.now(),
+    val deletedAt: Instant? = null,
+    val tags: List<TagEntityDto>,
+) {
+    companion object {
+        fun create(entity: NoteWithTags): NoteEntityDto {
+            val tags = entity.tags.map { TagEntityDto.create(it) }
+            return NoteEntityDto(
+                cloudId = entity.note.cloudId,
+                title = entity.note.title,
+                content = entity.note.content,
+                actualDate = entity.note.actualDate,
+                createdAt = entity.note.createdAt,
+                updatedAt = entity.note.updatedAt,
+                deletedAt = entity.note.deletedAt,
+                tags = tags
+            )
+        }
+    }
+}
+
+// use everywhere when fetching note from local db and local ID is needed
+data class LocalNote(
+    val id: String = UUID.randomUUID().toString(),
+    val cloudId: String? = null,
+    val title: String,
+    val content: String,
+    val actualDate: LocalDate = LocalDate.now(),
+    val createdAt: Instant = Instant.now(),
+    val updatedAt: Instant = Instant.now(),
+    val deletedAt: Instant? = null,
+    val tags: List<TagEntityDto>,
+) {
+    companion object {
+        fun create(entity: NoteWithTags): LocalNote {
+            val tags = entity.tags.map { TagEntityDto.create(it) }
+            return LocalNote(
+                id = entity.note.id,
+                cloudId = entity.note.cloudId,
+                title = entity.note.title,
+                content = entity.note.content,
+                actualDate = entity.note.actualDate,
+                createdAt = entity.note.createdAt,
+                updatedAt = entity.note.updatedAt,
+                deletedAt = entity.note.deletedAt,
+                tags = tags
+            )
+        }
+
+        fun create(cloudNote: CloudNote): LocalNote {
+            val tags = cloudNote.tags.map {
+                TagEntityDto(
+                    name = it.name,
+                    score = it.score,
+                )
+            }
+            return LocalNote(
+                cloudId = cloudNote.id,
+                title = cloudNote.title,
+                content = cloudNote.content,
+                actualDate = cloudNote.actualDate,
+                createdAt = cloudNote.createdAt,
+                updatedAt = cloudNote.updatedAt,
+                deletedAt = cloudNote.deletedAt,
+                tags = tags
+            )
+        }
     }
 }

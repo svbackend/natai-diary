@@ -1,9 +1,10 @@
 package com.svbackend.natai.android.service
 
+import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.ApiClient
+import com.svbackend.natai.android.http.model.CloudNote
 import com.svbackend.natai.android.repository.DiaryRepository
-import kotlinx.coroutines.flow.toList
 
 class ApiSyncService(
     private val apiClient: ApiClient,
@@ -15,7 +16,8 @@ class ApiSyncService(
             .getNotesForSync()
             .associateBy { it.id }
 
-        val localNotes = repository.getAllNotesForSync()
+        val localNotes = repository
+            .getAllNotesForSync()
 
         localNotes.forEach {
             val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
@@ -38,8 +40,8 @@ class ApiSyncService(
         }
     }
 
-    private suspend fun insertToLocal(cloudNote: Note) {
-        val newLocalNote = Note.createByCloudNote(cloudNote)
+    private suspend fun insertToLocal(cloudNote: CloudNote) {
+        val newLocalNote = LocalNote.create(cloudNote)
         try {
             repository.insert(newLocalNote)
         } catch (e: Throwable) {
@@ -48,26 +50,29 @@ class ApiSyncService(
     }
 
 
-    private suspend fun updateToLocal(localNote: Note, cloudNote: Note) {
-        localNote.sync(cloudNote)
+    private suspend fun updateToLocal(localNote: LocalNote, cloudNote: CloudNote) {
+        val note = Note.create(localNote)
+        note.sync(cloudNote)
         try {
-            repository.update(localNote)
+            repository.updateNote(note)
         } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
 
-    private suspend fun insertToCloud(localNote: Note) {
+    private suspend fun insertToCloud(localNote: LocalNote) {
         try {
             val insertedCloudNote = apiClient.addNote(localNote)
-            localNote.cloudId = insertedCloudNote.id
-            repository.update(localNote)
+            val syncedNote = Note.create(localNote)
+            syncedNote.sync(insertedCloudNote)
+
+            repository.updateNote(syncedNote)
         } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
 
-    private suspend fun updateToCloud(localNote: Note) {
+    private suspend fun updateToCloud(localNote: LocalNote) {
         try {
             apiClient.updateNote(localNote)
         } catch (e: Throwable) {

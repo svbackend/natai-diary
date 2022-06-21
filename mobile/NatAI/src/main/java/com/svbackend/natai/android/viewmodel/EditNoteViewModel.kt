@@ -6,7 +6,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
+import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
+import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -24,21 +26,34 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
         TextFieldValue("")
     )
 
-    val note = MutableSharedFlow<Note?>(replay = 1)
+    val note = MutableSharedFlow<LocalNote?>(replay = 1)
 
     val isLoading = mutableStateOf(false)
 
     suspend fun saveNote(
-        note: Note,
+        note: LocalNote,
     ) {
         isLoading.value = true
 
-        note.update(
+        val entity = Note.create(note)
+
+        entity.update(
             title = title.value.text,
             content = content.value.text,
             actualDate = actualDate.value,
         )
-        repository.update(note)
+        repository.updateNote(entity)
+        repository.deleteTagsByNote(note.id)
+
+        note.tags.forEach {
+            repository.insertTag(
+                Tag(
+                    noteId = note.id,
+                    name = it.name,
+                    score = it.score,
+                )
+            )
+        }
 
         isLoading.value = false
     }
@@ -49,10 +64,11 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
 
     fun loadNote(noteId: String) = viewModelScope.launch {
         repository.getNote(noteId).collect {
-            title.value = TextFieldValue(it.title)
-            content.value = TextFieldValue(it.content)
-            actualDate.value = it.actualDate
-            note.emit(it)
+            val localNote = LocalNote.create(it)
+            title.value = TextFieldValue(localNote.title)
+            content.value = TextFieldValue(localNote.content)
+            actualDate.value = localNote.actualDate
+            note.emit(localNote)
         }
     }
 }

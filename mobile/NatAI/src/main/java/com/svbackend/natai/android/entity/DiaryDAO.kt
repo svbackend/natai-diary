@@ -1,18 +1,19 @@
 package com.svbackend.natai.android.entity
 
 import androidx.room.*
+import com.svbackend.natai.android.entity.relation.NoteWithTags
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class DiaryDAO {
     @Query("SELECT * FROM Note WHERE deletedAt IS NULL ORDER BY date(actualDate) DESC")
-    abstract fun getAllNotes(): Flow<List<Note>>
+    abstract fun getAllNotes(): Flow<List<NoteWithTags>>
 
     @Query("SELECT * FROM Note ORDER BY date(actualDate) DESC")
-    abstract fun getAllNotesForSync(): List<Note>
+    abstract fun getAllNotesForSync(): List<NoteWithTags>
 
     @Query("SELECT * FROM Note WHERE id = :id")
-    abstract fun getNote(id: String): Flow<Note>
+    abstract fun getNote(id: String): Flow<NoteWithTags>
 
     @Insert
     abstract fun insertNote(note: Note)
@@ -22,4 +23,13 @@ abstract class DiaryDAO {
 
     @Delete
     abstract fun deleteNote(note: Note)
+
+    @Insert
+    abstract fun insertTag(tag: Tag)
+
+    @Delete
+    abstract fun deleteTag(tag: Tag)
+
+    @Query("DELETE FROM Tag WHERE noteId = :noteId")
+    abstract fun deleteTagsByNote(noteId: String)
 }

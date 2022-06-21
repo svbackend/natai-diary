@@ -1,40 +1,35 @@
 package com.svbackend.natai.android.ui.screen
 
-import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.entity.Note
+import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteDetailsScreen(
     vm: NoteViewModel,
     noteId: String, // here just to have an example of arguments
     onEditClick: (String) -> Unit,
-    onDeleteClick: (Note) -> Unit,
+    onDeleteClick: (LocalNote) -> Unit,
 ) {
     val note = vm.selectedNote.collectAsState(initial = null).value
 

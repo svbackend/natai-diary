@@ -7,15 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.entity.TagDto
 import com.svbackend.natai.android.ui.NDateField
 import com.svbackend.natai.android.ui.NProgressBtn
 import com.svbackend.natai.android.ui.NTextField
@@ -25,7 +23,6 @@ import com.svbackend.natai.android.utils.throttleLatest
 import com.svbackend.natai.android.viewmodel.NewNoteViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.*
 
 @Composable
 fun NewNoteScreen(
@@ -98,11 +95,17 @@ fun NewNoteScreen(
             }
         )
 
-        val tags = mutableListOf<TagDto>()
+
+        val tags = vm.tags.value
+
         TagsField(
             tags,
-            onAddTag = { tags.add(it) },
-            onDeleteTag = { tags.remove(it) }
+            onAddTag = {
+                vm.addTag(it)
+            },
+            onDeleteTag = {
+                vm.deleteTag(it)
+            },
         )
 
         if (vm.isLoading.value) {

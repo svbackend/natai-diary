@@ -21,18 +21,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.entity.Note
+import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.ui.HorizontalDivider
 import com.svbackend.natai.android.ui.VerticalDivider
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.gradientBackground
 import com.svbackend.natai.android.viewmodel.NoteViewModel
-import java.time.Instant
 import java.time.LocalDate
 
 data class NotesGroup(
     val date: LocalDate,
-    val notes: MutableList<Note>
+    val notes: MutableList<LocalNote>
 )
 
 @Composable
@@ -40,7 +39,7 @@ fun MainScreen(
     vm: NoteViewModel,
     onAddClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onNoteClick: (Note) -> Unit
+    onNoteClick: (LocalNote) -> Unit
 ) {
     val notes = vm.notesState
     val isLoggedIn by vm.isLoggedIn.collectAsState(initial = false)
@@ -188,7 +187,7 @@ fun MainScreen(
 }
 
 @Composable
-fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
+fun NoteCard(note: LocalNote, onNoteClick: (LocalNote) -> Unit) {
     var contentPreview = note.content.substring(0, minOf(note.content.length, 100))
 
     if (contentPreview.length < note.content.length) {
@@ -234,7 +233,7 @@ fun NoteCard(note: Note, onNoteClick: (Note) -> Unit) {
     }
 }
 
-fun mapNotes(notes: List<Note>): List<NotesGroup> {
+fun mapNotes(notes: List<LocalNote>): List<NotesGroup> {
     val groupedNotes = mutableMapOf<String, NotesGroup>()
     notes.forEach {
         val idx = LocalDateTimeFormatter.fullDate.format(it.actualDate)

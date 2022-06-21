@@ -7,6 +7,6 @@ import com.svbackend.natai.android.entity.Tag
 
 data class NoteWithTags(
     @Embedded val note: Note,
-    @Relation(parentColumn = "id", entityColumn = "note_id")
+    @Relation(parentColumn = "id", entityColumn = "noteId")
     val tags: List<Tag>
 )
