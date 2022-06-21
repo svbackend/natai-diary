@@ -3,23 +3,12 @@ package com.svbackend.natai.dto
 import java.time.*
 import java.util.*
 
-data class NoteDto(
-    val id: String,
-    val title: String,
-    val content: String,
-    val actualDate: LocalDate,
-    val createdAt: Instant,
-    val updatedAt: Instant,
-    val deletedAt: Instant? = null,
-    val tags: TagSet,
-)
-
 data class NewNoteDraft(
     val title: String,
     val content: String,
     val actualDate: LocalDate,
     val deletedAt: Instant? = null,
-    val tags: TagSet,
+    val tags: List<TagDto>,
 )
 
 data class NewNote(
@@ -29,7 +18,7 @@ data class NewNote(
     val content: String,
     val actualDate: LocalDate,
     val deletedAt: Instant? = null,
-    val tags: TagSet,
+    val tags: List<TagDto>,
 )
 
 data class UpdateNoteDraft(
@@ -38,7 +27,7 @@ data class UpdateNoteDraft(
     val actualDate: LocalDate,
     val deletedAt: Instant? = null,
     val updatedAt: Instant,
-    val tags: TagSet,
+    val tags: List<TagDto>,
 )
 
 data class UpdateNote(
@@ -49,5 +38,5 @@ data class UpdateNote(
     val deletedAt: Instant? = null,
     val updatedAt: Instant,
     val userId: String,
-    val tags: TagSet,
+    val tags: List<TagDto>,
 )

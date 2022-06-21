@@ -1,6 +1,7 @@
 package com.svbackend.natai.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.svbackend.natai.android.http.model.*
 import com.svbackend.natai.db.DatabaseFactory.dbQuery
 import com.svbackend.natai.dto.*
 import com.svbackend.natai.entity.*
@@ -9,12 +10,12 @@ import org.jetbrains.exposed.sql.*
 import java.time.*
 
 class NoteRepository(private val jdbi: Jdbi, private val mapper: ObjectMapper) {
-    fun getAllNotes(userId: String): List<NoteDto> = jdbi.withHandle<List<NoteDto>, Exception> {
+    fun getAllNotes(userId: String): List<CloudNote> = jdbi.withHandle<List<CloudNote>, Exception> {
         it.createQuery(
             """
                 SELECT notes.*, tags
                 FROM notes
-                         LEFT JOIN (SELECT note_id, json_agg(json_build_object('name', t.name, 'score', t.score)) tags
+                         LEFT JOIN (SELECT note_id, json_agg(json_build_object('id', t.id, 'name', t.name, 'score', t.score)) tags
                                     FROM tags t
                                     GROUP BY t.note_id) t
                                    ON t.note_id = notes.id
@@ -26,24 +27,26 @@ class NoteRepository(private val jdbi: Jdbi, private val mapper: ObjectMapper) {
             .bind("userId", userId)
             .map { rs, _ ->
                 val tags = mapTags(rs.getString("tags"))
-                NoteDto(
+                CloudNote(
                     id = rs.getString("id"),
+                    userId = rs.getString("user_id"),
                     title = rs.getString("title"),
                     content = rs.getString("content"),
                     actualDate = rs.getDate("actual_date").toLocalDate(),
                     createdAt = rs.getTimestamp("created_at").toInstant(),
                     updatedAt = rs.getTimestamp("updated_at").toInstant(),
-                    tags = tags.toSet(),
+                    deletedAt = null,
+                    tags = tags,
                 )
             }.list()
     }
 
-    fun getAllNotesForSync(userId: String): List<NoteDto> = jdbi.withHandle<List<NoteDto>, Exception> {
+    fun getAllNotesForSync(userId: String): List<CloudNote> = jdbi.withHandle<List<CloudNote>, Exception> {
         it.createQuery(
             """
                 SELECT notes.*, tags
                 FROM notes
-                         LEFT JOIN (SELECT note_id, json_agg(json_build_object('name', t.name, 'score', t.score)) tags
+                         LEFT JOIN (SELECT note_id, json_agg(json_build_object('id', t.id, 'name', t.name, 'score', t.score)) tags
                                     FROM tags t
                                     GROUP BY t.note_id) t
                                    ON t.note_id = notes.id
@@ -54,14 +57,15 @@ class NoteRepository(private val jdbi: Jdbi, private val mapper: ObjectMapper) {
             .bind("userId", userId)
             .map { rs, _ ->
                 val tags = mapTags(rs.getString("tags"))
-                NoteDto(
+                CloudNote(
                     id = rs.getString("id"),
+                    userId = rs.getString("user_id"),
                     title = rs.getString("title"),
                     content = rs.getString("content"),
                     actualDate = rs.getDate("actual_date").toLocalDate(),
                     createdAt = rs.getTimestamp("created_at").toInstant(),
                     updatedAt = rs.getTimestamp("updated_at").toInstant(),
-                    deletedAt = rs.getTimestamp("deleted_at")?.toInstant(),
+                    deletedAt = rs.getTimestamp("updated_at").toInstant(),
                     tags = tags,
                 )
             }.list()
@@ -81,8 +85,7 @@ class NoteRepository(private val jdbi: Jdbi, private val mapper: ObjectMapper) {
                 it[deletedAt] = deletedDateTime
             }
 
-            note.tags.forEach { tagStr ->
-                val tag = TagDto.create(tagStr)
+            note.tags.forEach { tag ->
                 Tags.insert {
                     it[noteId] = note.id
                     it[name] = tag.name
@@ -108,8 +111,7 @@ class NoteRepository(private val jdbi: Jdbi, private val mapper: ObjectMapper) {
 
             Tags.deleteWhere { Tags.noteId eq note.id }
 
-            note.tags.forEach { tagStr ->
-                val tag = TagDto.create(tagStr)
+            note.tags.forEach { tag ->
                 Tags.insert {
                     it[noteId] = note.id
                     it[name] = tag.name
@@ -123,22 +125,12 @@ class NoteRepository(private val jdbi: Jdbi, private val mapper: ObjectMapper) {
         }
     }
 
-    private fun mapTags(tagsJson: String?): TagSet {
+    private fun mapTags(tagsJson: String?): List<CloudTag> {
         if (tagsJson == null || tagsJson.isEmpty()) {
-            return emptySet()
+            return emptyList()
         }
 
-        val tagsList: List<TagDto> = mapper.readerForListOf(TagDto::class.java).readValue(tagsJson)
-
-        return tagsList
-            .map { tagDto ->
-                if (tagDto.score == null) {
-                    tagDto.name
-                } else {
-                    "${tagDto.name}.${tagDto.score}"
-                }
-            }
-            .toSet()
+        return mapper.readerForListOf(CloudTag::class.java).readValue(tagsJson)
     }
 }
 

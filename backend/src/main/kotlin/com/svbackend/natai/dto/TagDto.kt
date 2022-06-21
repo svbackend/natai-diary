@@ -1,7 +1,5 @@
 package com.svbackend.natai.dto
 
-typealias TagSet = Set<String>
-
 data class TagDto(
     val name: String,
     val score: Int? = null,
