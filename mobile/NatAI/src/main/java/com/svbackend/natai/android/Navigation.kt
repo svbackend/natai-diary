@@ -89,6 +89,10 @@ fun Navigation(
             )
         }
 
+        composable(route = Route.AnalyticsRoute.route) {
+            AnalyticsScreen()
+        }
+
         composable(route = Route.SettingsThemesRoute.route) {
             ThemesScreen(
                 vm = vm,

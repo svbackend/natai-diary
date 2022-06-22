@@ -11,6 +11,8 @@ sealed class Route(val route: String) {
 
     object SettingsThemesRoute : Route("settings_themes")
 
+    object AnalyticsRoute : Route("analytics")
+
     object NoteDetailsRoute : Route("note_details/{noteId}") {
         fun withArgs(noteId: String): String {
             return route.replace("{noteId}", noteId)

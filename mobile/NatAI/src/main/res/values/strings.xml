@@ -36,4 +36,5 @@
     <string name="settingsThemesCurrent">(current)</string>
     <string name="date">Date</string>
     <string name="addedAt">Added at</string>
+    <string name="analyticsTitle">Analytics</string>
 </resources>

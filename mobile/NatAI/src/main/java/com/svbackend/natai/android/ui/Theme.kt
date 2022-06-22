@@ -96,9 +96,50 @@ fun NataiTheme(
         }
     }
 
+    val customColors = when (themeName) {
+        UserTheme.Default -> DynamicTheme
+        UserTheme.Pink -> LightPinkTheme
+        else -> DynamicTheme
+    }
+
+    NataiCustomColors(customColors)
+
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
+}
+
+interface ICustomTheme {
+    val contribution: Color
+    val emptyContribution: Color
+    val border: Color
+}
+
+object DynamicTheme : ICustomTheme {
+    override val emptyContribution = Color(0xFFEDEEF1)
+    override val contribution = Color(0xFF1060D6)
+    override val border = Color(0x801060D6)
+}
+
+object LightPinkTheme : ICustomTheme {
+    override val emptyContribution = Color(0xFFEDEEF1)
+    override val contribution = Color(0x4DF01799)
+    override val border = Color(0x80A30965)
+}
+
+// singleton
+class NataiCustomColors(val theme: ICustomTheme) {
+    init {
+        instance = theme
+    }
+
+    companion object {
+        var instance: ICustomTheme? = null
+
+        fun get(): ICustomTheme {
+            return instance ?: DynamicTheme
+        }
+    }
 }

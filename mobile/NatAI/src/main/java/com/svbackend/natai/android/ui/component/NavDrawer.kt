@@ -68,7 +68,7 @@ fun NavDrawer(
         item { Spacer(modifier.padding(top = 8.dp)) }
         item {
             DrawerItem(icon = Icons.Outlined.Star, title = "Analytics", onClick = {
-                onClick(Route.MainRoute.withArgs())
+                onClick(Route.AnalyticsRoute.withArgs())
             })
         }
         item {
