@@ -20,6 +20,9 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     val content = mutableStateOf(
         TextFieldValue(prefs.getString("new_note_content", null) ?: "")
     )
+    val tagsFieldValue = mutableStateOf(
+        TextFieldValue("")
+    )
     val actualDate = mutableStateOf(LocalDate.now())
     val tags = mutableStateOf(emptyList<TagEntityDto>())
 
@@ -36,6 +39,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     fun clearStoredData() {
         title.value = TextFieldValue("")
         content.value = TextFieldValue("")
+        tagsFieldValue.value = TextFieldValue("")
 
         prefs
             .edit()
@@ -54,7 +58,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
             tags = tags.value
         )
 
-        repository.insert(note)
+        repository.insertNoteAndSync(note)
         clearStoredData()
         isLoading.value = false
     }

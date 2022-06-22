@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
@@ -97,15 +98,19 @@ fun NewNoteScreen(
 
 
         val tags = vm.tags.value
+        val tagsValue = vm.tagsFieldValue.value
 
         TagsField(
-            tags,
+            tags = tags,
+            value = tagsValue,
             onAddTag = {
                 vm.addTag(it)
+                vm.tagsFieldValue.value = TextFieldValue("")
             },
             onDeleteTag = {
                 vm.deleteTag(it)
             },
+            onValueChange = { vm.tagsFieldValue.value = it }
         )
 
         if (vm.isLoading.value) {

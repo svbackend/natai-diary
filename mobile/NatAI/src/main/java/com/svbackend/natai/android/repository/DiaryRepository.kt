@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.time.Instant
 
 class DiaryRepository(
     private val db: DiaryDatabase,
@@ -33,13 +34,40 @@ class DiaryRepository(
         return db.dao().getNote(id)
     }
 
-    suspend fun insert(noteEntity: LocalNote) = withContext(Dispatchers.IO) {
-        val tags = noteEntity.tags
-        val note = Note.create(noteEntity)
+    suspend fun insertNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
+        db.dao().insertNote(Note.create(note))
+        addTags(note)
+        syncNoteWithCloud(note)
+    }
 
-        db.dao().insertNote(note)
+    suspend fun updateNote(note: Note) = withContext(Dispatchers.IO) {
+        db.dao().updateNote(note)
+    }
 
-        tags.forEach {
+    suspend fun updateNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
+        updateNote(Note.create(note))
+        deleteTagsByNote(note.id)
+        addTags(note)
+        syncNoteWithCloud(note)
+    }
+
+    suspend fun deleteNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
+        val deletedNote = Note.create(note)
+        deletedNote.deletedAt = Instant.now()
+        updateNote(deletedNote)
+        syncNoteWithCloud(note)
+    }
+
+    suspend fun insertTag(tag: Tag) = withContext(Dispatchers.IO) {
+        db.dao().insertTag(tag)
+    }
+
+    private suspend fun deleteTagsByNote(noteId: String) = withContext(Dispatchers.IO) {
+        db.dao().deleteTagsByNote(noteId)
+    }
+
+    private suspend fun addTags(note: LocalNote) {
+        note.tags.forEach {
             insertTag(
                 Tag(
                     noteId = note.id,
@@ -48,31 +76,17 @@ class DiaryRepository(
                 )
             )
         }
+    }
 
-        if (note.cloudId == null) {
-            try {
-                val cloudNote = api.addNote(noteEntity) // todo handle http err
-                note.sync(cloudNote) // todo handle different ids err
-                db.dao().updateNote(note)
-            } catch (e: Throwable) {
-                e.printStackTrace()
+    private suspend fun syncNoteWithCloud(note: LocalNote) {
+        try {
+            if (note.cloudId != null) {
+                api.updateNote(note)
+            } else {
+                api.addNote(note)
             }
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
-    }
-
-    suspend fun updateNote(note: Note) = withContext(Dispatchers.IO) {
-        db.dao().updateNote(note)
-    }
-
-    suspend fun deleteNote(note: Note) = withContext(Dispatchers.IO) {
-        db.dao().deleteNote(note)
-    }
-
-    suspend fun insertTag(tag: Tag) = withContext(Dispatchers.IO) {
-        db.dao().insertTag(tag)
-    }
-
-    suspend fun deleteTagsByNote(noteId: String) = withContext(Dispatchers.IO) {
-        db.dao().deleteTagsByNote(noteId)
     }
 }

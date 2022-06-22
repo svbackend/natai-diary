@@ -93,6 +93,25 @@ data class LocalNote(
     val deletedAt: Instant? = null,
     val tags: List<TagEntityDto>,
 ) {
+    fun update(
+        title: String,
+        content: String,
+        actualDate: LocalDate,
+        tags: List<TagEntityDto>,
+    ): LocalNote {
+        return LocalNote(
+            id = id,
+            cloudId = cloudId,
+            title = title,
+            content = content,
+            actualDate = actualDate,
+            createdAt = createdAt,
+            updatedAt = Instant.now(),
+            deletedAt = deletedAt,
+            tags = tags
+        )
+    }
+
     companion object {
         fun create(entity: NoteWithTags): LocalNote {
             val tags = entity.tags.map { TagEntityDto.create(it) }

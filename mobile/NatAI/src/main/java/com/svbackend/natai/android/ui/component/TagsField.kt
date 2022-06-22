@@ -18,23 +18,22 @@ import com.svbackend.natai.android.ui.NTextField
 
 @Composable
 fun TagsField(
+    value: TextFieldValue,
     tags: List<TagEntityDto>,
     onAddTag: (TagEntityDto) -> Unit,
     onDeleteTag: (TagEntityDto) -> Unit,
+    onValueChange: (TextFieldValue) -> Unit,
 ) {
-    var value by remember { mutableStateOf(TextFieldValue("")) }
-
     fun addTag(tag: String) {
         val newTag = sanitizeTag(tag)
 
         if (newTag.isNotEmpty() && newTag.length > 1) {
             onAddTag(TagEntityDto.create(newTag))
-            value = TextFieldValue("")
         }
     }
 
     val onChange = { v: TextFieldValue ->
-        value = v
+        onValueChange(v)
         val newValue = v.text
         val lastChar = newValue.lastOrNull()
         if (sanitizeTag(newValue).isNotEmpty() && (lastChar == ',' || lastChar == ' ')) {
@@ -104,8 +103,5 @@ fun TagBadge(
 }
 
 fun sanitizeTag(tag: String): String {
-    return tag
-        .trimStart('#', ' ')
-        .trimEnd()
-        .replace(",", "")
+    return TagEntityDto.cleanTag(tag)
 }

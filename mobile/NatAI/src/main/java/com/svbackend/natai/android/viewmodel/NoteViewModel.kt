@@ -10,7 +10,6 @@ import com.auth0.android.result.UserProfile
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.LoggedUserInfo
 import com.svbackend.natai.android.entity.LocalNote
-import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.ui.UserTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -67,7 +66,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     fun deleteNote(note: LocalNote) {
         viewModelScope.launch {
-            repository.deleteNote(Note.create(note))
+            repository.deleteNoteAndSync(note)
         }
     }
 

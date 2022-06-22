@@ -43,7 +43,7 @@ class ApiSyncService(
     private suspend fun insertToLocal(cloudNote: CloudNote) {
         val newLocalNote = LocalNote.create(cloudNote)
         try {
-            repository.insert(newLocalNote)
+            repository.insertNoteAndSync(newLocalNote)
         } catch (e: Throwable) {
             e.printStackTrace()
         }

@@ -32,6 +32,14 @@ data class TagEntityDto(
     }
 
     companion object {
+        fun cleanTag(tag: String): String {
+            return tag
+                .trimStart('#', ' ')
+                .trimEnd()
+                .replace(",", "")
+
+        }
+
         fun create(tag: Tag): TagEntityDto {
             return TagEntityDto(
                 name = tag.name,
@@ -41,7 +49,8 @@ data class TagEntityDto(
 
         fun create(tag: String): TagEntityDto {
             if (tag.contains(".")) {
-                val (name, unvalidatedScore) = tag.split(".")
+                val (unvalidatedName, unvalidatedScore) = tag.split(".")
+                val name = cleanTag(unvalidatedName)
                 val score = unvalidatedScore.toIntOrNull()?.coerceIn(0, 10)
 
                 return TagEntityDto(
@@ -50,10 +59,25 @@ data class TagEntityDto(
                 )
             }
 
+            val name = cleanTag(tag)
             return TagEntityDto(
-                name = tag,
+                name = name,
                 score = null,
             )
+        }
+
+        fun createOrNull(tag: String): TagEntityDto? {
+            val cleanTag = cleanTag(tag)
+
+            if (cleanTag.isEmpty()) {
+                return null
+            }
+
+            if (cleanTag.length < 2) {
+                return null
+            }
+
+            return create(tag)
         }
     }
 }

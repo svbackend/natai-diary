@@ -7,8 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.LocalNote
-import com.svbackend.natai.android.entity.Note
-import com.svbackend.natai.android.entity.Tag
+import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -25,6 +24,11 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
     val content = mutableStateOf(
         TextFieldValue("")
     )
+    val tagsFieldValue = mutableStateOf(
+        TextFieldValue("")
+    )
+
+    val tags = mutableStateOf(emptyList<TagEntityDto>())
 
     val note = MutableSharedFlow<LocalNote?>(replay = 1)
 
@@ -35,31 +39,37 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
     ) {
         isLoading.value = true
 
-        val entity = Note.create(note)
+        val notAddedTag = TagEntityDto.createOrNull(tagsFieldValue.value.text)
 
-        entity.update(
+        if (notAddedTag != null) {
+            tags.value = tags.value + notAddedTag
+        }
+
+        val updatedNote = note.update(
             title = title.value.text,
             content = content.value.text,
             actualDate = actualDate.value,
+            tags = tags.value,
         )
-        repository.updateNote(entity)
-        repository.deleteTagsByNote(note.id)
 
-        note.tags.forEach {
-            repository.insertTag(
-                Tag(
-                    noteId = note.id,
-                    name = it.name,
-                    score = it.score,
-                )
-            )
-        }
+        repository.updateNoteAndSync(updatedNote)
 
         isLoading.value = false
+        clearStoredData()
     }
 
     fun actualDateChanged(newDate: LocalDate) {
         actualDate.value = newDate
+    }
+
+    fun addTag(tag: TagEntityDto) {
+        if (!tags.value.contains(tag)) {
+            tags.value = tags.value.plus(tag)
+        }
+    }
+
+    fun deleteTag(tag: TagEntityDto) {
+        tags.value = tags.value.minus(tag)
     }
 
     fun loadNote(noteId: String) = viewModelScope.launch {
@@ -68,7 +78,16 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
             title.value = TextFieldValue(localNote.title)
             content.value = TextFieldValue(localNote.content)
             actualDate.value = localNote.actualDate
+            tags.value = it.tags.map { tag ->
+                TagEntityDto.create(tag)
+            }
             note.emit(localNote)
         }
+    }
+
+    private fun clearStoredData() {
+        title.value = TextFieldValue("")
+        content.value = TextFieldValue("")
+        tagsFieldValue.value = TextFieldValue("")
     }
 }

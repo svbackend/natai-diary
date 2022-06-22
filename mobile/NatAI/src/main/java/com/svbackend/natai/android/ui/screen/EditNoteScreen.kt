@@ -14,11 +14,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.ui.NDateField
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
+import com.svbackend.natai.android.ui.component.TagsField
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -59,6 +61,8 @@ fun EditNoteScreen(
     val onDateChange = { date: LocalDate ->
         vm.actualDateChanged(date)
     }
+    val tags = vm.tags.value
+    val tagsValue = vm.tagsFieldValue.value
 
     Column(
         Modifier.padding(16.dp)
@@ -84,6 +88,16 @@ fun EditNoteScreen(
             onChange = {
                 vm.content.value = it
             }
+        )
+        TagsField(
+            value = tagsValue,
+            tags = tags,
+            onAddTag = {
+                vm.addTag(it)
+                vm.tagsFieldValue.value = TextFieldValue("")
+            },
+            onDeleteTag = { vm.deleteTag(it) },
+            onValueChange = { vm.tagsFieldValue.value = it }
         )
         if (vm.isLoading.value) {
             ExtendedFloatingActionButton(
