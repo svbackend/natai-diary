@@ -65,7 +65,7 @@ class NoteRepository(private val jdbi: Jdbi, private val mapper: ObjectMapper) {
                     actualDate = rs.getDate("actual_date").toLocalDate(),
                     createdAt = rs.getTimestamp("created_at").toInstant(),
                     updatedAt = rs.getTimestamp("updated_at").toInstant(),
-                    deletedAt = rs.getTimestamp("updated_at").toInstant(),
+                    deletedAt = rs.getTimestamp("deleted_at")?.toInstant(),
                     tags = tags,
                 )
             }.list()
