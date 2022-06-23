@@ -11,10 +11,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -46,7 +46,12 @@ fun AnalyticsScreen(vm: NoteViewModel) {
 
     val tags = getMostFrequentUsedTags(vm.notesState)
 
-    val dateList = generateDates()
+    var daysBefore by remember { mutableStateOf(90) }
+
+    val dateList = generateDates(daysBefore)
+    val firstDate = dateList.first()
+    val lastDate = dateList.last()
+    val dateStrings = dateList.map { LocalDateTimeFormatter.fullDate.format(it) }
 
     Surface(
         modifier = Modifier
@@ -63,12 +68,59 @@ fun AnalyticsScreen(vm: NoteViewModel) {
                 )
             }
 
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(
+                        onClick = {
+                            daysBefore += 90
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowLeft,
+                            contentDescription = "show previous dates"
+                        )
+                    }
+                    Text(
+                        text = LocalDateTimeFormatter.fullDate.format(firstDate),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(top = 12.dp)
+                    )
+                    Text(
+                        text = "—",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(top = 12.dp)
+                    )
+                    Text(
+                        text = LocalDateTimeFormatter.fullDate.format(lastDate),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(top = 12.dp)
+                    )
+                    IconButton(
+                        onClick = {
+                            daysBefore -= 90
+                        },
+                        enabled = daysBefore > 90
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowRight,
+                            contentDescription = "show next dates"
+                        )
+                    }
+                }
+            }
+
             items(tags) { tag ->
                 Contributions(
                     context = context,
                     tag = tag,
                     notesMap = notesMap,
-                    dateList = dateList
+                    dateList = dateStrings
                 )
             }
         }
@@ -93,14 +145,12 @@ private fun getMostFrequentUsedTags(notes: List<LocalNote>): List<String> {
 // generate dates (last 3 months) for displaying squares of days with tags
 // start always on Sunday, end always on Saturday
 // if there is no tag for a day, it will be empty
-private fun generateDates(): List<String> {
+private fun generateDates(daysBefore: Int = 90): List<LocalDate> {
     val calendar = LocalDate.now()
-
-    val daysBefore = 90
 
     val prependedDates = mutableListOf<LocalDate>()
     val appendedDates = mutableListOf<LocalDate>()
-    val dateList = (daysBefore downTo 0).map {
+    val dateList = (daysBefore downTo daysBefore - 90).map {
         calendar.minus(Period.ofDays(it))
     }.toMutableList()
 
@@ -128,9 +178,6 @@ private fun generateDates(): List<String> {
     return prependedDates
         .plus(dateList)
         .plus(appendedDates)
-        .map {
-            LocalDateTimeFormatter.fullDate.format(it)
-        }
 }
 
 @Composable
