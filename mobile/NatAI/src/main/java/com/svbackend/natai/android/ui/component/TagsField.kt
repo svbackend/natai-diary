@@ -69,7 +69,7 @@ fun TagsField(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    tint = MaterialTheme.colorScheme.primary,
                     contentDescription = "Add tag"
                 )
             }
