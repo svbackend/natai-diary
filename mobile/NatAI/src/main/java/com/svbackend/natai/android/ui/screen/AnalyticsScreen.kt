@@ -1,21 +1,24 @@
 package com.svbackend.natai.android.ui.screen
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.svbackend.natai.android.R
@@ -25,14 +28,12 @@ import com.svbackend.natai.android.ui.NataiCustomColors
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
-import java.util.*
-import kotlin.random.Random
 
 @Composable
 fun AnalyticsScreen(vm: NoteViewModel) {
+    val context = LocalContext.current
     val notesMap: MutableMap<String, MutableList<LocalNote>> = mutableMapOf()
     vm.notesState.forEach {
         val date = LocalDateTimeFormatter.fullDate.format(it.actualDate)
@@ -43,6 +44,8 @@ fun AnalyticsScreen(vm: NoteViewModel) {
         }
     }
 
+    val tags = getMostFrequentUsedTags(vm.notesState)
+
     val dateList = generateDates()
 
     Surface(
@@ -50,23 +53,41 @@ fun AnalyticsScreen(vm: NoteViewModel) {
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.surface
     ) {
-        Column(
-            Modifier
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                text = stringResource(R.string.analyticsTitle),
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 24.sp,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
-            )
+        LazyColumn {
+            item {
+                Text(
+                    text = stringResource(R.string.analyticsTitle),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
+                )
+            }
 
-            Contributions(
-                notesMap,
-                dateList
-            )
+            items(tags) { tag ->
+                Contributions(
+                    context = context,
+                    tag = tag,
+                    notesMap = notesMap,
+                    dateList = dateList
+                )
+            }
         }
     }
+}
+
+private fun getMostFrequentUsedTags(notes: List<LocalNote>): List<String> {
+    val tagsMap: MutableMap<String, Int> = mutableMapOf()
+    notes.forEach { localNote ->
+        localNote.tags.forEach {
+            if (tagsMap.containsKey(it.name)) {
+                tagsMap[it.name] = tagsMap[it.name]!! + 1
+            } else {
+                tagsMap[it.name] = 1
+            }
+        }
+    }
+    val sortedTags = tagsMap.toList().sortedByDescending { it.second }
+    return sortedTags.map { it.first }
 }
 
 // generate dates (last 3 months) for displaying squares of days with tags
@@ -114,11 +135,13 @@ private fun generateDates(): List<String> {
 
 @Composable
 fun Contributions(
+    context: Context,
+    tag: String,
     notesMap: MutableMap<String, MutableList<LocalNote>>,
     dateList: List<String>
 ) {
     Text(
-        text = "#sex",
+        text = "#${tag}",
         color = MaterialTheme.colorScheme.primary,
         fontSize = 18.sp,
         modifier = Modifier.padding(start = 16.dp)
@@ -136,8 +159,14 @@ fun Contributions(
                     Column {
                         for (day in week) {
                             ContributionsSquare(
-                                tag = "sex",
+                                day = day,
+                                tag = tag,
                                 notes = notesMap[day] ?: emptyList(),
+                                onClick = {
+                                    Toast
+                                        .makeText(context, it, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
                             )
                         }
                     }
@@ -171,8 +200,10 @@ fun Contributions(
 
 @Composable
 fun ContributionsSquare(
+    day: String,
     tag: String,
     notes: List<LocalNote>,
+    onClick: (String) -> Unit,
 ) {
     var tagDto: TagEntityDto? = null
     notes.forEach { localNote ->
@@ -195,6 +226,7 @@ fun ContributionsSquare(
     } else colors.emptyContribution
     Box(
         modifier = Modifier
+            .clickable { onClick(day) }
             .size(24.dp)
             .padding(horizontal = 2.dp, vertical = 2.dp)
             .border(color = colors.border, width = 1.dp, shape = RoundedCornerShape(4.dp))
@@ -205,7 +237,7 @@ fun ContributionsSquare(
 
 private fun getAlpha(score: Int?): Float {
     return if (score != null) {
-        (score / 100f).coerceAtLeast(.1f)
+        (score / 10f).coerceAtLeast(.1f)
     } else {
         .8f
     }
