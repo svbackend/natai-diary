@@ -7,9 +7,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -33,6 +35,8 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
     val note = MutableSharedFlow<LocalNote?>(replay = 1)
 
     val isLoading = mutableStateOf(false)
+
+    val tagsSuggestions = repository.notes.map { notes -> Tag.getMostFrequentlyUsedTags(notes) }
 
     suspend fun saveNote(
         note: LocalNote,

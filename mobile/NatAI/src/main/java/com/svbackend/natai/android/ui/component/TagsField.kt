@@ -2,7 +2,6 @@ package com.svbackend.natai.android.ui.component
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -17,14 +16,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NTextField
 
 @Composable
 fun TagsField(
+    tagsSuggestions: List<String>,
     context: Context,
     value: TextFieldValue,
     tags: List<TagEntityDto>,
@@ -33,7 +32,14 @@ fun TagsField(
     onValueChange: (TextFieldValue) -> Unit,
 ) {
     var isDialogOpen by remember { mutableStateOf(false) }
-    val tagsScrollState = rememberLazyListState()
+
+    val suggestions = tagsSuggestions
+        .take(5)
+        .filter { suggestion ->
+            !Tag.isSpecial(suggestion)
+                    && tags.any { it.name == suggestion }.not()
+                    && (value.text.isEmpty() || suggestion.startsWith(value.text))
+        }
 
     fun addTag(tag: String) {
         val newTag = sanitizeTag(tag)
@@ -71,6 +77,12 @@ fun TagsField(
             },
             text = {
                 Column {
+                    TagsSuggestions(
+                        tagsSuggestions = suggestions,
+                        onAddTag = { tag ->
+                            addTag(tag)
+                        })
+
                     NTextField(
                         value = value,
                         label = stringResource(R.string.noteTags),
@@ -177,6 +189,38 @@ fun TagsField(
 
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TagsSuggestions(tagsSuggestions: List<String>, onAddTag: (String) -> Unit) {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        state = rememberLazyListState(),
+    ) {
+        for (tag in tagsSuggestions) {
+            item {
+                InputChip(
+                    modifier = Modifier.padding(end = 4.dp),
+                    onClick = { onAddTag(tag) },
+                    label = { Text(text = tag) },
+                    trailingIcon = {
+                        IconButton(
+                            modifier = Modifier.size(14.dp),
+                            onClick = { onAddTag(tag) },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                contentDescription = "add tag"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
 fun CustomTagsBadges(

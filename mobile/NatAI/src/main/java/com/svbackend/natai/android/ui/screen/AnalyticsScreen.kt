@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NataiCustomColors
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
@@ -44,7 +45,7 @@ fun AnalyticsScreen(vm: NoteViewModel) {
         }
     }
 
-    val tags = getMostFrequentUsedTags(vm.notesState)
+    val tags = Tag.getMostFrequentlyUsedTags(vm.notesState)
 
     var daysBefore by remember { mutableStateOf(90) }
 
@@ -125,21 +126,6 @@ fun AnalyticsScreen(vm: NoteViewModel) {
             }
         }
     }
-}
-
-private fun getMostFrequentUsedTags(notes: List<LocalNote>): List<String> {
-    val tagsMap: MutableMap<String, Int> = mutableMapOf()
-    notes.forEach { localNote ->
-        localNote.tags.forEach {
-            if (tagsMap.containsKey(it.name)) {
-                tagsMap[it.name] = tagsMap[it.name]!! + 1
-            } else {
-                tagsMap[it.name] = 1
-            }
-        }
-    }
-    val sortedTags = tagsMap.toList().sortedByDescending { it.second }
-    return sortedTags.map { it.first }
 }
 
 // generate dates (last 3 months) for displaying squares of days with tags

@@ -37,6 +37,7 @@ fun NewNoteScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val tagsSuggestions by vm.tagsSuggestions.collectAsState(initial = emptyList())
 
     val onTitleChange: (String) -> Unit = throttleLatest(
         intervalMs = 350L,
@@ -157,7 +158,8 @@ fun NewNoteScreen(
                 onDeleteTag = {
                     vm.deleteTag(it)
                 },
-                onValueChange = { vm.tagsFieldValue.value = it }
+                onValueChange = { vm.tagsFieldValue.value = it },
+                tagsSuggestions = tagsSuggestions,
             )
 
             if (vm.isLoading.value) {

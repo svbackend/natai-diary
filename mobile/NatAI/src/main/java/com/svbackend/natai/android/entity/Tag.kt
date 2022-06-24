@@ -16,13 +16,32 @@ data class Tag(
     val noteId: String,
     val name: String,
     val score: Int? = null,
-)
+) {
+    companion object {
+        fun isSpecial(tag: String) = SPECIAL_TAGS.contains(tag)
+
+        fun getMostFrequentlyUsedTags(notes: List<LocalNote>): List<String> {
+            val tagsMap: MutableMap<String, Int> = mutableMapOf()
+            notes.forEach { localNote ->
+                localNote.tags.forEach {
+                    if (tagsMap.containsKey(it.name)) {
+                        tagsMap[it.name] = tagsMap[it.name]!! + 1
+                    } else {
+                        tagsMap[it.name] = 1
+                    }
+                }
+            }
+            val sortedTags = tagsMap.toList().sortedByDescending { it.second }
+            return sortedTags.map { it.first }
+        }
+    }
+}
 
 data class TagEntityDto(
     val name: String,
     val score: Int? = null,
 ) {
-    val isSpecial: Boolean = SPECIAL_TAGS.contains(this.name)
+    val isSpecial: Boolean = Tag.isSpecial(name)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

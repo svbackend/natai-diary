@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +32,8 @@ fun EditNoteScreen(
     onSuccess: () -> Unit
 ) {
     val note = vm.note.collectAsState(initial = null).value
+
+    val tagsSuggestions by vm.tagsSuggestions.collectAsState(initial = emptyList())
 
     if (note == null) {
         LoadingScreen()
@@ -98,7 +101,8 @@ fun EditNoteScreen(
                 vm.tagsFieldValue.value = TextFieldValue("")
             },
             onDeleteTag = { vm.deleteTag(it) },
-            onValueChange = { vm.tagsFieldValue.value = it }
+            onValueChange = { vm.tagsFieldValue.value = it },
+            tagsSuggestions = tagsSuggestions,
         )
         if (vm.isLoading.value) {
             ExtendedFloatingActionButton(

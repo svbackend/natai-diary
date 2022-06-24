@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.repository.DiaryRepository
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class NewNoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -27,6 +28,8 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     val tags = mutableStateOf(emptyList<TagEntityDto>())
 
     val isLoading = mutableStateOf(false)
+
+    val tagsSuggestions = repository.notes.map { notes -> Tag.getMostFrequentlyUsedTags(notes) }
 
     fun saveTitle(title: String) {
         prefs.edit().putString("new_note_title", title).apply()
