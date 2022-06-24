@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -53,8 +54,8 @@ fun TagsField(
 
     CustomTagsBadges(
         tags = tags,
-        tagsScrollState = tagsScrollState,
-        onDeleteTag = onDeleteTag
+        onDeleteTag = onDeleteTag,
+        preserveSpace = false,
     )
 
     if (isDialogOpen) {
@@ -62,7 +63,6 @@ fun TagsField(
             onDismissRequest = { isDialogOpen = false },
             confirmButton = {
                 Button(onClick = {
-                    onValueChange(TextFieldValue(""))
                     addTag(value.text)
                     isDialogOpen = false
                 }) {
@@ -90,13 +90,12 @@ fun TagsField(
                         }
                     )
 
-                    if (tags.isNotEmpty()) {
-                        CustomTagsBadges(
-                            tags = tags,
-                            tagsScrollState = tagsScrollState,
-                            onDeleteTag = onDeleteTag
-                        )
-                    }
+                    CustomTagsBadges(
+                        tags = tags,
+                        onDeleteTag = onDeleteTag,
+                        preserveSpace = true,
+                    )
+
                 }
             },
             title = {
@@ -162,6 +161,7 @@ fun TagsField(
             IconButton(
                 onClick = {
                     isDialogOpen = true
+                    onValueChange(TextFieldValue(""))
                 },
             ) {
                 Icon(
@@ -181,20 +181,34 @@ fun TagsField(
 @Composable
 fun CustomTagsBadges(
     tags: List<TagEntityDto>,
-    tagsScrollState: LazyListState,
     onDeleteTag: (TagEntityDto) -> Unit,
+    preserveSpace: Boolean = false,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            state = tagsScrollState
+            state = rememberLazyListState(),
         ) {
+            if (preserveSpace && tags.isEmpty()) {
+                // Workaround to fix bug when adding first tag it is not showing up in dialog box
+                item {
+                    TagBadge(
+                        modifier = Modifier.alpha(0f),
+                        tag = TagEntityDto("No Tags"),
+                        onDelete = {}
+                    )
+                }
+            }
+
             tags.map { tag ->
                 if (!tag.isSpecial) {
                     item {
-                        TagBadge(tag, onDelete = {
-                            onDeleteTag(tag)
-                        })
+                        TagBadge(
+                            tag = tag,
+                            onDelete = {
+                                onDeleteTag(tag)
+                            }
+                        )
                     }
                 }
             }
@@ -205,11 +219,12 @@ fun CustomTagsBadges(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagBadge(
+    modifier: Modifier = Modifier,
     tag: TagEntityDto,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
 ) {
     InputChip(
-        modifier = Modifier.padding(end = 4.dp),
+        modifier = modifier.padding(end = 4.dp),
         onClick = {},
         label = { Text(text = tag.name) },
         trailingIcon = {
