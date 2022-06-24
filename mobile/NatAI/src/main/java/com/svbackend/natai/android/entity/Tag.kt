@@ -4,6 +4,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
+val SPECIAL_TAGS = listOf(
+    "mood",
+    "sleep",
+    "sport",
+)
+
 @Entity
 data class Tag(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
@@ -16,6 +22,8 @@ data class TagEntityDto(
     val name: String,
     val score: Int? = null,
 ) {
+    val isSpecial: Boolean = SPECIAL_TAGS.contains(this.name)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

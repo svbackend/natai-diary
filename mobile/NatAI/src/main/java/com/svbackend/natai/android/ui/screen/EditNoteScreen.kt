@@ -90,6 +90,7 @@ fun EditNoteScreen(
             }
         )
         TagsField(
+            context = context,
             value = tagsValue,
             tags = tags,
             onAddTag = {

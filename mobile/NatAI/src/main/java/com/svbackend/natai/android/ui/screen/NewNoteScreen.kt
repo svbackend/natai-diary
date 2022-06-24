@@ -143,10 +143,11 @@ fun NewNoteScreen(
                 }
             )
 
-            val tags = vm.tags.value
+            val tags by vm.tags
             val tagsValue = vm.tagsFieldValue.value
 
             TagsField(
+                context = context,
                 tags = tags,
                 value = tagsValue,
                 onAddTag = {
