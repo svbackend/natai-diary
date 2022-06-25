@@ -136,7 +136,7 @@ private fun generateDates(daysBefore: Int = 90): List<LocalDate> {
 
     val prependedDates = mutableListOf<LocalDate>()
     val appendedDates = mutableListOf<LocalDate>()
-    val dateList = (daysBefore downTo daysBefore - 90).map {
+    val dateList = (daysBefore downTo (daysBefore - 90)).map {
         calendar.minus(Period.ofDays(it))
     }.toMutableList()
 
@@ -153,12 +153,19 @@ private fun generateDates(daysBefore: Int = 90): List<LocalDate> {
     }
 
     if (lastDate.dayOfWeek != DayOfWeek.SATURDAY) {
-        val nbDaysToAdd = DayOfWeek.SATURDAY.value - lastDate.dayOfWeek.value
-        appendedDates.addAll(
-            (1..nbDaysToAdd).map {
-                calendar.plus(Period.ofDays(it))
-            }
-        )
+        val nbDaysToAdd = if (lastDate.dayOfWeek == DayOfWeek.SUNDAY) {
+            6
+        } else {
+            DayOfWeek.SATURDAY.value - lastDate.dayOfWeek.value
+        }
+        
+        if (nbDaysToAdd > 0) {
+            appendedDates.addAll(
+                (1..nbDaysToAdd).map {
+                    calendar.plus(Period.ofDays(it))
+                }
+            )
+        }
     }
 
     return prependedDates
@@ -179,53 +186,49 @@ fun Contributions(
         fontSize = 18.sp,
         modifier = Modifier.padding(start = 16.dp)
     )
-    BoxWithConstraints(
+    Box(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        LazyRow(
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            state = rememberLazyListState(initialFirstVisibleItemIndex = (365 / 7) - 1)
         ) {
             for (week in dateList.chunked(7)) {
-                item {
-                    Column {
-                        for (day in week) {
-                            ContributionsSquare(
-                                day = day,
-                                tag = tag,
-                                notes = notesMap[day] ?: emptyList(),
-                                onClick = {
-                                    Toast
-                                        .makeText(context, it, Toast.LENGTH_SHORT)
-                                        .show()
-                                }
-                            )
-                        }
+                Column {
+                    for (day in week) {
+                        ContributionsSquare(
+                            day = day,
+                            tag = tag,
+                            notes = notesMap[day] ?: emptyList(),
+                            onClick = {
+                                Toast
+                                    .makeText(context, it, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        )
                     }
                 }
+
             }
-            item {
-                Column(
-                    modifier = Modifier
-                        .padding(top = 8.dp, start = 4.dp)
-                ) {
-                    Text(
-                        text = "Mon",
-                        modifier = Modifier.padding(top = 22.dp),
-                        fontSize = 10.sp,
-                    )
-                    Text(
-                        text = "Wed",
-                        modifier = Modifier.padding(top = 34.dp),
-                        fontSize = 10.sp,
-                    )
-                    Text(
-                        text = "Fri",
-                        modifier = Modifier.padding(top = 34.dp),
-                        fontSize = 10.sp,
-                    )
-                }
+            Column(
+                modifier = Modifier
+                    .padding(top = 8.dp, start = 4.dp)
+            ) {
+                Text(
+                    text = "Mon",
+                    modifier = Modifier.padding(top = 22.dp),
+                    fontSize = 10.sp,
+                )
+                Text(
+                    text = "Wed",
+                    modifier = Modifier.padding(top = 34.dp),
+                    fontSize = 10.sp,
+                )
+                Text(
+                    text = "Fri",
+                    modifier = Modifier.padding(top = 34.dp),
+                    fontSize = 10.sp,
+                )
             }
         }
     }
