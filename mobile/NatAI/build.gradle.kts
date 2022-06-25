@@ -25,6 +25,10 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     buildFeatures {
