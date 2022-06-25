@@ -9,10 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -21,6 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.ui.component.AllTagsBadges
+import com.svbackend.natai.android.ui.component.CustomTagsBadges
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
@@ -40,81 +39,90 @@ fun NoteDetailsScreen(
         return
     }
 
-    Column(
-        Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+    Surface(
+        modifier = Modifier
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.surface
     ) {
-        SelectionContainer {
-            Text(
-                text = note.title,
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+        Column(
+            Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            SelectionContainer {
+                Text(
+                    text = note.title,
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                )
+            }
+
+            AllTagsBadges(
+                tags = note.tags,
             )
-        }
 
-        Text(
-            text = LocalDateTimeFormatter.fullDate.format(note.actualDate),
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-        )
-
-        SelectionContainer {
             Text(
-                text = note.content,
-                style = MaterialTheme.typography.bodyLarge,
+                text = LocalDateTimeFormatter.fullDate.format(note.actualDate),
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
             )
-        }
 
-        // Space between
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-        ) {
-            ExtendedFloatingActionButton(
-                text = {
-                    Text(
-                        text = stringResource(R.string.editNote),
-                    )
-                },
-                icon = {
+            SelectionContainer {
+                Text(
+                    text = note.content,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                )
+            }
+
+            // Space between
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            ) {
+                Button(
+                    onClick = { onEditClick(noteId) },
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                ) {
                     Icon(
                         Icons.Filled.Edit,
                         stringResource(R.string.editNote)
                     )
-                },
-                onClick = { onEditClick(noteId) }
-            )
-
-
-            ExtendedFloatingActionButton(
-                text = {
                     Text(
-                        text = stringResource(R.string.deleteNote),
+                        text = stringResource(R.string.editNote),
+                        modifier = Modifier.padding(start = 8.dp)
                     )
-                },
-                icon = {
+                }
+
+                Button(
+                    onClick = {
+                        Toast
+                            .makeText(context, "Note deleted!", Toast.LENGTH_SHORT)
+                            .show()
+                        onDeleteClick(note)
+                    },
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                ) {
                     Icon(
                         Icons.Filled.Delete,
                         stringResource(R.string.deleteNote)
                     )
-                },
-                onClick = {
-                    Toast
-                        .makeText(context, "Note deleted!", Toast.LENGTH_SHORT)
-                        .show()
-                    onDeleteClick(note)
+                    Text(
+                        text = stringResource(R.string.deleteNote),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
-            )
+            }
         }
     }
 }

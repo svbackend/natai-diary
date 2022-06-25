@@ -118,7 +118,9 @@ fun TagsField(
 
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Column(verticalArrangement = Arrangement.Center) {
@@ -260,6 +262,40 @@ fun CustomTagsBadges(
     }
 }
 
+@Composable
+fun AllTagsBadges(
+    tags: List<TagEntityDto>,
+) {
+    val regularTags = tags.filter { !it.isSpecial }
+    val specialTags = tags.filter { it.isSpecial }
+
+    if (specialTags.isNotEmpty()) {
+        Row {
+            specialTags.map {
+                TagPreviewBadge(
+                    tag = it,
+                )
+            }
+        }
+    }
+
+    if (regularTags.isNotEmpty()) {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            state = rememberLazyListState(),
+        ) {
+            regularTags.map { tag ->
+                item {
+                    TagPreviewBadge(
+                        tag = tag,
+                    )
+                }
+
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagBadge(
@@ -283,6 +319,19 @@ fun TagBadge(
                 )
             }
         }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TagPreviewBadge(
+    modifier: Modifier = Modifier,
+    tag: TagEntityDto,
+) {
+    InputChip(
+        modifier = modifier.padding(end = 4.dp),
+        onClick = {},
+        label = { Text(text = "#${tag.name}") },
     )
 }
 
