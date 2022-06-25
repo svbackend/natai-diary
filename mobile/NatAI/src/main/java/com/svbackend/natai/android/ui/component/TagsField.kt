@@ -267,17 +267,8 @@ fun AllTagsBadges(
     tags: List<TagEntityDto>,
 ) {
     val regularTags = tags.filter { !it.isSpecial }
-    val specialTags = tags.filter { it.isSpecial }
 
-    if (specialTags.isNotEmpty()) {
-        Row {
-            specialTags.map {
-                TagPreviewBadge(
-                    tag = it,
-                )
-            }
-        }
-    }
+    SpecialTagsRow(tags = tags)
 
     if (regularTags.isNotEmpty()) {
         LazyRow(
@@ -292,6 +283,30 @@ fun AllTagsBadges(
                 }
 
             }
+        }
+    }
+}
+
+@Composable
+fun SpecialTagsRow(tags: List<TagEntityDto>) {
+    val specialTags = tags.filter { it.isSpecial }
+    Row {
+        specialTags.map {
+            TagPreviewBadge(
+                tag = it,
+            )
+        }
+    }
+}
+
+@Composable
+fun RegularTagsRow(tags: List<TagEntityDto>) {
+    val regularTags = tags.filter { !it.isSpecial }
+    Row {
+        regularTags.map {
+            TagPreviewBadge(
+                tag = it,
+            )
         }
     }
 }

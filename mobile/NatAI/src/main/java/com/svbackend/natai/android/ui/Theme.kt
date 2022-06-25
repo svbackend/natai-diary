@@ -97,7 +97,7 @@ fun NataiTheme(
     }
 
     val customColors = when (themeName) {
-        UserTheme.Default -> DynamicTheme
+        UserTheme.Default -> { if (darkTheme) DynamicThemeDark else DynamicTheme }
         UserTheme.Pink -> LightPinkTheme
         else -> DynamicTheme
     }
@@ -119,8 +119,14 @@ interface ICustomTheme {
 
 object DynamicTheme : ICustomTheme {
     override val emptyContribution = Color(0xFFEDEEF1)
-    override val contribution = Color(0xFF1060D6)
-    override val border = Color(0x801060D6)
+    override val contribution = Color(0xFF673AB7)
+    override val border = Color(0x80673AB7)
+}
+
+object DynamicThemeDark : ICustomTheme {
+    override val emptyContribution = Color(0xFF353535)
+    override val contribution = Color(0xFF673AB7)
+    override val border = Color(0x80673AB7)
 }
 
 object LightPinkTheme : ICustomTheme {
