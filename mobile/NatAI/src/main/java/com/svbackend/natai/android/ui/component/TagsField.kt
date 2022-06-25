@@ -20,6 +20,7 @@ import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NTextField
+import kotlin.math.roundToInt
 
 @Composable
 fun TagsField(
@@ -31,7 +32,17 @@ fun TagsField(
     onDeleteTag: (TagEntityDto) -> Unit,
     onValueChange: (TextFieldValue) -> Unit,
 ) {
-    var isDialogOpen by remember { mutableStateOf(false) }
+    var isAddCustomTagDialogOpen by remember { mutableStateOf(false) }
+
+    var isTagScoreDialogOpen by remember { mutableStateOf(false) }
+    var selectedTag by remember { mutableStateOf<TagEntityDto?>(null) }
+    var selectedTagScore by remember { mutableStateOf(10) }
+
+    val openTagScoreDialog = fun(tag: TagEntityDto) {
+        selectedTag = tag
+        isTagScoreDialogOpen = true
+        selectedTagScore = tag.score ?: 10
+    }
 
     val suggestions = tagsSuggestions
         .take(5)
@@ -62,15 +73,40 @@ fun TagsField(
         tags = tags,
         onDeleteTag = onDeleteTag,
         preserveSpace = false,
+        openTagScoreDialog = openTagScoreDialog,
     )
 
-    if (isDialogOpen) {
+    if (isTagScoreDialogOpen && selectedTag != null) {
         AlertDialog(
-            onDismissRequest = { isDialogOpen = false },
+            onDismissRequest = { isTagScoreDialogOpen = false },
+            confirmButton = {
+                Button(onClick = {
+                    onAddTag(selectedTag!!.copy(score = selectedTagScore))
+                    isTagScoreDialogOpen = false
+                }) {
+                    Text(stringResource(R.string.done))
+                }
+            },
+            text = {
+                Slider(
+                    value = selectedTagScore.div(10f),
+                    onValueChange = { selectedTagScore = it.times(10f).roundToInt() },
+                    steps = 9
+                )
+            },
+            title = {
+                Text("#${selectedTag!!.name} ($selectedTagScore)")
+            }
+        )
+    }
+
+    if (isAddCustomTagDialogOpen) {
+        AlertDialog(
+            onDismissRequest = { isAddCustomTagDialogOpen = false },
             confirmButton = {
                 Button(onClick = {
                     addTag(value.text)
-                    isDialogOpen = false
+                    isAddCustomTagDialogOpen = false
                 }) {
                     Text(stringResource(R.string.done))
                 }
@@ -106,6 +142,10 @@ fun TagsField(
                         tags = tags,
                         onDeleteTag = onDeleteTag,
                         preserveSpace = true,
+                        openTagScoreDialog = { tag ->
+                            isTagScoreDialogOpen = true
+                            selectedTag = tag
+                        }
                     )
 
                 }
@@ -174,7 +214,7 @@ fun TagsField(
         Column(verticalArrangement = Arrangement.Center) {
             IconButton(
                 onClick = {
-                    isDialogOpen = true
+                    isAddCustomTagDialogOpen = true
                     onValueChange(TextFieldValue(""))
                 },
             ) {
@@ -228,6 +268,7 @@ fun TagsSuggestions(tagsSuggestions: List<String>, onAddTag: (String) -> Unit) {
 fun CustomTagsBadges(
     tags: List<TagEntityDto>,
     onDeleteTag: (TagEntityDto) -> Unit,
+    openTagScoreDialog: (TagEntityDto) -> Unit,
     preserveSpace: Boolean = false,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
@@ -241,7 +282,8 @@ fun CustomTagsBadges(
                     TagBadge(
                         modifier = Modifier.alpha(0f),
                         tag = TagEntityDto("No Tags"),
-                        onDelete = {}
+                        onDelete = {},
+                        onClick = {},
                     )
                 }
             }
@@ -253,7 +295,10 @@ fun CustomTagsBadges(
                             tag = tag,
                             onDelete = {
                                 onDeleteTag(tag)
-                            }
+                            },
+                            onClick = {
+                                openTagScoreDialog(tag)
+                            },
                         )
                     }
                 }
@@ -316,11 +361,12 @@ fun RegularTagsRow(tags: List<TagEntityDto>) {
 fun TagBadge(
     modifier: Modifier = Modifier,
     tag: TagEntityDto,
+    onClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
     InputChip(
         modifier = modifier.padding(end = 4.dp),
-        onClick = {},
+        onClick = onClick,
         label = { Text(text = tag.name) },
         trailingIcon = {
             IconButton(

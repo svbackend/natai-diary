@@ -59,7 +59,7 @@ fun EditNoteScreen(
     val onDateChange = { date: LocalDate ->
         vm.actualDateChanged(date)
     }
-    val tags = vm.tags.value
+    val tags by vm.tags
     val tagsValue = vm.tagsFieldValue.value
 
     Surface(
@@ -99,13 +99,19 @@ fun EditNoteScreen(
                 onAddTag = {
                     vm.addTag(it)
                     vm.tagsFieldValue.value = TextFieldValue("")
+                    saveNote()
                 },
-                onDeleteTag = { vm.deleteTag(it) },
+                onDeleteTag = {
+                    vm.deleteTag(it)
+                    saveNote()
+                },
                 onValueChange = { vm.tagsFieldValue.value = it },
                 tagsSuggestions = tagsSuggestions,
             )
             if (vm.isLoading.value) {
-                Button(onClick = {}, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                Button(onClick = {}, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)) {
                     NProgressBtn()
                     Text(
                         text = stringResource(R.string.saving),
@@ -113,7 +119,12 @@ fun EditNoteScreen(
                     )
                 }
             } else {
-                Button(onClick = saveNote(), modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                Button(
+                    onClick = saveNote(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
                     Icon(
                         Icons.Filled.Edit,
                         stringResource(R.string.saveNote)

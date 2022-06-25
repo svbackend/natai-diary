@@ -73,10 +73,15 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     fun addTag(tag: TagEntityDto) {
         if (!tags.value.contains(tag)) {
             tags.value = tags.value.plus(tag)
-        }
+        } else replaceTag(tag)
     }
 
     fun deleteTag(tag: TagEntityDto) {
         tags.value = tags.value.minus(tag)
+    }
+
+    fun replaceTag(tag: TagEntityDto) {
+        tags.value = tags.value.minus(tag)
+        tags.value = tags.value.plus(tag)
     }
 }
