@@ -9,7 +9,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -18,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.NDateField
 import com.svbackend.natai.android.ui.NProgressBtn
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
@@ -163,7 +165,7 @@ fun NewNoteScreen(
             )
 
             if (vm.isLoading.value) {
-                Button(onClick = {}) {
+                Button(onClick = {}, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
                     NProgressBtn()
                     Text(
                         text = stringResource(R.string.saving),
@@ -171,21 +173,16 @@ fun NewNoteScreen(
                     )
                 }
             } else {
-                ExtendedFloatingActionButton(
-                    text = {
-                        Text(
-                            text = stringResource(R.string.addNote),
-                        )
-                    },
-                    icon = {
-                        Icon(
-                            Icons.Filled.Add,
-                            stringResource(R.string.addNote)
-                        )
-                    },
-                    onClick = addNote()
-                )
-
+                Button(onClick = addNote(), modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                    Icon(
+                        Icons.Filled.Add,
+                        stringResource(R.string.addNote)
+                    )
+                    Text(
+                        text = stringResource(R.string.addNote),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
 
         }
