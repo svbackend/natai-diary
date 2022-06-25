@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.ui.AppDateRow
 import com.svbackend.natai.android.ui.NProgressBtn
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
@@ -95,40 +96,8 @@ fun NewNoteScreen(
                     .padding(bottom = 16.dp),
             )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(
-                    onClick = {
-                        onDateChange(actualDate.minusDays(1))
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowLeft,
-                        contentDescription = "select previous date"
-                    )
-                }
-                Text(
-                    text = LocalDateTimeFormatter.fullDate.format(actualDate),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(top = 12.dp)
-                )
-                IconButton(
-                    onClick = {
-                        onDateChange(actualDate.plusDays(1))
-                    },
-                    enabled = actualDate.isBefore(LocalDate.now())
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowRight,
-                        contentDescription = "select next date"
-                    )
-                }
-            }
+            AppDateRow(actualDate = actualDate, onDateChange = onDateChange)
 
-            //NDateField(context = context, value = actualDate, onChange = onDateChange)
             NTextField(
                 value = vm.title.value,
                 label = stringResource(R.string.noteTitle),
@@ -165,7 +134,9 @@ fun NewNoteScreen(
             )
 
             if (vm.isLoading.value) {
-                Button(onClick = {}, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                Button(onClick = {}, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)) {
                     NProgressBtn()
                     Text(
                         text = stringResource(R.string.saving),
@@ -173,7 +144,9 @@ fun NewNoteScreen(
                     )
                 }
             } else {
-                Button(onClick = addNote(), modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                Button(onClick = addNote(), modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)) {
                     Icon(
                         Icons.Filled.Add,
                         stringResource(R.string.addNote)

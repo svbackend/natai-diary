@@ -1,10 +1,7 @@
 package com.svbackend.natai.android.ui.screen
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -18,9 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.NDateField
-import com.svbackend.natai.android.ui.NTextField
-import com.svbackend.natai.android.ui.NTextarea
+import com.svbackend.natai.android.ui.*
 import com.svbackend.natai.android.ui.component.TagsField
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import kotlinx.coroutines.launch
@@ -67,76 +62,69 @@ fun EditNoteScreen(
     val tags = vm.tags.value
     val tagsValue = vm.tagsFieldValue.value
 
-    Column(
-        Modifier.padding(16.dp)
+    Surface(
+        modifier = Modifier
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.surface
     ) {
-        Text(
-            text = stringResource(R.string.editNote),
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-        )
-        NDateField(context = context, value = actualDate, onChange = onDateChange)
-        NTextField(
-            value = vm.title.value,
-            label = stringResource(R.string.noteTitle),
-            onChange = {
-                vm.title.value = it
-            }
-        )
-        NTextarea(
-            value = vm.content.value,
-            label = stringResource(R.string.noteContent),
-            onChange = {
-                vm.content.value = it
-            }
-        )
-        TagsField(
-            context = context,
-            value = tagsValue,
-            tags = tags,
-            onAddTag = {
-                vm.addTag(it)
-                vm.tagsFieldValue.value = TextFieldValue("")
-            },
-            onDeleteTag = { vm.deleteTag(it) },
-            onValueChange = { vm.tagsFieldValue.value = it },
-            tagsSuggestions = tagsSuggestions,
-        )
-        if (vm.isLoading.value) {
-            ExtendedFloatingActionButton(
-                text = {
+        Column(
+            Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.editNote),
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            )
+            AppDateRow(actualDate = actualDate, onDateChange = onDateChange)
+            NTextField(
+                value = vm.title.value,
+                label = stringResource(R.string.noteTitle),
+                onChange = {
+                    vm.title.value = it
+                }
+            )
+            NTextarea(
+                value = vm.content.value,
+                label = stringResource(R.string.noteContent),
+                onChange = {
+                    vm.content.value = it
+                }
+            )
+            TagsField(
+                context = context,
+                value = tagsValue,
+                tags = tags,
+                onAddTag = {
+                    vm.addTag(it)
+                    vm.tagsFieldValue.value = TextFieldValue("")
+                },
+                onDeleteTag = { vm.deleteTag(it) },
+                onValueChange = { vm.tagsFieldValue.value = it },
+                tagsSuggestions = tagsSuggestions,
+            )
+            if (vm.isLoading.value) {
+                Button(onClick = {}, modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
+                    NProgressBtn()
                     Text(
                         text = stringResource(R.string.saving),
+                        modifier = Modifier.padding(start = 8.dp)
                     )
-                },
-                icon = {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 1.dp,
-                        modifier = Modifier.size(14.dp)
-                    )
-                },
-                onClick = {}
-            )
-        } else {
-            ExtendedFloatingActionButton(
-                text = {
-                    Text(
-                        text = stringResource(R.string.saveNote),
-                    )
-                },
-                icon = {
+                }
+            } else {
+                Button(onClick = saveNote(), modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
                     Icon(
                         Icons.Filled.Edit,
                         stringResource(R.string.saveNote)
                     )
-                },
-                onClick = saveNote()
-            )
+                    Text(
+                        text = stringResource(R.string.saveNote),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
 
         }
-
     }
 }
