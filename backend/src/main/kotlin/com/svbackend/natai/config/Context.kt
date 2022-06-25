@@ -18,8 +18,8 @@ fun context(config: ApplicationConfig): DirectDI = DI.direct {
 fun commonModule(config: ApplicationConfig) = DI.Module("common") {
     bindSingleton<ObjectMapper> {
         jacksonObjectMapper()
-//            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//            .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            //.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
 

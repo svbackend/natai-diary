@@ -2,6 +2,7 @@ package com.svbackend.natai.android.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.*
 
 val SPECIAL_TAGS = listOf(
@@ -41,6 +42,7 @@ data class TagEntityDto(
     val name: String,
     val score: Int? = null,
 ) {
+    @JsonIgnore
     val isSpecial: Boolean = Tag.isSpecial(name)
 
     override fun equals(other: Any?): Boolean {

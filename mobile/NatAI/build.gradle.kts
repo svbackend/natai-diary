@@ -19,8 +19,11 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
     }
     buildTypes {
-        getByName("release") {
+        getByName("debug") {
             isMinifyEnabled = false
+        }
+        getByName("release") {
+            isMinifyEnabled = true
             buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
         }
     }
@@ -73,7 +76,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.10")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.12")
 
     implementation("androidx.navigation:navigation-compose:2.4.2")
     implementation("androidx.core:core-splashscreen:1.0.0-rc01")
