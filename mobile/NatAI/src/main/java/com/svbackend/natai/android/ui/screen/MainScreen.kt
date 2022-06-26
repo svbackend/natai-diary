@@ -24,7 +24,6 @@ import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.ui.HorizontalDivider
 import com.svbackend.natai.android.ui.VerticalDivider
-import com.svbackend.natai.android.ui.component.AllTagsBadges
 import com.svbackend.natai.android.ui.component.RegularTagsRow
 import com.svbackend.natai.android.ui.component.SpecialTagsRow
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter

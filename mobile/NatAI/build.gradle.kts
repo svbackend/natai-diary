@@ -1,4 +1,4 @@
-val composeVersion = "1.2.0-beta03"
+val composeVersion = "1.2.0-rc02"
 
 plugins {
     id("com.android.application")
@@ -77,6 +77,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.4.0")
     implementation("androidx.compose.material3:material3:1.0.0-alpha13")
     implementation("androidx.compose.animation:animation:$composeVersion")
+    implementation("androidx.compose.animation:animation-graphics:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
