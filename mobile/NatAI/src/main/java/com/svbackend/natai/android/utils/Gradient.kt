@@ -2,10 +2,10 @@ package com.svbackend.natai.android.utils
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import java.lang.Math.*
+import androidx.compose.ui.graphics.Color
+import java.lang.Math.PI
 import kotlin.math.pow
 import kotlin.math.sqrt
 

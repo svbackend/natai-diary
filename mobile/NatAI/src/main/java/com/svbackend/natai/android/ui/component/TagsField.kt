@@ -1,17 +1,22 @@
 package com.svbackend.natai.android.ui.component
 
 import android.content.Context
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -20,6 +25,7 @@ import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NTextField
+import com.svbackend.natai.android.utils.gradientBackground
 import kotlin.math.roundToInt
 
 @Composable
@@ -34,6 +40,10 @@ fun TagsField(
 ) {
     var isAddCustomTagDialogOpen by remember { mutableStateOf(false) }
 
+    var isSpecialTagDialogOpen by remember { mutableStateOf(false) }
+    var selectedSpecialTag by remember { mutableStateOf<String?>(null) }
+    var selectedScore by remember { mutableStateOf<Int?>(null) }
+
     var isTagScoreDialogOpen by remember { mutableStateOf(false) }
     var selectedTag by remember { mutableStateOf<TagEntityDto?>(null) }
     var selectedTagScore by remember { mutableStateOf(10) }
@@ -43,6 +53,14 @@ fun TagsField(
         isTagScoreDialogOpen = true
         selectedTagScore = tag.score ?: 10
     }
+
+    val openSpecialTagDialog = fun(tag: String) {
+        selectedSpecialTag = tag
+        selectedScore = tags.find { it.name == tag }?.score
+        isSpecialTagDialogOpen = true
+    }
+
+    val moodTag = tags.find { it.name == "mood" }
 
     val suggestions = tagsSuggestions
         .take(5)
@@ -97,6 +115,24 @@ fun TagsField(
             title = {
                 Text("#${selectedTag!!.name} ($selectedTagScore)")
             }
+        )
+    }
+
+    if (isSpecialTagDialogOpen && selectedSpecialTag != null) {
+        SpecialTagDialog(
+            tag = selectedSpecialTag!!,
+            score = selectedScore,
+            onSelect = { score: Int ->
+                onAddTag(
+                    TagEntityDto(
+                        name = selectedSpecialTag!!,
+                        score = score
+                    )
+                )
+            },
+            onConfirm = {
+                isSpecialTagDialogOpen = false
+            },
         )
     }
 
@@ -166,13 +202,22 @@ fun TagsField(
         Column(verticalArrangement = Arrangement.Center) {
             IconButton(
                 onClick = {
-
+                    openSpecialTagDialog("mood")
                 },
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Face,
-                    contentDescription = "Add mood tag"
-                )
+                if (moodTag != null) {
+                    SpecialTagIcon(
+                        modifier = Modifier.size(64.dp),
+                        tag = moodTag.name,
+                        score = moodTag.score
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_care),
+                        modifier = Modifier.size(64.dp),
+                        contentDescription = "Add mood tag"
+                    )
+                }
             }
             Text(
                 text = "#mood",
@@ -185,9 +230,10 @@ fun TagsField(
 
                 },
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Face,
-                    contentDescription = "Add sleep tag"
+                Image(
+                    painter = painterResource(id = R.drawable.ic_care),
+                    modifier = Modifier.size(64.dp),
+                    contentDescription = "Add mood tag"
                 )
             }
             Text(
@@ -201,9 +247,10 @@ fun TagsField(
 
                 },
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Face,
-                    contentDescription = "Add sport tag"
+                Image(
+                    painter = painterResource(id = R.drawable.ic_care),
+                    modifier = Modifier.size(64.dp),
+                    contentDescription = "Add mood tag"
                 )
             }
             Text(
@@ -229,6 +276,66 @@ fun TagsField(
             )
         }
 
+    }
+}
+
+@Composable
+fun SpecialTagDialog(tag: String, score: Int?, onSelect: (Int) -> Unit, onConfirm: () -> Unit) {
+    val onChange = { value: Int ->
+        onSelect(value)
+        onConfirm()
+    }
+
+    AlertDialog(
+        onDismissRequest = { onConfirm() },
+        confirmButton = {
+            Button(onClick = {
+                onConfirm()
+            }) {
+                Text(stringResource(R.string.done))
+            }
+        },
+        text = {
+            when (tag) {
+                "mood" -> {
+                    MoodTagDialog(score, onChange)
+                }
+            }
+        },
+        title = {
+            Text("#$tag")
+        }
+    )
+}
+
+@Composable
+fun MoodTagDialog(selectedScore: Int?, onChange: (Int) -> Unit) {
+
+    @Composable
+    fun MoodTagEl(m: Modifier, score: Int) {
+        MoodTagIcon(modifier = m
+            .clickable { onChange(score) }, score = score, isSelected = (selectedScore == score)
+        )
+    }
+
+    Column {
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            MoodTagEl(Modifier.weight(1f), 10)
+            MoodTagEl(Modifier.weight(1f), 9)
+            MoodTagEl(Modifier.weight(1f), 8)
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            MoodTagEl(Modifier.weight(1f), 7)
+            MoodTagEl(Modifier.weight(1f), 6)
+            MoodTagEl(Modifier.weight(1f), 5)
+        }
+
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+            MoodTagEl(Modifier.weight(1f), 4)
+            MoodTagEl(Modifier.weight(1f), 3)
+            MoodTagEl(Modifier.weight(1f), 2)
+        }
     }
 }
 
@@ -398,4 +505,52 @@ fun TagPreviewBadge(
 
 fun sanitizeTag(tag: String): String {
     return TagEntityDto.cleanTag(tag)
+}
+
+@Composable
+fun SpecialTagIcon(modifier: Modifier, tag: String, score: Int?) {
+    when (tag) {
+        "mood" -> MoodTagIcon(modifier, score)
+    }
+}
+
+@Composable
+fun MoodTagIcon(modifier: Modifier, score: Int?, isSelected: Boolean = false) {
+    val iconsMap = remember {
+        mapOf(
+            10 to R.drawable.ic__10,
+            9 to R.drawable.ic__9,
+            8 to R.drawable.ic__8,
+            7 to R.drawable.ic__7,
+            6 to R.drawable.ic__6,
+            5 to R.drawable.ic__5,
+            4 to R.drawable.ic__4,
+            3 to R.drawable.ic__3,
+            2 to R.drawable.ic__2,
+            1 to R.drawable.ic__2,
+            0 to R.drawable.ic__2,
+        )
+    }
+
+    val id = iconsMap[score] ?: R.drawable.ic_care
+
+
+    val m = if (isSelected) {
+        modifier
+            .clip(CircleShape)
+            .gradientBackground(
+                listOf(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.colorScheme.secondary,
+                ), angle = 45f
+            )
+    } else {
+        modifier
+    }
+
+    Image(
+        painter = painterResource(id = id),
+        modifier = m,
+        contentDescription = null,
+    )
 }
