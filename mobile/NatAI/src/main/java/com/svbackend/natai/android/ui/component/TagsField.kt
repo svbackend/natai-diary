@@ -227,40 +227,6 @@ fun TagsField(
         Column(verticalArrangement = Arrangement.Center) {
             IconButton(
                 onClick = {
-
-                },
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_care),
-                    modifier = Modifier.size(64.dp),
-                    contentDescription = "Add mood tag"
-                )
-            }
-            Text(
-                text = "#sleep",
-                style = MaterialTheme.typography.bodySmall,
-            )
-        }
-        Column(verticalArrangement = Arrangement.Center) {
-            IconButton(
-                onClick = {
-
-                },
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_care),
-                    modifier = Modifier.size(64.dp),
-                    contentDescription = "Add mood tag"
-                )
-            }
-            Text(
-                text = "#sport",
-                style = MaterialTheme.typography.bodySmall,
-            )
-        }
-        Column(verticalArrangement = Arrangement.Center) {
-            IconButton(
-                onClick = {
                     isAddCustomTagDialogOpen = true
                     onValueChange(TextFieldValue(""))
                 },
@@ -496,11 +462,27 @@ fun TagPreviewBadge(
     modifier: Modifier = Modifier,
     tag: TagEntityDto,
 ) {
-    InputChip(
-        modifier = modifier.padding(end = 4.dp),
-        onClick = {},
-        label = { Text(text = "#${tag.name}") },
-    )
+    when (tag.name) {
+        "mood" -> {
+            MoodTagPreviewBadge(
+                modifier = modifier,
+                tag = tag,
+            )
+        }
+        else -> InputChip(
+            modifier = modifier.padding(end = 4.dp),
+            onClick = {},
+            label = { Text(text = "#${tag.name}") },
+        )
+    }
+}
+
+@Composable
+fun MoodTagPreviewBadge(
+    modifier: Modifier = Modifier,
+    tag: TagEntityDto,
+) {
+    SpecialTagIcon(modifier = modifier.size(64.dp), tag = tag.name, score = tag.score)
 }
 
 fun sanitizeTag(tag: String): String {

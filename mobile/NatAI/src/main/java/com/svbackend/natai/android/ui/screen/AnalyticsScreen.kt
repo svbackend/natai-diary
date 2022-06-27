@@ -26,11 +26,14 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NataiCustomColors
+import com.svbackend.natai.android.ui.component.SpecialTagIcon
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Period
+
+val NB_OF_DAYS = 49
 
 @Composable
 fun AnalyticsScreen(vm: NoteViewModel) {
@@ -47,7 +50,7 @@ fun AnalyticsScreen(vm: NoteViewModel) {
 
     val tags = Tag.getMostFrequentlyUsedTags(vm.notesState)
 
-    var daysBefore by remember { mutableStateOf(90) }
+    var daysBefore by remember { mutableStateOf(NB_OF_DAYS) }
 
     val dateList = generateDates(daysBefore)
     val firstDate = dateList.first()
@@ -76,7 +79,7 @@ fun AnalyticsScreen(vm: NoteViewModel) {
                 ) {
                     IconButton(
                         onClick = {
-                            daysBefore += 90
+                            daysBefore += NB_OF_DAYS
                         }
                     ) {
                         Icon(
@@ -104,9 +107,9 @@ fun AnalyticsScreen(vm: NoteViewModel) {
                     )
                     IconButton(
                         onClick = {
-                            daysBefore -= 90
+                            daysBefore -= NB_OF_DAYS
                         },
-                        enabled = daysBefore > 90
+                        enabled = daysBefore > NB_OF_DAYS
                     ) {
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowRight,
@@ -131,12 +134,12 @@ fun AnalyticsScreen(vm: NoteViewModel) {
 // generate dates (last 3 months) for displaying squares of days with tags
 // start always on Sunday, end always on Saturday
 // if there is no tag for a day, it will be empty
-private fun generateDates(daysBefore: Int = 90): List<LocalDate> {
+private fun generateDates(daysBefore: Int = NB_OF_DAYS): List<LocalDate> {
     val calendar = LocalDate.now()
 
     val prependedDates = mutableListOf<LocalDate>()
     val appendedDates = mutableListOf<LocalDate>()
-    val dateList = (daysBefore downTo (daysBefore - 90)).map {
+    val dateList = (daysBefore downTo (daysBefore - NB_OF_DAYS)).map {
         calendar.minus(Period.ofDays(it))
     }.toMutableList()
 
@@ -158,7 +161,7 @@ private fun generateDates(daysBefore: Int = 90): List<LocalDate> {
         } else {
             DayOfWeek.SATURDAY.value - lastDate.dayOfWeek.value
         }
-        
+
         if (nbDaysToAdd > 0) {
             appendedDates.addAll(
                 (1..nbDaysToAdd).map {
@@ -196,16 +199,33 @@ fun Contributions(
             for (week in dateList.chunked(7)) {
                 Column {
                     for (day in week) {
-                        ContributionsSquare(
-                            day = day,
-                            tag = tag,
-                            notes = notesMap[day] ?: emptyList(),
-                            onClick = {
-                                Toast
-                                    .makeText(context, it, Toast.LENGTH_SHORT)
-                                    .show()
+                        when (tag) {
+                            "mood" -> {
+                                MoodSquare(
+                                    day = day,
+                                    tag = tag,
+                                    notes = notesMap[day] ?: emptyList(),
+                                    onClick = {
+                                        Toast
+                                            .makeText(context, it, Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                )
                             }
-                        )
+                            else -> {
+                                ContributionsSquare(
+                                    day = day,
+                                    tag = tag,
+                                    notes = notesMap[day] ?: emptyList(),
+                                    onClick = {
+                                        Toast
+                                            .makeText(context, it, Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                )
+                            }
+                        }
+
                     }
                 }
 
@@ -263,12 +283,49 @@ fun ContributionsSquare(
     Box(
         modifier = Modifier
             .clickable { onClick(day) }
-            .size(24.dp)
+            .size(36.dp)
             .padding(horizontal = 2.dp, vertical = 2.dp)
             .border(color = colors.border, width = 1.dp, shape = RoundedCornerShape(4.dp))
             .clip(shape = RoundedCornerShape(4.dp))
             .background(bg)
     )
+}
+
+@Composable
+fun MoodSquare(
+    day: String,
+    tag: String,
+    notes: List<LocalNote>,
+    onClick: (String) -> Unit,
+) {
+    var tagDto: TagEntityDto? = null
+    notes.forEach { localNote ->
+        localNote.tags.forEach innerLoop@{ t ->
+            if (t.name == tag) {
+                tagDto = t
+                return@innerLoop
+            }
+        }
+
+        if (tagDto != null) {
+            return@forEach
+        }
+    }
+
+    val colors = NataiCustomColors.get()
+    Box(
+        modifier = Modifier
+            .clickable { onClick(day) }
+            .size(36.dp)
+            .padding(horizontal = 2.dp, vertical = 2.dp)
+            //.border(color = colors.border, width = 1.dp, shape = RoundedCornerShape(4.dp))
+            .clip(shape = RoundedCornerShape(4.dp))
+            .background(colors.emptyContribution)
+    ) {
+        if (tagDto != null) {
+            SpecialTagIcon(modifier = Modifier.size(36.dp), tag = tag, score = tagDto!!.score)
+        }
+    }
 }
 
 private fun getAlpha(score: Int?): Float {
