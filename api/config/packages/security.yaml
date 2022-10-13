@@ -15,7 +15,7 @@ security:
             security: false
         main:
             # null = 5 login attempts per minute
-            login_throttling: null
+            # login_throttling: null
             json_login:
                 check_path: /api/login
                 username_path: email

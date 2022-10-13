@@ -4,47 +4,29 @@ namespace App\Diary\Entity;
 
 use App\Diary\Repository\NoteTagRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: NoteTagRepository::class)]
 class NoteTag
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private Uuid $id;
 
     #[ORM\Column(length: 255)]
-    private ?string $tag = null;
+    private string $tag;
 
     #[ORM\Column(nullable: true)]
-    private ?int $score = null;
+    private ?int $score;
 
-    public function getId(): ?int
+    public function __construct(
+        Uuid $id,
+        string $tag,
+        ?int $score = null,
+    )
     {
-        return $this->id;
-    }
-
-    public function getTag(): ?string
-    {
-        return $this->tag;
-    }
-
-    public function setTag(string $tag): self
-    {
+        $this->id = $id;
         $this->tag = $tag;
-
-        return $this;
-    }
-
-    public function getScore(): ?int
-    {
-        return $this->score;
-    }
-
-    public function setScore(?int $score): self
-    {
         $this->score = $score;
-
-        return $this;
     }
 }

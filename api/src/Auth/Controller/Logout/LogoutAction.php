@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth\Controller\Login;
+namespace App\Auth\Controller\Logout;
 
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
