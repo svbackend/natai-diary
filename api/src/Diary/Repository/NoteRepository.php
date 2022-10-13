@@ -2,9 +2,12 @@
 
 namespace App\Diary\Repository;
 
+use App\Diary\DTO\CloudNoteDto;
+use App\Diary\DTO\CloudTagDto;
 use App\Diary\Entity\Note;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Note>
@@ -39,28 +42,30 @@ class NoteRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Note[] Returns an array of Note objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('n')
-//            ->andWhere('n.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('n.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /** @return CloudNoteDto[] */
+    public function findAllNotesByUserId(Uuid $userId): array
+    {
+        $notes = $this->createQueryBuilder('n')
+            ->leftJoin('n.tags', 'nt')
+            ->addSelect('nt')
+            ->where('n.userId = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getArrayResult();
 
-//    public function findOneBySomeField($value): ?Note
-//    {
-//        return $this->createQueryBuilder('n')
-//            ->andWhere('n.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return array_map(fn ($note) => new CloudNoteDto(
+            id: $note['id'],
+            userId: $note['userId'],
+            title: $note['title'],
+            content: $note['content'],
+            actualDate: $note['actualDate'],
+            createdAt: $note['createdAt'],
+            updatedAt: $note['updatedAt'],
+            deletedAt: $note['deletedAt'],
+            tags: array_map(fn ($tag) => new CloudTagDto(
+                tag: $tag['tag'],
+                score: $tag['score'],
+            ), $note['tags']),
+        ), $notes);
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth\Controller\Login;
+namespace App\Auth\Controller;
 
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
@@ -17,8 +17,8 @@ class LoginAction extends BaseAction
      *  "password": "string"
      * }
      */
-    #[Route('/api/login', name: 'api_login', methods: ['POST'])]
-    public function action(
+    #[Route('/api/v1/login', methods: ['POST'])]
+    public function __invoke(
         #[CurrentUser] ?User $user
     ): JsonResponse
     {

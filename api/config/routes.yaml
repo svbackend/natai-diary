@@ -1,3 +1,7 @@
-controllers:
-    resource: ../src/**/Controller/
-    type: attribute
+auth:
+  type: attribute
+  resource: ../src/Auth/Controller/
+
+diary:
+  type: attribute
+  resource: ../src/Diary/Controller/

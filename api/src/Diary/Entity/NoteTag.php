@@ -13,6 +13,10 @@ class NoteTag
     #[ORM\Column(type: 'uuid', unique: true)]
     private Uuid $id;
 
+    #[ORM\ManyToOne(targetEntity: Note::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Note $note;
+
     #[ORM\Column(length: 255)]
     private string $tag;
 
@@ -21,11 +25,13 @@ class NoteTag
 
     public function __construct(
         Uuid $id,
+        Note $note,
         string $tag,
         ?int $score = null,
     )
     {
         $this->id = $id;
+        $this->note = $note;
         $this->tag = $tag;
         $this->score = $score;
     }

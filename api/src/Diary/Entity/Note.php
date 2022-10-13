@@ -37,12 +37,17 @@ class Note
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    /** @var NoteTag[] */
+    #[ORM\OneToMany(mappedBy: 'note', targetEntity: NoteTag::class)]
+    private iterable $tags;
+
     public function __construct(
         Uuid $id,
         User $user,
         \DateTimeImmutable $actualDate,
-        ?string $title = null,
-        ?string $content = null,
+        ?string $title,
+        ?string $content,
+        iterable $tags,
     )
     {
         $this->id = $id;
@@ -52,5 +57,6 @@ class Note
         $this->content = $content;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->tags = $tags;
     }
 }

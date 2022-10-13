@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth\Controller\Logout;
+namespace App\Auth\Controller;
 
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
@@ -10,8 +10,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class LogoutAction extends BaseAction
 {
-    #[Route('/api/logout', name: 'api_logout', methods: ['POST'])]
-    public function action(
+    #[Route('/api/v1/logout', methods: ['POST'])]
+    public function __invoke(
         #[CurrentUser] ?User $user
     ): JsonResponse
     {
