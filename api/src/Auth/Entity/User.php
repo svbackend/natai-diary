@@ -28,12 +28,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct(
         Uuid $id,
         string $email,
-        string $encodedPassword,
+        UserPassword $password,
     )
     {
         $this->id = $id;
         $this->email = $email;
-        $this->password = $encodedPassword;
+        $this->password = $password->getHashedPassword($this);
         $this->roles = ['ROLE_USER'];
     }
 
