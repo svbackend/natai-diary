@@ -28,6 +28,7 @@ class UserFixture extends Fixture
             id: Uuid::v4(),
             email: 'example@email.com',
             password: $password,
+            name: 'John',
         );
 
         $manager->persist($entity);
