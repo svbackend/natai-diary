@@ -23,6 +23,11 @@ class LoginAction extends BaseAction
     ): JsonResponse
     {
         // todo create token
+        if (!$user) {
+            return $this->json([
+                'code' => 'auth.login.invalid_credentials',
+            ], 401);
+        }
 
         return $this->json([
             'user' => [
