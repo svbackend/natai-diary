@@ -6,7 +6,6 @@ use App\Auth\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -43,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->name = $name;
     }
 
-    public function getId(): Uuid
+    public function getId(): UuidV4
     {
         return $this->id;
     }
