@@ -19,9 +19,9 @@ class RegistrationDto implements InputInterface
     public static function fromRequest(Request $request): static
     {
         return new static(
-            email: $request->get('email'),
+            email: trim($request->get('email')),
             password: $request->get('password'),
-            name: $request->get('name'),
+            name: trim($request->get('name')),
         );
     }
 

@@ -4,9 +4,10 @@ namespace App\Tests\Functional\Auth;
 
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 
+/**
+ * @see RegistrationAction
+ */
 class RegistrationActionTest extends AbstractFunctionalTest
 {
     public function testRegistrationSuccess(): void
@@ -19,9 +20,6 @@ class RegistrationActionTest extends AbstractFunctionalTest
                 'name' => 'Name',
             ]
         ]);
-
-        $data = $this->toArray($response);
-        dump($data);
 
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
     }

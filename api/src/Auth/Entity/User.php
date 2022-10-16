@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`users`')]
@@ -14,7 +15,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $id;
+    private UuidV4 $id;
 
     #[ORM\Column(length: 180, unique: true)]
     private string $email;
@@ -29,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $name;
 
     public function __construct(
-        Uuid $id,
+        UuidV4 $id,
         string $email,
         UserPassword $password,
         string $name,
