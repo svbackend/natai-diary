@@ -4,20 +4,25 @@ namespace App\Tests\Functional\Auth;
 
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class RegistrationActionTest extends AbstractFunctionalTest
 {
-    public function testLoginWithInvalidCreds(): void
+    public function testRegistrationSuccess(): void
     {
         $client = static::createClient();
-        $client->request('POST', '/api/v1/registration', content: json_encode([
-            'email' => 'some@email.com',
-            'password' => 'password',
-            'Name' => 'Name',
-        ]));
+        $response = $client->request('POST', '/api/v1/registration', [
+            'json' => [
+                'email' => 'some@email.com',
+                'password' => 'password',
+                'name' => 'Name',
+            ]
+        ]);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-        $response = $this->toArray($client->getResponse());
-        dump($response);
+        $data = $this->toArray($response);
+        dump($data);
+
+        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
     }
 }
