@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Auth;
+namespace App\Tests\Functional\Auth\Controller;
 
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;

@@ -22,7 +22,14 @@ abstract class BaseAction extends AbstractController
     public function ok(string $code, int $status = Response::HTTP_OK): JsonResponse
     {
         return $this->json([
-            'code' => $code,
+            'ok' => $code,
+        ], status: $status);
+    }
+
+    public function error(string $code, int $status = Response::HTTP_OK): JsonResponse
+    {
+        return $this->json([
+            'error' => $code,
         ], status: $status);
     }
 }
