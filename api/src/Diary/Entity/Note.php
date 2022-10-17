@@ -38,6 +38,9 @@ class Note
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[ORM\OneToMany(mappedBy: 'note', targetEntity: NoteTag::class)]
+    private Collection $tags;
+
     public function __construct(
         UuidV4 $id,
         User $user,

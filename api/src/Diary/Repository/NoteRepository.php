@@ -5,11 +5,15 @@ namespace App\Diary\Repository;
 use App\Diary\DTO\CloudNoteDto;
 use App\Diary\DTO\CloudTagDto;
 use App\Diary\Entity\Note;
+use App\Tests\Functional\Diary\Repository\NoteRepositoryTest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 
 /**
+ * @see NoteRepositoryTest
+ *
  * @extends ServiceEntityRepository<Note>
  *
  * @method Note|null find($id, $lockMode = null, $lockVersion = null)
@@ -43,26 +47,28 @@ class NoteRepository extends ServiceEntityRepository
     }
 
     /** @return CloudNoteDto[] */
-    public function findAllNotesByUserId(Uuid $userId): array
+    public function findAllNotesByUserId(UuidV4 $userId): array
     {
-        $notes = $this->createQueryBuilder('n')
-            ->leftJoin('n.tags', 'nt')
+        $notesQuery = $this->createQueryBuilder('n')
+            ->leftJoin('n.tags', 'nt', 'WITH')
             ->addSelect('nt')
-            ->where('n.userId = :userId')
+            ->where('n.user = :userId')
             ->setParameter('userId', $userId)
-            ->getQuery()
-            ->getArrayResult();
+            ->getQuery();
 
-        return array_map(fn ($note) => new CloudNoteDto(
+        $notesQuery->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);
+        $notes = $notesQuery->getArrayResult();
+
+        return array_map(fn($note) => new CloudNoteDto(
             id: $note['id'],
-            userId: $note['userId'],
+            userId: $note['user_id'],
             title: $note['title'],
             content: $note['content'],
             actualDate: $note['actualDate'],
             createdAt: $note['createdAt'],
             updatedAt: $note['updatedAt'],
             deletedAt: $note['deletedAt'],
-            tags: array_map(fn ($tag) => new CloudTagDto(
+            tags: array_map(fn($tag) => new CloudTagDto(
                 tag: $tag['tag'],
                 score: $tag['score'],
             ), $note['tags']),
