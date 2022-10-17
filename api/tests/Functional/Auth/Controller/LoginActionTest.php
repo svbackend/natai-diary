@@ -21,7 +21,7 @@ class LoginActionTest extends AbstractFunctionalTest
         $output = $this->toArray($response);
         $this->assertArrayHasKey('user', $output);
         $this->assertSame([
-            'id' => $output['user']['id'],
+            'id' => UserFixture::USER_ID,
             'email' => UserFixture::USER_LOGIN,
             'roles' => ['ROLE_USER'],
         ], $output['user']);

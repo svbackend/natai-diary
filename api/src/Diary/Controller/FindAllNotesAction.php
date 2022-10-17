@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
+/**
+ * @see FindAllNotesActionTest
+ */
 class FindAllNotesAction extends BaseAction
 {
     public function __construct(

@@ -4,16 +4,17 @@ namespace App\Diary\Entity;
 
 use App\Auth\Entity\User;
 use App\Diary\Repository\NoteRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 
 #[ORM\Entity(repositoryClass: NoteRepository::class)]
 class Note
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $id;
+    private UuidV4 $id;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
@@ -37,17 +38,12 @@ class Note
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    /** @var NoteTag[] */
-    #[ORM\OneToMany(mappedBy: 'note', targetEntity: NoteTag::class)]
-    private iterable $tags;
-
     public function __construct(
-        Uuid $id,
+        UuidV4 $id,
         User $user,
         \DateTimeImmutable $actualDate,
         ?string $title,
         ?string $content,
-        iterable $tags,
     )
     {
         $this->id = $id;
@@ -57,6 +53,5 @@ class Note
         $this->content = $content;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->tags = $tags;
     }
 }
