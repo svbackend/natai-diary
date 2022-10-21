@@ -2,11 +2,11 @@
 
 namespace App\Auth\DTO;
 
-use App\Common\Http\Request\InputInterface;
+use App\Common\Http\Request\HttpInputInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RegistrationDto implements InputInterface
+class RegistrationDto implements HttpInputInterface
 {
     public function __construct(
         public string $email,

@@ -28,7 +28,7 @@ class RequestResolver implements ArgumentValueResolverInterface
             return false;
         }
 
-        if ($reflection->implementsInterface(InputInterface::class)) {
+        if ($reflection->implementsInterface(HttpInputInterface::class)) {
             return true;
         }
 
@@ -37,7 +37,7 @@ class RequestResolver implements ArgumentValueResolverInterface
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        /** @var $class InputInterface */
+        /** @var $class HttpInputInterface */
         $class = $argument->getType();
 
         if ($request->headers->get('Content-Type') === 'application/json') {
