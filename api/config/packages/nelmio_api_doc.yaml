@@ -4,6 +4,13 @@ nelmio_api_doc:
             title: Natai Diary
             description: Diary Application for Anrdoid & WEB. Helps to track your daily activities and their affect on your mental health.
             version: 1.0.0
+#        components:
+#            schemas:
+#                Uuid:
+#                    type: string
+#                    pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+#                    minLength: 36
+#                    maxLength: 36
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
