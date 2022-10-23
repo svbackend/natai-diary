@@ -21,6 +21,10 @@ security:
                 username_path: email
                 password_path: password
 
+            logout:
+                path: /api/v1/logout
+                invalidate_session: false
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

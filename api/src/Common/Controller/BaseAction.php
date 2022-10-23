@@ -2,6 +2,7 @@
 
 namespace App\Common\Controller;
 
+use App\Common\Http\Response\ErrorResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,10 +27,8 @@ abstract class BaseAction extends AbstractController
         ], status: $status);
     }
 
-    public function error(string $code, int $status = Response::HTTP_OK): JsonResponse
+    public function error(string $code, int $status = Response::HTTP_UNPROCESSABLE_ENTITY): ErrorResponse
     {
-        return $this->json([
-            'error' => $code,
-        ], status: $status);
+     return new ErrorResponse(code: $code, httpStatus: $status);
     }
 }

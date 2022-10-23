@@ -21,6 +21,6 @@ class UuidDescriber implements ModelDescriberInterface
 
     public function supports(Model $model): bool
     {
-        return $model->getType()->getClassName() === Uuid::class;
+        return $model->getType()->getClassName() === Uuid::class || $model->getType()->getClassName() === UuidV4::class;
     }
 }

@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Diary\Http\Response;
+namespace App\Auth\Http\Response;
 
+use App\Auth\DTO\UserDto;
 use App\Common\Http\Response\HttpOutputInterface;
-use App\Diary\DTO\CloudNoteDto;
 use Symfony\Component\HttpFoundation\Response;
 
-class FindAllNotesResponse implements HttpOutputInterface
+class SuccessLoginResponse implements HttpOutputInterface
 {
     public function __construct(
-        /** @var CloudNoteDto[] */
-        public array $notes,
+        public UserDto $user,
     )
     {
     }
