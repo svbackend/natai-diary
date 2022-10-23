@@ -4,12 +4,14 @@ namespace App\Diary\Controller;
 
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
+use App\Common\Http\Response\AuthRequiredErrorResponse;
 use App\Diary\Http\Response\FindAllNotesResponse;
 use App\Diary\Repository\NoteRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @see FindAllNotesActionTest
@@ -22,10 +24,15 @@ class FindAllNotesAction extends BaseAction
     {
     }
 
+    /**
+     * @OA\Response(response=200, description="Returns all notes for the current user", @Model(type=FindAllNotesResponse::class))
+     * @OA\Response(response=401, @Model(type=AuthRequiredErrorResponse::class))
+     * @Security(name="Bearer")
+     */
     #[Route('/api/v1/notes', methods: ['GET'])]
     public function __invoke(
         #[CurrentUser] User $user,
-    )
+    ): FindAllNotesResponse
     {
         $notes = $this->notes->findAllNotesByUserId(
             userId: $user->getId()
@@ -34,7 +41,5 @@ class FindAllNotesAction extends BaseAction
         return new FindAllNotesResponse(
             notes: $notes,
         );
-
-        //return new JsonResponse($this->serializer->serialize(['notes' => $notes], 'json'), json: true);
     }
 }
