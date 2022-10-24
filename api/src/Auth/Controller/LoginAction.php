@@ -16,6 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Nelmio\ApiDocBundle\Annotation\Model;
 
+/**
+ * @OA\Tag(name="Auth")
+ */
 class LoginAction extends BaseAction
 {
     /**

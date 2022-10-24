@@ -16,7 +16,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Uuid;
 
-
+/**
+ * @OA\Tag(name="Auth")
+ */
 class RegistrationAction extends BaseAction
 {
     public function __construct(
@@ -27,7 +29,6 @@ class RegistrationAction extends BaseAction
     }
 
     /**
-     *
      * @OA\RequestBody(@Model(type=RegistrationDto::class))
      * @OA\Response(response=201, description="created")
      * @OA\Response(response=400, description="validation error", @Model(type=ValidationErrorResponseRef::class))

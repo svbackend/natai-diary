@@ -14,7 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
+ * We return all notes for the current user. Even the deleted ones, frontend (or Android app) will filter them out.
  * @see FindAllNotesActionTest
+ * @OA\Tag(name="Diary")
  */
 class FindAllNotesAction extends BaseAction
 {

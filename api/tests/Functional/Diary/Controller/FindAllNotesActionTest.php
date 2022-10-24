@@ -7,6 +7,7 @@ use App\Auth\Entity\User;
 use App\Diary\Controller\FindAllNotesAction;
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @see FindAllNotesAction
@@ -30,9 +31,9 @@ class FindAllNotesActionTest extends AbstractFunctionalTest
         $client->loginUser($user);
 
         $response = $client->request('GET', '/api/v1/notes');
-
-        dump($response->getContent());
+        $data = $response->toArray(false);
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertCount(2, $data['notes']);
     }
 }

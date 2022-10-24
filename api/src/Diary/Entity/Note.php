@@ -57,4 +57,9 @@ class Note
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
+
+    public function delete(): void
+    {
+        $this->deletedAt = new \DateTimeImmutable();
+    }
 }

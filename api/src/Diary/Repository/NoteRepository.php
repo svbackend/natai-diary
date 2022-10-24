@@ -54,6 +54,7 @@ class NoteRepository extends ServiceEntityRepository
             ->addSelect('nt')
             ->where('n.user = :userId')
             ->setParameter('userId', $userId)
+            ->orderBy('n.actualDate', 'DESC')
             ->getQuery();
 
         $notesQuery->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);

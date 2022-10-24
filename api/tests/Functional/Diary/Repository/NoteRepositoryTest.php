@@ -3,6 +3,8 @@
 namespace App\Tests\Functional\Diary\Repository;
 
 use App\Auth\DataFixtures\UserFixture;
+use App\Diary\DTO\CloudNoteDto;
+use App\Diary\DTO\CloudTagDto;
 use App\Diary\Entity\Note;
 use App\Diary\Repository\NoteRepository;
 use App\Tests\AbstractFunctionalTest;
@@ -23,5 +25,14 @@ class NoteRepositoryTest extends AbstractFunctionalTest
         );
 
         $this->assertNotEmpty($notes);
+        $this->assertCount(2, $notes);
+
+        foreach ($notes as $note) {
+            $this->assertInstanceOf(CloudNoteDto::class, $note);
+
+            foreach ($note->tags as $tag) {
+                $this->assertInstanceOf(CloudTagDto::class, $tag);
+            }
+        }
     }
 }

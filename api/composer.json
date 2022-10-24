@@ -21,6 +21,7 @@
         "symfony/framework-bundle": "6.1.*",
         "symfony/http-client": "6.1.*",
         "symfony/maker-bundle": "^1.47",
+        "symfony/monolog-bundle": "^3.8",
         "symfony/property-access": "6.1.*",
         "symfony/property-info": "6.1.*",
         "symfony/proxy-manager-bridge": "6.1.*",
