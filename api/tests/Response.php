@@ -102,7 +102,7 @@ final class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function toArray(bool $throw = true): array
+    public function toArray(bool $throw = false): array
     {
         if ('' === $content = $this->getContent($throw)) {
             throw new TransportException('Response body is empty.');

@@ -2,9 +2,9 @@
 
 namespace App\Auth\Controller;
 
-use App\Auth\DTO\RegistrationDto;
 use App\Auth\Entity\User;
 use App\Auth\Entity\UserPassword;
+use App\Auth\Http\Request\RegistrationRequest;
 use App\Auth\Repository\UserRepository;
 use App\Common\Controller\BaseAction;
 use App\Common\OpenApi\Ref\ServerErrorRef;
@@ -29,14 +29,14 @@ class RegistrationAction extends BaseAction
     }
 
     /**
-     * @OA\RequestBody(@Model(type=RegistrationDto::class))
+     * @OA\RequestBody(@Model(type=RegistrationRequest::class))
      * @OA\Response(response=201, description="created")
      * @OA\Response(response=400, description="validation error", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=500, description="server error", @Model(type=ServerErrorRef::class))
      */
     #[Route('/api/v1/registration', methods: ['POST'])]
     public function __invoke(
-        RegistrationDto $request,
+        RegistrationRequest $request,
     ): Response
     {
         $userId = Uuid::v4();

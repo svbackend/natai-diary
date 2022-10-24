@@ -6,6 +6,7 @@ use App\Common\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -16,6 +17,7 @@ class RequestResolver implements ArgumentValueResolverInterface
 {
     public function __construct(
         private ValidatorInterface $validator,
+        private SerializerInterface $serializer,
     )
     {
     }
@@ -57,6 +59,8 @@ class RequestResolver implements ArgumentValueResolverInterface
             throw new ValidationException($violations);
         }
 
-        yield $class::fromRequest($request);
+        $dto = $this->serializer->denormalize($request->request->all(), $class);
+        
+        yield $dto;
     }
 }

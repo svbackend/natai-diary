@@ -62,4 +62,9 @@ class Note
     {
         $this->deletedAt = new \DateTimeImmutable();
     }
+
+    public function setDeletedAt(\DateTimeImmutable $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
 }

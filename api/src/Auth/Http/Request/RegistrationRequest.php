@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Auth\DTO;
+namespace App\Auth\Http\Request;
 
 use App\Common\Http\Request\HttpInputInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RegistrationDto implements HttpInputInterface
+class RegistrationRequest implements HttpInputInterface
 {
     public function __construct(
         public string $email,
@@ -14,15 +13,6 @@ class RegistrationDto implements HttpInputInterface
         public string $name,
     )
     {
-    }
-
-    public static function fromRequest(Request $request): static
-    {
-        return new static(
-            email: trim($request->get('email')),
-            password: $request->get('password'),
-            name: trim($request->get('name')),
-        );
     }
 
     public static function rules(): Assert\Collection

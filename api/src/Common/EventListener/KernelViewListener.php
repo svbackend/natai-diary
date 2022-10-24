@@ -28,6 +28,6 @@ class KernelViewListener
     public function serialize(HttpOutputInterface $output): JsonResponse
     {
         $data = $this->serializer->serialize($output, 'json');
-        return new JsonResponse($data, json: true);
+        return new JsonResponse($data, status: $output->getHttpStatus(), json: true);
     }
 }
