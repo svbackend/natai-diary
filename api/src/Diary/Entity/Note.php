@@ -67,4 +67,9 @@ class Note
     {
         $this->deletedAt = $deletedAt;
     }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
 }
