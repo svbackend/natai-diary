@@ -1,3 +1,14 @@
+### Oct 28, 2022
+
+Today I added more tests to DeleteNoteAction and actually that helped me to fix a couple of bugs,
+improved OpenAPI docs for this endpoint as well.
+
+Next steps:
+
+- UpdateNoteAction + tests + docs
+- SyncNotesAction + tests + docs
+- Would be nice to add possibility to authenticate through OpenAPI interface, but not a priority.
+
 ### Oct 27, 2022
 
 Last couple of weeks I'm migrating backend from Kotlin (Ktor) to PHP (Symfony) because php ecosystem way better in my opinion, a lot of tools to use that speed up the process, while in Kotlin even such simple things as autowiring with DI are not so easy to implement. Autogeneration of sql migrations also not Kotlin's strongest side, so I decided to move to PHP.
