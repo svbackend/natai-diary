@@ -11,9 +11,13 @@ use Symfony\Component\Uid\UuidV4;
 
 class UserFixture extends Fixture
 {
+    public const USER_PASSWORD = 'password';
+
     public const USER_ID = 'c16f135c-3b45-4c1a-b97a-dff7a9a050f7';
     public const USER_LOGIN = 'example@email.com';
-    public const USER_PASSWORD = 'password';
+
+    public const USER2_ID = '13b2f597-b294-45a4-84e2-b4f04666733a';
+    public const USER2_LOGIN = 'example2@email.com';
 
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher
@@ -35,9 +39,18 @@ class UserFixture extends Fixture
             name: 'John',
         );
 
+        $entity2 = new User(
+            id: UuidV4::fromString(self::USER2_ID),
+            email: self::USER2_LOGIN,
+            password: $password,
+            name: 'Ethan',
+        );
+
         $this->addReference(self::USER_ID, $entity);
+        $this->addReference(self::USER2_ID, $entity2);
 
         $manager->persist($entity);
+        $manager->persist($entity2);
         $manager->flush();
     }
 }
