@@ -34,7 +34,7 @@ class DeleteNoteAction extends BaseAction
     }
 
     /**
-     * @OA\Response(response=204, description="success", @Model(type=NewNoteResponse::class))
+     * @OA\Response(response=204, description="success")
      * @OA\Response(response=401, description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
      * @OA\Response(response=403, description="access denied", @Model(type=AccessDeniedErrorRef::class))
      * @OA\Response(response=404, description="not found", @Model(type=NotFoundErrorRef::class))
