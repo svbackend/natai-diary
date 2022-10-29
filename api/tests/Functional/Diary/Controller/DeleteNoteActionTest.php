@@ -57,4 +57,17 @@ class DeleteNoteActionTest extends AbstractFunctionalTest
 
         self::assertNull($noteInDb['deleted_at']); // note must not be deleted
     }
+
+    public function testDeleteNoteThatDoesNotExist(): void
+    {
+        $userId = UserFixture::USER2_ID;
+        $client = static::createClient();
+        $this->loginUserById($client, $userId);
+
+        $noteId = "13b2f597-b294-45a4-84e2-b4f04666733a"; // this note does not exist
+
+        $response = $client->request('DELETE', "/api/v1/notes/$noteId");
+
+        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
 }
