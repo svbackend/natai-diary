@@ -29,7 +29,7 @@ abstract class AbstractFunctionalTest extends KernelTestCase
     public function loginUserById(TestClient $client, string $id)
     {
         $userRepository = self::getContainer()->get('doctrine')->getRepository(User::class);
-        $user = $userRepository->find(UserFixture::USER_ID);
+        $user = $userRepository->find($id);
         $client->loginUser($user);
     }
 

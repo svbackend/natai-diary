@@ -16,7 +16,7 @@ class NoteVoter extends BaseVoter
             && $subject instanceof Note;
     }
 
-    protected function canDelete(Note $note, User $user): bool
+    public function canDelete(Note $note, User $user): bool
     {
         $noteOwnerId = $note->getUser()->getId();
         $userId = $user->getId();

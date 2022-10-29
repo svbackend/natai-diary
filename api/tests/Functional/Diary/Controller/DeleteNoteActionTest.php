@@ -36,4 +36,25 @@ class DeleteNoteActionTest extends AbstractFunctionalTest
 
         self::assertNotNull($noteInDb['deleted_at']);
     }
+
+    public function testDeleteNoteOfOtherUserShouldReturnAccessDenied(): void
+    {
+        $userId = UserFixture::USER2_ID;
+        $client = static::createClient();
+        $this->loginUserById($client, $userId);
+
+        $noteId = NoteFixture::NOTE_ID; // this note belongs to user1
+
+        $response = $client->request('DELETE', "/api/v1/notes/$noteId");
+
+        $this->assertSame(Response::HTTP_FORBIDDEN, $response->getStatusCode());
+
+        $noteInDb = $this
+            ->getConnection()
+            ->fetchAssociative("SELECT deleted_at FROM note WHERE id = :id", [
+                'id' => $noteId
+            ]);
+
+        self::assertNull($noteInDb['deleted_at']); // note must not be deleted
+    }
 }

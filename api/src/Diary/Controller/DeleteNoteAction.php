@@ -47,11 +47,11 @@ class DeleteNoteAction extends BaseAction
         $note = $this->notes->find($id);
 
         if ($note === null) {
-            $this->createNotFoundException("Note with id $id not found");
+            throw $this->createNotFoundException("Note with id $id not found");
         }
 
         if (!$this->isGranted(NoteVoter::DELETE, $note)) {
-            $this->createAccessDeniedException("You can't delete this note, only owner can do it");
+            throw $this->createAccessDeniedException("You can't delete this note, only owner can do it");
         }
 
         $note->delete();
