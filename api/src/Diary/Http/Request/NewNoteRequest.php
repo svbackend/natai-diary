@@ -24,8 +24,8 @@ class NewNoteRequest implements HttpInputInterface
     public static function rules(): Assert\Collection
     {
         return new Assert\Collection([
-            'title' => new Assert\Type('string'),
-            'content' => new Assert\Type('string'),
+            'title' => new Assert\Required([new Assert\NotNull, new Assert\Type('string')]),
+            'content' => new Assert\Required([new Assert\NotNull, new Assert\Type('string')]),
             'actualDate' => new Assert\Required([new Assert\NotBlank(), new Assert\Date(),]),
             'deletedAt' => new Assert\Optional([new Assert\DateTime(),]),
             'tags' => new Assert\All([
