@@ -1,3 +1,22 @@
+### Oct 30, 2022
+
+I think I'm done with backend rewrite (kotlin->php migration), actually it took me not so long.
+
+Also I decided to remove Auth0 and use my own auth implementation, so I have more control over every aspect of it.
+
+Today I installed Anrdoid Studio on my laptop, but unfortunately it's too old to handle heavy android emulation, so I will need to use my phone to test application every time.
+
+So the next steps would be:
+
+1. Upgrade everything what's possible on android application
+2. Rewrite auth/registration process to use my own endpoints
+3. Rewrite sync endpoints
+4. Finish with Insights/Tags tracking screen
+5. Test everything properly
+6. Release Natai Diary v1.0
+
+
+
 ### Oct 29, 2022
 
 UpdateNoteAction - done.
