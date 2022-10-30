@@ -72,4 +72,17 @@ class Note
     {
         return $this->user;
     }
+
+    public function update(string $title, string $content, \DateTimeImmutable $actualDate): void
+    {
+        $this->title = $title;
+        $this->content = $content;
+        $this->actualDate = $actualDate;
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
 }

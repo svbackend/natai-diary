@@ -37,6 +37,7 @@ class NewNoteAction extends BaseAction
     }
 
     /**
+     * @OA\RequestBody(@Model(type=NewNoteRequest::class))
      * @OA\Response(response=201, description="success", @Model(type=NewNoteResponse::class))
      * @OA\Response(response=400,  description="validation error", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=401,  description="not authorized", @Model(type=AuthRequiredErrorResponse::class))

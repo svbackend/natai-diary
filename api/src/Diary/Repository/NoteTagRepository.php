@@ -2,9 +2,12 @@
 
 namespace App\Diary\Repository;
 
+use App\Diary\DTO\CloudTagDto;
+use App\Diary\Entity\Note;
 use App\Diary\Entity\NoteTag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @extends ServiceEntityRepository<NoteTag>
@@ -39,28 +42,31 @@ class NoteTagRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return NoteTag[] Returns an array of NoteTag objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('n')
-//            ->andWhere('n.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('n.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /** @param CloudTagDto[] $tags */
+    public function updateTags(Note $note, array $tags): void
+    {
+        $this->removeTags($note);
 
-//    public function findOneBySomeField($value): ?NoteTag
-//    {
-//        return $this->createQueryBuilder('n')
-//            ->andWhere('n.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        foreach ($tags as $tag) {
+            $noteTagId = UuidV4::v4();
+
+            $noteTag = new NoteTag(
+                id: $noteTagId,
+                note: $note,
+                tag: $tag->tag,
+                score: $tag->score
+            );
+
+            $this->save($noteTag);
+        }
+    }
+
+    private function removeTags(Note $note): void
+    {
+        $tags = $note->getTags();
+
+        foreach ($tags as $tag) {
+            $this->remove($tag);
+        }
+    }
 }
