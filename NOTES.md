@@ -8,7 +8,7 @@ Today I installed Anrdoid Studio on my laptop, but unfortunately it's too old to
 
 So the next steps would be:
 
-1. Upgrade everything what's possible on android application
+1. Upgrade everything what's possible on android application - in progress. Need to fix UI, after update layout looks broken
 2. Rewrite auth/registration process to use my own endpoints
 3. Rewrite sync endpoints
 4. Finish with Insights/Tags tracking screen
