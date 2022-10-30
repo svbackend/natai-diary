@@ -315,6 +315,7 @@ fun TagsSuggestions(tagsSuggestions: List<String>, onAddTag: (String) -> Unit) {
         for (tag in tagsSuggestions) {
             item {
                 InputChip(
+                    selected = true,
                     modifier = Modifier.padding(end = 4.dp),
                     onClick = { onAddTag(tag) },
                     label = { Text(text = tag) },
@@ -438,6 +439,7 @@ fun TagBadge(
     onDelete: () -> Unit,
 ) {
     InputChip(
+        selected = true,
         modifier = modifier.padding(end = 4.dp),
         onClick = onClick,
         label = { Text(text = tag.name) },
@@ -470,6 +472,7 @@ fun TagPreviewBadge(
             )
         }
         else -> InputChip(
+            selected = true,
             modifier = modifier.padding(end = 4.dp),
             onClick = {},
             label = { Text(text = "#${tag.name}") },

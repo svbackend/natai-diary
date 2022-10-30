@@ -19,6 +19,7 @@ import com.svbackend.natai.android.R
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import java.time.LocalDate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NTextField(
     modifier: Modifier = Modifier,
@@ -60,6 +61,7 @@ fun NTextarea(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDateField(
     context: Context,

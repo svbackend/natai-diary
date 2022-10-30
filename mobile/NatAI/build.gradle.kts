@@ -1,5 +1,3 @@
-val composeVersion = "1.4.0-alpha01"
-
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -43,7 +41,7 @@ android {
         jvmTarget = "1.8"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = composeVersion
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
     namespace = "com.svbackend.natai.android"
 }
@@ -73,6 +71,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
+    val composeVersion = "1.4.0-alpha01"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.activity:activity-compose:1.6.1")
     implementation("androidx.compose.material3:material3:1.1.0-alpha01")

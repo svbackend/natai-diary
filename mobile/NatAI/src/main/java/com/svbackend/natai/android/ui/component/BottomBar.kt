@@ -16,7 +16,7 @@ fun BottomBar(
     addNote: () -> Unit
 ) {
     BottomAppBar(
-        icons = {
+        actions = {
             IconButton(
                 onClick = { toggleDrawer() },
                 modifier = Modifier.fillMaxHeight(),
@@ -41,7 +41,6 @@ fun BottomBar(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { addNote() },
-                elevation = BottomAppBarDefaults.floatingActionButtonElevation()
             ) {
                 Icon(Icons.Filled.Add, "Add Note")
             }
