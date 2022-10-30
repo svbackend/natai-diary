@@ -1,3 +1,13 @@
+### Oct 29, 2022
+
+UpdateNoteAction - done.
+Tests and docs added as well.
+It took me an hour to do this endpoint, idk but it seems a bit slow.
+I don't want to spend 4 hours on a CRUD endpoints, but on the other hand it does contain tests and proper OpenAPI docs.
+And most of the time I spent on fixing validation which is not something that I need to do often.
+
+
+
 ### Oct 28, 2022
 
 Today I added more tests to DeleteNoteAction and actually that helped me to fix a couple of bugs,
