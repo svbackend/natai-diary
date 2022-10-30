@@ -1,4 +1,4 @@
-val composeVersion = "1.2.0-rc02"
+val composeVersion = "1.4.0-alpha01"
 
 plugins {
     id("com.android.application")
@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.svbackend.natai"
         minSdk = 29
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
         manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
@@ -50,19 +50,19 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation("com.google.android.material:material:1.6.1")
-    implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("com.google.android.material:material:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.auth0.android:auth0:2.6.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
 
-    val roomVersion = "2.4.1"
+    val roomVersion = "2.4.3"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
 
-    val fragmentVersion = "1.4.1"
+    val fragmentVersion = "1.5.4"
     implementation("androidx.fragment:fragment:$fragmentVersion")
     implementation("androidx.fragment:fragment-ktx:$fragmentVersion")
 
@@ -74,17 +74,17 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
     implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.activity:activity-compose:1.4.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha13")
+    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha01")
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.animation:animation-graphics:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    implementation("com.google.android.material:compose-theme-adapter-3:1.0.12")
+    implementation("com.google.android.material:compose-theme-adapter-3:1.0.21")
 
-    implementation("androidx.navigation:navigation-compose:2.4.2")
-    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
     implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
