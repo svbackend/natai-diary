@@ -15,6 +15,11 @@ So the next steps would be:
 5. Test everything properly
 6. Release Natai Diary v1.0
 
+New Layout notes - remove left drawer, on bottom bar replace current icons by:
+
+* Home (notes screen)
+* Insights (analytics screen)
+* Settings
 
 
 ### Oct 29, 2022

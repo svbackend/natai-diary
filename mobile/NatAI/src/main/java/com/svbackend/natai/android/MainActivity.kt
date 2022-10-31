@@ -74,34 +74,16 @@ class MainActivity : ScopedActivity() {
         val userTheme: UserTheme = UserTheme.strToTheme(theme)
 
         setContent {
-            val drawerState = rememberDrawerState(DrawerValue.Closed)
-            val scope = rememberCoroutineScope()
             val controller = rememberNavController()
 
             NataiTheme(userTheme = userTheme, vm = viewModel) {
                 DefaultLayout(
                     vm = viewModel,
-                    drawerState = drawerState,
-                    scope = scope,
-                    toggleDrawer = {
-                        scope.launch {
-                            if (drawerState.isOpen)
-                                drawerState.close()
-                            else
-                                drawerState.open()
-                        }
+                    onNavigateTo = {
+                        controller.go(it)
                     },
                     addNote = {
                         controller.go(Route.NewNoteRoute.withArgs())
-                    },
-                    onLogin = {
-                        onLogin(prefs)
-                    },
-                    onNavigateTo = {
-                        scope.launch {
-                            if (drawerState.isOpen) drawerState.close()
-                        }
-                        controller.go(it)
                     },
                     content = {
                         Navigation(controller, onLoginClick = { onLogin(prefs) }, vm = viewModel)

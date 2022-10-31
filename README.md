@@ -2,6 +2,7 @@
 
 AI Enhanced Diary application + website built using Kotlin Multiplatform Mobile (KMM), PHP & Symfony on backend, NextJS on frontend, and PostgreSQL as database.
 
+![](android-app-example.gif)
 
 ## Development
 

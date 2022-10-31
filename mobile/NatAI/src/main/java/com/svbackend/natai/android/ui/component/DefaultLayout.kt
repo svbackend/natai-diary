@@ -17,48 +17,36 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun DefaultLayout(
     vm: NoteViewModel,
-    drawerState: DrawerState,
-    scope: CoroutineScope,
-    toggleDrawer: () -> Unit,
     addNote: () -> Unit,
-    onLogin: () -> Unit,
     onNavigateTo: (String) -> Unit,
     content: @Composable() () -> Unit
 ) {
     val isSync by vm.isSyncing.collectAsState(initial = false)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        content = {
-            Scaffold(
-                bottomBar = {
-                    BottomBar(
-                        toggleDrawer = toggleDrawer,
-                        addNote = addNote
-                    )
-                },
-                topBar = {
-                    if (isSync) {
-                        LinearProgressIndicator(
-                            modifier = Modifier
-                                .height(3.dp)
-                                .fillMaxWidth()
-                        )
-                    }
-                }
-            ) {
-                Surface(
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                onNavigateTo = onNavigateTo,
+                addNote = addNote
+            )
+        },
+        topBar = {
+            if (isSync) {
+                LinearProgressIndicator(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = it.calculateBottomPadding()),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    content()
-                }
+                        .height(3.dp)
+                        .fillMaxWidth()
+                )
             }
-        },
-        drawerContent = {
-            NavDrawer(onLogin = onLogin, vm = vm, onClick = { onNavigateTo(it) })
-        },
-    )
+        }
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = it.calculateBottomPadding()),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            content()
+        }
+    }
 }
