@@ -1,3 +1,11 @@
+### Oct 31, 2022
+
+Feeling lazy today, will just break down the steps for next task for the future:
+
+1. Create login screen (with email and password) + don't forget to add link to registration screen
+2. Handle validation errors
+3. Store token & probably user data in the database? Restrict to one user per phone.
+
 ### Oct 30, 2022
 
 I think I'm done with backend rewrite (kotlin->php migration), actually it took me not so long.
