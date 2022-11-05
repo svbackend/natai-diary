@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.svbackend.natai.android.ui.screen.*
+import com.svbackend.natai.android.ui.screen.auth.LoginScreen
 import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
@@ -18,7 +19,6 @@ import com.svbackend.natai.android.viewmodel.NoteViewModel
 fun Navigation(
     controller: NavHostController,
     vm: NoteViewModel,
-    onLoginClick: () -> Unit,
     editNoteViewModel: EditNoteViewModel = viewModel(),
 ) {
 
@@ -29,7 +29,9 @@ fun Navigation(
                 onAddClick = {
                     controller.go(Route.NewNoteRoute.withArgs())
                 },
-                onLoginClick = onLoginClick,
+                onLoginClick = {
+                    controller.go(Route.LoginRoute.withArgs())
+                },
                 onNoteClick = {
                     vm.selectNote(it.id)
                     controller.go(Route.NoteDetailsRoute.withArgs(noteId = it.id))
@@ -91,6 +93,16 @@ fun Navigation(
 
         composable(route = Route.AnalyticsRoute.route) {
             AnalyticsScreen(vm = vm)
+        }
+
+        composable(route = Route.LoginRoute.route) {
+            LoginScreen(
+                onLoginSuccess = {},
+                onClickCreateAccount = {
+                    // goto registration route
+                    // controller.go(Route.RegistrationRoute.withArgs())
+                }
+            )
         }
 
         composable(route = Route.SettingsThemesRoute.route) {

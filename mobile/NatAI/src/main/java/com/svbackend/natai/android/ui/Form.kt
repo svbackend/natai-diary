@@ -10,9 +10,14 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.svbackend.natai.android.R
@@ -29,6 +34,7 @@ fun NTextField(
     singleLine: Boolean = true,
     maxLines: Int = 1,
     trailingIcon: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     OutlinedTextField(
         value = value,
@@ -42,6 +48,7 @@ fun NTextField(
             .padding(bottom = 16.dp),
         maxLines = maxLines,
         trailingIcon = trailingIcon,
+        visualTransformation = visualTransformation,
     )
 }
 
@@ -134,4 +141,37 @@ fun AppDateRow(
             )
         }
     }
+}
+
+@Composable
+fun NPasswordField(
+    modifier: Modifier = Modifier,
+    value: TextFieldValue,
+    label: String,
+    onChange: (TextFieldValue) -> Unit,
+) {
+    val passwordVisible = rememberSaveable { mutableStateOf(false) }
+
+    NTextField(
+        modifier = modifier,
+        value = value,
+        label = label,
+        onChange = onChange,
+        singleLine = true,
+        maxLines = 1,
+        visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = @Composable {
+            Icon(
+                modifier = Modifier.clickable {
+                    passwordVisible.value = !passwordVisible.value
+                },
+                painter = if (passwordVisible.value) {
+                    painterResource(id = R.drawable.ic_baseline_visibility_off_24)
+                } else {
+                    painterResource(id = R.drawable.ic_baseline_visibility_24)
+                },
+                contentDescription = "show password"
+            )
+        }
+    )
 }

@@ -21,10 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.AppDateRow
-import com.svbackend.natai.android.ui.NProgressBtn
-import com.svbackend.natai.android.ui.NTextField
-import com.svbackend.natai.android.ui.NTextarea
+import com.svbackend.natai.android.ui.*
 import com.svbackend.natai.android.ui.component.TagsField
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.throttleLatest
@@ -133,29 +130,19 @@ fun NewNoteScreen(
                 tagsSuggestions = tagsSuggestions,
             )
 
-            if (vm.isLoading.value) {
-                Button(onClick = {}, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)) {
-                    NProgressBtn()
-                    Text(
-                        text = stringResource(R.string.saving),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            } else {
-                Button(onClick = addNote(), modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)) {
-                    Icon(
-                        Icons.Filled.Add,
-                        stringResource(R.string.addNote)
-                    )
-                    Text(
-                        text = stringResource(R.string.addNote),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
+            NPrimaryButton(
+                onClick = addNote(),
+                loadingText = stringResource(R.string.saving),
+                isLoading = vm.isLoading.value,
+            ) {
+                Icon(
+                    Icons.Filled.Add,
+                    stringResource(R.string.addNote)
+                )
+                Text(
+                    text = stringResource(R.string.addNote),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
 
         }

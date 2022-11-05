@@ -1,10 +1,16 @@
 package com.svbackend.natai.android.ui.screen
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,7 +21,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.*
+import com.svbackend.natai.android.ui.AppDateRow
+import com.svbackend.natai.android.ui.NPrimaryButton
+import com.svbackend.natai.android.ui.NTextField
+import com.svbackend.natai.android.ui.NTextarea
 import com.svbackend.natai.android.ui.component.TagsField
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import kotlinx.coroutines.launch
@@ -108,32 +117,20 @@ fun EditNoteScreen(
                 onValueChange = { vm.tagsFieldValue.value = it },
                 tagsSuggestions = tagsSuggestions,
             )
-            if (vm.isLoading.value) {
-                Button(onClick = {}, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)) {
-                    NProgressBtn()
-                    Text(
-                        text = stringResource(R.string.saving),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            } else {
-                Button(
-                    onClick = saveNote(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                ) {
-                    Icon(
-                        Icons.Filled.Edit,
-                        stringResource(R.string.saveNote)
-                    )
-                    Text(
-                        text = stringResource(R.string.saveNote),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
+
+            NPrimaryButton(
+                onClick = saveNote(),
+                loadingText = stringResource(R.string.saving),
+                isLoading = vm.isLoading.value,
+            ) {
+                Icon(
+                    Icons.Filled.Edit,
+                    stringResource(R.string.saveNote)
+                )
+                Text(
+                    text = stringResource(R.string.saveNote),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
 
         }
