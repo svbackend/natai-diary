@@ -16,5 +16,7 @@ class UserRepository(
     private val db: DiaryDatabase,
     private val api: ApiClient
 ) {
-
+    fun login(email: String, password: String) {
+        val response = api.login(email, password)
+    }
 }

@@ -3,13 +3,16 @@
 namespace App\Auth\Controller;
 
 use App\Auth\DTO\UserDto;
+use App\Auth\Entity\ApiToken;
 use App\Auth\Entity\User;
 use App\Auth\Http\Response\SuccessLoginResponse;
 use App\Auth\OpenApi\Ref\LoginErrorRef;
 use App\Auth\OpenApi\Ref\LoginRequestRef;
+use App\Auth\Repository\ApiTokenRepository;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\ServerErrorRef;
+use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,6 +24,12 @@ use Nelmio\ApiDocBundle\Annotation\Model;
  */
 class LoginAction extends BaseAction
 {
+    public function __construct(
+        private ApiTokenRepository $apiTokens,
+    )
+    {
+    }
+
     /**
      * @OA\RequestBody(@Model(type=LoginRequestRef::class))
      * @OA\Response(response=200, description="success", @Model(type=SuccessLoginResponse::class))
@@ -32,12 +41,20 @@ class LoginAction extends BaseAction
         #[CurrentUser] ?User $user
     ): HttpOutputInterface
     {
+        if (!$user) {
+            return $this->error('Invalid credentials.', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $apiToken = new ApiToken($user);
+        $this->apiTokens->save($apiToken, flush: true);
+
         return new SuccessLoginResponse(
             user: new UserDto(
                 id: $user->getId(),
                 email: $user->getEmail(),
                 roles: $user->getRoles(),
             ),
+            apiToken: $apiToken->getToken(),
         );
     }
 }

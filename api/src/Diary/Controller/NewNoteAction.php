@@ -41,7 +41,7 @@ class NewNoteAction extends BaseAction
      * @OA\Response(response=201, description="success", @Model(type=NewNoteResponse::class))
      * @OA\Response(response=400,  description="validation error", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=401,  description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
-     * @Security(name="Bearer")
+     * @Security(name="ApiToken")
      */
     #[Route('/api/v1/notes', methods: ['POST'])]
     public function __invoke(

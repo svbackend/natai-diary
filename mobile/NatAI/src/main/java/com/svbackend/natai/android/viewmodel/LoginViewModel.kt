@@ -24,4 +24,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val password = mutableStateOf(
         TextFieldValue("")
     )
+
+    fun login() {
+        repository.login(email.value.text, password.value.text)
+    }
 }

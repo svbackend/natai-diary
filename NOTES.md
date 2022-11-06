@@ -1,3 +1,7 @@
+### Nov 5, 2022
+
+
+
 ### Oct 31, 2022
 
 Feeling lazy today, will just break down the steps for next task for the future:

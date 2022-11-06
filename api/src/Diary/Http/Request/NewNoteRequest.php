@@ -12,6 +12,7 @@ class NewNoteRequest implements HttpInputInterface
     public function __construct(
         public string $title,
         public string $content,
+        /** @OA\Property(example="2022-11-05") */
         public \DateTimeImmutable $actualDate,
         /** @OA\Property(example=null) */
         public ?\DateTimeImmutable $deletedAt = null,

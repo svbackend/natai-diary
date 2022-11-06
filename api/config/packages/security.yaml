@@ -14,6 +14,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            custom_authenticators:
+                - App\Auth\Security\ApiTokenAuthenticator
             # null = 5 login attempts per minute
             # login_throttling: null
             json_login:

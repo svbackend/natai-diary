@@ -38,7 +38,7 @@ fun LoginScreen(
         if (vm.email.value.text.isEmpty() || vm.password.value.text.isEmpty()) {
             return {
                 Toast
-                    .makeText(context, "Title and content are required", Toast.LENGTH_SHORT)
+                    .makeText(context, "Email and password are required", Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -46,8 +46,17 @@ fun LoginScreen(
         return {
             vm.isLoading.value = true
             scope.launch {
-                // todo try to login
-                onLoginSuccess()
+
+                try {
+                    vm.login()
+
+                    onLoginSuccess()
+                } catch (e: Exception) {
+                    Toast
+                        .makeText(context, e.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+
             }
         }
 

@@ -13,6 +13,7 @@ import com.auth0.android.authentication.storage.CredentialsManager
 import com.auth0.android.authentication.storage.SharedPreferencesStorage
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
 
 class AppContainer(context: Context) {
@@ -35,6 +36,7 @@ class AppContainer(context: Context) {
     private val apiClient = ApiClient(getApiToken)
 
     val diaryRepository = DiaryRepository(db, apiClient)
+    val userRepository = UserRepository(db, apiClient)
 
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

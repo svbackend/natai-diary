@@ -29,7 +29,7 @@ class FindAllNotesAction extends BaseAction
     /**
      * @OA\Response(response=200, description="success", @Model(type=FindAllNotesResponse::class))
      * @OA\Response(response=401,  description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
-     * @Security(name="Bearer")
+     * @Security(name="ApiToken")
      */
     #[Route('/api/v1/notes', methods: ['GET'])]
     public function __invoke(

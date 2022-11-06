@@ -25,6 +25,10 @@ class LoginActionTest extends AbstractFunctionalTest
             'email' => UserFixture::USER_LOGIN,
             'roles' => ['ROLE_USER'],
         ], $output['user']);
+
+        $this->assertArrayHasKey('apiToken', $output);
+        $this->assertNotEmpty($output['apiToken']);
+
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $this->assertArrayHasKey('set-cookie', $client->getResponse()->getHeaders());
     }

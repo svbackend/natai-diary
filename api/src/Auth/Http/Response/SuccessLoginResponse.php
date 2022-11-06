@@ -10,6 +10,7 @@ class SuccessLoginResponse implements HttpOutputInterface
 {
     public function __construct(
         public UserDto $user,
+        public string $apiToken,
     )
     {
     }
