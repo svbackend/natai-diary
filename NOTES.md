@@ -1,6 +1,14 @@
 ### Nov 5, 2022
 
+Feeling not good today, but managed to do login screen on android app and added API Token authenticator on backend.
+Because cookies are "same-site" and working only with browser/js, while API Token can be used in mobile apps.
+Reading a lot about E2E encryption, trying to wrap my head around it, especially it's hard to understand what to do when new client logging in
+and how to share private keys between clients when they are not stored on server.
 
+Next steps:
+1. Add link to "Create Account" on login screen
+2. Send api request with login/password and store user in db
+3. Store api token in preferences
 
 ### Oct 31, 2022
 
