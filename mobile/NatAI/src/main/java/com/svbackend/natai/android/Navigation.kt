@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.svbackend.natai.android.ui.screen.*
 import com.svbackend.natai.android.ui.screen.auth.LoginScreen
+import com.svbackend.natai.android.ui.screen.auth.RegistrationScreen
 import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
@@ -99,8 +100,16 @@ fun Navigation(
             LoginScreen(
                 onLoginSuccess = {},
                 onClickCreateAccount = {
-                    // goto registration route
-                    // controller.go(Route.RegistrationRoute.withArgs())
+                    controller.go(Route.RegistrationRoute.withArgs())
+                }
+            )
+        }
+
+        composable(route = Route.RegistrationRoute.route) {
+            RegistrationScreen(
+                onRegistrationSuccess = {},
+                onClickLogin = {
+                    controller.go(Route.LoginRoute.withArgs())
                 }
             )
         }

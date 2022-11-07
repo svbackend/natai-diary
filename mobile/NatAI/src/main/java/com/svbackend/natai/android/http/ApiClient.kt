@@ -6,13 +6,12 @@ import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
-import com.svbackend.natai.android.http.exception.CloudIdMissingException
-import com.svbackend.natai.android.http.exception.LoginErrorException
-import com.svbackend.natai.android.http.exception.NewNoteErrorException
-import com.svbackend.natai.android.http.exception.UpdateNoteErrorException
+import com.svbackend.natai.android.http.exception.*
 import com.svbackend.natai.android.http.model.CloudNote
 import com.svbackend.natai.android.http.request.LoginRequest
+import com.svbackend.natai.android.http.request.RegisterRequest
 import com.svbackend.natai.android.http.response.LoginSuccessResponse
+import com.svbackend.natai.android.http.response.RegisterSuccessResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -101,6 +100,18 @@ class ApiClient(
 
         if (response.status != HttpStatusCode.OK) {
             throw LoginErrorException()
+        }
+
+        return response.body()
+    }
+
+    suspend fun register(request: RegisterRequest): RegisterSuccessResponse {
+        val response = client.post("registration") {
+            setBody(request)
+        }
+
+        if (response.status != HttpStatusCode.Created) {
+            throw RegistrationErrorException()
         }
 
         return response.body()

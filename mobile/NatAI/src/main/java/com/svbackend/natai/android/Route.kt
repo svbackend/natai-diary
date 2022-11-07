@@ -15,6 +15,8 @@ sealed class Route(val route: String) {
 
     object LoginRoute : Route("auth_login")
 
+    object RegistrationRoute : Route("auth_registration")
+
     object NoteDetailsRoute : Route("note_details/{noteId}") {
         fun withArgs(noteId: String): String {
             return route.replace("{noteId}", noteId)

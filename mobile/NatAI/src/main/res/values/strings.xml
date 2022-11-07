@@ -41,4 +41,6 @@
     <string name="analyticsTitle">Analytics</string>
     <string name="password">Password</string>
     <string name="loading">Loading..</string>
+    <string name="name">Name</string>
+    <string name="register">Register</string>
 </resources>

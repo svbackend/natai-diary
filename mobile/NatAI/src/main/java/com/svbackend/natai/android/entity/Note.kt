@@ -12,6 +12,7 @@ import java.util.*
 data class Note(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
     var cloudId: String? = null,
+    var cloudUserId: String? = null,
     var title: String,
     var content: String,
     var actualDate: LocalDate = LocalDate.now(),

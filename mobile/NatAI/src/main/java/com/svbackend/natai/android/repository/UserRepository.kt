@@ -4,6 +4,7 @@ import com.svbackend.natai.android.DiaryDatabase
 import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.request.LoginRequest
+import com.svbackend.natai.android.http.request.RegisterRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -52,5 +53,17 @@ class UserRepository(
 
             return updatedUser
         }
+    }
+
+    suspend fun register(email: String, name: String, password: String): User {
+        api.register(
+            RegisterRequest(
+                name = name,
+                email = email,
+                password = password
+            )
+        )
+
+        return login(email, password)
     }
 }
