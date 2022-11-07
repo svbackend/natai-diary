@@ -11,10 +11,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.auth0.android.Auth0
-import com.auth0.android.authentication.AuthenticationAPIClient
-import com.auth0.android.authentication.storage.CredentialsManager
-import com.auth0.android.result.UserProfile
+import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.service.ReminderWorker
 import com.svbackend.natai.android.ui.NataiTheme
@@ -29,9 +26,7 @@ import java.time.Duration
 
 class MainActivity : ScopedActivity() {
 
-    private lateinit var account: Auth0
-    private lateinit var credsManager: CredentialsManager
-    private lateinit var authClient: AuthenticationAPIClient
+
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var apiSyncService: ApiSyncService
     private lateinit var prefs: SharedPreferences
@@ -48,9 +43,6 @@ class MainActivity : ScopedActivity() {
         super.onCreate(savedInstanceState)
 
         (application as DiaryApplication).let {
-            account = it.appContainer.auth0
-            credsManager = it.appContainer.credentialsManager
-            authClient = it.appContainer.auth0ApiClient
             connectivityManager = it.appContainer.connectivityManager
             apiSyncService = it.appContainer.apiSyncService
             prefs = it.appContainer.sharedPrefs
@@ -95,14 +87,17 @@ class MainActivity : ScopedActivity() {
             reminderWorkRequest
         )
 
+        prefs.getString("cloud_id", null)?.let { cloudId ->
+            val currentUser = viewModel.loadCurrentUserById(cloudId)
+
+            if (currentUser != null) {
+                syncWithApi()
+            }
+        }
+
         splashViewModel.loaded()
     }
 
-    private fun onProfileLoaded(profile: UserProfile) = launch {
-        viewModel.userProfileLoaded(profile)
-    }
-
-    // todo call after login
     private fun syncWithApi() = launch {
         val hasInternet = hasInternetConnection(connectivityManager)
         if (!hasInternet) {

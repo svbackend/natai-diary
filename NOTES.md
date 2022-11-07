@@ -1,3 +1,17 @@
+### Nov 6, 2022
+
+Today wanted to test login screen on mobile, but needed to setup tunneling via ngrok,
+because localhost not accessible from my phone while emulator just can't boot up on my laptop =(
+Also I was playing around with generation of http client for android out of OpenApi schema,
+it kind of works but I don't see many benefits of doing that, I would prefer to generate kotlin classes for responses
+but to use my own http client.
+
+Some progress with login functionality as well.
+Logic is following:
+1. check whether user already stored in local db  
+2. if not - create new user and store it in local db
+3. if yes - update user's api token and set this user as currently logged in
+
 ### Nov 5, 2022
 
 Feeling not good today, but managed to do login screen on android app and added API Token authenticator on backend.

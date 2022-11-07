@@ -9,7 +9,8 @@ class UserDto
     public function __construct(
         public UuidV4 $id,
         public string $email,
-        /** @var string[] */
+        public string $name,
+        /** @var string[] $roles */
         public array $roles,
     )
     {

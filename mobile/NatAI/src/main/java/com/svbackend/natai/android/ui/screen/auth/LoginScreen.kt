@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.http.exception.LoginErrorException
 import com.svbackend.natai.android.ui.NPasswordField
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField
@@ -49,9 +50,8 @@ fun LoginScreen(
 
                 try {
                     vm.login()
-
                     onLoginSuccess()
-                } catch (e: Exception) {
+                } catch (e: LoginErrorException) {
                     Toast
                         .makeText(context, e.message, Toast.LENGTH_SHORT)
                         .show()

@@ -7,9 +7,12 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
 import com.svbackend.natai.android.http.exception.CloudIdMissingException
+import com.svbackend.natai.android.http.exception.LoginErrorException
 import com.svbackend.natai.android.http.exception.NewNoteErrorException
 import com.svbackend.natai.android.http.exception.UpdateNoteErrorException
 import com.svbackend.natai.android.http.model.CloudNote
+import com.svbackend.natai.android.http.request.LoginRequest
+import com.svbackend.natai.android.http.response.LoginSuccessResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -89,5 +92,17 @@ class ApiClient(
         if (response.status != HttpStatusCode.OK) {
             throw UpdateNoteErrorException(response)
         }
+    }
+
+    suspend fun login(request: LoginRequest): LoginSuccessResponse {
+        val response = client.post("login") {
+            setBody(request)
+        }
+
+        if (response.status != HttpStatusCode.OK) {
+            throw LoginErrorException()
+        }
+
+        return response.body()
     }
 }

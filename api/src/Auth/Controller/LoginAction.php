@@ -12,12 +12,11 @@ use App\Auth\Repository\ApiTokenRepository;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\ServerErrorRef;
-use Doctrine\ORM\EntityManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
  * @OA\Tag(name="Auth")
@@ -52,6 +51,7 @@ class LoginAction extends BaseAction
             user: new UserDto(
                 id: $user->getId(),
                 email: $user->getEmail(),
+                name: $user->getName(),
                 roles: $user->getRoles(),
             ),
             apiToken: $apiToken->getToken(),

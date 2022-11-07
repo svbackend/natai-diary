@@ -1,22 +1,56 @@
 package com.svbackend.natai.android.repository
 
 import com.svbackend.natai.android.DiaryDatabase
-import com.svbackend.natai.android.entity.LocalNote
-import com.svbackend.natai.android.entity.Note
-import com.svbackend.natai.android.entity.Tag
-import com.svbackend.natai.android.entity.relation.NoteWithTags
+import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.http.ApiClient
+import com.svbackend.natai.android.http.request.LoginRequest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.time.Instant
 
 class UserRepository(
     private val db: DiaryDatabase,
     private val api: ApiClient
 ) {
-    fun login(email: String, password: String) {
-        val response = api.login(email, password)
+    suspend fun getUserByCloudId(cloudId: String): User? = withContext(Dispatchers.IO) {
+        db
+            .userDAO()
+            .getUserByCloudId(cloudId)
+    }
+
+    suspend fun login(email: String, password: String): User {
+        val response = api.login(
+            LoginRequest(
+                email,
+                password
+            )
+        )
+
+        val userId = response.user.id
+        val newApiToken = response.apiToken
+
+        val existingUser = db.userDAO().getUserByCloudId(userId.toString())
+
+        if (existingUser == null) {
+            val cloudUser = response.user
+            val newLocalUser = User(
+                cloudId = userId.toString(),
+                email = email,
+                apiToken = newApiToken,
+                name = cloudUser.name,
+            )
+
+            db.userDAO().insertUser(newLocalUser)
+
+            return newLocalUser
+        } else {
+
+            val updatedUser = existingUser.copy(
+                apiToken = newApiToken
+            )
+
+            db.userDAO().updateUser(updatedUser)
+
+            return updatedUser
+        }
     }
 }

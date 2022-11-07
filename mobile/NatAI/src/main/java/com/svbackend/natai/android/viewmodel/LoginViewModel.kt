@@ -8,11 +8,12 @@ import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.repository.UserRepository
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
-    val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
+    val repository: UserRepository = (application as DiaryApplication).appContainer.userRepository
     val prefs: SharedPreferences = (application as DiaryApplication).appContainer.sharedPrefs
 
     val isLoading = mutableStateOf(false)
@@ -25,7 +26,11 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         TextFieldValue("")
     )
 
-    fun login() {
-        repository.login(email.value.text, password.value.text)
+    suspend fun login() {
+        val user = repository.login(email.value.text, password.value.text)
+        prefs.edit()
+            .putString("api_token", user.apiToken)
+            .putString("cloud_id", user.cloudId)
+            .apply()
     }
 }

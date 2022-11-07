@@ -10,8 +10,11 @@ abstract class UserDAO {
     abstract fun getUser(id: String): Flow<NoteWithTags>
 
     @Query("SELECT * FROM User WHERE cloudId = :cloudId")
-    abstract fun getUserByCloudId(cloudId: String): Flow<User>
+    abstract fun getUserByCloudId(cloudId: String): User?
 
     @Insert
     abstract fun insertUser(user: User)
+
+    @Update
+    abstract fun updateUser(user: User)
 }

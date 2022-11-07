@@ -17,7 +17,7 @@ class DiaryRepository(
     private val api: ApiClient
 ) {
     val notes: Flow<List<LocalNote>> = db
-        .dao()
+        .diaryDAO()
         .getAllNotes()
         .map { notes ->
             notes.map { LocalNote.create(it) }
@@ -25,23 +25,23 @@ class DiaryRepository(
 
     suspend fun getAllNotesForSync(): List<LocalNote> = withContext(Dispatchers.IO) {
         db
-            .dao()
+            .diaryDAO()
             .getAllNotesForSync()
             .map { LocalNote.create(it) }
     }
 
     fun getNote(id: String): Flow<NoteWithTags> {
-        return db.dao().getNote(id)
+        return db.diaryDAO().getNote(id)
     }
 
     suspend fun insertNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
-        db.dao().insertNote(Note.create(note))
+        db.diaryDAO().insertNote(Note.create(note))
         addTags(note)
         syncNoteWithCloud(note)
     }
 
     suspend fun updateNote(note: Note) = withContext(Dispatchers.IO) {
-        db.dao().updateNote(note)
+        db.diaryDAO().updateNote(note)
     }
 
     suspend fun updateNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
@@ -59,11 +59,11 @@ class DiaryRepository(
     }
 
     suspend fun insertTag(tag: Tag) = withContext(Dispatchers.IO) {
-        db.dao().insertTag(tag)
+        db.diaryDAO().insertTag(tag)
     }
 
     private suspend fun deleteTagsByNote(noteId: String) = withContext(Dispatchers.IO) {
-        db.dao().deleteTagsByNote(noteId)
+        db.diaryDAO().deleteTagsByNote(noteId)
     }
 
     private suspend fun addTags(note: LocalNote) {

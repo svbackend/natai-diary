@@ -6,52 +6,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.auth0.android.result.UserProfile
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.LoggedUserInfo
 import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.ui.UserTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
-    val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
+    val diaryRepository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
+    val userRepository: UserRepository = (application as DiaryApplication).appContainer.userRepository
 
     val isLoggedIn = MutableSharedFlow<Boolean>()
-    val user = MutableSharedFlow<LoggedUserInfo>()
+    val user = MutableSharedFlow<User?>()
     val currentTheme = MutableSharedFlow<UserTheme>(replay = 1)
     //val currentRoute = MutableSharedFlow<String?>() // todo
 
-    val notes = repository.notes
+    val notes = diaryRepository.notes
     var notesState by mutableStateOf(emptyList<LocalNote>())
-
-    //suspend fun delete(id: String) = repository.delete(repository.getNote(id))
 
     val selectedNote = MutableSharedFlow<LocalNote?>(replay = 1)
 
     fun selectNote(id: String) = viewModelScope.launch {
-        repository.getNote(id)
+        diaryRepository.getNote(id)
             .collect {
                 selectedNote.emit(LocalNote.create(it))
             }
-    }
-
-    suspend fun userProfileLoaded(profile: UserProfile) {
-        val userInfo = LoggedUserInfo(
-            name = profile.name ?: "John Doe",
-            email = profile.email ?: "",
-            pictureUrl = profile.pictureURL ?: "https://picsum.photos/100/100",
-        )
-        user.emit(userInfo)
-    }
-
-    suspend fun login() {
-        isLoggedIn.emit(true)
-    }
-
-    suspend fun credsFailure() {
-        isLoggedIn.emit(false)
     }
 
     val isSyncing = MutableSharedFlow<Boolean>()
@@ -66,7 +48,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     fun deleteNote(note: LocalNote) {
         viewModelScope.launch {
-            repository.deleteNoteAndSync(note)
+            diaryRepository.deleteNoteAndSync(note)
         }
     }
 
@@ -74,6 +56,12 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             currentTheme.emit(theme)
         }
+    }
+
+    suspend fun loadCurrentUserById(cloudId: String): User? {
+        val user = userRepository.getUserByCloudId(cloudId)
+        this.user.emit(user)
+        return user
     }
 
     init {

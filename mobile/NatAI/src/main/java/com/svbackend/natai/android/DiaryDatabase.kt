@@ -5,9 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.svbackend.natai.android.entity.DiaryDAO
-import com.svbackend.natai.android.entity.Note
-import com.svbackend.natai.android.entity.Tag
+import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.room.Converters
 
 @Database(
@@ -15,12 +13,14 @@ import com.svbackend.natai.android.room.Converters
     entities = [
         Note::class,
         Tag::class,
+        User::class,
     ],
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
 abstract class DiaryDatabase : RoomDatabase() {
-    abstract fun dao(): DiaryDAO
+    abstract fun diaryDAO(): DiaryDAO
+    abstract fun userDAO(): UserDAO
 
     companion object {
         @Volatile private var instance: DiaryDatabase? = null
