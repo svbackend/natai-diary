@@ -31,9 +31,6 @@ fun ManageAccountScreen(
 
     val user = vm.user.collectAsState(initial = null).value
 
-    println("ManageAccountScreen USER")
-    println(user)
-
     if (user == null) {
         NotAuthorized {
             onClickCreateAccount()

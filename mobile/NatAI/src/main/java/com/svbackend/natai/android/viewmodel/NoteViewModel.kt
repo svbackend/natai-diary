@@ -64,7 +64,6 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun subscribeForCurrentUserChange() {
         this.userCloudId.collect { userCloudId ->
 
-            println("userCloudId.collect")
             if (userCloudId != null) {
                 val userFlow = userRepository.getUserByCloudId(userCloudId)
 
@@ -87,7 +86,6 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         viewModelScope.launch {
-            println("subscribeForCurrentUserChange")
             subscribeForCurrentUserChange()
         }
     }
