@@ -172,6 +172,6 @@ fun NPasswordField(
                 },
                 contentDescription = "show password"
             )
-        }
+        },
     )
 }

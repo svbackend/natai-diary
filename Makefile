@@ -3,3 +3,9 @@ install:
 
 up:
 	cd api && docker compose up -d && symfony serve
+
+test:
+	cd api && bin/phpunit
+
+tunnel:
+	ngrok http 8000

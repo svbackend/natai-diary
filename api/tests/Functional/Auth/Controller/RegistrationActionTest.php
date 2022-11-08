@@ -22,5 +22,10 @@ class RegistrationActionTest extends AbstractFunctionalTest
         ]);
 
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
+
+
+        $data = $response->toArray();
+        $this->assertArrayHasKey('userId', $data);
+        $this->assertNotEmpty($data['userId']);
     }
 }

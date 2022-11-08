@@ -5,7 +5,7 @@ namespace App\Auth\Controller;
 use App\Auth\DTO\UserDto;
 use App\Auth\Entity\ApiToken;
 use App\Auth\Entity\User;
-use App\Auth\Http\Response\SuccessLoginResponse;
+use App\Auth\Http\Response\LoginSuccessResponse;
 use App\Auth\OpenApi\Ref\LoginErrorRef;
 use App\Auth\OpenApi\Ref\LoginRequestRef;
 use App\Auth\Repository\ApiTokenRepository;
@@ -31,7 +31,7 @@ class LoginAction extends BaseAction
 
     /**
      * @OA\RequestBody(@Model(type=LoginRequestRef::class))
-     * @OA\Response(response=200, description="success", @Model(type=SuccessLoginResponse::class))
+     * @OA\Response(response=200, description="success", @Model(type=LoginSuccessResponse::class))
      * @OA\Response(response=401, description="invalid creds", @Model(type=LoginErrorRef::class))
      * @OA\Response(response=500, description="server error", @Model(type=ServerErrorRef::class))
      */
@@ -47,7 +47,7 @@ class LoginAction extends BaseAction
         $apiToken = new ApiToken($user);
         $this->apiTokens->save($apiToken, flush: true);
 
-        return new SuccessLoginResponse(
+        return new LoginSuccessResponse(
             user: new UserDto(
                 id: $user->getId(),
                 email: $user->getEmail(),

@@ -88,11 +88,11 @@ class MainActivity : ScopedActivity() {
         )
 
         prefs.getString("cloud_id", null)?.let { cloudId ->
-            val currentUser = viewModel.loadCurrentUserById(cloudId)
+            viewModel.setUserCloudId(cloudId)
 
-            if (currentUser != null) {
-                syncWithApi()
-            }
+            syncWithApi()
+
+            viewModel.loadCurrentUser()
         }
 
         splashViewModel.loaded()

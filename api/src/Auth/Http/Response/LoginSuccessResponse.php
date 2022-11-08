@@ -6,7 +6,7 @@ use App\Auth\DTO\UserDto;
 use App\Common\Http\Response\HttpOutputInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class SuccessLoginResponse implements HttpOutputInterface
+class LoginSuccessResponse implements HttpOutputInterface
 {
     public function __construct(
         public UserDto $user,

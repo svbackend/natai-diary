@@ -98,7 +98,12 @@ fun Navigation(
 
         composable(route = Route.LoginRoute.route) {
             LoginScreen(
-                onLoginSuccess = {},
+                onLoginSuccess = {
+                    controller.popBackStack(
+                        Route.MainRoute.route,
+                        inclusive = true
+                    )
+                },
                 onClickCreateAccount = {
                     controller.go(Route.RegistrationRoute.withArgs())
                 }
@@ -107,7 +112,12 @@ fun Navigation(
 
         composable(route = Route.RegistrationRoute.route) {
             RegistrationScreen(
-                onRegistrationSuccess = {},
+                onRegistrationSuccess = {
+                    controller.popBackStack(
+                        Route.MainRoute.route,
+                        inclusive = true
+                    )
+                },
                 onClickLogin = {
                     controller.go(Route.LoginRoute.withArgs())
                 }

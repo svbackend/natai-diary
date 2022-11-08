@@ -18,6 +18,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     val isLoading = mutableStateOf(false)
 
+    val error = mutableStateOf<String?>(null)
+
     val email = mutableStateOf(
         TextFieldValue("")
     )

@@ -43,4 +43,6 @@
     <string name="loading">Loading..</string>
     <string name="name">Name</string>
     <string name="register">Register</string>
+    <string name="dontHaveAccount">Don\'t have an account yet?</string>
+    <string name="createAccount">Create new account</string>
 </resources>

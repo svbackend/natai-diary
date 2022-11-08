@@ -16,10 +16,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
-    val diaryRepository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
-    val userRepository: UserRepository = (application as DiaryApplication).appContainer.userRepository
+    val diaryRepository: DiaryRepository =
+        (application as DiaryApplication).appContainer.diaryRepository
+    val userRepository: UserRepository =
+        (application as DiaryApplication).appContainer.userRepository
 
     val isLoggedIn = MutableSharedFlow<Boolean>()
+    val userCloudId = MutableSharedFlow<String?>()
     val user = MutableSharedFlow<User?>()
     val currentTheme = MutableSharedFlow<UserTheme>(replay = 1)
     //val currentRoute = MutableSharedFlow<String?>() // todo
@@ -58,10 +61,20 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun loadCurrentUserById(cloudId: String): User? {
-        val user = userRepository.getUserByCloudId(cloudId)
-        this.user.emit(user)
-        return user
+    suspend fun loadCurrentUser() {
+        this.userCloudId.collect { userCloudId ->
+            if (userCloudId != null) {
+                val userFlow = userRepository.getUserByCloudId(userCloudId)
+
+                userFlow.collect { currentUser ->
+                    user.emit(currentUser)
+                }
+            }
+        }
+    }
+
+    suspend fun setUserCloudId(cloudId: String) {
+        this.userCloudId.emit(cloudId)
     }
 
     init {

@@ -5,18 +5,18 @@ namespace App\Auth\Http\Response;
 use App\Auth\DTO\UserDto;
 use App\Common\Http\Response\HttpOutputInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Uid\UuidV4;
 
-class LoginSuccessResponse implements HttpOutputInterface
+class RegistrationSuccessResponse implements HttpOutputInterface
 {
     public function __construct(
-        public UserDto $user,
-        public string $apiToken,
+        public UuidV4 $userId,
     )
     {
     }
 
     public function getHttpStatus(): int
     {
-        return Response::HTTP_OK;
+        return Response::HTTP_CREATED;
     }
 }

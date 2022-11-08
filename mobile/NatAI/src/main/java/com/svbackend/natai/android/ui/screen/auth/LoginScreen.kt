@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.ui.screen.auth
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
@@ -46,15 +48,18 @@ fun LoginScreen(
 
         return {
             vm.isLoading.value = true
+            vm.error.value = null
             scope.launch {
-
                 try {
                     vm.login()
                     onLoginSuccess()
                 } catch (e: LoginErrorException) {
+                    vm.error.value = e.message
                     Toast
                         .makeText(context, e.message, Toast.LENGTH_SHORT)
                         .show()
+                } finally {
+                    vm.isLoading.value = false
                 }
 
             }
@@ -98,6 +103,16 @@ fun LoginScreen(
                     vm.password.value = it
                 })
 
+            if (vm.error.value != null) {
+                Text(
+                    text = vm.error.value!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                )
+            }
+
             NPrimaryButton(
                 onClick = onLogin(),
                 isLoading = vm.isLoading.value,
@@ -111,7 +126,34 @@ fun LoginScreen(
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
+
+            CreateNewAccountLink {
+                onClickCreateAccount()
+            }
+
         }
 
     }
+}
+
+@Composable
+fun CreateNewAccountLink(onClickCreateAccount: () -> Unit) {
+    // text centered
+    Text(
+        text = stringResource(R.string.dontHaveAccount),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 18.dp),
+        textAlign = TextAlign.Center,
+    )
+
+    Text(
+        text = stringResource(R.string.createAccount),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 6.dp)
+            .clickable { onClickCreateAccount() },
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.primary,
+    )
 }
