@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.ui.screen.auth
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
@@ -119,7 +121,33 @@ fun RegistrationScreen(
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
+
+            LoginLink {
+                onClickLogin()
+            }
         }
 
     }
+}
+
+@Composable
+fun LoginLink(onClick: () -> Unit) {
+    // text centered
+    Text(
+        text = stringResource(R.string.alreadyHaveAccount),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp),
+        textAlign = TextAlign.Center,
+    )
+
+    Text(
+        text = stringResource(R.string.login),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+            .clickable { onClick() },
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.primary,
+    )
 }

@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.svbackend.natai.android.ui.screen.*
 import com.svbackend.natai.android.ui.screen.auth.LoginScreen
+import com.svbackend.natai.android.ui.screen.auth.ManageAccountScreen
 import com.svbackend.natai.android.ui.screen.auth.RegistrationScreen
 import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
@@ -120,6 +121,15 @@ fun Navigation(
                 },
                 onClickLogin = {
                     controller.go(Route.LoginRoute.withArgs())
+                }
+            )
+        }
+
+        composable(route = Route.ManageAccountRoute.route) {
+            ManageAccountScreen(
+                vm = vm,
+                onClickCreateAccount = {
+                    controller.go(Route.RegistrationRoute.withArgs())
                 }
             )
         }

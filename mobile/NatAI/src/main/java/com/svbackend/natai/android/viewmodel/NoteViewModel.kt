@@ -22,8 +22,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         (application as DiaryApplication).appContainer.userRepository
 
     val isLoggedIn = MutableSharedFlow<Boolean>()
-    val userCloudId = MutableSharedFlow<String?>()
-    val user = MutableSharedFlow<User?>()
+    val userCloudId = MutableSharedFlow<String?>(replay = 1)
+    val user = MutableSharedFlow<User?>(replay = 1)
     val currentTheme = MutableSharedFlow<UserTheme>(replay = 1)
     //val currentRoute = MutableSharedFlow<String?>() // todo
 
@@ -61,8 +61,10 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun loadCurrentUser() {
+    private suspend fun subscribeForCurrentUserChange() {
         this.userCloudId.collect { userCloudId ->
+
+            println("userCloudId.collect")
             if (userCloudId != null) {
                 val userFlow = userRepository.getUserByCloudId(userCloudId)
 
@@ -82,6 +84,11 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             notes.collect {
                 notesState = it
             }
+        }
+
+        viewModelScope.launch {
+            println("subscribeForCurrentUserChange")
+            subscribeForCurrentUserChange()
         }
     }
 }

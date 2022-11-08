@@ -47,6 +47,16 @@ fun BottomBar(
                     contentDescription = "Settings",
                 )
             }
+            IconButton(
+                onClick = { onNavigateTo(Route.ManageAccountRoute.withArgs()) },
+                modifier = Modifier.fillMaxHeight(),
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.AccountCircle,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = "Manage Account",
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(

@@ -11,7 +11,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.service.ReminderWorker
 import com.svbackend.natai.android.ui.NataiTheme
@@ -91,8 +90,6 @@ class MainActivity : ScopedActivity() {
             viewModel.setUserCloudId(cloudId)
 
             syncWithApi()
-
-            viewModel.loadCurrentUser()
         }
 
         splashViewModel.loaded()

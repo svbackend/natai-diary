@@ -143,7 +143,7 @@ fun CreateNewAccountLink(onClickCreateAccount: () -> Unit) {
         text = stringResource(R.string.dontHaveAccount),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 18.dp),
+            .padding(top = 24.dp),
         textAlign = TextAlign.Center,
     )
 
@@ -151,7 +151,7 @@ fun CreateNewAccountLink(onClickCreateAccount: () -> Unit) {
         text = stringResource(R.string.createAccount),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 6.dp)
+            .padding(top = 8.dp)
             .clickable { onClickCreateAccount() },
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.primary,
