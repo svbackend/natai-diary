@@ -1,3 +1,15 @@
+### Nov 7, 2022
+
+Login functionality now works. I still need to display user data somewhere and overall improve the UI. But the login functionality is there.
+
+I do really like how it looks now.
+
+Next steps:
+
+- Fix issue when backend doesn't work splash screen not disappearing
+- Finish with registration (test it properly) maybe send email and add screen for user to know that email not verified yet
+- Add account page to manage user data (login/registration buttons if not logged in)
+
 ### Nov 6, 2022
 
 Today wanted to test login screen on mobile, but needed to setup tunneling via ngrok,
