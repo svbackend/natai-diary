@@ -97,4 +97,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->isEmailVerified;
     }
+
+    public function verifyEmail(): void
+    {
+        $this->isEmailVerified = true;
+    }
 }

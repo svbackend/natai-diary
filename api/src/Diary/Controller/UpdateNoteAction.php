@@ -5,6 +5,7 @@ namespace App\Diary\Controller;
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
+use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\AccessDeniedErrorRef;
 use App\Common\OpenApi\Ref\NotFoundErrorRef;
 use App\Common\OpenApi\Ref\ValidationErrorResponseRef;
@@ -12,7 +13,6 @@ use App\Diary\Http\Request\UpdateNoteRequest;
 use App\Diary\Repository\NoteRepository;
 use App\Diary\Repository\NoteTagRepository;
 use App\Diary\Security\Voter\NoteVoter;
-use App\Tests\Functional\Diary\Controller\DeleteNoteActionTest;
 use App\Tests\Functional\Diary\Controller\UpdateNoteActionTest;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -51,7 +51,7 @@ class UpdateNoteAction extends BaseAction
         #[CurrentUser] User $user,
         string $id,
         UpdateNoteRequest $editNoteRequest,
-    ): Response
+    ): HttpOutputInterface
     {
         $note = $this->notes->find($id);
 

@@ -2,6 +2,7 @@
 
 namespace App\Auth\Controller;
 
+use App\Auth\Entity\ConfirmationToken;
 use App\Auth\Entity\User;
 use App\Auth\Entity\UserPassword;
 use App\Auth\Http\Request\RegistrationRequest;
@@ -11,6 +12,7 @@ use App\Common\Controller\BaseAction;
 use App\Common\OpenApi\Ref\ServerErrorRef;
 use App\Common\OpenApi\Ref\ValidationErrorResponseRef;
 use App\Tests\Functional\Auth\Controller\RegistrationActionTest;
+use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -24,7 +26,7 @@ use Symfony\Component\Uid\Uuid;
 class RegistrationAction extends BaseAction
 {
     public function __construct(
-        private UserRepository $userRepo,
+        private EntityManagerInterface $em,
         private UserPasswordHasherInterface $passwordHasher,
     )
     {
@@ -52,7 +54,11 @@ class RegistrationAction extends BaseAction
             name: $request->name,
         );
 
-        $this->userRepo->save($newUser, flush: true);
+        $emailVerificationToken = ConfirmationToken::createTokenForEmailVerification($newUser);
+
+        $this->em->persist($newUser);
+        $this->em->persist($emailVerificationToken);
+        $this->em->flush();
 
         // todo send email
 

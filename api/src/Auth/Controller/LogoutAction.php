@@ -4,6 +4,7 @@ namespace App\Auth\Controller;
 
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
+use App\Common\Http\Response\HttpOutputInterface;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class LogoutAction extends BaseAction
     #[Route('/api/v1/logout', methods: ['GET'])]
     public function __invoke(
         #[CurrentUser] ?User $user
-    ): Response
+    ): HttpOutputInterface
     {
         return $this->success();
     }

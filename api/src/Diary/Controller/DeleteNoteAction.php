@@ -5,9 +5,9 @@ namespace App\Diary\Controller;
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
+use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\AccessDeniedErrorRef;
 use App\Common\OpenApi\Ref\NotFoundErrorRef;
-use App\Diary\Http\Response\NewNoteResponse;
 use App\Diary\Repository\NoteRepository;
 use App\Diary\Security\Voter\NoteVoter;
 use App\Tests\Functional\Diary\Controller\DeleteNoteActionTest;
@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -44,7 +43,7 @@ class DeleteNoteAction extends BaseAction
     public function __invoke(
         #[CurrentUser] User $user,
         string $id,
-    ): Response
+    ): HttpOutputInterface
     {
         $note = $this->notes->find($id);
 
