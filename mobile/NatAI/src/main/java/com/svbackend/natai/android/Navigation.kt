@@ -115,10 +115,7 @@ fun Navigation(
         composable(route = Route.RegistrationRoute.route) {
             RegistrationScreen(
                 onRegistrationSuccess = {
-                    controller.popBackStack(
-                        Route.MainRoute.route,
-                        inclusive = true
-                    )
+                    controller.popBackStack(Route.ManageAccountRoute.withArgs(), inclusive = false)
                 },
                 onClickLogin = {
                     controller.go(Route.LoginRoute.withArgs())

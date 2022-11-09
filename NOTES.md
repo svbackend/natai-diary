@@ -1,3 +1,9 @@
+### Nov 9, 2022
+
+Added "accept terms and conditions checkbox" + created screen for this page.
+
+
+
 ### Nov 8, 2022
 
 Added email verification on backend. Fixed issue with splash screen and overall user data loading.
