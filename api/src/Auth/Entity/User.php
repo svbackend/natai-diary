@@ -19,6 +19,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private string $email;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isEmailVerified = false;
+
     #[ORM\Column]
     private array $roles;
 
@@ -88,5 +91,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function isEmailVerified(): bool
+    {
+        return $this->isEmailVerified;
     }
 }

@@ -23,6 +23,7 @@ class LoginActionTest extends AbstractFunctionalTest
         $this->assertSame([
             'id' => UserFixture::USER_ID,
             'email' => UserFixture::USER_LOGIN,
+            'isEmailVerified' => false,
             'name' => 'John',
             'roles' => ['ROLE_USER'],
         ], $output['user']);

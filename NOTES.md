@@ -1,3 +1,7 @@
+### Nov 8, 2022
+
+
+
 ### Nov 7, 2022
 
 Login functionality now works. I still need to display user data somewhere and overall improve the UI. But the login functionality is there.

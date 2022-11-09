@@ -20,6 +20,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * @OA\Tag(name="Auth")
+ * @see LoginActionTest
  */
 class LoginAction extends BaseAction
 {
@@ -51,6 +52,7 @@ class LoginAction extends BaseAction
             user: new UserDto(
                 id: $user->getId(),
                 email: $user->getEmail(),
+                isEmailVerified: $user->isEmailVerified(),
                 name: $user->getName(),
                 roles: $user->getRoles(),
             ),
