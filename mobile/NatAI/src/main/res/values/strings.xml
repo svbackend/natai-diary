@@ -46,4 +46,8 @@
     <string name="dontHaveAccount">Don\'t have an account yet?</string>
     <string name="createAccount">Create new account</string>
     <string name="alreadyHaveAccount">Already have an account?</string>
+    <string name="accept">Accept</string>
+    <string name="termsAndConditions">terms and conditions</string>
+    <string name="termsAndConditionsText">How to add really long legal text here?</string>
+    <string name="registration">Registration</string>
 </resources>

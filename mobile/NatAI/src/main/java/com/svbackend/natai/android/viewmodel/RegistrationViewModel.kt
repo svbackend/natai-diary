@@ -18,6 +18,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
     val isLoading = mutableStateOf(false)
 
+    val acceptTerms = mutableStateOf(false)
+
     val email = mutableStateOf(
         TextFieldValue("")
     )

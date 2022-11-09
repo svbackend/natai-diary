@@ -2,12 +2,8 @@ package com.svbackend.natai.android.ui.screen.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,15 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.http.exception.LoginErrorException
 import com.svbackend.natai.android.http.exception.RegistrationErrorException
+import com.svbackend.natai.android.ui.NCheckbox
 import com.svbackend.natai.android.ui.NPasswordField
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField
-import com.svbackend.natai.android.viewmodel.LoginViewModel
 import com.svbackend.natai.android.viewmodel.RegistrationViewModel
 import kotlinx.coroutines.launch
 
@@ -36,15 +32,24 @@ fun RegistrationScreen(
     vm: RegistrationViewModel = viewModel(),
     onRegistrationSuccess: () -> Unit,
     onClickLogin: () -> Unit,
+    onClickTerms: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     fun onRegister(): () -> Unit {
+        if (!vm.acceptTerms.value) {
+            return {
+                Toast
+                    .makeText(context, "Please accept terms and conditions", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+
         if (vm.name.value.text.isEmpty() || vm.email.value.text.isEmpty() || vm.password.value.text.isEmpty()) {
             return {
                 Toast
-                    .makeText(context, "Email, name and password are required", Toast.LENGTH_SHORT)
+                    .makeText(context, "Email, name and password are required", Toast.LENGTH_LONG)
                     .show()
             }
         }
@@ -77,7 +82,7 @@ fun RegistrationScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = stringResource(R.string.login),
+                text = stringResource(R.string.registration),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -106,7 +111,32 @@ fun RegistrationScreen(
                 label = stringResource(R.string.password),
                 onChange = {
                     vm.password.value = it
-                })
+                }
+            )
+
+            // accept terms & conditions checkbox
+            NCheckbox(
+                label = {
+                    Row(Modifier.padding(start = 4.dp)) {
+                        Text(
+                            text = stringResource(R.string.accept),
+                        )
+                        Text(" ")
+                        Text(
+                            text = stringResource(R.string.termsAndConditions),
+                            modifier = Modifier
+                                .clickable {
+                                    onClickTerms()
+                                },
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                },
+                value = vm.acceptTerms.value,
+                onToggle = {
+                    vm.acceptTerms.value = !vm.acceptTerms.value
+                },
+            )
 
             NPrimaryButton(
                 onClick = onRegister(),

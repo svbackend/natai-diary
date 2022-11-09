@@ -11,6 +11,7 @@ import com.svbackend.natai.android.ui.screen.*
 import com.svbackend.natai.android.ui.screen.auth.LoginScreen
 import com.svbackend.natai.android.ui.screen.auth.ManageAccountScreen
 import com.svbackend.natai.android.ui.screen.auth.RegistrationScreen
+import com.svbackend.natai.android.ui.screen.auth.TermsScreen
 import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
@@ -121,6 +122,9 @@ fun Navigation(
                 },
                 onClickLogin = {
                     controller.go(Route.LoginRoute.withArgs())
+                },
+                onClickTerms = {
+                    controller.go(Route.TermsRoute.withArgs())
                 }
             )
         }
@@ -141,6 +145,10 @@ fun Navigation(
                     vm.changeTheme(it)
                 }
             )
+        }
+
+        composable(route = Route.TermsRoute.route) {
+            TermsScreen()
         }
     }
 }

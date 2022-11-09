@@ -15,6 +15,8 @@ sealed class Route(val route: String) {
 
     object LoginRoute : Route("auth_login")
 
+    object TermsRoute : Route("auth_terms")
+
     object ManageAccountRoute : Route("auth_manage_account")
 
     object RegistrationRoute : Route("auth_registration")
