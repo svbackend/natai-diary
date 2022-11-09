@@ -11,10 +11,7 @@ data class User(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
     var cloudId: String,
     var email: String,
+    var isEmailVerified: Boolean = false,
     var name: String,
     var apiToken: String,
-
-) {
-
-}
-
+)

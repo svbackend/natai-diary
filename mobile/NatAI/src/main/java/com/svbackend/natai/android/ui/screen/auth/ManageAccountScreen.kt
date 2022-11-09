@@ -62,6 +62,21 @@ fun Authorized(user: User) {
             )
         }
 
+        if (!user.isEmailVerified) {
+            Column(
+                Modifier
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.emailNotVerified),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                )
+            }
+        }
     }
 }
 
@@ -86,3 +101,5 @@ fun NotAuthorized(onClickCreateAccount: () -> Unit) {
         color = MaterialTheme.colorScheme.primary,
     )
 }
+
+

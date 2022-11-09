@@ -50,4 +50,5 @@
     <string name="termsAndConditions">terms and conditions</string>
     <string name="termsAndConditionsText">How to add really long legal text here?</string>
     <string name="registration">Registration</string>
+    <string name="emailNotVerified">Your email is not verified yet, please check your inbox and click on the link from Natai</string>
 </resources>

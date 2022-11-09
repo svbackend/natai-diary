@@ -2,7 +2,12 @@
 
 Added "accept terms and conditions checkbox" + created screen for this page.
 
+Next steps:
 
+- fix issue with login after registration - looks like UI not updated accordingly
+- After registration - show screen that user needs to verify email (in progress)
+- Handle situation when user with such email already registered.
+- Email verification letter template
 
 ### Nov 8, 2022
 
