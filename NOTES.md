@@ -1,5 +1,12 @@
 ### Nov 8, 2022
 
+Added email verification on backend. Fixed issue with splash screen and overall user data loading.
+
+Next steps:
+
+- On registration screen add "Accept terms" checkbox. + prepare screen with terms.
+- After registration - show screen that user needs to verify email
+- Email verification letter template
 
 
 ### Nov 7, 2022
