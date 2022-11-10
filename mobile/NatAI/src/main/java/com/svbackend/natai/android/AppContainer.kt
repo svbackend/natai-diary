@@ -21,17 +21,10 @@ class AppContainer(context: Context) {
 
     val alarmManager = context.getSystemService(ComponentActivity.ALARM_SERVICE) as AlarmManager
 
-    val auth0 = Auth0(
-        "3VokevDUxFNDqNQYLPb0kviShzoXvjyL",
-        "natai.eu.auth0.com"
-    )
-
-    val auth0ApiClient = AuthenticationAPIClient(auth0)
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), MODE_PRIVATE)
-    val credentialsManager = CredentialsManager(auth0ApiClient, SharedPreferencesStorage(context, context.getString(R.string.preference_file_key)))
 
     private val getApiToken = {
-        sharedPrefs.getString("id_token", null)
+        sharedPrefs.getString("api_token", null)
     }
     private val apiClient = ApiClient(getApiToken)
 

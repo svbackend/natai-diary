@@ -100,6 +100,7 @@ fun Navigation(
 
         composable(route = Route.LoginRoute.route) {
             LoginScreen(
+                appViewModel = vm,
                 onLoginSuccess = {
                     controller.popBackStack(
                         Route.MainRoute.route,
@@ -114,6 +115,7 @@ fun Navigation(
 
         composable(route = Route.RegistrationRoute.route) {
             RegistrationScreen(
+                appViewModel = vm,
                 onRegistrationSuccess = {
                     controller.popBackStack(Route.ManageAccountRoute.withArgs(), inclusive = false)
                 },

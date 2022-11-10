@@ -44,7 +44,6 @@ class UserRepository(
             db.userDAO().insertUser(newLocalUser)
             return@withContext newLocalUser
         } else {
-
             val updatedUser = existingUser.copy(
                 apiToken = newApiToken
             )

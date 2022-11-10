@@ -24,11 +24,13 @@ import com.svbackend.natai.android.ui.NCheckbox
 import com.svbackend.natai.android.ui.NPasswordField
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField
+import com.svbackend.natai.android.viewmodel.NoteViewModel
 import com.svbackend.natai.android.viewmodel.RegistrationViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun RegistrationScreen(
+    appViewModel: NoteViewModel,
     vm: RegistrationViewModel = viewModel(),
     onRegistrationSuccess: () -> Unit,
     onClickLogin: () -> Unit,
@@ -59,7 +61,7 @@ fun RegistrationScreen(
             scope.launch {
 
                 try {
-                    vm.register()
+                    vm.register(appViewModel)
                     onRegistrationSuccess()
                 } catch (e: RegistrationErrorException) {
                     Toast

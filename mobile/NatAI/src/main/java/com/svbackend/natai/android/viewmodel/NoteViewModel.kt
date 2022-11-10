@@ -21,6 +21,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val userRepository: UserRepository =
         (application as DiaryApplication).appContainer.userRepository
 
+    val prefs = (application as DiaryApplication).appContainer.sharedPrefs
+
     val isLoggedIn = MutableSharedFlow<Boolean>()
     val userCloudId = MutableSharedFlow<String?>(replay = 1)
     val user = MutableSharedFlow<User?>(replay = 1)
@@ -76,6 +78,15 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun setUserCloudId(cloudId: String) {
         this.userCloudId.emit(cloudId)
+    }
+
+    suspend fun setUser(user: User) {
+        prefs.edit()
+            .putString("api_token", user.apiToken)
+            .putString("cloud_id", user.cloudId)
+            .apply()
+
+        setUserCloudId(user.cloudId)
     }
 
     init {

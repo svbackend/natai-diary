@@ -26,11 +26,13 @@ import com.svbackend.natai.android.ui.NPasswordField
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.viewmodel.LoginViewModel
+import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     vm: LoginViewModel = viewModel(),
+    appViewModel: NoteViewModel,
     onLoginSuccess: () -> Unit,
     onClickCreateAccount: () -> Unit,
 ) {
@@ -51,7 +53,7 @@ fun LoginScreen(
             vm.error.value = null
             scope.launch {
                 try {
-                    vm.login()
+                    vm.login(appViewModel)
                     onLoginSuccess()
                 } catch (e: LoginErrorException) {
                     vm.error.value = e.message

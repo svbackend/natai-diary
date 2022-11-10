@@ -54,11 +54,15 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
 
     suspend fun addNote() {
         isLoading.value = true
+
+        val cloudUserId = prefs.getString("cloud_id", null)
+
         val note = LocalNote(
             title = title.value.text,
             content = content.value.text,
             actualDate = actualDate.value,
-            tags = tags.value
+            tags = tags.value,
+            cloudUserId = cloudUserId,
         )
 
         repository.insertNoteAndSync(note)

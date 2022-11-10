@@ -6,11 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.entity.*
-import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
-import kotlinx.coroutines.flow.map
-import java.time.LocalDate
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val repository: UserRepository = (application as DiaryApplication).appContainer.userRepository
@@ -28,11 +24,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         TextFieldValue("")
     )
 
-    suspend fun login() {
+    suspend fun login(appViewModel: NoteViewModel) {
         val user = repository.login(email.value.text, password.value.text)
-        prefs.edit()
-            .putString("api_token", user.apiToken)
-            .putString("cloud_id", user.cloudId)
-            .apply()
+
+        appViewModel.setUser(user)
     }
 }

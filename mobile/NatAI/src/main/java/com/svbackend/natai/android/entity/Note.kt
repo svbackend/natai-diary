@@ -85,6 +85,7 @@ data class NoteEntityDto(
 // use everywhere when fetching note from local db and local ID is needed
 data class LocalNote(
     val id: String = UUID.randomUUID().toString(),
+    val cloudUserId: String? = null,
     val cloudId: String? = null,
     val title: String,
     val content: String,

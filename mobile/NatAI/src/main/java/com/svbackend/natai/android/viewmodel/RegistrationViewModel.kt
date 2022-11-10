@@ -32,15 +32,13 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
         TextFieldValue("")
     )
 
-    suspend fun register() {
+    suspend fun register(appViewModel: NoteViewModel) {
         val user = repository.register(
             email = email.value.text,
             name = name.value.text,
             password = password.value.text
         )
-        prefs.edit()
-            .putString("api_token", user.apiToken)
-            .putString("cloud_id", user.cloudId)
-            .apply()
+
+        appViewModel.setUser(user)
     }
 }
