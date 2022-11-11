@@ -56,4 +56,9 @@ class ConfirmationToken
     {
         return $this->expiresAt->getTimestamp() > time();
     }
+
+    public function getExpiresAt(): \DateTimeImmutable
+    {
+        return $this->expiresAt;
+    }
 }

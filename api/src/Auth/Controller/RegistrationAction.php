@@ -9,6 +9,7 @@ use App\Auth\Http\Request\RegistrationRequest;
 use App\Auth\Http\Response\RegistrationSuccessResponse;
 use App\Auth\OpenApi\Ref\RegistrationErrorResponseRef;
 use App\Auth\Repository\UserRepository;
+use App\Auth\Service\UserMailer;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\ServerErrorRef;
@@ -32,6 +33,7 @@ class RegistrationAction extends BaseAction
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $passwordHasher,
+        private UserMailer $userMailer,
     )
     {
     }
@@ -70,7 +72,7 @@ class RegistrationAction extends BaseAction
             return $this->error('already_exists');
         }
 
-        // todo send email
+        $this->userMailer->sendEmailVerificationEmail($newUser, $emailVerificationToken);
 
         return new RegistrationSuccessResponse(
             userId: $userId,
