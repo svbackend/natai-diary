@@ -1,3 +1,22 @@
+### Nov 10, 2022
+
+Fixed issue with user login (user info wasn't loaded)
+
+Next steps:
+
+- After registration - show screen that user needs to verify email (in progress)
+- Handle situation when user with such email already registered.
+- Email verification letter template
+
+---
+
+Screen that tells user to verify email kind of works, looks not so good but lets keep it for now
+
+Next steps:
+
+- Handle situation when user with such email already registered.
+- Email verification letter template
+
 ### Nov 9, 2022
 
 Added "accept terms and conditions checkbox" + created screen for this page.

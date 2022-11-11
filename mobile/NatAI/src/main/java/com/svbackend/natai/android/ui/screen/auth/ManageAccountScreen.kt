@@ -60,13 +60,17 @@ fun Authorized(user: User) {
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
             )
-        }
 
-        if (!user.isEmailVerified) {
-            Column(
-                Modifier
-                    .padding(16.dp)
-            ) {
+            Text(
+                text = user.name,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            )
+
+            if (!user.isEmailVerified) {
                 Text(
                     text = stringResource(id = R.string.emailNotVerified),
                     style = MaterialTheme.typography.bodyLarge,
@@ -76,6 +80,9 @@ fun Authorized(user: User) {
                         .padding(bottom = 16.dp),
                 )
             }
+
+            // todo add logout button?
+            // delete account button?
         }
     }
 }
