@@ -5,6 +5,7 @@ namespace App\Tests\Functional\Auth\Controller;
 use App\Auth\DataFixtures\UserFixture;
 use App\Auth\Entity\ConfirmationToken;
 use App\Tests\AbstractFunctionalTest;
+use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RegistrationActionTest extends AbstractFunctionalTest
 {
+    use MailerAssertionsTrait;
+
     public function testRegistrationSuccess(): void
     {
         $client = static::createClient();
@@ -40,6 +43,7 @@ class RegistrationActionTest extends AbstractFunctionalTest
         $expiredAt = new \DateTime($emailVerificationToken['expires_at']);
         $this->assertGreaterThan(new \DateTime(), $expiredAt);
         $this->assertSame(ConfirmationToken::TYPE_EMAIL_VERIFICATION, $emailVerificationToken['type']);
+        $this->assertEmailCount(1);
     }
 
     public function testUserAlreadyExistsError(): void
@@ -58,5 +62,6 @@ class RegistrationActionTest extends AbstractFunctionalTest
         $data = $response->toArray();
         $this->assertArrayHasKey('code', $data);
         $this->assertSame('already_exists', $data['code']);
+        $this->assertEmailCount(0);
     }
 }
