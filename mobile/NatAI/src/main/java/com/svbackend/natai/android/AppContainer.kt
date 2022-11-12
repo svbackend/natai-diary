@@ -26,7 +26,7 @@ class AppContainer(context: Context) {
     private val getApiToken = {
         sharedPrefs.getString("api_token", null)
     }
-    private val apiClient = ApiClient(getApiToken)
+    val apiClient = ApiClient(getApiToken)
 
     val diaryRepository = DiaryRepository(db, apiClient)
     val userRepository = UserRepository(db, apiClient)

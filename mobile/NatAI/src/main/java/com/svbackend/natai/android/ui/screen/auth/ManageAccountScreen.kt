@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,15 +22,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.User
+import com.svbackend.natai.android.ui.NPrimaryButton
+import com.svbackend.natai.android.viewmodel.ManageAccountViewModel
 import com.svbackend.natai.android.viewmodel.NoteViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ManageAccountScreen(
-    vm: NoteViewModel = viewModel(),
+    vm: NoteViewModel,
+    manageAccountViewModel: ManageAccountViewModel = viewModel(),
     onClickCreateAccount: () -> Unit,
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+
 
     val user = vm.user.collectAsState(initial = null).value
 
@@ -37,12 +44,26 @@ fun ManageAccountScreen(
         }
         return
     } else {
-        Authorized(user)
+        Authorized(
+            user = user,
+            manageAccountViewModel = manageAccountViewModel,
+        )
     }
 }
 
 @Composable
-fun Authorized(user: User) {
+fun Authorized(
+    user: User,
+    manageAccountViewModel: ManageAccountViewModel,
+) {
+    val scope = rememberCoroutineScope()
+
+    val checkEmailVerification = {
+        scope.launch {
+            manageAccountViewModel.query.getUser()
+        }
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -79,6 +100,20 @@ fun Authorized(user: User) {
                         .fillMaxWidth()
                         .padding(bottom = 16.dp),
                 )
+
+                NPrimaryButton(
+                    onClick = { checkEmailVerification() },
+                    isLoading = manageAccountViewModel.query.isLoading.value,
+                ) {
+                    Icon(
+                        Icons.Filled.Email,
+                        stringResource(R.string.done)
+                    )
+                    Text(
+                        text = stringResource(R.string.done),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
 
             // todo add logout button?

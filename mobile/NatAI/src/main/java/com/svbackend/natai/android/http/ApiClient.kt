@@ -11,6 +11,8 @@ import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
 import com.svbackend.natai.android.http.response.LoginSuccessResponse
 import com.svbackend.natai.android.http.response.RegisterSuccessResponse
+import com.svbackend.natai.android.http.response.UserDto
+import com.svbackend.natai.android.query.UserQueryException
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -116,4 +118,16 @@ class ApiClient(
 
         return response.body()
     }
+
+    suspend fun getCurrentUser(): UserDto {
+        val response = client.get("me")
+
+        if (response.status != HttpStatusCode.OK) {
+            throw UserQueryException("You need to be authenticated to get user information")
+        }
+
+        return response.body()
+    }
+
+
 }
