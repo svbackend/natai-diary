@@ -60,7 +60,7 @@ fun Authorized(
 
     val checkEmailVerification = {
         scope.launch {
-            manageAccountViewModel.query.getUser()
+            manageAccountViewModel.checkEmailVerification()
         }
     }
 
@@ -101,6 +101,17 @@ fun Authorized(
                         .padding(bottom = 16.dp),
                 )
 
+                if (manageAccountViewModel.showStillNotVerifiedError.value) {
+                    Text(
+                        text = stringResource(id = R.string.yourEmailStillNotVerified),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                    )
+                }
+
                 NPrimaryButton(
                     onClick = { checkEmailVerification() },
                     isLoading = manageAccountViewModel.query.isLoading.value,
@@ -124,24 +135,34 @@ fun Authorized(
 
 @Composable
 fun NotAuthorized(onClickCreateAccount: () -> Unit) {
-    // text centered
-    Text(
-        text = stringResource(R.string.dontHaveAccount),
+    Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp),
-        textAlign = TextAlign.Center,
-    )
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Column(
+            Modifier
+                .padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.dontHaveAccount),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                textAlign = TextAlign.Center,
+            )
 
-    Text(
-        text = stringResource(R.string.createAccount),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
-            .clickable { onClickCreateAccount() },
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.primary,
-    )
+            Text(
+                text = stringResource(R.string.createAccount),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .clickable { onClickCreateAccount() },
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
 }
 
 

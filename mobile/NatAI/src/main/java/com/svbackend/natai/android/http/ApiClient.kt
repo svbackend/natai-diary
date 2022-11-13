@@ -11,7 +11,8 @@ import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
 import com.svbackend.natai.android.http.response.LoginSuccessResponse
 import com.svbackend.natai.android.http.response.RegisterSuccessResponse
-import com.svbackend.natai.android.http.response.UserDto
+import com.svbackend.natai.android.http.dto.CloudUserDto
+import com.svbackend.natai.android.http.response.UserSuccessResponse
 import com.svbackend.natai.android.query.UserQueryException
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -24,7 +25,7 @@ import io.ktor.serialization.jackson.*
 
 //const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
 //const val BASE_URL = "https://natai.app/api/v1/"
-const val BASE_URL = "https://b80c-24-203-8-51.ngrok.io/api/v1/"
+const val BASE_URL = "https://98e7-24-203-8-51.ngrok.io/api/v1/"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -119,7 +120,7 @@ class ApiClient(
         return response.body()
     }
 
-    suspend fun getCurrentUser(): UserDto {
+    suspend fun getCurrentUser(): UserSuccessResponse {
         val response = client.get("me")
 
         if (response.status != HttpStatusCode.OK) {

@@ -5,6 +5,7 @@ import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
+import com.svbackend.natai.android.http.dto.CloudUserDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -17,6 +18,12 @@ class UserRepository(
         db
             .userDAO()
             .getUserByCloudId(cloudId)
+    }
+
+    suspend fun getUserByCloudIdSync(cloudId: String): User? = withContext(Dispatchers.IO) {
+        db
+            .userDAO()
+            .getUserByCloudIdSync(cloudId)
     }
 
     suspend fun login(email: String, password: String): User = withContext(Dispatchers.IO) {
@@ -64,5 +71,19 @@ class UserRepository(
         )
 
         return login(email, password)
+    }
+
+    suspend fun updateUser(user: CloudUserDto) {
+        val entity = getUserByCloudIdSync(user.id.toString()) ?: return
+
+        if (entity.isEmailVerified == user.isEmailVerified) {
+            return
+        }
+
+        val updatedEntity = entity.copy(
+            isEmailVerified = user.isEmailVerified
+        )
+
+        db.userDAO().updateUser(updatedEntity)
     }
 }

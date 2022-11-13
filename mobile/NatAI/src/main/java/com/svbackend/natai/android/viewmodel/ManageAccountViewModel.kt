@@ -8,6 +8,8 @@ import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.query.UserQuery
 import com.svbackend.natai.android.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ManageAccountViewModel(application: Application) : AndroidViewModel(application) {
     val repository: UserRepository = (application as DiaryApplication).appContainer.userRepository
@@ -15,4 +17,26 @@ class ManageAccountViewModel(application: Application) : AndroidViewModel(applic
     val apiClient: ApiClient = (application as DiaryApplication).appContainer.apiClient
 
     val query = UserQuery(apiClient)
+
+    val showStillNotVerifiedError = mutableStateOf(false)
+
+    suspend fun checkEmailVerification() {
+        val user = query.getUser()
+        if (user != null) {
+            repository.updateUser(user)
+
+            if (!user.isEmailVerified) {
+                showStillNotVerifiedError.value = true
+            }
+        }
+
+        clearErrorAfterDelay()
+    }
+
+    private suspend fun clearErrorAfterDelay() {
+        withContext(Dispatchers.IO) {
+            Thread.sleep(5000)
+            showStillNotVerifiedError.value = false
+        }
+    }
 }
