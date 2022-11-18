@@ -45,6 +45,7 @@ data class Note(
         fun create(dto: LocalNote) = Note(
             id = dto.id,
             cloudId = dto.cloudId,
+            cloudUserId = dto.cloudUserId,
             title = dto.title,
             content = dto.content,
             createdAt = dto.createdAt,

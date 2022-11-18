@@ -62,9 +62,9 @@ class ApiSyncService(
 
     private suspend fun insertToCloud(localNote: LocalNote) {
         try {
-            val insertedCloudNote = apiClient.addNote(localNote)
+            val response = apiClient.addNote(localNote)
             val syncedNote = Note.create(localNote)
-            syncedNote.sync(insertedCloudNote)
+            syncedNote.cloudId = response.noteId
 
             repository.updateNote(syncedNote)
         } catch (e: Throwable) {

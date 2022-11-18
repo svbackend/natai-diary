@@ -44,7 +44,8 @@ fun MainScreen(
     onNoteClick: (LocalNote) -> Unit
 ) {
     val notes = vm.notesState
-    val isLoggedIn by vm.isLoggedIn.collectAsState(initial = false)
+    val currentUser by vm.user.collectAsState(initial = null)
+    val isLoggedIn = currentUser != null
 
     if (notes.isNotEmpty()) {
         val groups = mapNotes(notes)

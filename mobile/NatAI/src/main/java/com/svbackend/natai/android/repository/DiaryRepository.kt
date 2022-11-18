@@ -16,12 +16,22 @@ class DiaryRepository(
     private val db: DiaryDatabase,
     private val api: ApiClient
 ) {
-    val notes: Flow<List<LocalNote>> = db
-        .diaryDAO()
-        .getAllNotes()
-        .map { notes ->
-            notes.map { LocalNote.create(it) }
-        }
+    val notes: Flow<List<LocalNote>> =
+
+    suspend fun getNotes(userCloudId: String?): Flow<List<LocalNote>> {
+        return db
+            .diaryDAO()
+            .let {
+                if (userCloudId == null) {
+                    it.getNotesWithoutUser()
+                } else {
+                    it.getNotesByUser(userCloudId)
+                }
+            }
+            .map { notes ->
+                notes.map { LocalNote.create(it) }
+            }
+    }
 
     suspend fun getAllNotesForSync(): List<LocalNote> = withContext(Dispatchers.IO) {
         db
@@ -88,5 +98,9 @@ class DiaryRepository(
         } catch (e: Throwable) {
             e.printStackTrace()
         }
+    }
+
+    suspend fun assignNotesToUser(cloudUserId: String) = withContext(Dispatchers.IO) {
+        db.diaryDAO().assignNotesToNewUser(cloudUserId = cloudUserId)
     }
 }

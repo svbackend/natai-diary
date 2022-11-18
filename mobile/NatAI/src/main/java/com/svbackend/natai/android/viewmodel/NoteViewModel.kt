@@ -11,6 +11,7 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
+import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.UserTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -20,6 +21,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         (application as DiaryApplication).appContainer.diaryRepository
     val userRepository: UserRepository =
         (application as DiaryApplication).appContainer.userRepository
+
+    val apiSyncService: ApiSyncService = (application as DiaryApplication).appContainer.apiSyncService
 
     val prefs = (application as DiaryApplication).appContainer.sharedPrefs
 
@@ -49,6 +52,12 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun finishSync() {
         isSyncing.emit(false)
+    }
+
+    suspend fun sync() {
+        startSync()
+        apiSyncService.syncNotes()
+        finishSync()
     }
 
     fun deleteNote(note: LocalNote) {
@@ -86,7 +95,11 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             .putString("cloud_id", user.cloudId)
             .apply()
 
+        diaryRepository.assignNotesToUser(user.cloudId)
+
         setUserCloudId(user.cloudId)
+
+        sync()
     }
 
     init {

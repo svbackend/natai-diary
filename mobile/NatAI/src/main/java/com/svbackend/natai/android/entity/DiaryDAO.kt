@@ -6,11 +6,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class DiaryDAO {
-    @Query("SELECT * FROM Note WHERE deletedAt IS NULL ORDER BY date(actualDate) DESC")
-    abstract fun getAllNotes(): Flow<List<NoteWithTags>>
+    @Query("SELECT * FROM Note WHERE cloudUserId IS NULL AND deletedAt IS NULL ORDER BY date(actualDate) DESC")
+    abstract fun getNotesWithoutUser(): Flow<List<NoteWithTags>>
 
-    @Query("SELECT * FROM Note ORDER BY date(actualDate) DESC")
-    abstract fun getAllNotesForSync(): List<NoteWithTags>
+    @Query("SELECT * FROM Note WHERE cloudUserId = :cloudUserId AND deletedAt IS NULL ORDER BY date(actualDate) DESC")
+    abstract fun getNotesByUser(cloudUserId: String): Flow<List<NoteWithTags>>
+
+    @Query("SELECT * FROM Note WHERE cloudUserId = :cloudUserId ORDER BY date(actualDate) DESC")
+    abstract fun getAllNotesForSync(cloudUserId: String): List<NoteWithTags>
 
     @Query("SELECT * FROM Note WHERE id = :id")
     abstract fun getNote(id: String): Flow<NoteWithTags>
@@ -32,4 +35,7 @@ abstract class DiaryDAO {
 
     @Query("DELETE FROM Tag WHERE noteId = :noteId")
     abstract fun deleteTagsByNote(noteId: String)
+
+    @Query("UPDATE Note SET cloudUserId = :cloudUserId WHERE cloudUserId IS NULL")
+    abstract fun assignNotesToNewUser(cloudUserId: String)
 }

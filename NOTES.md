@@ -1,3 +1,17 @@
+### Nov 17, 2022
+
+Somehow was really lazy/unmotivated and tired last couple of days. Didn't even realize that I took 4 days break =(
+
+Today added a small feature so when user logging in - we assign all notes that were without owner to them.
+
+On backend now situation when user already exists handled. Need to do something about it on frontend/android as well.
+
+
+
+### Nov 13, 2022
+
+Email verification improvements for UI. Added email verification letter template. Looks OK.
+
 ### Nov 10, 2022
 
 Fixed issue with user login (user info wasn't loaded)

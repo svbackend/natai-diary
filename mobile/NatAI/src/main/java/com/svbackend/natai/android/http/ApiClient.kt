@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.http
 
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
@@ -10,8 +11,8 @@ import com.svbackend.natai.android.http.model.CloudNote
 import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
 import com.svbackend.natai.android.http.response.LoginSuccessResponse
+import com.svbackend.natai.android.http.response.NewNoteResponse
 import com.svbackend.natai.android.http.response.RegisterSuccessResponse
-import com.svbackend.natai.android.http.dto.CloudUserDto
 import com.svbackend.natai.android.http.response.UserSuccessResponse
 import com.svbackend.natai.android.query.UserQueryException
 import io.ktor.client.*
@@ -25,7 +26,7 @@ import io.ktor.serialization.jackson.*
 
 //const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
 //const val BASE_URL = "https://natai.app/api/v1/"
-const val BASE_URL = "https://98e7-24-203-8-51.ngrok.io/api/v1/"
+const val BASE_URL = "https://0afa-24-203-8-51.ngrok.io/api/v1/"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -40,6 +41,7 @@ class ApiClient(
         install(ContentNegotiation) {
             jackson {
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 registerModule(JavaTimeModule())
             }
         }
@@ -50,10 +52,10 @@ class ApiClient(
     }
 
     suspend fun getNotesForSync(): List<CloudNote> {
-        return client.get("notes/sync").body()
+        return client.get("notes").body()
     }
 
-    suspend fun addNote(note: LocalNote): CloudNote {
+    suspend fun addNote(note: LocalNote): NewNoteResponse {
         val body = NewNoteRequest(
             title = note.title,
             content = note.content,
@@ -70,7 +72,7 @@ class ApiClient(
             throw NewNoteErrorException(response)
         }
 
-        return response.body<CloudNote>()
+        return response.body<NewNoteResponse>() // backend responds with {noteId: uuid} of created note
     }
 
     suspend fun updateNote(note: LocalNote) {

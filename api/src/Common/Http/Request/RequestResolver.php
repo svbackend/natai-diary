@@ -3,6 +3,7 @@
 namespace App\Common\Http\Request;
 
 use App\Common\Exception\ValidationException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -18,6 +19,7 @@ class RequestResolver implements ArgumentValueResolverInterface
     public function __construct(
         private ValidatorInterface $validator,
         private SerializerInterface $serializer,
+        private LoggerInterface $logger,
     )
     {
     }
@@ -56,6 +58,10 @@ class RequestResolver implements ArgumentValueResolverInterface
         $violations = $this->validator->validate($request->request->all(), $constrains);
 
         if ($violations->count() > 0) {
+            $this->logger->error('Validation error', [
+                'input' => $request->request->all(),
+                'violations' => $violations,
+            ]);
             throw new ValidationException($violations);
         }
 
