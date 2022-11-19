@@ -10,10 +10,7 @@ import com.svbackend.natai.android.http.exception.*
 import com.svbackend.natai.android.http.model.CloudNote
 import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
-import com.svbackend.natai.android.http.response.LoginSuccessResponse
-import com.svbackend.natai.android.http.response.NewNoteResponse
-import com.svbackend.natai.android.http.response.RegisterSuccessResponse
-import com.svbackend.natai.android.http.response.UserSuccessResponse
+import com.svbackend.natai.android.http.response.*
 import com.svbackend.natai.android.query.UserQueryException
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -26,7 +23,7 @@ import io.ktor.serialization.jackson.*
 
 //const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
 //const val BASE_URL = "https://natai.app/api/v1/"
-const val BASE_URL = "https://120d-24-203-8-51.ngrok.io/api/v1/"
+const val BASE_URL = "https://b860-24-203-8-51.ngrok.io/api/v1/"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -51,7 +48,7 @@ class ApiClient(
 
     }
 
-    suspend fun getNotesForSync(): List<CloudNote> {
+    suspend fun getNotesForSync(): NotesResponse {
         return client.get("notes").body()
     }
 

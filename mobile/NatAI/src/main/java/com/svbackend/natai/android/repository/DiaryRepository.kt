@@ -4,6 +4,7 @@ import com.svbackend.natai.android.DiaryDatabase
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.entity.Tag
+import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.entity.relation.NoteWithTags
 import com.svbackend.natai.android.http.ApiClient
 import kotlinx.coroutines.Dispatchers
@@ -71,7 +72,7 @@ class DiaryRepository(
             insertTag(
                 Tag(
                     noteId = note.id,
-                    name = it.name,
+                    tag = it.tag,
                     score = it.score,
                 )
             )

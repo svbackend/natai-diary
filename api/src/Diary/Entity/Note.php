@@ -73,12 +73,19 @@ class Note
         return $this->user;
     }
 
-    public function update(string $title, string $content, \DateTimeImmutable $actualDate): void
+    public function update(
+        string $title,
+        string $content,
+        \DateTimeImmutable $actualDate,
+        \DateTimeImmutable $updatedAt,
+        ?\DateTimeImmutable $deletedAt,
+    ): void
     {
         $this->title = $title;
         $this->content = $content;
         $this->actualDate = $actualDate;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = $updatedAt;
+        $this->deletedAt = $deletedAt;
     }
 
     public function getTags(): Collection

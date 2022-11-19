@@ -102,10 +102,8 @@ fun Navigation(
             LoginScreen(
                 appViewModel = vm,
                 onLoginSuccess = {
-                    controller.popBackStack(
-                        Route.MainRoute.route,
-                        inclusive = true
-                    )
+                    controller.clearBackStack(Route.LoginRoute.route)
+                    controller.go(Route.MainRoute.withArgs())
                 },
                 onClickCreateAccount = {
                     controller.go(Route.RegistrationRoute.withArgs())

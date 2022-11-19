@@ -67,6 +67,8 @@ class UpdateNoteAction extends BaseAction
             title: $editNoteRequest->title,
             content: $editNoteRequest->content,
             actualDate: $editNoteRequest->actualDate,
+            updatedAt: $editNoteRequest->updatedAt,
+            deletedAt: $editNoteRequest->deletedAt,
         );
 
         $this->noteTags->updateTags($note, $editNoteRequest->tags);

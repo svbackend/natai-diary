@@ -12,6 +12,8 @@ class UpdateNoteRequest implements HttpInputInterface
         public string $title,
         public string $content,
         public \DateTimeImmutable $actualDate,
+        public \DateTimeImmutable $updatedAt,
+        public ?\DateTimeImmutable $deletedAt,
         /** @var CloudTagDto[] $tags */
         public array $tags = [],
     )
@@ -24,6 +26,8 @@ class UpdateNoteRequest implements HttpInputInterface
             'title' => new Assert\Required([new Assert\NotNull, new Assert\Type('string')]),
             'content' => new Assert\Required([new Assert\NotNull, new Assert\Type('string')]),
             'actualDate' => new Assert\Required([new Assert\NotBlank, new Assert\Date,]),
+            'updatedAt' => new Assert\Required([new Assert\NotBlank, new Assert\DateTime,]),
+            'deletedAt' => new Assert\Optional([new Assert\DateTime,]),
             'tags' => new Assert\All([
                 new Assert\Collection([
                     'tag' => new Assert\Required([new Assert\NotBlank, new Assert\Type('string'),]),

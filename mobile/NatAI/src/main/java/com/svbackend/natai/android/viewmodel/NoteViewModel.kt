@@ -13,9 +13,9 @@ import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.UserTheme
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -29,8 +29,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     val prefs = (application as DiaryApplication).appContainer.sharedPrefs
 
-    val isLoggedIn = MutableSharedFlow<Boolean>()
     val userCloudId = MutableSharedFlow<String?>(replay = 1)
+    val userCloudIdState = mutableStateOf<String?>(null)
+    val users = userRepository.users
     val user = MutableSharedFlow<User?>(replay = 1)
     var userState by mutableStateOf<User?>(null)
 
@@ -61,8 +62,13 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun sync() {
         startSync()
-        apiSyncService.syncNotes()
-        finishSync()
+        try {
+            apiSyncService.syncNotes()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            finishSync()
+        }
     }
 
     fun deleteNote(note: LocalNote) {
@@ -74,19 +80,6 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     fun changeTheme(theme: UserTheme) {
         viewModelScope.launch {
             currentTheme.emit(theme)
-        }
-    }
-
-    private suspend fun subscribeForCurrentUserChange() {
-        this.userCloudId.collect { userCloudId ->
-            if (userCloudId != null) {
-                val user = userRepository.getUserByCloudIdSync(userCloudId)
-
-//                userFlow.collect { currentUser ->
-//                    user.emit(currentUser)
-//                }
-                this.user.emit(user)
-            }
         }
     }
 
@@ -107,25 +100,45 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         sync()
     }
 
-    init {
-        notesState = emptyList()
+    private val jobs = mutableListOf<Job>()
 
+    init {
         viewModelScope.launch {
-            user.collect {
-                userState = it
-                notesState = allNotesState.filter { note -> note.cloudUserId == null || note.cloudUserId == userState?.cloudId }
+            userCloudId.collect {
+                clearSubscribers()
+                userCloudIdState.value = it
+                setupSubscribers()
             }
         }
 
-        viewModelScope.launch {
+        setupSubscribers()
+    }
+
+    private fun setupSubscribers() {
+        val usersSubscriberJob = viewModelScope.launch {
+            users.collect {
+                if (userCloudIdState.value != null) {
+                    userState = it.find { user -> user.cloudId == userCloudIdState.value }
+                } else {
+                    userState = null
+                }
+            }
+        }
+
+        val notesSubscriberJob = viewModelScope.launch {
             notes.collect {
                 allNotesState = it
-                notesState = it.filter { note -> note.cloudUserId == null || note.cloudUserId == userState?.cloudId }
+                notesState =
+                    it.filter { note -> note.cloudUserId == null || note.cloudUserId == userCloudIdState.value }
             }
         }
 
-        viewModelScope.launch {
-            subscribeForCurrentUserChange()
-        }
+        jobs.add(usersSubscriberJob)
+        jobs.add(notesSubscriberJob)
+    }
+
+    private fun clearSubscribers() {
+        jobs.forEach { job -> job.cancel() }
+        jobs.clear()
     }
 }

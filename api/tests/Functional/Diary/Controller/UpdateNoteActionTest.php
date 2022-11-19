@@ -36,6 +36,8 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                         'score' => null,
                     ]
                 ],
+                'updatedAt' => '2022-11-19 14:00:00',
+                'deletedAt' => null,
             ],
         ]);
 
@@ -43,7 +45,7 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
 
         $noteInDb = $this
             ->getConnection()
-            ->fetchAssociative("SELECT title, content, actual_date FROM note WHERE id = :id", [
+            ->fetchAssociative("SELECT title, content, actual_date, updated_at, deleted_at FROM note WHERE id = :id", [
                 'id' => $noteId
             ]);
 
@@ -56,6 +58,8 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
         self::assertEquals($noteInDb['title'], "New title");
         self::assertEquals($noteInDb['content'], "New content");
         self::assertEquals($noteInDb['actual_date'], "2021-12-16");
+        self::assertEquals($noteInDb['updated_at'], "2022-11-19 14:00:00");
+        self::assertEquals($noteInDb['deleted_at'], null);
 
         self::assertEquals($tagsInDb[0]['tag'], "Some New Tag");
         self::assertEquals($tagsInDb[0]['score'], 1);
@@ -77,6 +81,8 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                 'content' => '',
                 'actualDate' => '2021-12-16',
                 'tags' => [],
+                'updatedAt' => '2022-11-19 14:00:00',
+                'deletedAt' => '2022-11-19 14:00:00',
             ],
         ]);
 
@@ -84,7 +90,7 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
 
         $noteInDb = $this
             ->getConnection()
-            ->fetchAssociative("SELECT title, content, actual_date FROM note WHERE id = :id", [
+            ->fetchAssociative("SELECT title, content, actual_date, updated_at, deleted_at FROM note WHERE id = :id", [
                 'id' => $noteId
             ]);
 
@@ -97,11 +103,13 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
         self::assertEquals($noteInDb['title'], "");
         self::assertEquals($noteInDb['content'], "");
         self::assertEquals($noteInDb['actual_date'], "2021-12-16");
+        self::assertEquals($noteInDb['updated_at'], "2022-11-19 14:00:00");
+        self::assertEquals($noteInDb['deleted_at'], "2022-11-19 14:00:00");
 
         self::assertCount(0, $tagsInDb);
     }
 
-    public function testUpdateNoteSuccessWithNullAsTitleAndContent(): void
+    public function testUpdateNoteValidationErrorWithNullAsTitleAndContent(): void
     {
         $userId = UserFixture::USER_ID;
         $client = static::createClient();
@@ -115,6 +123,8 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                 'content' => null,
                 'actualDate' => '2021-12-16',
                 'tags' => [],
+                'updatedAt' => '2022-11-19 14:00:00',
+                'deletedAt' => '2022-11-19 14:00:00',
             ],
         ]);
 
@@ -135,6 +145,8 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                 'content' => null,
                 'actualDate' => null,
                 'tags' => [],
+                'updatedAt' => '2022-11-19 14:00:00',
+                'deletedAt' => '2022-11-19 14:00:00',
             ],
         ]);
 

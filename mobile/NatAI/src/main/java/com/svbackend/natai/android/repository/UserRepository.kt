@@ -14,6 +14,10 @@ class UserRepository(
     private val db: DiaryDatabase,
     private val api: ApiClient
 ) {
+    val users: Flow<List<User>> = db
+        .userDAO()
+        .getUsers()
+
     suspend fun getUserByCloudId(cloudId: String): Flow<User?> = withContext(Dispatchers.IO) {
         db
             .userDAO()
@@ -73,11 +77,11 @@ class UserRepository(
         return login(email, password)
     }
 
-    suspend fun updateUser(user: CloudUserDto) {
-        val entity = getUserByCloudIdSync(user.id.toString()) ?: return
+    suspend fun updateUser(user: CloudUserDto) = withContext(Dispatchers.IO) {
+        val entity = getUserByCloudIdSync(user.id.toString()) ?: return@withContext
 
         if (entity.isEmailVerified == user.isEmailVerified) {
-            return
+            return@withContext
         }
 
         val updatedEntity = entity.copy(

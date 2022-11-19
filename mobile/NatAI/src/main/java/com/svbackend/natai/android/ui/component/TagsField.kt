@@ -2,13 +2,11 @@ package com.svbackend.natai.android.ui.component
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -56,17 +54,17 @@ fun TagsField(
 
     val openSpecialTagDialog = fun(tag: String) {
         selectedSpecialTag = tag
-        selectedScore = tags.find { it.name == tag }?.score
+        selectedScore = tags.find { it.tag == tag }?.score
         isSpecialTagDialogOpen = true
     }
 
-    val moodTag = tags.find { it.name == "mood" }
+    val moodTag = tags.find { it.tag == "mood" }
 
     val suggestions = tagsSuggestions
         .take(5)
         .filter { suggestion ->
             !Tag.isSpecial(suggestion)
-                    && tags.any { it.name == suggestion }.not()
+                    && tags.any { it.tag == suggestion }.not()
                     && (value.text.isEmpty() || suggestion.startsWith(value.text))
         }
 
@@ -113,7 +111,7 @@ fun TagsField(
                 )
             },
             title = {
-                Text("#${selectedTag!!.name} ($selectedTagScore)")
+                Text("#${selectedTag!!.tag} ($selectedTagScore)")
             }
         )
     }
@@ -125,7 +123,7 @@ fun TagsField(
             onSelect = { score: Int ->
                 onAddTag(
                     TagEntityDto(
-                        name = selectedSpecialTag!!,
+                        tag = selectedSpecialTag!!,
                         score = score
                     )
                 )
@@ -208,7 +206,7 @@ fun TagsField(
                 if (moodTag != null) {
                     SpecialTagIcon(
                         modifier = Modifier.size(64.dp),
-                        tag = moodTag.name,
+                        tag = moodTag.tag,
                         score = moodTag.score
                     )
                 } else {
@@ -442,7 +440,7 @@ fun TagBadge(
         selected = true,
         modifier = modifier.padding(end = 4.dp),
         onClick = onClick,
-        label = { Text(text = tag.name) },
+        label = { Text(text = tag.tag) },
         trailingIcon = {
             IconButton(
                 modifier = Modifier.size(14.dp),
@@ -464,7 +462,7 @@ fun TagPreviewBadge(
     modifier: Modifier = Modifier,
     tag: TagEntityDto,
 ) {
-    when (tag.name) {
+    when (tag.tag) {
         "mood" -> {
             MoodTagPreviewBadge(
                 modifier = modifier,
@@ -475,7 +473,7 @@ fun TagPreviewBadge(
             selected = true,
             modifier = modifier.padding(end = 4.dp),
             onClick = {},
-            label = { Text(text = "#${tag.name}") },
+            label = { Text(text = "#${tag.tag}") },
         )
     }
 }
@@ -485,7 +483,7 @@ fun MoodTagPreviewBadge(
     modifier: Modifier = Modifier,
     tag: TagEntityDto,
 ) {
-    SpecialTagIcon(modifier = modifier.size(64.dp), tag = tag.name, score = tag.score)
+    SpecialTagIcon(modifier = modifier.size(64.dp), tag = tag.tag, score = tag.score)
 }
 
 fun sanitizeTag(tag: String): String {

@@ -7,9 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -264,7 +262,7 @@ fun ContributionsSquare(
     var tagDto: TagEntityDto? = null
     notes.forEach { localNote ->
         localNote.tags.forEach innerLoop@{ t ->
-            if (t.name == tag) {
+            if (t.tag == tag) {
                 tagDto = t
                 return@innerLoop
             }
@@ -301,7 +299,7 @@ fun MoodSquare(
     var tagDto: TagEntityDto? = null
     notes.forEach { localNote ->
         localNote.tags.forEach innerLoop@{ t ->
-            if (t.name == tag) {
+            if (t.tag == tag) {
                 tagDto = t
                 return@innerLoop
             }

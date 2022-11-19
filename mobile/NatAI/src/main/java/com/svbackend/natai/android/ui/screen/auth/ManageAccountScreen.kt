@@ -33,10 +33,7 @@ fun ManageAccountScreen(
     manageAccountViewModel: ManageAccountViewModel = viewModel(),
     onClickCreateAccount: () -> Unit,
 ) {
-    val context = LocalContext.current
-
-
-    val user = vm.user.collectAsState(initial = null).value
+    val user = vm.userState
 
     if (user == null) {
         NotAuthorized {

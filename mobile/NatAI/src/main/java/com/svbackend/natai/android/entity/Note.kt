@@ -135,7 +135,7 @@ data class LocalNote(
         fun create(cloudNote: CloudNote): LocalNote {
             val tags = cloudNote.tags.map {
                 TagEntityDto(
-                    name = it.name,
+                    tag = it.tag,
                     score = it.score,
                 )
             }

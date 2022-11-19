@@ -11,9 +11,10 @@ class ApiSyncService(
     private val repository: DiaryRepository
 ) {
     suspend fun syncNotes() {
+        val cloudNotesResponse = apiClient.getNotesForSync()
 
-        val cloudNotes = apiClient
-            .getNotesForSync()
+        val cloudNotes = cloudNotesResponse
+            .notes
             .associateBy { it.id }
 
         val localNotes = repository

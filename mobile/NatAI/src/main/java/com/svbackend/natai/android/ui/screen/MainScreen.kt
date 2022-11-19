@@ -44,7 +44,7 @@ fun MainScreen(
     onNoteClick: (LocalNote) -> Unit
 ) {
     val notes = vm.notesState
-    val currentUser by vm.user.collectAsState(initial = null)
+    val currentUser = vm.userState
     val isLoggedIn = currentUser != null
 
     if (notes.isNotEmpty()) {

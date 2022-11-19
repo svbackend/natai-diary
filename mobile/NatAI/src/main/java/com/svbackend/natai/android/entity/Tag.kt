@@ -15,7 +15,7 @@ val SPECIAL_TAGS = listOf(
 data class Tag(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
     val noteId: String,
-    val name: String,
+    val tag: String,
     val score: Int? = null,
 ) {
     companion object {
@@ -25,10 +25,10 @@ data class Tag(
             val tagsMap: MutableMap<String, Int> = mutableMapOf()
             notes.forEach { localNote ->
                 localNote.tags.forEach {
-                    if (tagsMap.containsKey(it.name)) {
-                        tagsMap[it.name] = tagsMap[it.name]!! + 1
+                    if (tagsMap.containsKey(it.tag)) {
+                        tagsMap[it.tag] = tagsMap[it.tag]!! + 1
                     } else {
-                        tagsMap[it.name] = 1
+                        tagsMap[it.tag] = 1
                     }
                 }
             }
@@ -39,11 +39,11 @@ data class Tag(
 }
 
 data class TagEntityDto(
-    val name: String,
+    val tag: String,
     val score: Int? = null,
 ) {
     @JsonIgnore
-    val isSpecial: Boolean = Tag.isSpecial(name)
+    val isSpecial: Boolean = Tag.isSpecial(tag)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -51,13 +51,13 @@ data class TagEntityDto(
 
         other as TagEntityDto
 
-        if (name != other.name) return false
+        if (tag != other.tag) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return name.hashCode()
+        return tag.hashCode()
     }
 
     companion object {
@@ -71,7 +71,7 @@ data class TagEntityDto(
 
         fun create(tag: Tag): TagEntityDto {
             return TagEntityDto(
-                name = tag.name,
+                tag = tag.tag,
                 score = tag.score,
             )
         }
@@ -83,14 +83,14 @@ data class TagEntityDto(
                 val score = unvalidatedScore.toIntOrNull()?.coerceIn(0, 10)
 
                 return TagEntityDto(
-                    name = name,
+                    tag = name,
                     score = score,
                 )
             }
 
             val name = cleanTag(tag)
             return TagEntityDto(
-                name = name,
+                tag = name,
                 score = null,
             )
         }

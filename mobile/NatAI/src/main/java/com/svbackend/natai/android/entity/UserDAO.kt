@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class UserDAO {
+    @Query("SELECT * FROM User")
+    abstract fun getUsers(): Flow<List<User>>
+
     @Query("SELECT * FROM User WHERE cloudId = :cloudId")
     abstract fun getUserByCloudId(cloudId: String): Flow<User?>
 

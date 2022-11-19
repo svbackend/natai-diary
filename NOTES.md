@@ -1,3 +1,11 @@
+### Nov 18, 2022
+
+Multiuser setup - now works. Decided to filter out notes in ViewModel instead of on database level.
+
+Bugs:
+1. Sync - note updated (redundant PUT request sent) even though it's not changed since last time
+2. When new note added without authentication - and then user proceeds to sign in - the note that was created not showing up until app restart
+
 ### Nov 17, 2022
 
 Somehow was really lazy/unmotivated and tired last couple of days. Didn't even realize that I took 4 days break =(
