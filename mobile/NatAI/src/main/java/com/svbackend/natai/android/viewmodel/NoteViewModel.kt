@@ -13,7 +13,9 @@ import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.UserTheme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -22,18 +24,21 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val userRepository: UserRepository =
         (application as DiaryApplication).appContainer.userRepository
 
-    val apiSyncService: ApiSyncService = (application as DiaryApplication).appContainer.apiSyncService
+    val apiSyncService: ApiSyncService =
+        (application as DiaryApplication).appContainer.apiSyncService
 
     val prefs = (application as DiaryApplication).appContainer.sharedPrefs
 
     val isLoggedIn = MutableSharedFlow<Boolean>()
     val userCloudId = MutableSharedFlow<String?>(replay = 1)
     val user = MutableSharedFlow<User?>(replay = 1)
+    var userState by mutableStateOf<User?>(null)
+
     val currentTheme = MutableSharedFlow<UserTheme>(replay = 1)
-    //val currentRoute = MutableSharedFlow<String?>() // todo
 
     val notes = diaryRepository.notes
-    var notesState by mutableStateOf(emptyList<LocalNote>())
+    var notesState by mutableStateOf(emptyList<LocalNote>()) // current user's notes
+    var allNotesState by mutableStateOf(emptyList<LocalNote>())
 
     val selectedNote = MutableSharedFlow<LocalNote?>(replay = 1)
 
@@ -74,13 +79,13 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     private suspend fun subscribeForCurrentUserChange() {
         this.userCloudId.collect { userCloudId ->
-
             if (userCloudId != null) {
-                val userFlow = userRepository.getUserByCloudId(userCloudId)
+                val user = userRepository.getUserByCloudIdSync(userCloudId)
 
-                userFlow.collect { currentUser ->
-                    user.emit(currentUser)
-                }
+//                userFlow.collect { currentUser ->
+//                    user.emit(currentUser)
+//                }
+                this.user.emit(user)
             }
         }
     }
@@ -103,9 +108,19 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
+        notesState = emptyList()
+
+        viewModelScope.launch {
+            user.collect {
+                userState = it
+                notesState = allNotesState.filter { note -> note.cloudUserId == null || note.cloudUserId == userState?.cloudId }
+            }
+        }
+
         viewModelScope.launch {
             notes.collect {
-                notesState = it
+                allNotesState = it
+                notesState = it.filter { note -> note.cloudUserId == null || note.cloudUserId == userState?.cloudId }
             }
         }
 

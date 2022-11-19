@@ -6,7 +6,9 @@ Today added a small feature so when user logging in - we assign all notes that w
 
 On backend now situation when user already exists handled. Need to do something about it on frontend/android as well.
 
+Next step:
 
+Multiuser setup - fix get notes and test everything.
 
 ### Nov 13, 2022
 

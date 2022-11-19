@@ -121,6 +121,7 @@ data class LocalNote(
             return LocalNote(
                 id = entity.note.id,
                 cloudId = entity.note.cloudId,
+                cloudUserId = entity.note.cloudUserId,
                 title = entity.note.title,
                 content = entity.note.content,
                 actualDate = entity.note.actualDate,
