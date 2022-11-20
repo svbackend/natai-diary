@@ -14,7 +14,6 @@ import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.UserTheme
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
@@ -83,7 +82,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun setUserCloudId(cloudId: String) {
+    suspend fun setUserCloudId(cloudId: String?) {
         this.userCloudId.emit(cloudId)
     }
 
@@ -140,5 +139,17 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     private fun clearSubscribers() {
         jobs.forEach { job -> job.cancel() }
         jobs.clear()
+    }
+
+    suspend fun logout(onLogout: () -> Unit) {
+        prefs
+            .edit()
+            .remove("api_token")
+            .remove("cloud_id")
+            .apply()
+
+        setUserCloudId(null)
+
+        onLogout()
     }
 }

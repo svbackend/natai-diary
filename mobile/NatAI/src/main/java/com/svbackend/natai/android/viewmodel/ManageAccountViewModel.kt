@@ -16,12 +16,12 @@ class ManageAccountViewModel(application: Application) : AndroidViewModel(applic
     val prefs: SharedPreferences = (application as DiaryApplication).appContainer.sharedPrefs
     val apiClient: ApiClient = (application as DiaryApplication).appContainer.apiClient
 
-    val query = UserQuery(apiClient)
+    val userQuery = UserQuery(apiClient)
 
     val showStillNotVerifiedError = mutableStateOf(false)
 
     suspend fun checkEmailVerification() {
-        val user = query.getUser()
+        val user = userQuery.getUser()
         if (user != null) {
             repository.updateUser(user)
 

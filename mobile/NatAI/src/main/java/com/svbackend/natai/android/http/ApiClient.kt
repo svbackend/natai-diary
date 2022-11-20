@@ -23,7 +23,7 @@ import io.ktor.serialization.jackson.*
 
 //const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
 //const val BASE_URL = "https://natai.app/api/v1/"
-const val BASE_URL = "https://b860-24-203-8-51.ngrok.io/api/v1/"
+const val BASE_URL = "https://4d94-24-203-8-51.ngrok.io/api/v1/"
 
 class ApiClient(
     private val getApiToken: () -> String?

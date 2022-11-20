@@ -12,10 +12,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +30,7 @@ fun ManageAccountScreen(
     vm: NoteViewModel,
     manageAccountViewModel: ManageAccountViewModel = viewModel(),
     onClickCreateAccount: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     val user = vm.userState
 
@@ -44,6 +43,8 @@ fun ManageAccountScreen(
         Authorized(
             user = user,
             manageAccountViewModel = manageAccountViewModel,
+            vm = vm,
+            onLogout = onLogout,
         )
     }
 }
@@ -52,6 +53,8 @@ fun ManageAccountScreen(
 fun Authorized(
     user: User,
     manageAccountViewModel: ManageAccountViewModel,
+    vm: NoteViewModel,
+    onLogout: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -111,7 +114,7 @@ fun Authorized(
 
                 NPrimaryButton(
                     onClick = { checkEmailVerification() },
-                    isLoading = manageAccountViewModel.query.isLoading.value,
+                    isLoading = manageAccountViewModel.userQuery.isLoading.value,
                 ) {
                     Icon(
                         Icons.Filled.Email,
@@ -123,6 +126,21 @@ fun Authorized(
                     )
                 }
             }
+
+            Text(
+                text = stringResource(id = R.string.logout),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        scope.launch {
+                            vm.logout(onLogout)
+                        }
+                    }
+                    .padding(top = 16.dp),
+            )
 
             // todo add logout button?
             // delete account button?
