@@ -84,4 +84,36 @@ class PasswordResetControllerTest extends AbstractFunctionalTest
         // ensure that login with new password works
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
     }
+
+    public function testResetPasswordConfirmationTokenExpired()
+    {
+        $client = static::createClient();
+        $response = $client->request('POST', '/api/v1/password-reset-confirmation', [
+            'json' => [
+                'token' => ConfirmationTokenFixture::EXPIRED_PASSWORD_RESET_TOKEN,
+                'password' => 'newPassword',
+            ]
+        ]);
+
+        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $client->getResponse()->getStatusCode());
+        $data = $response->toArray();
+        $this->assertArrayHasKey('code', $data);
+        $this->assertSame('token_expired', $data['code']);
+    }
+
+    public function testResetPasswordConfirmationTokenNotFound()
+    {
+        $client = static::createClient();
+        $response = $client->request('POST', '/api/v1/password-reset-confirmation', [
+            'json' => [
+                'token' => 'nonExistingToken',
+                'password' => 'newPassword',
+            ]
+        ]);
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        $data = $response->toArray();
+        $this->assertArrayHasKey('code', $data);
+        $this->assertSame('token_not_found', $data['code']);
+    }
 }
