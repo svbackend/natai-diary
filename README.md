@@ -18,3 +18,12 @@ AI Enhanced Diary application + website built using Kotlin Multiplatform Mobile 
 
 1. Clone the repository
 2. Run `make install`
+3. Run `make up`
+
+http://localhost:8000/api/doc - Symfony API docs
+
+http://localhost:3000 - Frontend
+
+### Additional services
+http://localhost:1080 - MailCatcher
+

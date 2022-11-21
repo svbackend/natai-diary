@@ -102,4 +102,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isEmailVerified = true;
     }
+
+    public function setPassword(UserPassword $userPassword): void
+    {
+        $this->password = $userPassword->getHashedPassword($this);
+    }
+
+    /**
+     * @see UserRepository::upgradePassword()
+     */
+    public function setPasswordHash(string $passwordHash): void
+    {
+        $this->password = $passwordHash;
+    }
 }

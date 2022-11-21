@@ -13,7 +13,10 @@ use Doctrine\Persistence\ObjectManager;
 class ConfirmationTokenFixture extends Fixture implements DependentFixtureInterface
 {
     public const EMAIL_VERIFICATION_TOKEN = 'dff7a9a050f7';
-    public const EXPIRED_EMAIL_VERIFICATION_TOKEN = 'EXPIRED_TOKEN';
+    public const EXPIRED_EMAIL_VERIFICATION_TOKEN = 'EXPIRED_EMAIL_VERIFICATION_TOKEN';
+
+    public const PASSWORD_RESET_TOKEN = 'dff7a9a050f5';
+    public const EXPIRED_PASSWORD_RESET_TOKEN = 'EXPIRED_PASSWORD_RESET_TOKEN';
 
     public function __construct(
         private Connection $conn
@@ -26,36 +29,55 @@ class ConfirmationTokenFixture extends Fixture implements DependentFixtureInterf
         /** @var User $userRef */
         $userRef = $this->getReference(UserFixture::USER_ID);
 
-        $token = ConfirmationToken::createTokenForEmailVerification($userRef);
-        $expiredToken = ConfirmationToken::createTokenForEmailVerification($userRef);
+        $emailVerificationToken = ConfirmationToken::createTokenForEmailVerification($userRef);
+        $emailVerificationExpiredToken = ConfirmationToken::createTokenForEmailVerification($userRef);
 
-        $manager->persist($token);
-        $manager->persist($expiredToken);
+        $passwordResetToken = ConfirmationToken::createTokenForPasswordReset($userRef);
+        $passwordResetExpiredToken = ConfirmationToken::createTokenForPasswordReset($userRef);
+
+        $manager->persist($emailVerificationToken);
+        $manager->persist($emailVerificationExpiredToken);
+
+        $manager->persist($passwordResetToken);
+        $manager->persist($passwordResetExpiredToken);
 
         $manager->flush();
 
-        $oldToken = $token->getToken();
-        $newToken = self::EMAIL_VERIFICATION_TOKEN;
+        $expiresAt = new \DateTimeImmutable('-1 day');
 
-        $this->conn->executeStatement(
-            "UPDATE confirmation_token SET token = :newToken WHERE token = :oldToken",
+        $tokensReplacements = [
             [
-                'newToken' => $newToken,
-                'oldToken' => $oldToken,
-            ]
-        );
-
-        $expiredAt = new \DateTimeImmutable('-1 day');
-
-        $this->conn->executeStatement(
-            "UPDATE confirmation_token SET token = :newExpiredToken, expires_at = :expiredAt WHERE token = :oldExpiredToken",
+                'old' => $emailVerificationToken->getToken(),
+                'new' => self::EMAIL_VERIFICATION_TOKEN,
+                'expires_at' => $emailVerificationToken->getExpiresAt()->format('Y-m-d H:i:s')
+            ],
             [
-                'oldExpiredToken' => $expiredToken->getToken(),
-                'newExpiredToken' => self::EXPIRED_EMAIL_VERIFICATION_TOKEN,
-                'expiredAt' => $expiredAt->format('Y-m-d H:i:s'),
-            ]
-        );
+                'old' => $emailVerificationExpiredToken->getToken(),
+                'new' => self::EXPIRED_EMAIL_VERIFICATION_TOKEN,
+                'expires_at' => $expiresAt->format('Y-m-d H:i:s')
+            ],
+            [
+                'old' => $passwordResetToken->getToken(),
+                'new' => self::PASSWORD_RESET_TOKEN,
+                'expires_at' => $passwordResetToken->getExpiresAt()->format('Y-m-d H:i:s')
+            ],
+            [
+                'old' => $passwordResetExpiredToken->getToken(),
+                'new' => self::EXPIRED_PASSWORD_RESET_TOKEN,
+                'expires_at' => $expiresAt->format('Y-m-d H:i:s')
+            ],
+        ];
 
+        foreach ($tokensReplacements as $row) {
+            $this->conn->executeStatement(
+                "UPDATE confirmation_token SET token = :newToken, expires_at = :expiresAt WHERE token = :oldToken",
+                [
+                    'oldToken' => $row['old'],
+                    'newToken' => $row['new'],
+                    'expiresAt' => $row['expires_at'],
+                ]
+            );
+        }
     }
 
     public function getDependencies(): array

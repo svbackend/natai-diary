@@ -8,9 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 class ConfirmationToken
 {
     public const TYPE_EMAIL_VERIFICATION = 'email_verification';
+    public const TYPE_PASSWORD_RESET = 'password_reset';
 
     private const TYPE_TO_EXPIRATION_TIME = [
         self::TYPE_EMAIL_VERIFICATION => 3600 * 24 * 7,
+        self::TYPE_PASSWORD_RESET => 3600 * 24,
     ];
 
     #[ORM\Id]
@@ -40,6 +42,11 @@ class ConfirmationToken
     public static function createTokenForEmailVerification(User $user): self
     {
         return new self($user, self::TYPE_EMAIL_VERIFICATION);
+    }
+
+    public static function createTokenForPasswordReset(User $user): self
+    {
+        return new self($user, self::TYPE_PASSWORD_RESET);
     }
 
     public function getToken(): string

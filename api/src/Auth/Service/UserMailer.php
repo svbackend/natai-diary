@@ -31,4 +31,21 @@ class UserMailer
             ],
         );
     }
+
+    public function sendPasswordResetEmail(User $user, ConfirmationToken $token): void
+    {
+        $this->mailerService->sendEmail(
+            to: new Address(
+                address: $user->getEmail(),
+                name: $user->getName(),
+            ),
+            subject: 'Password reset on Natai Diary App',
+            template: 'user/password_reset.html.twig',
+            templateParams: [
+                'name' => $user->getName(),
+                'token' => $token->getToken(),
+                'expiresAt' => $token->getExpiresAt()->format('Y-m-d H:i:s'),
+            ],
+        );
+    }
 }

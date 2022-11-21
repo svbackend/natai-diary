@@ -7,6 +7,10 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
+/**
+ * Use module specific mailer instead, e.g App\Auth\Service\UserMailer
+ * @internal
+ */
 class MailerService
 {
     const FROM_EMAIL = 'noreply@natai.app';

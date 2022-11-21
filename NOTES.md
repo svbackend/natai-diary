@@ -1,3 +1,11 @@
+### Nov 20, 2022
+
+Added Logout screen. Improved syncing process.
+
+### Nov 19, 2022
+
+Fixed bugs described in Nov 18 note.
+
 ### Nov 18, 2022
 
 Multiuser setup - now works. Decided to filter out notes in ViewModel instead of on database level.

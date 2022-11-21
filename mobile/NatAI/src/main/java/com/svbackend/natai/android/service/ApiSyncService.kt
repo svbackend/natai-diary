@@ -5,12 +5,22 @@ import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.model.CloudNote
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 
 class ApiSyncService(
     private val apiClient: ApiClient,
-    private val repository: DiaryRepository
+    private val repository: DiaryRepository,
 ) {
+    @Volatile
+    private var isRunning = false
+
     suspend fun syncNotes() {
+        if (isRunning) {
+            return
+        }
+
+        isRunning = true
+
         val cloudNotesResponse = apiClient.getNotesForSync()
 
         val cloudNotes = cloudNotesResponse
@@ -25,6 +35,9 @@ class ApiSyncService(
             if (cloudNote == null) {
                 insertToCloud(it)
             } else if (it.updatedAt.isAfter(cloudNote.updatedAt)) {
+                println(LocalDateTimeFormatter.fullDateTime.format(it.updatedAt))
+                println("vs")
+                println(LocalDateTimeFormatter.fullDateTime.format(cloudNote.updatedAt))
                 updateToCloud(it)
             }
         }
@@ -39,6 +52,8 @@ class ApiSyncService(
                 updateToLocal(localNote, cloudNote)
             }
         }
+
+        isRunning = false
     }
 
     private suspend fun insertToLocal(cloudNote: CloudNote) {
