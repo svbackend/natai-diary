@@ -2,7 +2,7 @@ nelmio_api_doc:
     documentation:
         info:
             title: Natai Diary
-            description: Diary Application for Anrdoid & WEB. Helps to track your daily activities and their affect on your mental health.
+            description: Diary Application for Anrdoid & WEB. Helps to track your daily activities and their effect on your mental health.
             version: 1.0.0
         components:
             securitySchemes:
