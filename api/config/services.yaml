@@ -31,3 +31,7 @@ services:
   App\Common\EventListener\KernelViewListener:
     tags:
       - { name: kernel.event_listener, event: kernel.view }
+
+  App\Common\Controller\ApiDocAction:
+    arguments:
+      - '@nelmio_api_doc.render_docs'

@@ -1,3 +1,7 @@
+common:
+  type: attribute
+  resource: ../src/Common/Controller/
+
 auth:
   type: attribute
   resource: ../src/Auth/Controller/

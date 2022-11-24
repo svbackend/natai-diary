@@ -1,3 +1,12 @@
+### Nov 23, 2022
+
+Playing with OpenApi codegen. I like how it generates react-query "use" hooks for me, it's really convenient,
+although I'm concerned how I'm going to handle issue when I need to regenerate the schema (when api docs are changed).
+
+I'm also concerned about how I'm going to add authentication to the api calls if "fetcher" is generated, so I cannot modify it.
+
+After some experiments I decided to use codegen only for generating types while react-query hooks will be written manually.
+
 ### Nov 20, 2022
 
 Added Logout screen. Improved syncing process.

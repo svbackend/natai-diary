@@ -1,4 +1,4 @@
-import type * as Schema from '../../api/apiSchemas';
+import type * as Schema from '../../schema/apiSchemas';
 import {useMutation} from "@tanstack/react-query";
 
 /**
@@ -7,7 +7,7 @@ import {useMutation} from "@tanstack/react-query";
 export function useLoginMutation() {
     return useMutation<Schema.LoginSuccessResponse, Schema.LoginErrorRef, Schema.LoginRequestRef>(
         async (data) => {
-            const response = await fetch('http://127.0.0.1:8000/api/auth/login', {
+            const response = await fetch('http://localhost:8000/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
