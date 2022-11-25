@@ -2,7 +2,7 @@ check:
 	php --version && node --version && npm --version && npx --version && symfony -V && docker --version && docker compose version
 
 install:
-	cd api && docker compose up -d && composer install && bin/console doctrine:migr:migr && cd ../frontend && npm install && make frontend-schema
+	cd api && docker compose up -d && composer install && bin/console doctrine:schema:update -f && cd ../frontend && npm install
 
 up:
 	make api-up & make frontend-up
