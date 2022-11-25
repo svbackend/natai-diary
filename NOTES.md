@@ -1,3 +1,12 @@
+### Nov 24, 2022
+
+Changed my mind about the generation of react-query hooks,
+the fetcher that doing api calls actually not changing after each regeneration of schema, so I'm free to modify it.
+Tested everything, and it works really well, I just had to change operationId in openApi for each endpoint to be more readable.
+
+Apart from that I copy-pasted some tailwind templates (so we have main layout, text field, error alert and couple more).
+I do really like NextJs. It helps me to build fast (relatively), but it will be even faster when I'll have some ready reusable components.
+
 ### Nov 23, 2022
 
 Playing with OpenApi codegen. I like how it generates react-query "use" hooks for me, it's really convenient,
