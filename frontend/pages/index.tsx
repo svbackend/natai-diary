@@ -1,31 +1,9 @@
-import {useLoginMutation} from "../src/hooks/apiHooks";
+import MainLayout from "../src/modules/common/components/mainLayout";
 
-export default function Home() {
-    const loginMutation = useLoginMutation();
-
-    const login = () => {
-        loginMutation.mutate({email: ",", password: ""})
-    }
-
+export default function HomePage() {
     return (
-        <div>
-            {loginMutation.isLoading && <>Loading..</>}
-
-            {loginMutation.error && (
-                <>
-                    Status = {loginMutation.error.code}
-                </>
-            )}
-
-            {loginMutation.data && loginMutation.data.apiToken && (
-                <>
-                    <h1>Token = {loginMutation.data.apiToken}</h1>
-                </>
-            )}
-
-            Hello World!
-
-            <button onClick={login}>Login!</button>
-        </div>
+        <MainLayout>
+            In Development...
+        </MainLayout>
     )
 }

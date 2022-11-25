@@ -31,3 +31,8 @@ http://localhost:3000 - Frontend
 ### Additional services
 
 http://localhost:1080 - MailCatcher
+
+### Commands
+
+- `make up` - start all services
+- `make frontend-schema` - generate react-query hooks + schema from openapi spec

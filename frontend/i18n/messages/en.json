@@ -1,0 +1,28 @@
+{
+  "App": {
+  },
+  "Breadcrumbs": {
+    "Home": "Home",
+    "About": "About",
+    "Contact": "Contact"
+  },
+  "LoginPage": {
+    "Title": "Login",
+    "Password": "Password",
+    "Login": "Login",
+    "LoginDescription": "Sign in to access your account",
+    "Register": "Register",
+    "ForgotPassword": "Forgot Password",
+    "RememberMe": "Remember Me",
+    "LoginFailed": "Login failed",
+    "LoginFailedMessage": "Invalid username or password",
+    "Email": "Email",
+    "Error": "Error!"
+  },
+  "Alert": {
+    "Error": "Error",
+    "Warning": "Warning",
+    "Success": "Success",
+    "Info": "Info"
+  }
+}

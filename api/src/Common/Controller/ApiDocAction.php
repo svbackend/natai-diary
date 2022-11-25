@@ -51,7 +51,29 @@ class ApiDocAction extends BaseAction
             $modifiedSchemas[$schemaKey] = $schema;
         }
 
+        $modifiedPaths = [];
+        foreach ($modifiedDocs['paths'] as $pathKey => $path) {
+            $modifiedPath = $path;
+            foreach ($path as $methodKey => $method) {
+                $modifiedMethod = $method;
+                if (isset($modifiedMethod['operationId'])) {
+                    $endpointName = strtr($pathKey, [
+                        '/api/v1/' => '',
+                        '/' => '_',
+                        '-' => '_',
+                        '{' => 'by_',
+                        '}' => ''
+                    ]);
+                    $newOperationId = "{$methodKey}_{$endpointName}";
+                    $modifiedMethod['operationId'] = $newOperationId;
+                    $modifiedPath[$methodKey] = $modifiedMethod;
+                }
+            }
+            $modifiedPaths[$pathKey] = $modifiedPath;
+        }
+
         $modifiedDocs['components']['schemas'] = $modifiedSchemas;
+        $modifiedDocs['paths'] = $modifiedPaths;
 
         return $this->json($modifiedDocs);
     }

@@ -36,7 +36,7 @@ class LoginAction extends BaseAction
      * @OA\Response(response=401, description="invalid creds", @Model(type=LoginErrorRef::class))
      * @OA\Response(response=500, description="server error", @Model(type=ServerErrorRef::class))
      */
-    #[Route('/api/v1/login', name: "login", methods: ['POST'])]
+    #[Route('/api/v1/login', methods: ['POST'])]
     public function __invoke(
         #[CurrentUser] ?User $user
     ): HttpOutputInterface
