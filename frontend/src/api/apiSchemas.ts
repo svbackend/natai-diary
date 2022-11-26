@@ -17,7 +17,7 @@ export type LoginErrorRef = {
   /**
    * @example Invalid credentials.
    */
-  code: string;
+  error: string;
 };
 
 export type ServerErrorRef = {

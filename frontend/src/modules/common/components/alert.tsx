@@ -4,17 +4,32 @@ type ErrorCodesMap = {
     [key: string]: string
 }
 
+const errorCodeMap = {
+    "": "",
+} as ErrorCodesMap;
+
+const errorResponseToMessage = (errorResponseBody: object): string => {
+    if ("code" in errorResponseBody && typeof errorResponseBody.code === "string") {
+        return errorCodeMap[errorResponseBody.code];
+    }
+
+    if ("error" in errorResponseBody && typeof errorResponseBody.error === "string") {
+        return errorCodeMap[errorResponseBody.error];
+    }
+
+    return "Unknown error";
+}
+
 export const AlertApiError = ({error}: { error: any }) => {
     let message = "Unknown error";
     const status = error.status || null
 
-    const errorCodeMap = {
-        "": "",
-    } as ErrorCodesMap;
+    console.log(typeof error)
+    console.log(error)
 
     if (error && error.payload) {
-        if (typeof error.payload === 'object' && error.payload.code && typeof error.payload.code === "string") {
-            message = errorCodeMap[error.payload.code] || error.payload.code;
+        if (typeof error.payload === 'object') {
+            message = errorResponseToMessage(error.payload)
         } else if (typeof error.payload === 'string') {
             message = error.payload;
         }

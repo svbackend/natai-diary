@@ -7,7 +7,7 @@ export default defineConfig({
             source: "url",
             url: "http://127.0.0.1:8000/api-docs.json",
         },
-        outputDir: "src/hooks/api",
+        outputDir: "src/api",
         to: async (context) => {
             const filenamePrefix = "api";
             const {schemasFiles} = await generateSchemaTypes(context, {

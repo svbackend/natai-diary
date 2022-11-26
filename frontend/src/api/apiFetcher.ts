@@ -52,17 +52,24 @@ export async function apiFetch<
     if (!response.ok) {
       let error: ErrorWrapper<TError>;
       try {
-        error = await response.json();
+        const payload = await response.json();
+        console.log("payload", payload);
+        error = {
+          status: response.status,
+          payload: payload,
+        } as TError;
       } catch (e) {
+        console.log("ERROR IN CASTING", e);
         error = {
           status: "unknown" as const,
           payload:
-            e instanceof Error
-              ? `Unexpected error (${e.message})`
-              : "Unexpected error",
+              e instanceof Error
+                  ? `Unexpected error (${e.message})`
+                  : "Unexpected error",
         };
       }
 
+      console.log("throwing error", error);
       throw error;
     }
 
