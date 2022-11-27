@@ -5,9 +5,14 @@ import flowerSvg from '../../../../public/assets/img/flower.svg';
 import Link from "next/link";
 import {NextRouter, useRouter} from "next/router";
 import {authService} from "../../auth/services/authService";
-import {useAppState} from "../state";
+import {useAppContext} from "../state";
+import {classNames} from "../../../utils/classNames";
+
 
 const Header = ({router}: { router: NextRouter }) => {
+    const {appState} = useAppContext()
+    const isLoading = appState.isLoading
+
     return (
         <Disclosure as="nav">
             {({open}) => (
@@ -15,8 +20,9 @@ const Header = ({router}: { router: NextRouter }) => {
                     <header className="p-4 bg-gray-800 text-gray-100">
                         <div className="container flex justify-between h-16 mx-auto">
                             <Link href="/" aria-label="Back to homepage"
-                               className="flex items-center p-2">
-                                <Image src={flowerSvg} alt={"Flower Natai Diary Logo"} className={"w-10 h-10"}/>
+                                  className="flex items-center p-2">
+                                <Image src={flowerSvg} alt={"Flower Natai Diary Logo"}
+                                       className={classNames("w-10 h-10", isLoading ? "animate-spin" : "")}/>
                                 <span className="ml-2 text-xl">Natai</span>
                             </Link>
                             <DesktopNavBar router={router}/>
@@ -49,10 +55,12 @@ const Header = ({router}: { router: NextRouter }) => {
     )
 }
 
+
 const DesktopNavBar = ({router}: { router: NextRouter }) => {
     const from = authService.createUrlForRedirect(router)
 
-    const {user} = useAppState()
+    const {appState} = useAppContext()
+    const user = appState.user
 
     return (
         <>
@@ -91,7 +99,8 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
                     <>
                         <Link href={"/login" + from} className="self-center px-8 py-3 rounded">Sign in</Link>
                         <Link href={"/registration" + from}
-                              className="self-center px-8 py-3 font-semibold rounded bg-violet-400 text-gray-900">Sign up</Link>
+                              className="self-center px-8 py-3 font-semibold rounded bg-violet-400 text-gray-900">Sign
+                            up</Link>
                     </>
                 )}
 
@@ -101,7 +110,10 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
 }
 
 const MobileNavBar = ({router}: { router: NextRouter }) => {
+    const {appState} = useAppContext()
     const from = authService.createUrlForRedirect(router);
+
+    const user = appState.user
 
     return (
         <>
@@ -123,14 +135,23 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                     <Link href={"/static/contacts"}
                           className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contacts</Link>
                 </li>
-                <li>
-                    <Link href={"/login" + from}
-                          className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</Link>
-                </li>
-                <li>
-                    <Link href={"/registration" + from}
-                          className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Registration</Link>
-                </li>
+                {user ? (
+                    <>
+                        <li>
+                            <Link href={"/login" + from}
+                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</Link>
+                        </li>
+                        <li>
+                            <Link href={"/registration" + from}
+                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Registration</Link>
+                        </li>
+                    </>
+                ) : (
+                    <>
+                    </>
+                )}
+
+
             </ul>
         </>
     )

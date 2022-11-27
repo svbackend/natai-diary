@@ -6,50 +6,71 @@ import {authService} from "../auth/services/authService";
 
 type ModalsState = {}
 
-type AppState = {
+export type GlobalAppContext = {
+    appState: AppState,
+    setAppState: (appState: AppState) => void,
+}
+
+export type AppState = {
     isLoading: boolean;
-    setIsLoading: (isLoading: boolean) => void;
     user: UserDto | null;
-    setUser: (user: UserDto | null) => void;
 }
 
 export const initialAppState = {
     isLoading: false,
-    setIsLoading: () => {
-    },
     user: null,
-    setUser: (user: UserDto) => {
-        this.user = user
-    },
 }
 
-export const AppContext = createContext<AppState>(initialAppState)
+export const initialContext = {
+    appState: initialAppState,
+    setAppState: () => {
+    }
+}
 
-export const useAppState = () => {
-    const ctx = useContext<AppState>(AppContext);
+
+export const AppContext = createContext<GlobalAppContext>(initialContext)
+
+export const useAppContext = (): GlobalAppContext => {
+    return useContext(AppContext)
+}
+
+// Use this hook only in _app.tsx, in rest of the components use useAppContext
+export const useAppState = (): GlobalAppContext => {
+    const [appState, setAppState] = useState<AppState>(initialAppState)
     const [authInProgress, setAuthInProgress] = useState(false);
 
-    const canBeAuthenticated = ctx.user === null && storageService.getApiToken() !== null
+    const canBeAuthenticated = appState.user === null && storageService.getApiToken() !== null
+
+    const isLoading = appState.isLoading || authInProgress
 
     useEffect(() => {
-        if (canBeAuthenticated && !authInProgress) {
+        if (canBeAuthenticated && !isLoading) {
             setAuthInProgress(true);
+            setAppState(s => {
+                return {...s, isLoading: true}
+            })
 
-            ctx.setIsLoading(true)
             fetchGetMe({})
                 .then(res => {
-                    ctx.setUser(res.user)
+                    setAppState(s => {
+                        return {
+                            ...s,
+                            user: res.user,
+                        }
+                    })
                 })
                 .catch(err => {
                     console.error(err)
                     authService.logout()
                 })
                 .finally(() => {
-                    ctx.setIsLoading(false)
+                    setAppState(s => {
+                        return {...s, isLoading: false}
+                    })
                     setAuthInProgress(false)
                 })
         }
     }, [])
 
-    return ctx
+    return {appState, setAppState}
 }

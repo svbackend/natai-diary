@@ -11,14 +11,14 @@ const queryClient = new QueryClient()
 
 export default function App({Component, pageProps}: AppProps) {
     const router = useRouter()
-    const appState = useAppState()
+    const globalAppState = useAppState()
     const locale = router.locale || "en"
     const messages = getTranslations(locale)
 
     return (
         <NextIntlProvider messages={messages} locale={locale}>
             <QueryClientProvider client={queryClient}>
-                <AppContext.Provider value={appState}>
+                <AppContext.Provider value={globalAppState}>
                     <Component {...pageProps} />
                 </AppContext.Provider>
             </QueryClientProvider>
