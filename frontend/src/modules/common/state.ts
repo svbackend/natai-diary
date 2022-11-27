@@ -27,15 +27,37 @@ export const initialContext = {
     }
 }
 
-
 export const AppContext = createContext<GlobalAppContext>(initialContext)
 
-export const useAppContext = (): GlobalAppContext => {
+const useAppContext = (): GlobalAppContext => {
     return useContext(AppContext)
 }
 
-// Use this hook only in _app.tsx, in rest of the components use useAppContext
-export const useAppState = (): GlobalAppContext => {
+type AppStateManager = {
+    setUser: (user: UserDto | null) => void,
+    setLoading: (isLoading: boolean) => void,
+} & AppState
+
+export const useAppStateManager = (): AppStateManager => {
+    const {appState, setAppState} = useAppContext()
+
+    const setUser = (user: UserDto | null) => {
+        setAppState({...appState, user})
+    }
+
+    const setLoading = (isLoading: boolean) => {
+        setAppState({...appState, isLoading})
+    }
+
+    return {
+        ...appState,
+        setUser,
+        setLoading,
+    }
+}
+
+// Use this hook only in _app.tsx, in rest of the components use useAppState
+export const initGlobalState = (): GlobalAppContext => {
     const [appState, setAppState] = useState<AppState>(initialAppState)
     const [authInProgress, setAuthInProgress] = useState(false);
 

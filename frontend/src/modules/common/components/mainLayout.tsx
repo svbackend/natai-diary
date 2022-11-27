@@ -5,20 +5,19 @@ import flowerSvg from '../../../../public/assets/img/flower.svg';
 import Link from "next/link";
 import {NextRouter, useRouter} from "next/router";
 import {authService} from "../../auth/services/authService";
-import {useAppContext} from "../state";
+import {useAppStateManager} from "../state";
 import {classNames} from "../../../utils/classNames";
 
 
 const Header = ({router}: { router: NextRouter }) => {
-    const {appState} = useAppContext()
-    const isLoading = appState.isLoading
+    const {isLoading} = useAppStateManager()
 
     return (
         <Disclosure as="nav">
             {({open}) => (
                 <>
                     <header className="p-4 bg-gray-800 text-gray-100">
-                        <div className="container flex justify-between h-16 mx-auto">
+                        <div className="container flex justify-between h-10 mx-auto">
                             <Link href="/" aria-label="Back to homepage"
                                   className="flex items-center p-2">
                                 <Image src={flowerSvg} alt={"Flower Natai Diary Logo"}
@@ -59,33 +58,36 @@ const Header = ({router}: { router: NextRouter }) => {
 const DesktopNavBar = ({router}: { router: NextRouter }) => {
     const from = authService.createUrlForRedirect(router)
 
-    const {appState} = useAppContext()
-    const user = appState.user
+    const {user} = useAppStateManager()
+
+    const isActive = (path: string) => {
+        return router.pathname === path
+    }
 
     return (
         <>
             <ul className="items-stretch hidden space-x-3 lg:flex">
                 <li className="flex">
                     <Link href={"/"}
-                          className="flex items-center px-4 -mb-1 border-b-2 border-transparent text-violet-400 border-violet-400">
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/") ? "text-violet-400 border-violet-400" : "")}>
                         Home
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/diary"}
-                          className="flex items-center px-4 -mb-1 border-b-2 border-transparent">
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/diary") ? "text-violet-400 border-violet-400" : "")}>
                         My Diary
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/stories"}
-                          className="flex items-center px-4 -mb-1 border-b-2 border-transparent">
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/stories") ? "text-violet-400 border-violet-400" : "")}>
                         Stories
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/static/contacts"}
-                          className="flex items-center px-4 -mb-1 border-b-2 border-transparent">
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/static/contacts") ? "text-violet-400 border-violet-400" : "")}>
                         Contacts
                     </Link>
                 </li>
@@ -110,10 +112,8 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
 }
 
 const MobileNavBar = ({router}: { router: NextRouter }) => {
-    const {appState} = useAppContext()
+    const {user} = useAppStateManager()
     const from = authService.createUrlForRedirect(router);
-
-    const user = appState.user
 
     return (
         <>
