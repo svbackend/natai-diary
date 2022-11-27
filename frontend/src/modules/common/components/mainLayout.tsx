@@ -3,20 +3,22 @@ import {Disclosure, Transition} from "@headlessui/react";
 import Image from "next/image";
 import flowerSvg from '../../../../public/assets/img/flower.svg';
 import Link from "next/link";
+import {NextRouter, useRouter} from "next/router";
+import {authService} from "../../auth/services/authService";
 
-const Header = () => {
+const Header = ({router}: { router: NextRouter }) => {
     return (
         <Disclosure as="nav">
             {({open}) => (
                 <>
                     <header className="p-4 bg-gray-800 text-gray-100">
                         <div className="container flex justify-between h-16 mx-auto">
-                            <a href="#" aria-label="Back to homepage"
+                            <Link href="/" aria-label="Back to homepage"
                                className="flex items-center p-2">
                                 <Image src={flowerSvg} alt={"Flower Natai Diary Logo"} className={"w-10 h-10"}/>
                                 <span className="ml-2 text-xl">Natai</span>
-                            </a>
-                            <DesktopNavBar/>
+                            </Link>
+                            <DesktopNavBar router={router}/>
                             <Disclosure.Button className="p-4 lg:hidden">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor"
@@ -37,7 +39,7 @@ const Header = () => {
                         leaveTo="transform scale-95 opacity-0"
                     >
                         <Disclosure.Panel>
-                            <MobileNavBar/>
+                            <MobileNavBar router={router}/>
                         </Disclosure.Panel>
                     </Transition>
                 </>
@@ -46,7 +48,8 @@ const Header = () => {
     )
 }
 
-const DesktopNavBar = () => {
+const DesktopNavBar = ({router}: { router: NextRouter }) => {
+    const from = authService.createUrlForRedirect(router)
     return (
         <>
             <ul className="items-stretch hidden space-x-3 lg:flex">
@@ -76,15 +79,17 @@ const DesktopNavBar = () => {
                 </li>
             </ul>
             <div className="items-center flex-shrink-0 hidden lg:flex">
-                <Link href={"/login"} className="self-center px-8 py-3 rounded">Sign in</Link>
-                <Link href={"/registration"}
+                <Link href={"/login" + from} className="self-center px-8 py-3 rounded">Sign in</Link>
+                <Link href={"/registration" + from}
                       className="self-center px-8 py-3 font-semibold rounded bg-violet-400 text-gray-900">Sign up</Link>
             </div>
         </>
     )
 }
 
-const MobileNavBar = () => {
+const MobileNavBar = ({router}: { router: NextRouter }) => {
+    const from = authService.createUrlForRedirect(router);
+
     return (
         <>
             <ul className="bg-gray-600 px-2 pt-2 pb-3 space-y-1 sm:px-3">
@@ -106,11 +111,11 @@ const MobileNavBar = () => {
                           className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contacts</Link>
                 </li>
                 <li>
-                    <Link href={"/login"}
+                    <Link href={"/login" + from}
                           className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</Link>
                 </li>
                 <li>
-                    <Link href={"/registration"}
+                    <Link href={"/registration" + from}
                           className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Registration</Link>
                 </li>
             </ul>
@@ -151,9 +156,10 @@ const Footer = () => {
 }
 
 const MainLayout = ({children}: { children: ReactNode }) => {
+    const router = useRouter()
     return (
         <div className="min-h-screen flex flex-col">
-            <Header/>
+            <Header router={router}/>
             <div className="flex-1 container mx-auto p-3 sm:p-0">
                 {children}
             </div>

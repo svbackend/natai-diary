@@ -47,14 +47,14 @@ export const TextField = ({
                         error && "border-red-500",
                         className
                     )}
-                    {...register}
                     value={value}
                     onChange={onChange}
                     {...props}
+                    {...register}
                 />
             </div>
             {error && (
-                <p className="mt-2 text-sm text-red-600" id="email-error">
+                <p className="mt-2 text-sm text-red-600">
                     {error}
                 </p>
             )}

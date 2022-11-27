@@ -1,35 +1,28 @@
 import {useTranslations} from "use-intl";
 
-type ErrorCodesMap = {
-    [key: string]: string
-}
-
-const errorCodeMap = {
-    "": "",
-} as ErrorCodesMap;
-
-const errorResponseToMessage = (errorResponseBody: object): string => {
+const errorResponseToCode = (errorResponseBody: object): string => {
     if ("code" in errorResponseBody && typeof errorResponseBody.code === "string") {
-        return errorCodeMap[errorResponseBody.code];
+        return errorResponseBody.code
     }
 
     if ("error" in errorResponseBody && typeof errorResponseBody.error === "string") {
-        return errorCodeMap[errorResponseBody.error];
+        return errorResponseBody.error.replaceAll(".", "")
     }
 
     return "Unknown error";
 }
 
 export const AlertApiError = ({error}: { error: any }) => {
+    const t = useTranslations("Error");
+
     let message = "Unknown error";
     const status = error.status || null
 
-    console.log(typeof error)
-    console.log(error)
-
     if (error && error.payload) {
         if (typeof error.payload === 'object') {
-            message = errorResponseToMessage(error.payload)
+            const errorCode = errorResponseToCode(error.payload)
+            // @ts-ignore
+            message = t(errorCode)
         } else if (typeof error.payload === 'string') {
             message = error.payload;
         }
@@ -47,7 +40,7 @@ export const AlertError = ({message, status}: { message: string, status?: string
              role="alert">
             <strong className="font-bold">{t("Error")}</strong>
             {status && (<span className={"text-xs ml-1"}>({status})</span>)}
-            <span className="block sm:inline">{message}</span>
+            <span className="block">{message}</span>
         </div>
     )
 }

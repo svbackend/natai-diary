@@ -1,4 +1,7 @@
 {
+  "Error": {
+    "Invalid credentials": "Invalid email or password"
+  },
   "App": {
   },
   "Breadcrumbs": {
@@ -17,7 +20,8 @@
     "LoginFailed": "Login failed",
     "LoginFailedMessage": "Invalid username or password",
     "Email": "Email",
-    "Error": "Error!"
+    "Error": "Error!",
+    "EmailRequired": "Email is not valid"
   },
   "Alert": {
     "Error": "Error",
