@@ -5,6 +5,7 @@ import flowerSvg from '../../../../public/assets/img/flower.svg';
 import Link from "next/link";
 import {NextRouter, useRouter} from "next/router";
 import {authService} from "../../auth/services/authService";
+import {useAppState} from "../state";
 
 const Header = ({router}: { router: NextRouter }) => {
     return (
@@ -50,6 +51,9 @@ const Header = ({router}: { router: NextRouter }) => {
 
 const DesktopNavBar = ({router}: { router: NextRouter }) => {
     const from = authService.createUrlForRedirect(router)
+
+    const {user} = useAppState()
+
     return (
         <>
             <ul className="items-stretch hidden space-x-3 lg:flex">
@@ -79,9 +83,18 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
                 </li>
             </ul>
             <div className="items-center flex-shrink-0 hidden lg:flex">
-                <Link href={"/login" + from} className="self-center px-8 py-3 rounded">Sign in</Link>
-                <Link href={"/registration" + from}
-                      className="self-center px-8 py-3 font-semibold rounded bg-violet-400 text-gray-900">Sign up</Link>
+                {user ? (
+                    <>
+                        <Link href={"/account"} className="self-center px-8 py-3 rounded">{user.name}</Link>
+                    </>
+                ) : (
+                    <>
+                        <Link href={"/login" + from} className="self-center px-8 py-3 rounded">Sign in</Link>
+                        <Link href={"/registration" + from}
+                              className="self-center px-8 py-3 font-semibold rounded bg-violet-400 text-gray-900">Sign up</Link>
+                    </>
+                )}
+
             </div>
         </>
     )

@@ -7,6 +7,10 @@ export const authService = {
         storageService.setApiToken(apiToken);
         api.setAuthToken(apiToken);
     },
+    logout: () => {
+        storageService.deleteApiToken();
+        api.setAuthToken(null);
+    },
     getRedirectUrl: (from: string | string[] | undefined): string => {
         if (typeof from === "undefined") {
             return "/";
@@ -29,6 +33,10 @@ export const authService = {
             return "";
         }
 
+        if (path === "/") {
+            return "";
+        }
+
         return `?from=${encodeURIComponent(path)}`;
-    }
+    },
 }
