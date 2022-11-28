@@ -72,7 +72,7 @@ export const initGlobalState = (): GlobalAppContext => {
                 return {...s, isLoading: true}
             })
 
-            fetchGetMe({})
+            fetchGetMe({headers: {"accept": "application/json"}})
                 .then(res => {
                     setAppState(s => {
                         return {
@@ -82,8 +82,10 @@ export const initGlobalState = (): GlobalAppContext => {
                     })
                 })
                 .catch(err => {
-                    console.error(err)
-                    authService.logout()
+                    console.error("Login failed", err)
+                    if (err.status && err.status === 401) {
+                        authService.logout()
+                    }
                 })
                 .finally(() => {
                     setAppState(s => {

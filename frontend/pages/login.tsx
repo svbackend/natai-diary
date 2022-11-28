@@ -8,6 +8,7 @@ import {AlertApiError} from "../src/modules/common/components/alert";
 import {useRouter} from "next/router";
 import {LoginSuccessResponse} from "../src/api/apiSchemas";
 import {authService} from "../src/modules/auth/services/authService";
+import {useAppStateManager} from "../src/modules/common/state";
 
 type FormValues = {
     email: string
@@ -18,7 +19,8 @@ export default function LoginPage() {
     const router = useRouter()
     const t = useTranslations("LoginPage");
     const {register, handleSubmit, formState: {errors}} = useForm<FormValues>();
-    const {mutateAsync: login, data, isError, error, isLoading} = usePostLogin()
+    const {mutateAsync: login, isError, error, isLoading} = usePostLogin()
+    const {setUser} = useAppStateManager()
 
     const onSubmit = async (data: FormValues) => {
         let response: LoginSuccessResponse
@@ -36,6 +38,7 @@ export default function LoginPage() {
         }
 
         authService.loginWithToken(response.apiToken)
+        setUser(response.user)
 
         const from = authService.getRedirectUrl(router.query.from)
         await router.push(from)
