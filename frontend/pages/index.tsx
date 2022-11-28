@@ -30,6 +30,7 @@ export default function HomeLandingPage() {
         <MainLayout>
             <HeroSection/>
             <WhyYouShouldTryNataiDiarySection/>
+            <FeaturesSection/>
         </MainLayout>
     )
 }
@@ -37,7 +38,7 @@ export default function HomeLandingPage() {
 function HeroSection() {
     return (
         <section className={"hero-section bg-hero rounded-lg shadow-sm"}>
-            <div className="flex flex-col items-center justify-center mt-5 p-5 glass">
+            <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10 glass">
                 <h1 className="text-4xl font-bold text-center text-white font-alegreya">Mental-health focused
                     journaling/diary app</h1>
                 <p className="text-secondary text-xl text-center text-white font-alegreya-text mt-4">
@@ -82,27 +83,85 @@ function WhyYouShouldTryNataiDiarySection() {
         }
     ]
 
-    const WhyListItem = ({title, description}: { title: string, description: string }) => {
+    const WhyCardItem = ({title, description}: { title: string, description: string }) => {
         return (
-            <li className="text-xl text-white font-alegreya-text mt-4">
+            <div className="flex flex-col card glass text-xl text-white font-alegreya-text p-4">
                 <h3>{title}</h3>
 
-                <p className="text-secondary text-sm text-white font-alegreya-text mt-2">
+                <p className="text-sm text-white mt-2">
                     {description}
                 </p>
-            </li>
+            </div>
         )
     }
 
     return (
         <section className={"why-section bg-why rounded-lg shadow-sm"}>
-            <div className="flex flex-col items-center justify-center mt-5 p-5 glass">
+            <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10">
                 <h1 className="text-4xl font-bold text-center text-white font-alegreya">Why you should try Natai Diary?</h1>
 
-                <div className="flex flex-row w-full mt-5 px-5">
-                    <ul className="list-disc">
-                        {items.map((item, index) => <WhyListItem key={index} title={item.title} description={item.description}/>)}
-                    </ul>
+                <div className="grid grid-cols-1 sm:grid-cols-2 grid-flow-row w-full mt-5 px-5 gap-4">
+                    {items.map((item, index) => <WhyCardItem key={index} title={item.title} description={item.description}/>)}
+                </div>
+
+                <div className="flex flex-row items-center justify-center mt-5">
+                    <Link href={"/stories"}
+                            className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-4 border border-white shadow-lg"}>
+                        Read community stories
+                    </Link>
+                </div>
+            </div>
+        </section>
+    )
+}
+
+function FeaturesSection() {
+    const items = [
+        {
+            title: "Track your mood daily via fun hand-drawn art",
+            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+        },
+        {
+            title: "Track your activities via tags - with no limits, you can create your own tags",
+            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+        },
+        {
+            title: "On \"Insights\" tab you can see how your activities and mood are correlated",
+            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+        },
+        {
+            title: "Cloud synchronization - don't lose your data switching between devices",
+            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+        },
+        {
+            title: "Web and mobile apps - you can use it on your phone, tablet or computer whatever works best for you at the moment",
+            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+        },
+        {
+            title: "Offline-first - you can use it even when you don't have internet connection, all notes will be synced as soon as you get back online",
+            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+        }
+    ]
+
+    const FeatureCardItem = ({title, description}: { title: string, description: string }) => {
+        return (
+            <div className="flex flex-col card glass text-xl text-white font-alegreya-text p-4">
+                <h3>{title}</h3>
+
+                <p className="text-sm text-white mt-2">
+                    {description}
+                </p>
+            </div>
+        )
+    }
+
+    return (
+        <section className={"features-section bg-features rounded-lg shadow-sm mb-12"}>
+            <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10">
+                <h1 className="text-4xl font-bold text-center text-white font-alegreya">Features</h1>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 grid-flow-row w-full mt-5 px-5 gap-4">
+                    {items.map((item, index) => <FeatureCardItem key={index} title={item.title} description={item.description}/>)}
                 </div>
             </div>
         </section>
