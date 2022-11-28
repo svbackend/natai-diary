@@ -20,12 +20,13 @@ const Header = ({router}: { router: NextRouter }) => {
                         <div className="container flex justify-between h-10 mx-auto">
                             <Link href="/" aria-label="Back to homepage"
                                   className="flex items-center p-2">
-                                <Image src={flowerSvg} alt={"Flower Natai Diary Logo"}
-                                       className={classNames("w-10 h-10", isLoading ? "animate-spin" : "")}/>
+
+                                <ProjectLogo/>
+
                                 <span className="ml-2 text-xl">Natai</span>
                             </Link>
                             <DesktopNavBar router={router}/>
-                            <Disclosure.Button className="p-4 lg:hidden">
+                            <Disclosure.Button className="lg:hidden">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor"
                                      className="w-6 h-6 text-gray-100">

@@ -1,3 +1,16 @@
+### Nov 27, 2022
+
+Pretty decent progress with landing page, login flow and global state.
+Just noticed that today is 1 month since I started to make public notes about progress of this project.
+I hope I will continue to work on it consistently. I'm not sure if it's possible to launch MVP this year, but we will see.
+For now, I'm going to focus on finishing web version of the app as well as platform for managing content (Stories & Blog posts).
+
+I do really love the way it all works together (symfony backend + openapi + generation of react-query hooks based on docs and nextjs with tailwind)
+
+Next steps:
+- Landing page - fix text, maybe add icons for features
+- Login flow - add "forgot password", add registration
+
 ### Nov 24, 2022
 
 Changed my mind about the generation of react-query hooks,

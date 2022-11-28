@@ -67,11 +67,11 @@ function WhyYouShouldTryNataiDiarySection() {
     const items = [
         {
             title: "It helps you to remember your daily life",
-            description: "Stay more self-aware and mindful of what you do and how you feel"
+            description: "Stay more grounded, self-aware, mindful of what you do and how you feel"
         },
         {
-            title: "It helps you to understand what brings you joy and happiness to focus on those things",
-            description: "Journaling is a small habit that can make a big difference in your life"
+            title: "Journaling is a small habit that can make a big difference in your life",
+            description: "Start making notes, build 1 good habit at a time and see how it changes your life"
         },
         {
             title: "It brings you closer to supporting and welcoming community",
@@ -79,7 +79,7 @@ function WhyYouShouldTryNataiDiarySection() {
         },
         {
             title: "It's free and open source, no ads whatsoever",
-            description: ""
+            description: "Built with ❤️ by a small team of developers, designers and mental health advocates"
         }
     ]
 
