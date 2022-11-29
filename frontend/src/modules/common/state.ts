@@ -72,7 +72,7 @@ export const initGlobalState = (): GlobalAppContext => {
                 return {...s, isLoading: true}
             })
 
-            fetchGetMe({headers: {"accept": "application/json"}})
+            fetchGetMe({})
                 .then(res => {
                     setAppState(s => {
                         return {

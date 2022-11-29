@@ -36,3 +36,4 @@ http://localhost:1080 - MailCatcher
 
 - `make up` - start all services
 - `make frontend-schema` - generate react-query hooks + schema from openapi spec
+- `make frontend-tunnel` - create ngrok tunnel for frontend

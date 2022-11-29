@@ -1,3 +1,21 @@
+### Nov 28, 2022
+
+Need to decide upon layout for diary web app. I can use general one, but I could also add custom one for this specific set of pages.
+
+General Layout pros & cons:
+
+Pros:
+
+* Less confusion for users when switching between Stories & Diary pages
+* Faster loading time (no need to re-render layout)
+* Less code to maintain
+
+Cons:
+
+* Less flexibility - I won't be able to add sticky footer with action button to add new note for example
+
+I don't even know why I'm working on diary if I didn't finish with user flow yet.
+
 ### Nov 27, 2022
 
 Pretty decent progress with landing page, login flow and global state.

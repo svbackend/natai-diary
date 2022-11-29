@@ -1,6 +1,7 @@
 {
   "Error": {
-    "Invalid credentials": "Invalid email or password"
+    "Invalid credentials": "Invalid email or password",
+    "validation_error": "Please check your data and try again"
   },
   "App": {
   },
@@ -28,5 +29,26 @@
     "Warning": "Warning",
     "Success": "Success",
     "Info": "Info"
+  },
+  "RegistrationPage": {
+    "Title": "Registration",
+    "Description": "Create an account to benefit from all features Natai provides",
+    "ForgotPassword": "Forgot password?",
+    "ResetPassword": "Reset password",
+    "Register": "Register",
+    "Name": "Name",
+    "Email": "Email",
+    "Password": "Password"
+  },
+  "TextField": {
+    "FieldRequired": "This field is required"
+  },
+  "NotVerifiedPage": {
+    "confirmYourEmail": "Verify your email",
+    "weSentYouALink": "We sent you a link to verify your email - ",
+    "checkYourEmail": "To add your profile here you need to verify your email by clicking on the link we sent you",
+    "done": "Done",
+    "yourEmailStillNotConfirmed": "Looks like your email still not confirmed.",
+    "pleaseCheckYourEmail": "Please check your email and click on verification link there."
   }
 }

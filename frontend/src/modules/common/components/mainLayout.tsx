@@ -7,6 +7,7 @@ import {NextRouter, useRouter} from "next/router";
 import {authService} from "../../auth/services/authService";
 import {useAppStateManager} from "../state";
 import {classNames} from "../../../utils/classNames";
+import UserDropdownMenu from "../../auth/components/userDropdownMenu";
 
 
 const Header = ({router}: { router: NextRouter }) => {
@@ -95,9 +96,7 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
             </ul>
             <div className="items-center flex-shrink-0 hidden lg:flex">
                 {user ? (
-                    <>
-                        <Link href={"/account"} className="self-center px-8 py-3 rounded">{user.name}</Link>
-                    </>
+                    <UserDropdownMenu user={user}/>
                 ) : (
                     <>
                         <Link href={"/login" + from} className="self-center px-8 py-3 rounded">Sign in</Link>
@@ -149,6 +148,14 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                     </>
                 ) : (
                     <>
+                        <li>
+                            <Link href={"/login" + from}
+                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</Link>
+                        </li>
+                        <li>
+                            <Link href={"/registration" + from}
+                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Registration</Link>
+                        </li>
                     </>
                 )}
 

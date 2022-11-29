@@ -9,6 +9,8 @@ import {useRouter} from "next/router";
 import {LoginSuccessResponse} from "../src/api/apiSchemas";
 import {authService} from "../src/modules/auth/services/authService";
 import {useAppStateManager} from "../src/modules/common/state";
+import {AlreadyLoggedIn} from "../src/modules/auth/components/alreadyLoggedIn";
+import {EaseOutTransition} from "../src/modules/common/components/EaseOutTransition";
 
 type FormValues = {
     email: string
@@ -19,14 +21,18 @@ export default function LoginPage() {
     const router = useRouter()
     const t = useTranslations("LoginPage");
     const {register, handleSubmit, formState: {errors}} = useForm<FormValues>();
-    const {mutateAsync: login, isError, error, isLoading} = usePostLogin()
-    const {setUser} = useAppStateManager()
+    const {mutateAsync: sendLoginRequest, isError, error, isLoading} = usePostLogin()
+    const {user, setUser} = useAppStateManager()
+
+    if (user) {
+        return <AlreadyLoggedIn/>
+    }
 
     const onSubmit = async (data: FormValues) => {
         let response: LoginSuccessResponse
 
         try {
-            response = await login({
+            response = await sendLoginRequest({
                 body: {
                     email: data.email,
                     password: data.password
@@ -53,7 +59,9 @@ export default function LoginPage() {
                 </div>
 
                 {isError && error && (
-                    <AlertApiError error={error}/>
+                    <EaseOutTransition>
+                        <AlertApiError error={error}/>
+                    </EaseOutTransition>
                 )}
 
                 <form onSubmit={handleSubmit(onSubmit)}>
