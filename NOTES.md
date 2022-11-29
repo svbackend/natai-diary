@@ -16,6 +16,12 @@ Cons:
 
 I don't even know why I'm working on diary if I didn't finish with user flow yet.
 
+---
+
+Decided to switch to auth flow first.
+Added registration page and not-verified page (user is redirected to this page after registration).
+I would say progress is decent, but I'm feeling like shit today =(
+
 ### Nov 27, 2022
 
 Pretty decent progress with landing page, login flow and global state.
