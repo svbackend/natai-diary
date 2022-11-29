@@ -50,5 +50,10 @@
     "done": "Done",
     "yourEmailStillNotConfirmed": "Looks like your email still not confirmed.",
     "pleaseCheckYourEmail": "Please check your email and click on verification link there."
+  },
+  "VerifyEmailPage": {
+    "weAreCheckingYourEmail": "We are checking your email.. Please wait",
+    "successMessage": "Your email has been confirmed!",
+    "youWillBeRedirected": "You will be redirected to home page in a few seconds"
   }
 }
