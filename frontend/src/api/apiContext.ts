@@ -6,7 +6,7 @@ export type ApiContext = {
     /**
      * Headers to inject in the fetcher
      */
-    headers?: {};
+    headers?: {"accept": "application/json"};
     /**
      * Query params to inject in the fetcher
      */

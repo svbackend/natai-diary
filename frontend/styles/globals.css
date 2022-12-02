@@ -1,6 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:wght@500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        font-family: Proxima Nova, system-ui, sans-serif;
+    }
+}
 
 .color-brand-secondary {
     color: #d1beff;
@@ -12,4 +20,59 @@
 
 .bg-brand {
     background-color: #6c57a8;
+}
+
+.font-alegreya {
+    font-family: 'Alegreya', serif;
+    letter-spacing: 0.1rem;
+}
+
+.font-alegreya-text {
+    font-family: 'Alegreya', serif;
+}
+
+.hero-section {
+    max-width: 1082px;
+    margin: 0 auto;
+}
+
+.bg-hero {
+    background-color: #330055;
+    background-image: url("../public/assets/img/dragon-scales.svg");
+    background-attachment: fixed;
+    background-size: contain;
+}
+
+.bg-hero .text-secondary {
+    max-width: 500px;
+    /*color: #d1beff;*/
+    color: #ebe2ff;
+}
+
+.glass {
+    box-shadow: 0 8px 32px 0 rgba( 0, 0, 0, 0.25 );
+    backdrop-filter: blur( 2px );
+    -webkit-backdrop-filter: blur( 2px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+.why-section {
+    max-width: 1082px;
+    margin: 0 auto;
+}
+
+.bg-why {
+    background-image: url("../public/assets/img/abstract-circles.svg");
+    background-attachment: fixed;
+}
+
+.features-section {
+    max-width: 1082px;
+    margin: 0 auto 3rem auto;
+}
+
+.bg-features {
+    background: url("../public/assets/img/bullseye-gradient.svg") no-repeat center center fixed;
+    background-size: cover;
 }

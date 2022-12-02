@@ -7,5 +7,5 @@ use OpenApi\Annotations as OA;
 class LoginErrorRef
 {
     /** @OA\Property(example="Invalid credentials.") */
-    public string $code;
+    public string $error;
 }

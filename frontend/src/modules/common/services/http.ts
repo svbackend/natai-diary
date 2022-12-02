@@ -1,4 +1,5 @@
 import {getCookie} from "../../../utils/cookie";
+import {storageService} from "./storageService";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
 const DEFAULT_LOCALE = "en";
@@ -15,12 +16,7 @@ export class HttpClient {
 
     static getInstance(): HttpClient {
         let locale: string = getCookie("NEXT_LOCALE") || DEFAULT_LOCALE
-        let apiToken: string | null
-        if (typeof window !== 'undefined') {
-            apiToken = window.localStorage.getItem("auth_token")
-        } else {
-            apiToken = null
-        }
+        const apiToken = storageService.getApiToken();
         return HttpClient.instance || new HttpClient(locale, apiToken);
     }
 

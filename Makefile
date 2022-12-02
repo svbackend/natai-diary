@@ -16,8 +16,11 @@ frontend-up:
 test:
 	cd api && bin/phpunit
 
-tunnel:
+tunnel-api:
 	ngrok http 8000
+
+tunnel-frontend:
+	ngrok http 3000
 
 frontend-schema:
 	cd frontend && npx openapi-codegen gen api

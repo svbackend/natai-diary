@@ -5,6 +5,12 @@ import {useTranslations} from "use-intl";
 import {TextField} from "../src/modules/common/components/textField";
 import {FormSubmitButton} from "../src/modules/common/components/FormSubmitButton";
 import {AlertApiError} from "../src/modules/common/components/alert";
+import {useRouter} from "next/router";
+import {LoginSuccessResponse} from "../src/api/apiSchemas";
+import {authService} from "../src/modules/auth/services/authService";
+import {useAppStateManager} from "../src/modules/common/state";
+import {AlreadyLoggedIn} from "../src/modules/auth/components/alreadyLoggedIn";
+import {EaseOutTransition} from "../src/modules/common/components/EaseOutTransition";
 
 type FormValues = {
     email: string
@@ -12,17 +18,36 @@ type FormValues = {
 }
 
 export default function LoginPage() {
+    const router = useRouter()
     const t = useTranslations("LoginPage");
-    const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>();
-    const {mutate: login, isError, error, isLoading} = usePostLogin()
+    const {register, handleSubmit, formState: {errors}} = useForm<FormValues>();
+    const {mutateAsync: sendLoginRequest, isError, error, isLoading} = usePostLogin()
+    const {user, setUser} = useAppStateManager()
 
-    const onSubmit = (data: FormValues) => {
-        login({
-            body: {
-                email: data.email,
-                password: data.password
-            }
-        })
+    if (user) {
+        return <AlreadyLoggedIn/>
+    }
+
+    const onSubmit = async (data: FormValues) => {
+        let response: LoginSuccessResponse
+
+        try {
+            response = await sendLoginRequest({
+                body: {
+                    email: data.email,
+                    password: data.password
+                }
+            })
+        } catch (e) {
+            // todo scroll into view AlertApiError
+            return;
+        }
+
+        authService.loginWithToken(response.apiToken)
+        setUser(response.user)
+
+        const from = authService.getRedirectUrl(router.query.from)
+        await router.push(from)
     }
 
     return (
@@ -30,18 +55,31 @@ export default function LoginPage() {
             <div className="mx-auto flex flex-col max-w-md rounded-md">
                 <div className="mb-8 text-center">
                     <h1 className="my-3 text-4xl font-bold">{t("Title")}</h1>
-                    <p className="dark:text-gray-400">{t("LoginDescription")}</p>
+                    <p>{t("LoginDescription")}</p>
                 </div>
 
                 {isError && error && (
-                    <AlertApiError error={error}/>
+                    <EaseOutTransition>
+                        <AlertApiError error={error}/>
+                    </EaseOutTransition>
                 )}
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <TextField label={t("Email")} name={"email"} type={"email"} placeholder={"john.doe@example.com"}
-                               register={register}/>
-                    <TextField label={t("Password")} name={"password"} type={"password"} placeholder={"********"}
-                               register={register}/>
+                    <TextField
+                        label={t("Email")}
+                        name={"email"}
+                        type={"email"}
+                        placeholder={"john.doe@example.com"}
+                        register={register("email", {required: true})}
+                    />
+
+                    <TextField
+                        label={t("Password")}
+                        name={"password"}
+                        type={"password"}
+                        placeholder={"********"}
+                        register={register("password", {required: true})}
+                    />
 
                     <FormSubmitButton label={t("Login")} loading={isLoading}/>
                 </form>
