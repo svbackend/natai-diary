@@ -82,6 +82,12 @@ export default function RegistrationPage() {
                     <div className="mb-8 text-center">
                         <h1 className="my-3 text-4xl font-bold">{t("Title")}</h1>
                         <p>{t("Description")}</p>
+                        <p>
+                            {t("AlreadyHaveAnAccount")}
+                            <Link href="/login" className="ml-1 text-blue-500 hover:underline">
+                                {t("Login")}
+                            </Link>
+                        </p>
                     </div>
 
                     {isError && error && (
@@ -100,14 +106,6 @@ export default function RegistrationPage() {
                         <TextField label={t("Password")} name={"password"} type={"password"} placeholder={"********"}
                                    errors={errors}
                                    register={register("password", {required: true})}/>
-
-                        <p className={"mb-4"}>
-                            {t("ForgotPassword")}
-                            <Link href={"/auth/password-recover-request?email=" + watch("email")}
-                                  className={"ml-1 text-blue-500"}>
-                                {t("ResetPassword")}
-                            </Link>
-                        </p>
 
                         <FormSubmitButton loading={isProcessing} label={t("Register")}/>
                     </form>

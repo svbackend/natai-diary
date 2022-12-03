@@ -44,3 +44,16 @@ export const AlertError = ({message, status}: { message: string, status?: string
         </div>
     )
 }
+
+export const AlertSuccess = ({message, status}: { message: string, status?: string | number | null }) => {
+    const t = useTranslations("Alert");
+
+    return (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+             role="alert">
+            <strong className="font-bold">{t("Success")}</strong>
+            {status && (<span className={"text-xs ml-1"}>({status})</span>)}
+            <span className="block">{message}</span>
+        </div>
+    )
+}

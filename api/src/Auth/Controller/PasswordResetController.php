@@ -64,7 +64,7 @@ class PasswordResetController extends BaseAction
     }
 
     /**
-     * @OA\RequestBody(@Model(type=PasswordResetRequest::class))
+     * @OA\RequestBody(@Model(type=PasswordResetConfirmationRequest::class))
      * @OA\Response(response=204, description="success")
      * @OA\Response(response=400, description="bad request", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=404, description="not found", @Model(type=ResetPasswordConfirmationErrorRef::class))

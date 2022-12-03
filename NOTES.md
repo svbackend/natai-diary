@@ -1,3 +1,7 @@
+### Dec 3, 2022
+
+Latest couple of days was pretty tired after work so didn't do much.
+
 ### Nov 28, 2022
 
 Need to decide upon layout for diary web app. I can use general one, but I could also add custom one for this specific set of pages.

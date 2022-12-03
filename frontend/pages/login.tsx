@@ -1,4 +1,4 @@
-import {usePostLogin} from "../src/api/apiComponents";
+import {usePostLogin, usePostPasswordReset} from "../src/api/apiComponents";
 import MainLayout from "../src/modules/common/components/mainLayout";
 import {useForm} from "react-hook-form";
 import {useTranslations} from "use-intl";
@@ -11,6 +11,7 @@ import {authService} from "../src/modules/auth/services/authService";
 import {useAppStateManager} from "../src/modules/common/state";
 import {AlreadyLoggedIn} from "../src/modules/auth/components/alreadyLoggedIn";
 import {EaseOutTransition} from "../src/modules/common/components/EaseOutTransition";
+import Link from "next/link";
 
 type FormValues = {
     email: string
@@ -20,7 +21,7 @@ type FormValues = {
 export default function LoginPage() {
     const router = useRouter()
     const t = useTranslations("LoginPage");
-    const {register, handleSubmit, formState: {errors}} = useForm<FormValues>();
+    const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>();
     const {mutateAsync: sendLoginRequest, isError, error, isLoading} = usePostLogin()
     const {user, setUser} = useAppStateManager()
 
@@ -56,6 +57,12 @@ export default function LoginPage() {
                 <div className="mb-8 text-center">
                     <h1 className="my-3 text-4xl font-bold">{t("Title")}</h1>
                     <p>{t("LoginDescription")}</p>
+                    <p>
+                        {t("DontHaveAnAccount")}
+                        <Link href="/registration" className="ml-1 text-blue-500 hover:underline">
+                            {t("Register")}
+                        </Link>
+                    </p>
                 </div>
 
                 {isError && error && (
@@ -80,6 +87,14 @@ export default function LoginPage() {
                         placeholder={"********"}
                         register={register("password", {required: true})}
                     />
+
+                    <p className={"mb-4"}>
+                        {t("ForgotPassword")}
+                        <Link href={"/auth/password-recover-request?email=" + (watch("email") || "")}
+                              className={"ml-1 text-blue-500"}>
+                            {t("ResetPassword")}
+                        </Link>
+                    </p>
 
                     <FormSubmitButton label={t("Login")} loading={isLoading}/>
                 </form>

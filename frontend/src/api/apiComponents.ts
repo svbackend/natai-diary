@@ -166,7 +166,7 @@ export type PostPasswordResetConfirmationError = Fetcher.ErrorWrapper<
 >;
 
 export type PostPasswordResetConfirmationVariables = {
-  body: Schemas.PasswordResetRequest;
+  body: Schemas.PasswordResetConfirmationRequest;
 } & ApiContext["fetcherOptions"];
 
 export const fetchPostPasswordResetConfirmation = (
@@ -176,7 +176,7 @@ export const fetchPostPasswordResetConfirmation = (
   apiFetch<
     undefined,
     PostPasswordResetConfirmationError,
-    Schemas.PasswordResetRequest,
+    Schemas.PasswordResetConfirmationRequest,
     {},
     {},
     {}

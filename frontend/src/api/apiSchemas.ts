@@ -58,6 +58,11 @@ export type ResetPasswordErrorRef = {
   code: string;
 };
 
+export type PasswordResetConfirmationRequest = {
+  token: string;
+  password: string;
+};
+
 export type ResetPasswordConfirmationErrorRef = {
   /**
    * @example token_not_found | token_expired

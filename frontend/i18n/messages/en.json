@@ -1,7 +1,10 @@
 {
   "Error": {
     "Invalid credentials": "Invalid email or password",
-    "validation_error": "Please check your data and try again"
+    "validation_error": "Please check your data and try again",
+    "user_not_found": "User not found",
+    "token_not_found": "Token not found",
+    "token_expired": "Token expired, ask for a new one"
   },
   "App": {
   },
@@ -16,13 +19,15 @@
     "Login": "Login",
     "LoginDescription": "Sign in to access your account",
     "Register": "Register",
-    "ForgotPassword": "Forgot Password",
+    "ForgotPassword": "Forgot password?",
     "RememberMe": "Remember Me",
     "LoginFailed": "Login failed",
     "LoginFailedMessage": "Invalid username or password",
     "Email": "Email",
     "Error": "Error!",
-    "EmailRequired": "Email is not valid"
+    "EmailRequired": "Email is not valid",
+    "DontHaveAnAccount": "Don't have an account?",
+    "ResetPassword": "Reset password"
   },
   "Alert": {
     "Error": "Error",
@@ -38,7 +43,9 @@
     "Register": "Register",
     "Name": "Name",
     "Email": "Email",
-    "Password": "Password"
+    "Password": "Password",
+    "AlreadyHaveAnAccount": "Already have an account?",
+    "Login": "Login"
   },
   "TextField": {
     "FieldRequired": "This field is required"
@@ -55,5 +62,23 @@
     "weAreCheckingYourEmail": "We are checking your email.. Please wait",
     "successMessage": "Your email has been confirmed!",
     "youWillBeRedirected": "You will be redirected to home page in a few seconds"
+  },
+  "PasswordRecoverRequestPage": {
+    "Title": "Forgot password?",
+    "PasswordRecoverDescription": "Enter your email address and we will send you a link to reset your password",
+    "RecallPassword": "Want to try login again?",
+    "Login": "Login",
+    "Email": "Email",
+    "ResetPassword": "Reset password",
+    "PasswordResetSuccess": "We sent you an email with a link to reset your password"
+  },
+  "ResetPasswordPage": {
+    "Title": "Reset password",
+    "PasswordRecoverDescription": "Enter your new password",
+    "RecallPassword": "Want to try login again?",
+    "Login": "Login",
+    "NewPassword": "New password",
+    "ResetPassword": "Reset password",
+    "PasswordResetSuccess": "Your password has been changed successfully"
   }
 }
