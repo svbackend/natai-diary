@@ -8,6 +8,9 @@ import {authService} from "../../auth/services/authService";
 import {useAppStateManager} from "../state";
 import {classNames} from "../../../utils/classNames";
 import UserDropdownMenu from "../../auth/components/userDropdownMenu";
+import {UserDto} from "../../../api/apiSchemas";
+import {CheckCircleIcon} from "@heroicons/react/20/solid";
+import {useTranslations} from "use-intl";
 
 
 const Header = ({router}: { router: NextRouter }) => {
@@ -111,6 +114,35 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
     )
 }
 
+function MobileUserDropdownMenu({user}: { user: UserDto }) {
+    const t = useTranslations("MobileUserDropdownMenu")
+    return (
+        <div className="pt-4 pb-3 border-t border-gray-700">
+            <div className="flex items-center px-5">
+                <div className="flex-shrink-0">
+                    <div className="flex justify-center align-center h-10 w-10 rounded-full bg-red-600">
+                        <span className="font-bold text-white uppercase m-auto">
+                            {user.name.at(0)}
+                        </span>
+                    </div>
+                </div>
+                <div className="ml-3">
+                    <div className="text-base font-medium leading-none text-white">{user.name}</div>
+                    <div className="text-sm font-medium leading-none text-gray-400">
+                        {user.email}
+                        {user.isEmailVerified && (<CheckCircleIcon className={"ml-1 inline text-green-600 h-4 w-4"}/>)}
+                    </div>
+                </div>
+            </div>
+            <div className="mt-3 px-2 space-y-1">
+                <Link className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700" href="/settings">
+                    {t("Settings")}
+                </Link>
+            </div>
+        </div>
+    )
+}
+
 const MobileNavBar = ({router}: { router: NextRouter }) => {
     const {user} = useAppStateManager()
     const from = authService.createUrlForRedirect(router);
@@ -137,14 +169,7 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                 </li>
                 {user ? (
                     <>
-                        <li>
-                            <Link href={"/login" + from}
-                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</Link>
-                        </li>
-                        <li>
-                            <Link href={"/registration" + from}
-                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Registration</Link>
-                        </li>
+                        <MobileUserDropdownMenu user={user}/>
                     </>
                 ) : (
                     <>

@@ -123,5 +123,8 @@
     "weAreCheckingYourEmail": "We are checking your email.. Please wait",
     "successMessage": "Your new email has been confirmed!",
     "youWillBeRedirected": "You will be redirected to home page in a few seconds"
+  },
+  "MobileUserDropdownMenu": {
+    "Settings": "Settings"
   }
 }
