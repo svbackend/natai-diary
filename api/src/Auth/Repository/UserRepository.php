@@ -80,4 +80,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function existsByEmail(string $newEmail): bool
+    {
+        return $this->createQueryBuilder('u')
+                ->select('COUNT(u.id)')
+                ->andWhere('u.email = :email')
+                ->setParameter('email', $newEmail)
+                ->getQuery()
+                ->getSingleScalarResult() > 0;
+    }
 }

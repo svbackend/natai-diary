@@ -68,7 +68,7 @@ class PasswordResetControllerTest extends AbstractFunctionalTest
         $response = $client->request('POST', '/api/v1/password-reset-confirmation', [
             'json' => [
                 'token' => ConfirmationTokenFixture::PASSWORD_RESET_TOKEN,
-                'password' => 'newPassword',
+                'password' => 'newPassword1#',
             ]
         ]);
 
@@ -77,7 +77,7 @@ class PasswordResetControllerTest extends AbstractFunctionalTest
         $loginResponse = $client->request('POST', '/api/v1/login', [
             'json' => [
                 'email' => UserFixture::USER_LOGIN,
-                'password' => 'newPassword',
+                'password' => 'newPassword1#',
             ]
         ]);
 
@@ -91,7 +91,7 @@ class PasswordResetControllerTest extends AbstractFunctionalTest
         $response = $client->request('POST', '/api/v1/password-reset-confirmation', [
             'json' => [
                 'token' => ConfirmationTokenFixture::EXPIRED_PASSWORD_RESET_TOKEN,
-                'password' => 'newPassword',
+                'password' => 'newPassword1#',
             ]
         ]);
 
@@ -107,7 +107,7 @@ class PasswordResetControllerTest extends AbstractFunctionalTest
         $response = $client->request('POST', '/api/v1/password-reset-confirmation', [
             'json' => [
                 'token' => 'nonExistingToken',
-                'password' => 'newPassword',
+                'password' => 'newPassword1#',
             ]
         ]);
 

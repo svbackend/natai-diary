@@ -2,6 +2,7 @@
 
 namespace App\Auth\Http\Request;
 
+use App\Auth\Validation\ValidationRule;
 use App\Common\Http\Request\HttpInputInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,7 +19,7 @@ class PasswordResetConfirmationRequest implements HttpInputInterface
     {
         return new Assert\Collection([
             'token' => new Assert\Required([new Assert\NotBlank()]),
-            'password' => new Assert\Required([new Assert\NotBlank(), new Assert\Length(['min' => 6]),]),
+            'password' => ValidationRule::password(),
         ]);
     }
 }

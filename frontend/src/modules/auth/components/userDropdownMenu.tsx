@@ -2,8 +2,12 @@ import {Menu, Transition} from '@headlessui/react'
 import {Fragment} from 'react'
 import {ChevronDownIcon, Cog8ToothIcon, UserIcon} from '@heroicons/react/20/solid'
 import {UserDto} from "../../../api/apiSchemas";
+import {useTranslations} from "use-intl";
+import Link from "next/link";
 
 export default function UserDropdownMenu({user}: { user: UserDto }) {
+    const t = useTranslations("UserDropdownMenu")
+
     return (
         <>
             <Menu as="div" className="relative inline-block text-left">
@@ -31,26 +35,26 @@ export default function UserDropdownMenu({user}: { user: UserDto }) {
                         <div className="px-1 py-1 ">
                             <Menu.Item>
                                 {({active}) => (
-                                    <button
+                                    <Link href="/profile"
                                         className={`${
                                             active ? 'bg-violet-500 text-white' : 'text-gray-900'
                                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                     >
                                         <UserIcon className="mr-2 h-5 w-5" aria-hidden="true"/>
-                                        My Profile
-                                    </button>
+                                        {t("profile")}
+                                    </Link>
                                 )}
                             </Menu.Item>
                             <Menu.Item>
                                 {({active}) => (
-                                    <button
+                                    <Link href="/settings"
                                         className={`${
                                             active ? 'bg-violet-500 text-white' : 'text-gray-900'
                                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                     >
                                         <Cog8ToothIcon className="mr-2 h-5 w-5" aria-hidden="true"/>
-                                        Settings
-                                    </button>
+                                        {t("settings")}
+                                    </Link>
                                 )}
                             </Menu.Item>
                         </div>

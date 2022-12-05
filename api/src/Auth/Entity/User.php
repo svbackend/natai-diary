@@ -115,4 +115,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->password = $passwordHash;
     }
+
+    public function setEmail(string $newEmail): void
+    {
+        $this->email = $newEmail;
+    }
 }

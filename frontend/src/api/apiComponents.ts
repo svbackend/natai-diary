@@ -9,6 +9,181 @@ import type * as Fetcher from "./apiFetcher";
 import { apiFetch } from "./apiFetcher";
 import type * as Schemas from "./apiSchemas";
 
+export type PostChangeEmailError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 422;
+      payload: Schemas.ChangeEmailErrorRef;
+    }
+  | {
+      status: 500;
+      payload: Schemas.ServerErrorRef;
+    }
+>;
+
+export type PostChangeEmailVariables = {
+  body: Schemas.ChangeEmailRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostChangeEmail = (
+  variables: PostChangeEmailVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    undefined,
+    PostChangeEmailError,
+    Schemas.ChangeEmailRequest,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/change-email", method: "post", ...variables, signal });
+
+export const usePostChangeEmail = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PostChangeEmailError,
+      PostChangeEmailVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    undefined,
+    PostChangeEmailError,
+    PostChangeEmailVariables
+  >(
+    (variables: PostChangeEmailVariables) =>
+      fetchPostChangeEmail({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
+export type PostChangeEmailConfirmationError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 404;
+      payload: Schemas.ChangeEmailConfirmationErrorRef;
+    }
+  | {
+      status: 422;
+      payload: Schemas.ChangeEmailConfirmationErrorRef;
+    }
+  | {
+      status: 500;
+      payload: Schemas.ServerErrorRef;
+    }
+>;
+
+export type PostChangeEmailConfirmationVariables = {
+  body: Schemas.ChangeEmailConfirmationRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostChangeEmailConfirmation = (
+  variables: PostChangeEmailConfirmationVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    undefined,
+    PostChangeEmailConfirmationError,
+    Schemas.ChangeEmailConfirmationRequest,
+    {},
+    {},
+    {}
+  >({
+    url: "/api/v1/change-email-confirmation",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const usePostChangeEmailConfirmation = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PostChangeEmailConfirmationError,
+      PostChangeEmailConfirmationVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    undefined,
+    PostChangeEmailConfirmationError,
+    PostChangeEmailConfirmationVariables
+  >(
+    (variables: PostChangeEmailConfirmationVariables) =>
+      fetchPostChangeEmailConfirmation({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
+export type PostChangePasswordError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 422;
+      payload: Schemas.ChangePasswordErrorRef;
+    }
+  | {
+      status: 500;
+      payload: Schemas.ServerErrorRef;
+    }
+>;
+
+export type PostChangePasswordVariables = {
+  body: Schemas.ChangePasswordRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostChangePassword = (
+  variables: PostChangePasswordVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    undefined,
+    PostChangePasswordError,
+    Schemas.ChangePasswordRequest,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/change-password", method: "post", ...variables, signal });
+
+export const usePostChangePassword = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PostChangePasswordError,
+      PostChangePasswordVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    undefined,
+    PostChangePasswordError,
+    PostChangePasswordVariables
+  >(
+    (variables: PostChangePasswordVariables) =>
+      fetchPostChangePassword({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type PostLoginError = Fetcher.ErrorWrapper<
   | {
       status: 401;

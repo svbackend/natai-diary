@@ -3,6 +3,9 @@ twig:
     paths:
         '%kernel.project_dir%/assets/css': assets_css
         '%kernel.project_dir%/assets/img': assets_img
+    globals:
+        app_url: '%env(APP_URL)%'
+        app_name: 'Natai Diary'
 
 when@test:
     twig:

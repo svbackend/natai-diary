@@ -3,21 +3,23 @@
  *
  * @version 1.0.0
  */
-export type LoginRequestRef = {
-  email: string;
-  password: string;
+export type ChangeEmailRequest = {
+  newEmail: string;
 };
 
-export type LoginSuccessResponse = {
-  user: UserDto;
-  apiToken: string;
-};
-
-export type LoginErrorRef = {
+export type ValidationErrorResponseRef = {
   /**
-   * @example Invalid credentials.
+   * @example validation_error
    */
-  error: string;
+  code: string;
+  errors: ValidationErrorItem[];
+};
+
+export type ChangeEmailErrorRef = {
+  /**
+   * @example already_exists
+   */
+  code: "already_exists";
 };
 
 export type ServerErrorRef = {
@@ -39,16 +41,67 @@ export type ServerErrorRef = {
   detail: string;
 };
 
-export type PasswordResetRequest = {
-  email: string;
+export type ChangeEmailConfirmationRequest = {
+  token: string;
 };
 
-export type ValidationErrorResponseRef = {
+export type ChangeEmailConfirmationErrorRef = {
   /**
-   * @example validation_error
+   * @example token_not_found | token_expired
    */
   code: string;
-  errors: ValidationErrorItem[];
+};
+
+export type ChangePasswordRequest = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+export type AuthRequiredErrorResponse = {
+  /**
+   * @example https://tools.ietf.org/html/rfc2616#section-10
+   */
+  type: string;
+  /**
+   * @example An error occurred
+   */
+  title: string;
+  /**
+   * @example 401
+   */
+  status: number;
+  /**
+   * @example Unauthorized
+   */
+  detail: string;
+};
+
+export type ChangePasswordErrorRef = {
+  /**
+   * @example old_password_invalid
+   */
+  code: "old_password_invalid";
+};
+
+export type LoginRequestRef = {
+  email: string;
+  password: string;
+};
+
+export type LoginSuccessResponse = {
+  user: UserDto;
+  apiToken: string;
+};
+
+export type LoginErrorRef = {
+  /**
+   * @example Invalid credentials.
+   */
+  error: string;
+};
+
+export type PasswordResetRequest = {
+  email: string;
 };
 
 export type ResetPasswordErrorRef = {
@@ -89,25 +142,6 @@ export type RegistrationErrorResponseRef = {
 
 export type UserInfoResponse = {
   user: UserDto;
-};
-
-export type AuthRequiredErrorResponse = {
-  /**
-   * @example https://tools.ietf.org/html/rfc2616#section-10
-   */
-  type: string;
-  /**
-   * @example An error occurred
-   */
-  title: string;
-  /**
-   * @example 401
-   */
-  status: number;
-  /**
-   * @example Unauthorized
-   */
-  detail: string;
 };
 
 export type VerifyEmailRequest = {
@@ -201,14 +235,6 @@ export type NewNoteResponse = {
   noteId: UuidV4;
 };
 
-export type UserDto = {
-  id: UuidV4;
-  email: string;
-  isEmailVerified: boolean;
-  name: string;
-  roles: string[];
-};
-
 export type ValidationErrorItem = {
   /**
    * @example This value is not a valid email address.
@@ -222,6 +248,14 @@ export type ValidationErrorItem = {
    * @example email
    */
   label: string;
+};
+
+export type UserDto = {
+  id: UuidV4;
+  email: string;
+  isEmailVerified: boolean;
+  name: string;
+  roles: string[];
 };
 
 /**

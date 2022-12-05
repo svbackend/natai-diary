@@ -11,7 +11,7 @@ use Symfony\Component\Uid\UuidV4;
 
 class UserFixture extends Fixture
 {
-    public const USER_PASSWORD = 'password';
+    public const USER_PASSWORD = 'Passw0rd#';
 
     public const USER_ID = 'c16f135c-3b45-4c1a-b97a-dff7a9a050f7';
     public const USER_LOGIN = 'example@email.com';

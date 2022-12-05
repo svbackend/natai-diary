@@ -1,6 +1,24 @@
+### Dec 4, 2022
+
+Still working on user flow, added change email page, and api endpoints for password change feature,
+modified email templates to use APP_URL,
+so it can be customized in .env file,
+now I have correct urls from templates to my local version of site,
+and on production I will have to change APP_URL to my domain name.
+
+I'm thinking about adding e2e tests for frontend, but I don't want to test UI, all I need is to test functionality.
+
+Added password change page.
+
+Next steps:
+
+Mobile navbar for authtenticated user
+
 ### Dec 3, 2022
 
 Latest couple of days was pretty tired after work so didn't do much.
+
+Today added reset password + reset password confirmation pages. I do really like how easy it is to add new pages to the app.
 
 ### Nov 28, 2022
 

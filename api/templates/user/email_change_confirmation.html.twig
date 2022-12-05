@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Email verification on {{ app_name }}{% endblock %}
+{% block title %}Email change confirmation on {{ app_name }}{% endblock %}
 
 {% block body %}
     <table class="body" data-made-with-foundation="">
@@ -25,29 +25,7 @@
                                             <table>
                                                 <tr>
                                                     <th>
-                                                        <h1 class="text-center">Welcome to {{ app_name }}</h1>
-                                                        <center data-parsed="">
-                                                            <table align="center" class="menu text-center float-center">
-                                                                <tr>
-                                                                    <td>
-                                                                        <table>
-                                                                            <tr>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="">Web Interface</a>
-                                                                                </th>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="#">Android
-                                                                                        Application</a></th>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="#">About</a></th>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="#">Contact</a></th>
-                                                                            </tr>
-                                                                        </table>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </center>
+                                                        <h1 class="text-center">Email change @ {{ app_name }}</h1>
                                                     </th>
                                                     <th class="expander"></th>
                                                 </tr>
@@ -71,30 +49,11 @@
                                             <table>
                                                 <tr>
                                                     <th>
-                                                        <table class="spacer">
-                                                            <tbody>
-                                                            <tr>
-                                                                <td height="32px"
-                                                                    style="font-size:32px;line-height:32px;">&#xA0;
-                                                                </td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
-                                                        <center data-parsed=""><img
-                                                                    src="{{ email.image('@assets_img/email-bg.png') }}"
-                                                                    align="center" class="float-center"></center>
-                                                        <table class="spacer">
-                                                            <tbody>
-                                                            <tr>
-                                                                <td height="16px"
-                                                                    style="font-size:16px;line-height:16px;">&#xA0;
-                                                                </td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
-                                                        <h4>Hello {{ name }}, welcome to {{ app_name }}!</h4>
-                                                        <p>TODO: Text what's the goal of Natai and how it may help you
-                                                            improve your mental health</p>
+                                                        <h4>Hello {{ name }},</h4>
+                                                        <p>
+                                                            You have requested to change your email ({{ oldEmail }}) on {{ app_name }}.
+                                                            Please click the button below to verify your new email address ({{ newEmail }}).
+                                                        </p>
 
                                                         <table class="button expanded">
                                                             <tbody>
@@ -105,10 +64,9 @@
                                                                         <tr>
                                                                             <td>
                                                                                 <center>
-                                                                                    <a href="{{ app_url }}/confirm-email/{{ token }}"
+                                                                                    <a href="{{ app_url }}/auth/change-email/{{ token }}"
                                                                                        align="center"
-                                                                                       class="float-center">Confirm
-                                                                                        Email</a></center>
+                                                                                       class="float-center">Activate new email</a></center>
                                                                             </td>
                                                                         </tr>
                                                                         </tbody>

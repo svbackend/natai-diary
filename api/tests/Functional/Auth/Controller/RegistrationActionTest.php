@@ -21,7 +21,7 @@ class RegistrationActionTest extends AbstractFunctionalTest
         $response = $client->request('POST', '/api/v1/registration', [
             'json' => [
                 'email' => 'some@email.com',
-                'password' => 'password',
+                'password' => 'Password#1',
                 'name' => 'Name',
             ]
         ]);
@@ -52,7 +52,7 @@ class RegistrationActionTest extends AbstractFunctionalTest
         $response = $client->request('POST', '/api/v1/registration', [
             'json' => [
                 'email' => UserFixture::USER_LOGIN, // already existing email
-                'password' => 'password',
+                'password' => 'Password#1',
                 'name' => 'Name',
             ]
         ]);

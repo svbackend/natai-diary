@@ -49,6 +49,16 @@ class ConfirmationToken
         return new self($user, self::TYPE_PASSWORD_RESET);
     }
 
+    public static function createTokenForEmailChange(User $user, string $newEmail): self
+    {
+        $entity = new self($user, self::TYPE_EMAIL_VERIFICATION);
+
+        // generate new token for new email
+        $entity->token = bin2hex(random_bytes(8)) . "_" . md5(strtolower($newEmail));
+
+        return $entity;
+    }
+
     public function getToken(): string
     {
         return $this->token;

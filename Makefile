@@ -24,3 +24,6 @@ tunnel-frontend:
 
 frontend-schema:
 	cd frontend && npx openapi-codegen gen api
+
+dev-db:
+	cd api && bin/console doctrine:schema:update --force -n

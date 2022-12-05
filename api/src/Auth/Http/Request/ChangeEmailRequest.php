@@ -2,14 +2,13 @@
 
 namespace App\Auth\Http\Request;
 
-use App\Auth\Validation\ValidationRule;
 use App\Common\Http\Request\HttpInputInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class PasswordResetRequest implements HttpInputInterface
+class ChangeEmailRequest implements HttpInputInterface
 {
     public function __construct(
-        public string $email,
+        public string $newEmail,
     )
     {
     }
@@ -17,7 +16,7 @@ class PasswordResetRequest implements HttpInputInterface
     public static function rules(): Assert\Collection
     {
         return new Assert\Collection([
-            'email' => ValidationRule::email(),
+            'newEmail' => new Assert\Required([new Assert\NotBlank(), new Assert\Email(),]),
         ]);
     }
 }

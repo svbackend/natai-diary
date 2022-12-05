@@ -2,6 +2,7 @@
 
 namespace App\Auth\Http\Request;
 
+use App\Auth\Validation\ValidationRule;
 use App\Common\Http\Request\HttpInputInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,8 +19,8 @@ class RegistrationRequest implements HttpInputInterface
     public static function rules(): Assert\Collection
     {
         return new Assert\Collection([
-            'email' => new Assert\Required([new Assert\NotBlank(), new Assert\Email(),]),
-            'password' => new Assert\Required([new Assert\NotBlank(), new Assert\Length(['min' => 6]),]),
+            'email' => ValidationRule::email(),
+            'password' => ValidationRule::password(),
             'name' => new Assert\Required([new Assert\NotBlank(), new Assert\Length(['min' => 1]),]),
         ]);
     }

@@ -4,7 +4,9 @@
     "validation_error": "Please check your data and try again",
     "user_not_found": "User not found",
     "token_not_found": "Token not found",
-    "token_expired": "Token expired, ask for a new one"
+    "token_expired": "Token expired, ask for a new one",
+    "already_exists": "User with this email already exists",
+    "old_password_invalid": "Old password is invalid"
   },
   "App": {
   },
@@ -80,5 +82,46 @@
     "NewPassword": "New password",
     "ResetPassword": "Reset password",
     "PasswordResetSuccess": "Your password has been changed successfully"
+  },
+  "SettingsPage": {
+    "settings": "Settings",
+    "changeEmail": "Change email",
+    "changeEmailDescription": "Change email that's used for signing in. You'll need to confirm your new email by clicking on the link that will be sent to your new email.",
+    "changePassword": "Change password",
+    "changePasswordDescription": "Change password that's used for signing in. Use at least 6 letters with special characters.",
+    "deleteProfile": "Remove my profile",
+    "deleteProfileDescription": "You will lose access to all of your notes and posts. This action cannot be undone."
+  },
+  "UserDropdownMenu": {
+    "settings": "Settings",
+    "logout": "Logout",
+    "profile": "My Profile"
+  },
+  "ChangePasswordPage": {
+    "Title": "Change password",
+    "Description": "Change password that's used for signing in. Use at least 8 letters with special characters.",
+    "RecallPassword": "Want to try login again?",
+    "Login": "Login",
+    "CurrentPassword": "Current password",
+    "NewPassword": "New password",
+    "NewPasswordConfirmation": "Repeat new password",
+    "ResetPassword": "Reset password",
+    "PasswordResetSuccess": "Your password has been changed successfully",
+    "NewPasswordConfirmationNotMatch": "New password doesn't match",
+    "SuccessMessage": "Your password has been changed successfully"
+  },
+  "ChangeEmailPage": {
+    "Title": "Change email",
+    "Description": "Enter your new email address and we will send you a link to confirm it",
+    "CurrentEmail": "Current email",
+    "NewEmail": "New email",
+    "ChangeEmail": "Change email",
+    "SuccessMessage": "We sent you an email with a link to confirm your new email",
+    "NewEmailHelperText": "We will send you a link to confirm your new email"
+  },
+  "ChangeEmailConfirmationPage": {
+    "weAreCheckingYourEmail": "We are checking your email.. Please wait",
+    "successMessage": "Your new email has been confirmed!",
+    "youWillBeRedirected": "You will be redirected to home page in a few seconds"
   }
 }

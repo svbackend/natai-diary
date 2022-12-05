@@ -20,8 +20,6 @@ export default function ResetPasswordPage() {
     const t = useTranslations("ResetPasswordPage");
     const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>();
 
-    const [showError, setShowError] = useState(false);
-
     const {mutateAsync: sendResetPasswordRequest, isLoading, isSuccess, isError, error} = usePostPasswordResetConfirmation({})
 
     const onSubmit = async (data: FormValues) => {
