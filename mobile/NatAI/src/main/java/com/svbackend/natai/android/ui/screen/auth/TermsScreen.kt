@@ -11,10 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.ui.component.HtmlText
+import com.svbackend.natai.android.viewmodel.StaticViewModel
 
 @Composable
-fun TermsScreen() {
+fun TermsScreen(vm: StaticViewModel = viewModel()) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -33,13 +36,11 @@ fun TermsScreen() {
                     .padding(bottom = 16.dp),
             )
 
-            Text(
-                text = stringResource(R.string.termsAndConditionsText),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary,
+            HtmlText(
+                html = vm.terms.value,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp)
             )
         }
     }

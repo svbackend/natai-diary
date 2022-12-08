@@ -3,6 +3,10 @@
  *
  * @version 1.0.0
  */
+export type StaticContentResponse = {
+  terms: string;
+};
+
 export type ChangeEmailRequest = {
   newEmail: string;
 };

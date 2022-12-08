@@ -9,6 +9,49 @@ import type * as Fetcher from "./apiFetcher";
 import { apiFetch } from "./apiFetcher";
 import type * as Schemas from "./apiSchemas";
 
+export type GetStaticError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetStaticVariables = ApiContext["fetcherOptions"];
+
+export const fetchGetStatic = (
+  variables: GetStaticVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.StaticContentResponse,
+    GetStaticError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/static", method: "get", ...variables, signal });
+
+export const useGetStatic = <TData = Schemas.StaticContentResponse>(
+  variables: GetStaticVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaticContentResponse,
+      GetStaticError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.StaticContentResponse,
+    GetStaticError,
+    TData
+  >(
+    queryKeyFn({ path: "/api/v1/static", operationId: "getStatic", variables }),
+    ({ signal }) => fetchGetStatic({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type PostChangeEmailError = Fetcher.ErrorWrapper<
   | {
       status: 400;
@@ -745,6 +788,11 @@ export const usePostNotes = (
 };
 
 export type QueryOperation =
+  | {
+      path: "/api/v1/static";
+      operationId: "getStatic";
+      variables: GetStaticVariables;
+    }
   | {
       path: "/api/v1/logout";
       operationId: "getLogout";

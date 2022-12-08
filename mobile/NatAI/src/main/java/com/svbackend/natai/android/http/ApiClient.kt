@@ -129,5 +129,17 @@ class ApiClient(
         return response.body()
     }
 
+    suspend fun getStatic(): StaticSuccessResponse {
+        val response = client.get("static")
+
+        if (response.status != HttpStatusCode.OK) {
+            return StaticSuccessResponse(
+                terms = "Terms of service are not available at the moment"
+            )
+        }
+
+        return response.body()
+    }
+
 
 }
