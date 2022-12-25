@@ -181,6 +181,9 @@ fun Contributions(
     notesMap: MutableMap<String, MutableList<LocalNote>>,
     dateList: List<String>
 ) {
+    val weekDayBaseTopPadding = 42.dp
+    val weekDayFollowingPadding = 15.dp
+
     Text(
         text = "#${tag}",
         color = MaterialTheme.colorScheme.primary,
@@ -234,17 +237,17 @@ fun Contributions(
             ) {
                 Text(
                     text = "Mon",
-                    modifier = Modifier.padding(top = 22.dp),
+                    modifier = Modifier.padding(top = weekDayBaseTopPadding),
                     fontSize = 10.sp,
                 )
                 Text(
                     text = "Wed",
-                    modifier = Modifier.padding(top = 34.dp),
+                    modifier = Modifier.padding(top = weekDayBaseTopPadding + weekDayFollowingPadding),
                     fontSize = 10.sp,
                 )
                 Text(
                     text = "Fri",
-                    modifier = Modifier.padding(top = 34.dp),
+                    modifier = Modifier.padding(top = weekDayBaseTopPadding + weekDayFollowingPadding),
                     fontSize = 10.sp,
                 )
             }
@@ -283,7 +286,7 @@ fun ContributionsSquare(
             .clickable { onClick(day) }
             .size(36.dp)
             .padding(horizontal = 2.dp, vertical = 2.dp)
-            .border(color = colors.border, width = 1.dp, shape = RoundedCornerShape(4.dp))
+            //.border(color = colors.border, width = 1.dp, shape = RoundedCornerShape(4.dp))
             .clip(shape = RoundedCornerShape(4.dp))
             .background(bg)
     )
