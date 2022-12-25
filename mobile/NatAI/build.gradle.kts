@@ -44,6 +44,12 @@ android {
         kotlinCompilerExtensionVersion = "1.3.2"
     }
     namespace = "com.svbackend.natai.android"
+
+    bundle {
+        storeArchive {
+            enable = false
+        }
+    }
 }
 
 dependencies {
