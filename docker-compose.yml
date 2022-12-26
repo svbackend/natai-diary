@@ -1,0 +1,29 @@
+# Use this only for production
+# For development - see Makefile, "up" target
+version: '3.9'
+services:
+  natai-db:
+    image: postgres:14-alpine
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+    ports:
+      - "25432:5432"
+
+  natai-api:
+    build: ./.docker/api
+    env_file:
+      - .env
+    volumes:
+      - ./api:/srv/api:rw,cached
+    depends_on:
+      - natai-db
+
+volumes:
+  db-data:
+
+networks:
+  default:
+  vps-traefik:
+    external: true
