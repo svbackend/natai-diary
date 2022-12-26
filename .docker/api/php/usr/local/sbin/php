@@ -1,0 +1,17 @@
+#!/bin/sh
+
+php="`which -a php | awk 'NR==2 {print}'`"
+if [ "$php" = "" ]; then
+    echo "php executable not found"
+    exit 1
+fi
+
+if [ `whoami` == "root" ]; then
+    directory="`pwd`"
+    user="`ls -ld  ${directory} | awk '{ print $3 }'`"
+    group="`ls -ld  ${directory} | awk '{ print $4 }'`"
+
+    su-exec ${user}:${group} ${php} "${@}"
+else
+    ${php} "${@}"
+fi

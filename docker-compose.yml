@@ -2,23 +2,46 @@
 # For development - see Makefile, "up" target
 version: '3.9'
 services:
-  natai-db:
+  gateway:
+    build:
+      context: ./.docker/gateway
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    expose:
+      - 80
+    ports:
+      - "80:80"
+
+  api:
+    build:
+      context: ./.docker/api/nginx
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./api:/app
+    depends_on:
+      - db
+      - php
+
+  php:
+    build:
+      context: ./.docker/api/php
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./api:/app
+
+  db:
     image: postgres:14-alpine
     env_file:
       - .env
     volumes:
-      - db-data:/var/lib/postgresql/data:rw
+      - db-data:/var/lib/postgresql/data
     ports:
       - "25432:5432"
-
-  natai-api:
-    build: ./.docker/api
-    env_file:
-      - .env
-    volumes:
-      - ./api:/srv/api:rw,cached
-    depends_on:
-      - natai-db
 
 volumes:
   db-data:
