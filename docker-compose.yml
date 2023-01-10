@@ -4,35 +4,54 @@ version: '3.9'
 services:
   gateway:
     build:
-      context: ./.docker/gateway
+      context: gateway
       dockerfile: Dockerfile
     depends_on:
-      - api
+      - api-gateway
     expose:
       - 80
     ports:
       - "80:80"
+    networks:
+      - vps-traefik
+      - default
 
-  api:
+  api-gateway:
     build:
-      context: ./.docker/api/nginx
-      dockerfile: Dockerfile
+      context: api
+      dockerfile: docker/nginx/Dockerfile
     env_file:
       - .env
     volumes:
       - ./api:/app
     depends_on:
       - db
-      - php
+      - api-php-fpm
+    networks:
+      - default
 
-  php:
+  api-php-fpm:
+    image: natai/api-php-fpm:latest
     build:
-      context: ./.docker/api/php
-      dockerfile: Dockerfile
+      context: api
+      dockerfile: docker/php/Dockerfile
     stdin_open: true
     tty: true
     volumes:
       - ./api:/app
+    networks:
+      - default
+
+  frontend:
+    image: natai/frontend:latest
+    build:
+      context: frontend
+      dockerfile: docker/Dockerfile
+    env_file:
+      - frontend/.env.local
+    restart: always
+    networks:
+      - default
 
   db:
     image: postgres:14-alpine
@@ -41,7 +60,9 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - "25432:5432"
+      - "35432:5432"
+    networks:
+      - default
 
 volumes:
   db-data:
