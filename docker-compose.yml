@@ -8,11 +8,18 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - api-gateway
+      - frontend
     expose:
       - 80
     networks:
       - vps-traefik
       - default
+    labels:
+      - "traefik.docker.network=vps-traefik"
+      - "traefik.enable=true"
+      - "traefik.http.routers.natai.rule=Host(`natai.app`)"
+      - "traefik.http.routers.natai.entrypoints=websecure"
+      - "traefik.http.routers.natai.tls.certresolver=myresolver"
 
   api-gateway:
     build:
