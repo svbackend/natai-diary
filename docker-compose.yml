@@ -10,8 +10,6 @@ services:
       - api-gateway
     expose:
       - 80
-    ports:
-      - "80:80"
     networks:
       - vps-traefik
       - default
