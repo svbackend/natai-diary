@@ -57,7 +57,7 @@ export const useAppStateManager = (): AppStateManager => {
 }
 
 // Use this hook only in _app.tsx, in rest of the components use useAppState
-export const initGlobalState = (): GlobalAppContext => {
+export const useGlobalState = (): GlobalAppContext => {
     const [appState, setAppState] = useState<AppState>(initialAppState)
     const [authInProgress, setAuthInProgress] = useState(false);
 
