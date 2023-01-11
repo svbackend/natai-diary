@@ -48,7 +48,7 @@ services:
       context: frontend
       dockerfile: docker/Dockerfile
     env_file:
-      - frontend/.env.local
+      - frontend/.env.prod.local
     restart: always
     networks:
       - default

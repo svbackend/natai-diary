@@ -27,3 +27,6 @@ frontend-schema:
 
 dev-db:
 	cd api && bin/console doctrine:schema:update --force -n
+
+prod-build:
+	./build.sh
