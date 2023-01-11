@@ -1,6 +1,9 @@
 import MainLayout from "../src/modules/common/components/mainLayout";
 import Image from "next/image";
 import Link from "next/link";
+import heroSectionImg from "../public/assets/img/dragon-scales.svg";
+import whySectionImg from "../public/assets/img/abstract-circles.svg";
+import featuresSectionImg from "../public/assets/img/bullseye-gradient.svg";
 
 const care01 = require("../public/assets/img/care01.svg");
 
@@ -36,8 +39,12 @@ export default function HomeLandingPage() {
 }
 
 function HeroSection() {
+    const bgStyle = {
+        backgroundImage: `url('${heroSectionImg.src}')`,
+    }
+
     return (
-        <section className={"hero-section bg-hero rounded-lg shadow-sm"}>
+        <section className={"hero-section bg-hero rounded-lg shadow-sm"} style={bgStyle}>
             <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10 glass">
                 <h1 className="text-4xl font-bold text-center text-white font-alegreya">Mental-health focused
                     journaling/diary app</h1>
@@ -83,6 +90,10 @@ function WhyYouShouldTryNataiDiarySection() {
         }
     ]
 
+    const bgStyle = {
+        backgroundImage: `url('${whySectionImg.src}')`,
+    }
+
     const WhyCardItem = ({title, description}: { title: string, description: string }) => {
         return (
             <div className="flex flex-col card glass text-xl text-white font-alegreya-text p-4">
@@ -96,7 +107,7 @@ function WhyYouShouldTryNataiDiarySection() {
     }
 
     return (
-        <section className={"why-section bg-why rounded-lg shadow-sm"}>
+        <section className={"why-section bg-why rounded-lg shadow-sm"} style={bgStyle}>
             <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10">
                 <h1 className="text-4xl font-bold text-center text-white font-alegreya">Why you should try Natai Diary?</h1>
 
@@ -155,8 +166,12 @@ function FeaturesSection() {
         )
     }
 
+    const bgStyle = {
+        backgroundImage: `url('${featuresSectionImg.src}')`,
+    }
+
     return (
-        <section className={"features-section bg-features rounded-lg shadow-sm mb-12"}>
+        <section className={"features-section bg-features rounded-lg shadow-sm mb-12"} style={bgStyle}>
             <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10">
                 <h1 className="text-4xl font-bold text-center text-white font-alegreya">Features</h1>
 

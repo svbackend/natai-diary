@@ -38,7 +38,6 @@
 
 .bg-hero {
     background-color: #330055;
-    background-image: url("../public/assets/img/dragon-scales.svg");
     background-attachment: fixed;
     background-size: contain;
 }
@@ -63,7 +62,6 @@
 }
 
 .bg-why {
-    background-image: url("../public/assets/img/abstract-circles.svg");
     background-attachment: fixed;
 }
 
@@ -73,6 +71,8 @@
 }
 
 .bg-features {
-    background: url("../public/assets/img/bullseye-gradient.svg") no-repeat center center fixed;
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
     background-size: cover;
 }
