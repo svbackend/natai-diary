@@ -2,6 +2,7 @@
 
 REPO="/home/deploy/natai/repo"
 DOCKER_IMAGES="/home/deploy/natai/docker"
+DB_BACKUP="/home/deploy/natai/backup/natai_db.sql"
 
 cd $REPO && git pull origin main
 
@@ -19,4 +20,4 @@ cd $REPO && docker compose exec api-php-fpm bin/console d:m:m -n
 
 echo "RUN FOLLOWING COMMAND ON YOUR LOCAL MACHINE TO SAVE DB BACKUP:\r\n"
 
-echo "rsync -avzh root@adspons:/tmp/backup/natai_db.sql /tmp/natai/"
+echo "rsync -avzh root@adspons:$DB_BACKUP /tmp/natai/"
