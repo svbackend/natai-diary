@@ -20,6 +20,6 @@ cd $REPO && docker compose exec api-php-fpm composer install --no-dev --optimize
 
 cd $REPO && docker compose exec api-php-fpm bin/console d:m:m -n
 
-echo "RUN FOLLOWING COMMAND ON YOUR LOCAL MACHINE TO SAVE DB BACKUP:\r\n"
+echo "RUN FOLLOWING COMMAND ON YOUR LOCAL MACHINE TO SAVE DB BACKUP:"
 
 echo "rsync -avzh root@adspons:$DB_BACKUP /tmp/natai/"
