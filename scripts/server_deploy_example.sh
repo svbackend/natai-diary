@@ -16,6 +16,8 @@ cd $DOCKER_IMAGES && docker load < api-php-fpm.tar
 
 cd $REPO && docker compose up -d --force-recreate
 
+cd $REPO && docker compose exec api-php-fpm composer install --no-dev --optimize-autoloader
+
 cd $REPO && docker compose exec api-php-fpm bin/console d:m:m -n
 
 echo "RUN FOLLOWING COMMAND ON YOUR LOCAL MACHINE TO SAVE DB BACKUP:\r\n"

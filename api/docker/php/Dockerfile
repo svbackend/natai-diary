@@ -28,8 +28,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/bin --fil
 COPY /docker/php/conf.d /usr/local/etc/php/conf.d
 COPY ./ ./
 
-RUN composer install --no-dev --no-scripts --optimize-autoloader
-
 RUN chown www-data:www-data ./var -R
-
-RUN chown www-data:www-data ./vendor -R
