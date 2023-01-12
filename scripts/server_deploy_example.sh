@@ -14,3 +14,9 @@ cd $DOCKER_IMAGES && docker load < frontend.tar
 cd $DOCKER_IMAGES && docker load < api-php-fpm.tar
 
 cd $REPO && docker compose up -d --force-recreate
+
+cd $REPO && docker compose exec api-php-fpm bin/console d:m:m -n
+
+echo "RUN FOLLOWING COMMAND ON YOUR LOCAL MACHINE TO SAVE DB BACKUP:\r\n"
+
+echo "rsync -avzh root@adspons:/tmp/backup/natai_db.sql /tmp/natai/"

@@ -64,6 +64,7 @@ services:
       - .env
     volumes:
       - db-data:/var/lib/postgresql/data
+      - /home/deploy/natai/backup:/tmp/backup
     ports:
       - "35432:5432"
     networks:
