@@ -1,3 +1,21 @@
+### Jan 21, 2023
+
+I don't know why I abandoned this Notes file. It's not that hard to add small notes here.
+Anyway, just to catch up with everything:
+
+Last week I finally released 1st version of an application on google play, it's still on review, but I hope it will be available soon.
+Version for testers already available for limited number of "internal testers" and I started to use it myself.
+I'm surprised that it works pretty good, with very few bugs so far.
+I also deployed web app - https://natai.app for backend + terms and conditions + privacy policy,
+landing page is a bit slow, but it's not the top priority right now.
+
+Next steps:
+
+- [ ] Work on the web app - add ability to read notes, write notes etc.
+- [ ] Attach files to notes?
+- [ ] Attach weather information to notes?
+- [ ] Fix bug when registering through app - it registers, but doesn't log in
+
 ### Dec 4, 2022
 
 Still working on user flow, added change email page, and api endpoints for password change feature,
