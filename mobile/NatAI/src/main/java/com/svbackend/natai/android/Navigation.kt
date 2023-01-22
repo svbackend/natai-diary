@@ -115,7 +115,8 @@ fun Navigation(
             RegistrationScreen(
                 appViewModel = vm,
                 onRegistrationSuccess = {
-                    controller.popBackStack(Route.ManageAccountRoute.withArgs(), inclusive = false)
+                    controller.clearBackStack(Route.ManageAccountRoute.withArgs())
+                    controller.go(Route.ManageAccountRoute.withArgs())
                 },
                 onClickLogin = {
                     controller.go(Route.LoginRoute.withArgs())

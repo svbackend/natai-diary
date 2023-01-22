@@ -67,8 +67,9 @@ fun RegistrationScreen(
                     Toast
                         .makeText(context, e.message, Toast.LENGTH_SHORT)
                         .show()
+                } finally {
+                    vm.isLoading.value = false
                 }
-
             }
         }
 
