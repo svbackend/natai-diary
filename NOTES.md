@@ -1,3 +1,7 @@
+### Jan 22, 2023
+
+Bug with registration fixed. I think next I want to work on the web app.
+
 ### Jan 21, 2023
 
 I don't know why I abandoned this Notes file. It's not that hard to add small notes here.
