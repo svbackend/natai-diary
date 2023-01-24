@@ -126,5 +126,11 @@
   },
   "MobileUserDropdownMenu": {
     "Settings": "Settings"
-  }
+  },
+  "NotLoggedIn": {
+    "title": "You are not logged in",
+    "description": "Please login to view this page",
+    "loginButton": "Login"
+  },
+  "DiaryPage": {}
 }
