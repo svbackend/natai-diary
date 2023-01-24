@@ -1,3 +1,18 @@
+### Jan 23, 2023
+
+Copilot keeps suggesting me to write "I'm not sure if I want to work on this project anymore",
+it's a bit annoying but at the same time funny as I'm not even considering to stop working on it since I'm doing it for myself and whenever I want, without any deadlines,
+and this perhaps the only project that I'm still enjoying working on. (although on my job I'm also working on pretty cool project)
+
+Today I found another bug with mobile app - when there are many tags attached to note it's showing them in one line and last tag starting to go vertically,
+I need to do something like LazyRow or overflow-x: scroll in css terms.
+
+I'm also happy to see that application now published on google play, so anyone can install it, it's pretty important milestone for me.
+
+Next steps:
+- [ ] Fix bug with tags in mobile app
+- Work on all the features for web app
+
 ### Jan 22, 2023
 
 Bug with registration fixed. I think next I want to work on the web app.
