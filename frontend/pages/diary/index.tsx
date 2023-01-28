@@ -68,7 +68,7 @@ function DiaryHeader({user}: { user: UserDto }) {
 function DiaryNotesList({notes}: { notes: CloudNoteDto[] }) {
     return (
         <>
-            {notes.map(note => <DiaryNotePreview note={note}/>)}
+            {notes.map(note => <DiaryNotePreview key={note.id} note={note}/>)}
         </>
     )
 }

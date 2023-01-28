@@ -15,4 +15,4 @@
 * `cd natai && git clone git@github.com:svbackend/natai-diary.git repo`
 * `cd repo && cp .env.dist .env` (edit .env file)
 * `cd api && cp .env .env.local` (edit .env.local file)
-
+* `cd ../frontend && cp .env .env.local` (edit .env.local file)
