@@ -133,6 +133,9 @@ fun Navigation(
                 onClickCreateAccount = {
                     controller.go(Route.RegistrationRoute.withArgs())
                 },
+                onClickLogin = {
+                    controller.go(Route.LoginRoute.withArgs())
+                },
                 onLogout = {
                     controller.clearBackStack(Route.ManageAccountRoute.route)
                     controller.go(Route.MainRoute.withArgs())

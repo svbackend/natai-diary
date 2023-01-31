@@ -30,14 +30,16 @@ fun ManageAccountScreen(
     vm: NoteViewModel,
     manageAccountViewModel: ManageAccountViewModel = viewModel(),
     onClickCreateAccount: () -> Unit,
+    onClickLogin: () -> Unit,
     onLogout: () -> Unit,
 ) {
     val user = vm.userState
 
     if (user == null) {
-        NotAuthorized {
-            onClickCreateAccount()
-        }
+        NotAuthorized(
+            onClickCreateAccount = onClickCreateAccount,
+            onClickLogin = onClickLogin
+        )
         return
     } else {
         Authorized(
@@ -149,7 +151,10 @@ fun Authorized(
 }
 
 @Composable
-fun NotAuthorized(onClickCreateAccount: () -> Unit) {
+fun NotAuthorized(
+    onClickCreateAccount: () -> Unit,
+    onClickLogin: () -> Unit,
+) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -160,10 +165,20 @@ fun NotAuthorized(onClickCreateAccount: () -> Unit) {
                 .padding(16.dp)
         ) {
             Text(
+                text = stringResource(R.string.login),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp)
+                    .clickable { onClickLogin() },
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+            )
+
+            Text(
                 text = stringResource(R.string.dontHaveAccount),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(top = 16.dp),
                 textAlign = TextAlign.Center,
             )
 
