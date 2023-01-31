@@ -1,3 +1,9 @@
+### Jan 30, 2023
+
+Found like 5-6 minor bugs with android app so far, created tasks on trello,
+today fixed 2 of them related to handling expired auth tokens, + added link to login screen on Manage Account screen.
+Next one is to fix notifications, I think I will need another screen under settings section to ask user for permission to send notification (reminder to add a note)
+
 ### Jan 23, 2023
 
 Copilot keeps suggesting me to write "I'm not sure if I want to work on this project anymore",
