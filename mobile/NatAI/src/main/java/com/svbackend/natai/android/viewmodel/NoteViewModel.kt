@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.User
+import com.svbackend.natai.android.query.UserQueryException
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
@@ -63,6 +64,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         startSync()
         try {
             apiSyncService.syncNotes()
+        } catch (userError: UserQueryException) {
+            logout { }
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {

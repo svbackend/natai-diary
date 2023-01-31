@@ -4,6 +4,7 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.model.CloudNote
+import com.svbackend.natai.android.query.UserQueryException
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 
@@ -20,6 +21,8 @@ class ApiSyncService(
         }
 
         isRunning = true
+
+        apiClient.getCurrentUser()
 
         val cloudNotesResponse = apiClient.getNotesForSync()
 
