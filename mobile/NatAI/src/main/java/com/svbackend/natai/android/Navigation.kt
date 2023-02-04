@@ -93,6 +93,9 @@ fun Navigation(
                 onThemeClick = {
                     controller.go(Route.SettingsThemesRoute.withArgs())
                 },
+                onReminderClick = {
+                    controller.go(Route.SettingsReminderRoute.withArgs())
+                },
             )
         }
 

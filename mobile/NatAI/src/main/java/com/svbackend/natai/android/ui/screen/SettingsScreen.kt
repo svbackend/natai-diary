@@ -26,6 +26,7 @@ import com.svbackend.natai.android.viewmodel.NoteViewModel
 @Composable
 fun SettingsScreen(
     onThemeClick: () -> Unit,
+    onReminderClick: () -> Unit,
 ) {
     Surface(
         modifier = Modifier
@@ -44,8 +45,13 @@ fun SettingsScreen(
             )
 
             SettingItem(
-                title = "Themes / Appearance",
+                title = stringResource(R.string.settingsThemesTitle),
                 onClick = onThemeClick
+            )
+
+            SettingItem(
+                title = stringResource(R.string.settingsReminderTitle),
+                onClick = onReminderClick
             )
         }
     }
