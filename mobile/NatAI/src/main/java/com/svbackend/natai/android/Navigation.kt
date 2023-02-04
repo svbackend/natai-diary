@@ -12,6 +12,7 @@ import com.svbackend.natai.android.ui.screen.auth.LoginScreen
 import com.svbackend.natai.android.ui.screen.auth.ManageAccountScreen
 import com.svbackend.natai.android.ui.screen.auth.RegistrationScreen
 import com.svbackend.natai.android.ui.screen.auth.TermsScreen
+import com.svbackend.natai.android.ui.screen.settings.ReminderScreen
 import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
@@ -23,6 +24,7 @@ fun Navigation(
     controller: NavHostController,
     vm: NoteViewModel,
     editNoteViewModel: EditNoteViewModel = viewModel(),
+    onAskForNotificationPermission: () -> Unit
 ) {
 
     NavHost(navController = controller, startDestination = Route.MainRoute.route) {
@@ -58,7 +60,7 @@ fun Navigation(
         ) { entry ->
             NoteDetailsScreen(
                 vm = vm,
-                noteId = entry.arguments!!["noteId"] as String,
+                noteId = entry.arguments?.getString("noteId") ?: "",
                 onEditClick = {
                     editNoteViewModel.loadNote(it)
                     controller.go(Route.EditNoteRoute.withArgs(noteId = it))
@@ -149,6 +151,12 @@ fun Navigation(
                 onThemeChanged = {
                     vm.changeTheme(it)
                 }
+            )
+        }
+
+        composable(route = Route.SettingsReminderRoute.route) {
+            ReminderScreen(
+                onAskForNotificationPermission = onAskForNotificationPermission
             )
         }
 

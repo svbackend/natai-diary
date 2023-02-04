@@ -35,6 +35,7 @@
     <string name="saveNote">Save</string>
     <string name="settingsTitle">Settings</string>
     <string name="settingsThemesTitle">Themes / Appearance</string>
+    <string name="settingsReminderTitle">Reminder</string>
     <string name="settingsThemesCurrent">(current)</string>
     <string name="date">Date</string>
     <string name="addedAt">Added at</string>
@@ -52,4 +53,7 @@
     <string name="registration">Registration</string>
     <string name="emailNotVerified">Your email is not verified yet, please check your inbox and click on the link from Natai</string>
     <string name="yourEmailStillNotVerified">Looks like your email still not confirmed. Are you sure you clicked on the link?</string>
+    <string name="pref_reminder_time_key">com.svbackend.natai.REMINDER_TIME</string>
+    <string name="pref_reminder_enabled_key">com.svbackend.natai.REMINDER_ENABLED</string>
+    <string name="settingsReminderToggle">Enable reminder?</string>
 </resources>

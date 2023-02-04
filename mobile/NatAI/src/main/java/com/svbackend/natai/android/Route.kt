@@ -11,6 +11,8 @@ sealed class Route(val route: String) {
 
     object SettingsThemesRoute : Route("settings_themes")
 
+    object SettingsReminderRoute : Route("settings_reminder")
+
     object AnalyticsRoute : Route("analytics")
 
     object LoginRoute : Route("auth_login")

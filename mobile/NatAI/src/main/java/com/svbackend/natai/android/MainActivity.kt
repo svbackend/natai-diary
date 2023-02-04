@@ -2,8 +2,10 @@ package com.svbackend.natai.android
 
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +34,11 @@ class MainActivity : ScopedActivity() {
 
     private val viewModel by viewModels<NoteViewModel>()
     private val splashViewModel by viewModels<SplashViewModel>()
+
+    private val pushNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -64,7 +71,11 @@ class MainActivity : ScopedActivity() {
                         controller.go(Route.NewNoteRoute.withArgs())
                     },
                     content = {
-                        Navigation(controller, vm = viewModel)
+                        Navigation(controller, vm = viewModel, onAskForNotificationPermission = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                pushNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                        })
                     }
                 )
             }
