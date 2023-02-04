@@ -1,14 +1,16 @@
 package com.svbackend.natai.android.ui.screen
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.ui.UserTheme
-import com.svbackend.natai.android.viewmodel.NoteViewModel
 
 @Composable
 fun SettingsScreen(
@@ -60,7 +61,11 @@ fun SettingsScreen(
 @Composable
 fun SettingItem(title: String, onClick: () -> Unit) {
     Row(modifier = Modifier.clickable { onClick() }) {
-        Icon(painter = painterResource(id = R.drawable.ic_baseline_preview_24), modifier = Modifier.padding(16.dp), contentDescription = null)
+        Icon(
+            painter = painterResource(id = R.drawable.ic_baseline_preview_24),
+            modifier = Modifier.padding(16.dp),
+            contentDescription = null
+        )
         Text(
             modifier = Modifier
                 .weight(1f)
