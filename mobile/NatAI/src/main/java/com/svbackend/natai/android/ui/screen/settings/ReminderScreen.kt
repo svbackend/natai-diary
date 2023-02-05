@@ -10,6 +10,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -47,7 +48,7 @@ fun ReminderScreen(
             ReminderToggle(
                 currentValue = isReminderEnabled,
                 onToggle = {
-                    viewModel.isReminderEnabledState.value = it
+                    viewModel.toggleReminder(it)
 
                     if (it) {
                         onAskForNotificationPermission()
@@ -61,8 +62,10 @@ fun ReminderScreen(
 @Composable
 fun ReminderToggle(currentValue: Boolean, onToggle: (Boolean) -> Unit) {
     Row(
-        Modifier
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
             .padding(16.dp)
+            .fillMaxWidth()
             .toggleable(
                 role = Role.Switch,
                 value = currentValue,
@@ -74,6 +77,6 @@ fun ReminderToggle(currentValue: Boolean, onToggle: (Boolean) -> Unit) {
             onCheckedChange = null
         )
         Spacer(Modifier.width(8.dp))
-        Text(stringResource(id = R.string.settingsReminderToggle))
+        Text(stringResource(id = R.string.settingsReminderToggle), )
     }
 }

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -45,12 +47,12 @@ fun SettingsScreen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
             )
 
-            SettingItem(
+            SettingThemesItem(
                 title = stringResource(R.string.settingsThemesTitle),
                 onClick = onThemeClick
             )
 
-            SettingItem(
+            SettingReminderItem(
                 title = stringResource(R.string.settingsReminderTitle),
                 onClick = onReminderClick
             )
@@ -59,7 +61,7 @@ fun SettingsScreen(
 }
 
 @Composable
-fun SettingItem(title: String, onClick: () -> Unit) {
+fun SettingThemesItem(title: String, onClick: () -> Unit) {
     Row(modifier = Modifier.clickable { onClick() }) {
         Icon(
             painter = painterResource(id = R.drawable.ic_baseline_preview_24),
@@ -83,6 +85,38 @@ fun SettingItem(title: String, onClick: () -> Unit) {
                 .align(Alignment.CenterVertically)
                 .padding(16.dp),
             text = UserTheme.numberOfThemes.toString(),
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Start
+        )
+    }
+}
+
+@Composable
+fun SettingReminderItem(title: String, onClick: () -> Unit) {
+    Row(modifier = Modifier.clickable { onClick() }) {
+        Icon(
+            Icons.Filled.Notifications,
+            contentDescription = title,
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+                .padding(start = 8.dp),
+            text = title,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start
+        )
+
+        // todo add reminder time
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(16.dp),
+            text = "21:00", // todo get reminder time from shared prefs
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Start
         )

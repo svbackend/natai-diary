@@ -33,4 +33,14 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
     fun isReminderEnabled(): Boolean {
         return prefs.getBoolean(app.getString(R.string.pref_reminder_enabled_key), false)
     }
+
+    fun toggleReminder(isEnabled: Boolean) {
+        viewModelScope.launch {
+            prefs.edit()
+                .putBoolean(app.getString(R.string.pref_reminder_enabled_key), isEnabled)
+                .apply()
+        }
+
+        isReminderEnabledState.value = isEnabled
+    }
 }
