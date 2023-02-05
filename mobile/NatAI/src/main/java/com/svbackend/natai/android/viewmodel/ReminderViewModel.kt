@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.UserTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalTime
@@ -24,23 +23,18 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun getCurrentTheme(): UserTheme {
-        return UserTheme.strToTheme(
-            prefs.getString(app.getString(R.string.pref_theme_key), null) ?: "Default"
-        )
-    }
-
-    fun isReminderEnabled(): Boolean {
-        return prefs.getBoolean(app.getString(R.string.pref_reminder_enabled_key), false)
+    fun initIsReminderEnabled() {
+        val isEnabled = prefs.getBoolean(app.getString(R.string.pref_reminder_enabled_key), false)
+        isReminderEnabledState.value = isEnabled
     }
 
     fun toggleReminder(isEnabled: Boolean) {
         viewModelScope.launch {
+            isReminderEnabledState.emit(isEnabled)
             prefs.edit()
                 .putBoolean(app.getString(R.string.pref_reminder_enabled_key), isEnabled)
                 .apply()
         }
 
-        isReminderEnabledState.value = isEnabled
     }
 }

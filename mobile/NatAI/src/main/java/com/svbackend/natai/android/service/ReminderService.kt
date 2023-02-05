@@ -13,11 +13,11 @@ import com.svbackend.natai.android.R
 import com.svbackend.natai.android.model.Reminder
 
 
+// used for sending reminder notifications for Android API less than 31
 class ReminderService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        println("ReminderService onCreate called")
         // enable to play a custom ring tone
         /*mediaPlayer = MediaPlayer.create(this, R.raw.alarm_ringtone)
         mediaPlayer?.isLooping = true
@@ -25,65 +25,21 @@ class ReminderService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        println("ReminderService onBind called")
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        println("ReminderService onStartCommand called")
+        val manager = getSystemService(NotificationManager::class.java)
 
-        val reminder = Reminder(
-            title = "How was your day?",
-            description = "Share couple of words with me!",
-        )
+        if (manager is NotificationManager) {
+            val reminder = ReminderLogicService(manager)
+            reminder.sendNotification(applicationContext)
+        }
 
-        showAlarmNotification(reminder)
-
-        // https://stackoverflow.com/questions/9093271/start-sticky-and-start-not-sticky
         return START_STICKY
     }
 
-    private fun showAlarmNotification(reminder: Reminder) {
-        println("ReminderService showAlarmNotification called")
-
-        createNotificationChannel(reminder.id.toInt())
-        // build notification
-        val builder = NotificationCompat.Builder(this, reminder.id.toString())
-            .setSmallIcon(R.drawable.ic_baseline_filter_vintage_24) //set icon for notification
-            .setContentTitle(reminder.title) //set title of notification
-            .setContentText(reminder.description)//this is notification message
-            .setAutoCancel(true) // makes auto cancel of notification
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT) //set priority of notification
-
-        val notificationIntent = Intent(applicationContext, MainActivity::class.java)
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        //notification message will get at NotificationView
-        notificationIntent.putExtra("reminderId", reminder.id)
-        notificationIntent.putExtra("from", "Notification")
-
-        val pendingIntent = PendingIntent.getActivity(
-            applicationContext, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE
-        )
-        builder.setContentIntent(pendingIntent)
-        val notification = builder.build()
-
-        // Add as notification
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(reminder.id.toInt(), notification)
-    }
-
-    private fun createNotificationChannel(id: Int) {
-        val serviceChannel = NotificationChannel(
-            id.toString(),
-            "Reminder Foreground Service Channel",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        val manager = getSystemService(NotificationManager::class.java)
-        manager?.createNotificationChannel(serviceChannel)
-    }
-
     override fun onDestroy() {
-        println("ReminderService onDestroy called")
         super.onDestroy()
     }
 }

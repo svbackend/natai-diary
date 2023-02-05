@@ -25,9 +25,12 @@ fun ReminderScreen(
     viewModel: ReminderViewModel = viewModel(),
     onAskForNotificationPermission: () -> Unit
 ) {
-    val initialIsReminderEnabled = viewModel.isReminderEnabled()
-    val isReminderEnabled: Boolean =
-        viewModel.isReminderEnabledState.collectAsState(initial = initialIsReminderEnabled).value
+    val isReminderEnabled: Boolean = viewModel
+        .isReminderEnabledState
+        .collectAsState()
+        .value
+
+    viewModel.initIsReminderEnabled()
 
     Surface(
         modifier = Modifier
@@ -48,6 +51,7 @@ fun ReminderScreen(
             ReminderToggle(
                 currentValue = isReminderEnabled,
                 onToggle = {
+                    println("---> ReminderToggle: $it")
                     viewModel.toggleReminder(it)
 
                     if (it) {

@@ -1,16 +1,12 @@
 package com.svbackend.natai.android
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.activity.ComponentActivity
-import androidx.room.Room
-import com.auth0.android.Auth0
-import com.auth0.android.authentication.AuthenticationAPIClient
-import com.auth0.android.authentication.storage.CredentialsManager
-import com.auth0.android.authentication.storage.SharedPreferencesStorage
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
@@ -21,7 +17,11 @@ class AppContainer(context: Context) {
 
     val alarmManager = context.getSystemService(ComponentActivity.ALARM_SERVICE) as AlarmManager
 
-    val sharedPrefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), MODE_PRIVATE)
+    val notificationManager =
+        context.getSystemService(NotificationManager::class.java) as NotificationManager
+
+    val sharedPrefs: SharedPreferences =
+        context.getSharedPreferences(context.getString(R.string.preference_file_key), MODE_PRIVATE)
 
     private val getApiToken = {
         sharedPrefs.getString("api_token", null)
@@ -31,14 +31,16 @@ class AppContainer(context: Context) {
     val diaryRepository = DiaryRepository(db, apiClient)
     val userRepository = UserRepository(db, apiClient)
 
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     val apiSyncService = ApiSyncService(
         apiClient, diaryRepository
     )
 
     companion object {
-        @Volatile private var instance: AppContainer? = null
+        @Volatile
+        private var instance: AppContainer? = null
 
         fun getInstance(context: Context): AppContainer {
             return instance ?: synchronized(this) {

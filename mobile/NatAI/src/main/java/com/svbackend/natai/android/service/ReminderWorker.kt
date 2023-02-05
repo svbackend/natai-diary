@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
+const val hour = 9
+const val minute = 30
+
 class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
@@ -42,8 +45,8 @@ class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
 
         val firstNotificationDate: Calendar = GregorianCalendar.getInstance()
         firstNotificationDate.set(Calendar.AM_PM, Calendar.PM)
-        firstNotificationDate.set(Calendar.HOUR, 9)
-        firstNotificationDate.set(Calendar.MINUTE, 30)
+        firstNotificationDate.set(Calendar.HOUR, hour)
+        firstNotificationDate.set(Calendar.MINUTE, minute)
 
         alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC, firstNotificationDate.timeInMillis, pendingIntent
@@ -57,11 +60,11 @@ class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
             return false
         }
 
-        if (currentDate.get(Calendar.HOUR) < 9) {
+        if (currentDate.get(Calendar.HOUR) < hour) {
             return false
         }
 
-        if (currentDate.get(Calendar.HOUR) == 9 && currentDate.get(Calendar.MINUTE) < 30) {
+        if (currentDate.get(Calendar.HOUR) == hour && currentDate.get(Calendar.MINUTE) < minute) {
             return false
         }
 
