@@ -4,11 +4,9 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.model.CloudNote
-import com.svbackend.natai.android.query.UserQueryException
 import com.svbackend.natai.android.repository.DiaryRepository
-import com.svbackend.natai.android.utils.LocalDateTimeFormatter
+import com.svbackend.natai.android.utils.isAfterSecs
 
-// create note -> sync -> update note but without cloudId -> sync -> note inserted multiple times
 class ApiSyncService(
     private val apiClient: ApiClient,
     private val repository: DiaryRepository,
@@ -36,9 +34,10 @@ class ApiSyncService(
 
         localNotes.forEach {
             val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
+
             if (cloudNote == null) {
                 insertToCloud(it)
-            } else if (it.updatedAt.isAfter(cloudNote.updatedAt)) {
+            } else if (it.updatedAt.isAfterSecs(cloudNote.updatedAt)) {
                 updateToCloud(it)
             }
         }
@@ -49,7 +48,7 @@ class ApiSyncService(
             val localNote = localNotes.find { it.cloudId == cloudNoteId }
             if (localNote == null) {
                 insertToLocal(cloudNote)
-            } else if (cloudNote.updatedAt.isAfter(localNote.updatedAt)) {
+            } else if (cloudNote.updatedAt.isAfterSecs(localNote.updatedAt)) {
                 updateToLocal(localNote, cloudNote)
             }
         }

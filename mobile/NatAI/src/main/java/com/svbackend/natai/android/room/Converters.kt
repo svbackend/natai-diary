@@ -1,14 +1,12 @@
 package com.svbackend.natai.android.room
 
 import androidx.room.TypeConverter
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.time.temporal.ChronoUnit
 
 class Converters {
     /* Instant */
@@ -17,7 +15,9 @@ class Converters {
     @TypeConverter
     fun toInstant(value: String?): Instant? {
         return value?.let {
-            return formatter.parse(value, OffsetDateTime::from).toInstant()
+            return formatter.parse(value, OffsetDateTime::from)
+                .toInstant()
+                .truncatedTo(ChronoUnit.SECONDS)
         }
     }
 
