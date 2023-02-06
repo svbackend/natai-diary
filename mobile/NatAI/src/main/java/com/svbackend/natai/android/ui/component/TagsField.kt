@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -277,8 +278,9 @@ fun MoodTagDialog(selectedScore: Int?, onChange: (Int) -> Unit) {
 
     @Composable
     fun MoodTagEl(m: Modifier, score: Int) {
-        MoodTagIcon(modifier = m
-            .clickable { onChange(score) }, score = score, isSelected = (selectedScore == score)
+        MoodTagIcon(
+            modifier = m
+                .clickable { onChange(score) }, score = score, isSelected = (selectedScore == score)
         )
     }
 

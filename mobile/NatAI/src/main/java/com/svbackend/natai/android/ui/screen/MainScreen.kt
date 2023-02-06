@@ -211,6 +211,7 @@ fun NoteCard(note: LocalNote, onNoteClick: (LocalNote) -> Unit) {
         Row(
             modifier = Modifier
                 .padding(vertical = 12.dp)
+                .fillMaxWidth()
         ) {
             Column {
                 Text(
