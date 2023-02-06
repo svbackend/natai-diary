@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.http.exception.LoginErrorException
 import com.svbackend.natai.android.ui.NPasswordField
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField
@@ -55,7 +54,7 @@ fun LoginScreen(
                 try {
                     vm.login(appViewModel)
                     onLoginSuccess()
-                } catch (e: LoginErrorException) {
+                } catch (e: Throwable) {
                     vm.error.value = e.message
                     Toast
                         .makeText(context, e.message, Toast.LENGTH_SHORT)

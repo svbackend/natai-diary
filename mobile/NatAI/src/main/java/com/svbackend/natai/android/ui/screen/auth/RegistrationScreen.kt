@@ -15,11 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.http.exception.RegistrationErrorException
 import com.svbackend.natai.android.ui.NCheckbox
 import com.svbackend.natai.android.ui.NPasswordField
 import com.svbackend.natai.android.ui.NPrimaryButton
@@ -63,7 +61,7 @@ fun RegistrationScreen(
                 try {
                     vm.register(appViewModel)
                     onRegistrationSuccess()
-                } catch (e: RegistrationErrorException) {
+                } catch (e: Throwable) {
                     Toast
                         .makeText(context, e.message, Toast.LENGTH_SHORT)
                         .show()

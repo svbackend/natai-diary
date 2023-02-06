@@ -15,8 +15,12 @@ class StaticViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         viewModelScope.launch {
-            val response = api.getStatic()
-            terms.value = response.terms
+            try {
+                val response = api.getStatic()
+                terms.value = response.terms
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
         }
     }
 }
