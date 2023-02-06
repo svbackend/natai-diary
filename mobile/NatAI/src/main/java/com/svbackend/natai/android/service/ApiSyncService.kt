@@ -8,6 +8,7 @@ import com.svbackend.natai.android.query.UserQueryException
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 
+// create note -> sync -> update note but without cloudId -> sync -> note inserted multiple times
 class ApiSyncService(
     private val apiClient: ApiClient,
     private val repository: DiaryRepository,
@@ -38,9 +39,6 @@ class ApiSyncService(
             if (cloudNote == null) {
                 insertToCloud(it)
             } else if (it.updatedAt.isAfter(cloudNote.updatedAt)) {
-                println(LocalDateTimeFormatter.fullDateTime.format(it.updatedAt))
-                println("vs")
-                println(LocalDateTimeFormatter.fullDateTime.format(cloudNote.updatedAt))
                 updateToCloud(it)
             }
         }

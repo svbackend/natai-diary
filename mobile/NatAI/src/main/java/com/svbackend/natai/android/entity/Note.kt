@@ -102,17 +102,17 @@ data class LocalNote(
         actualDate: LocalDate,
         tags: List<TagEntityDto>,
     ): LocalNote {
-        return LocalNote(
-            id = id,
-            cloudId = cloudId,
+        return this.copy(
             title = title,
             content = content,
             actualDate = actualDate,
-            createdAt = createdAt,
+            tags = tags,
             updatedAt = Instant.now(),
-            deletedAt = deletedAt,
-            tags = tags
         )
+    }
+
+    fun cloneWithCloudId(cloudNoteId: String): LocalNote {
+        return this.copy(cloudId = cloudNoteId)
     }
 
     companion object {

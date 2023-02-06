@@ -4,7 +4,6 @@ import com.svbackend.natai.android.DiaryDatabase
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.entity.Tag
-import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.entity.relation.NoteWithTags
 import com.svbackend.natai.android.http.ApiClient
 import kotlinx.coroutines.Dispatchers
@@ -84,7 +83,9 @@ class DiaryRepository(
             if (note.cloudId != null) {
                 api.updateNote(note)
             } else {
-                api.addNote(note)
+                val response = api.addNote(note)
+                val syncedLocalNote = note.cloneWithCloudId(response.noteId)
+                updateNote(Note.create(syncedLocalNote))
             }
         } catch (e: Throwable) {
             e.printStackTrace()
