@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -475,7 +474,13 @@ fun TagPreviewBadge(
             selected = true,
             modifier = modifier.padding(end = 4.dp),
             onClick = {},
-            label = { Text(text = "#${tag.tag}") },
+            label = {
+                Text(
+                    text = "#${tag.tag}",
+                    modifier = Modifier.widthIn(min = 32.dp),
+                    maxLines = 1
+                )
+            },
         )
     }
 }
