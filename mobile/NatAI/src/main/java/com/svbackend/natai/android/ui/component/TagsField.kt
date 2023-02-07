@@ -3,9 +3,11 @@ package com.svbackend.natai.android.ui.component
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -419,8 +421,9 @@ fun SpecialTagsRow(tags: List<TagEntityDto>) {
 
 @Composable
 fun RegularTagsRow(tags: List<TagEntityDto>) {
+    val scrollState = rememberScrollState()
     val regularTags = tags.filter { !it.isSpecial }
-    Row {
+    Row(modifier = Modifier.horizontalScroll(scrollState)) {
         regularTags.map {
             TagPreviewBadge(
                 tag = it,
