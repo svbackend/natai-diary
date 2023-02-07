@@ -67,7 +67,7 @@ fun TagsField(
         .filter { suggestion ->
             !Tag.isSpecial(suggestion)
                     && tags.any { it.tag == suggestion }.not()
-                    && (value.text.isEmpty() || suggestion.startsWith(value.text))
+                    && (value.text.isEmpty() || suggestion.lowercase().startsWith(value.text.lowercase()))
         }
 
     fun addTag(tag: String) {
