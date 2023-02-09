@@ -1,3 +1,14 @@
+### Feb 8, 2023
+
+Couple of days ago I released 1.1 version of the app with bug fixes and small UI improvements,
+seems like everything works pretty stable since I'm using it myself :)
+
+Today I added basic layout for web app diary page, looks exactly the same as mobile app but without any colors.
+Should be good for now.
+
+Next steps:
+- [ ] Web App - read notes (view note page)
+
 ### Jan 30, 2023
 
 Found like 5-6 minor bugs with android app so far, created tasks on trello,
