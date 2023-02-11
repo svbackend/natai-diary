@@ -1,3 +1,15 @@
+### Feb 10, 2023
+
+Today I added ability to read notes in web app, it's pretty basic, but it works.
+We can read notes by id (single note) or by date (all notes written on specific date).
+
+Next steps:
+- [ ] Web App - create notes
+- [ ] Web App - add mood to notes
+- [ ] Web App - add tags to notes
+- [ ] Web App - edit notes
+- [ ] Web App - delete notes
+
 ### Feb 8, 2023
 
 Couple of days ago I released 1.1 version of the app with bug fixes and small UI improvements,
