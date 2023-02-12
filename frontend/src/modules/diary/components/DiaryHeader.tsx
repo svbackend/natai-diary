@@ -3,6 +3,8 @@ import React from "react";
 import {Dialog} from "@headlessui/react";
 import {diaryMenuModalAtom} from "../atoms/diaryMenuModalAtom";
 import {useAtom} from "jotai";
+import {useTranslations} from "use-intl";
+import Link from "next/link";
 
 // 2 buttons - Open menu, Add new note
 export function DiaryHeader({user}: { user: UserDto }) {
@@ -21,6 +23,7 @@ export function DiaryHeader({user}: { user: UserDto }) {
 // Open menu (in modal window)
 function DiaryHeaderMenuButton() {
     const [isMenuOpen, setIsMenuOpen] = useAtom(diaryMenuModalAtom)
+    const t = useTranslations("DiaryPage")
 
     return (
         <button
@@ -32,7 +35,7 @@ function DiaryHeaderMenuButton() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                       d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
-            <span>Menu</span>
+            <span>{t("menu")}</span>
         </button>
     )
 }
@@ -279,9 +282,8 @@ function DiaryMenuModalContent({onClose}: { onClose: () => void }) {
 
 // Add new note
 function DiaryHeaderAddNoteButton() {
+    const t = useTranslations("DiaryPage")
     return (
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Add new note
-        </button>
+        <Link href={"/diary/new-note"} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{t("addNewNote")}</Link>
     )
 }

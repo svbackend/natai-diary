@@ -132,5 +132,17 @@
     "description": "Please login to view this page",
     "loginButton": "Login"
   },
-  "DiaryPage": {}
+  "DiaryPage": {
+    "addNewNote": "Add new note",
+    "menu": "Menu",
+    "newNoteTitle": ""
+  },
+  "DiaryNewNote": {
+    "titleLabel": "Title",
+    "contentLabel": "Content",
+    "saveButton": "Save"
+  },
+  "NoteEditorField": {
+    "placeholder": "How was your day?"
+  }
 }

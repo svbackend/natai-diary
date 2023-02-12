@@ -9,20 +9,7 @@ import React from "react";
 import {DiaryNotesPreviewList} from "../../src/modules/diary/components/DiaryNotesList";
 import {DiaryHeader} from "../../src/modules/diary/components/DiaryHeader";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
-
-function NotLoggedIn() {
-    const t = useTranslations("NotLoggedIn");
-
-    return (
-        <div className="flex flex-col items-center justify-center">
-            <h1 className="text-2xl font-bold">{t("title")}</h1>
-            <p className="text-center">{t("description")}</p>
-            <Link href="/login" className="text-blue-500">
-                {t("loginButton")}
-            </Link>
-        </div>
-    )
-}
+import {NotLoggedIn} from "../../src/modules/common/components/NotLoggedIn";
 
 export default function DiaryPage() {
 
