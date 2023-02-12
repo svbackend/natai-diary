@@ -1,3 +1,10 @@
+### Feb 12, 2023
+
+Today I added modal window for menu on diary page, updated header of diary,
+fixed issue with ordering of notes, fixed issue with content overflow.
+
+Still need to add ability to write notes, add tags and select mood. That's my top priority for now.
+
 ### Feb 10, 2023
 
 Today I added ability to read notes in web app, it's pretty basic, but it works.
