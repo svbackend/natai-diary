@@ -31,12 +31,14 @@ export function DiaryNotesList({notes}: { notes: CloudNoteDto[] }) {
 export function DiaryNotesPreviewByDate({date, notes}: { date: string, notes: CloudNoteDto[] }) {
     const lastIdx = notes.length - 1
 
+    const reversedNotes = notes.reverse()
+
     return (
         <>
-            <div className="flex flex-row border-b">
+            <div className="flex flex-row border-b overflow-hidden max-w-full">
                 <NotesListDateColumn date={date}/>
-                <div className="flex flex-col p-4">
-                    {notes.map((note, idx) => <DiaryNotePreview key={note.id} note={note} isLast={idx === lastIdx}/>)}
+                <div className="flex flex-col p-4 max-w-full overflow-hidden">
+                    {reversedNotes.map((note, idx) => <DiaryNotePreview key={note.id} note={note} isLast={idx === lastIdx}/>)}
                 </div>
             </div>
         </>
@@ -46,12 +48,14 @@ export function DiaryNotesPreviewByDate({date, notes}: { date: string, notes: Cl
 export function DiaryNotesViewByDate({date, notes}: { date: string, notes: CloudNoteDto[] }) {
     const lastIdx = notes.length - 1
 
+    const reversedNotes = notes.reverse()
+
     return (
         <>
-            <div className="flex flex-row border-b">
+            <div className="flex flex-row border-b overflow-hidden">
                 <NotesListDateColumn date={date}/>
-                <div className="flex flex-col p-4">
-                    {notes.map((note, idx) => <DiaryNoteView key={note.id} note={note} isLast={idx === lastIdx}/>)}
+                <div className="flex flex-col p-4 max-w-full overflow-hidden">
+                    {reversedNotes.map((note, idx) => <DiaryNoteView key={note.id} note={note} isLast={idx === lastIdx}/>)}
                 </div>
             </div>
         </>
@@ -65,7 +69,7 @@ export function DiaryNotePreview({note, isLast}: { note: CloudNoteDto, isLast: b
 
     return (
         <>
-            <Link href={`/diary/note/${note.id}`} className={classNames("flex flex-col py-2 cursor-pointer", !isLast && "border-b")}>
+            <Link href={`/diary/note/${note.id}`} className={classNames("flex flex-col py-2 cursor-pointer max-w-full", !isLast && "border-b")}>
                 <span>{hm}</span>
                 <h1 className="text-2xl font-bold">{note.title}</h1>
 

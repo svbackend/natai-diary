@@ -1,17 +1,11 @@
 import {CloudNoteDto} from "../../../api/apiSchemas";
 
 export const noteMapperService = {
-    toYmd(date: Date) {
-        return date.toISOString().split("T")[0]
-    },
-    fromYmd(date: string) {
-        return new Date(date)
-    },
     mapNotesByDate(notes: CloudNoteDto[]) {
         const notesByDate = new Map<string, CloudNoteDto[]>()
 
         notes.forEach(note => {
-                const date = this.toYmd(new Date(note.createdAt))
+                const date = note.actualDate
 
                 if (notesByDate.has(date)) {
                     notesByDate.get(date)?.push(note)

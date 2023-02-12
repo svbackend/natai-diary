@@ -23,7 +23,7 @@ export default function SpecialTagsRow({note}: { note: CloudNoteDto }) {
     const moodTag = tags.find(tag => tag.tag === "mood")
 
     return (
-        <div className="flex flex-row my-2">
+        <div className="flex flex-row my-2 overflow-auto">
             {moodTag && <TagMood score={moodTag.score}/>}
         </div>
     )

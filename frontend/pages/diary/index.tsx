@@ -7,6 +7,8 @@ import {UserDto} from "../../src/api/apiSchemas";
 import {useGetNotes} from "../../src/api/apiComponents";
 import React from "react";
 import {DiaryNotesPreviewList} from "../../src/modules/diary/components/DiaryNotesList";
+import {DiaryHeader} from "../../src/modules/diary/components/DiaryHeader";
+import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 
 function NotLoggedIn() {
     const t = useTranslations("NotLoggedIn");
@@ -43,25 +45,11 @@ function DiaryPageContent({user}: { user: UserDto }) {
 
     return (
         <>
-            <DiaryHeader user={user}/>
-            {isLoading && <AppSpinner/>}
-            <div className="w-full max-w-xl mx-auto mt-4">
+            <NarrowWrapper>
+                <DiaryHeader user={user}/>
+                {isLoading && <AppSpinner/>}
                 {notes?.notes && <DiaryNotesPreviewList notes={notes?.notes}/>}
-            </div>
-        </>
-    )
-}
-
-function DiaryHeader({user}: { user: UserDto }) {
-    return (
-        <>
-            <div className="flex flex-row justify-between items-center">
-                <h1 className="text-2xl font-bold">Hello, {user.name}</h1>
-                <div className="flex flex-row">
-                    <input type="text" placeholder="Search" className="border border-gray-300 rounded-md"/>
-                    <button className="ml-2">Add new note</button>
-                </div>
-            </div>
+            </NarrowWrapper>
         </>
     )
 }

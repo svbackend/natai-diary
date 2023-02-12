@@ -9,8 +9,8 @@ export default function RegularTagsRow({note}: { note: CloudNoteDto }) {
     if (!regularTags) return null
 
     return (
-        <div className="flex flex-row my-2">
-            {regularTags.map(tag => <NoteTagBadge key={`${note.id}_${tag}`} tag={tag.tag}/>)}
+        <div className="flex flex-row my-2 overflow-auto">
+            {regularTags.map(tag => <NoteTagBadge key={`${note.id}_${tag.tag}`} tag={tag.tag}/>)}
         </div>
     )
 }
