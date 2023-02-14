@@ -6,6 +6,7 @@ import {NextIntlProvider} from "next-intl";
 import {getTranslations} from "../i18n/i18n";
 import {useRouter} from "next/router";
 import {AppContext, useGlobalState} from "../src/modules/common/state";
+import { Provider } from 'jotai'
 
 const queryClient = new QueryClient()
 
@@ -19,7 +20,9 @@ export default function App({Component, pageProps}: AppProps) {
         <NextIntlProvider messages={messages} locale={locale}>
             <QueryClientProvider client={queryClient}>
                 <AppContext.Provider value={globalAppState}>
-                    <Component {...pageProps} />
+                    <Provider>
+                        <Component {...pageProps} />
+                    </Provider>
                 </AppContext.Provider>
             </QueryClientProvider>
         </NextIntlProvider>

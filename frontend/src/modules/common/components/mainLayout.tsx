@@ -11,6 +11,7 @@ import UserDropdownMenu from "../../auth/components/userDropdownMenu";
 import {UserDto} from "../../../api/apiSchemas";
 import {CheckCircleIcon} from "@heroicons/react/20/solid";
 import {useTranslations} from "use-intl";
+import {Animate} from "./Animate";
 
 
 const Header = ({router}: { router: NextRouter }) => {
@@ -41,18 +42,11 @@ const Header = ({router}: { router: NextRouter }) => {
                         </div>
                     </header>
 
-                    <Transition
-                        enter="transition duration-100 ease-out"
-                        enterFrom="transform scale-95 opacity-0"
-                        enterTo="transform scale-100 opacity-100"
-                        leave="transition duration-75 ease-out"
-                        leaveFrom="transform scale-100 opacity-100"
-                        leaveTo="transform scale-95 opacity-0"
-                    >
+                    <Animate>
                         <Disclosure.Panel>
                             <MobileNavBar router={router}/>
                         </Disclosure.Panel>
-                    </Transition>
+                    </Animate>
                 </>
             )}
         </Disclosure>
