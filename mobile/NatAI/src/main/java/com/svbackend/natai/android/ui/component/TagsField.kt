@@ -63,12 +63,12 @@ fun TagsField(
     val moodTag = tags.find { it.tag == "mood" }
 
     val suggestions = tagsSuggestions
-        .take(5)
         .filter { suggestion ->
             !Tag.isSpecial(suggestion)
                     && tags.any { it.tag == suggestion }.not()
                     && (value.text.isEmpty() || suggestion.lowercase().startsWith(value.text.lowercase()))
         }
+        .take(5)
 
     fun addTag(tag: String) {
         val newTag = sanitizeTag(tag)
