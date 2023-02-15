@@ -58,20 +58,32 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
         isLoading.value = true
 
         val cloudUserId = prefs.getString("cloud_id", null)
+        val appendIfPossible = title.value.text.isEmpty() && content.value.text.isEmpty()
 
         val title = title.value.text.ifEmpty {
             titleGenerator.generateTitle()
         }
 
-        val note = LocalNote(
-            title = title,
-            content = content.value.text,
-            actualDate = actualDate.value,
-            tags = tags.value,
-            cloudUserId = cloudUserId,
-        )
+        if (appendIfPossible) {
+            val lastNote = repository.getLastNoteByActualDate(actualDate.value!!)
 
-        repository.insertNoteAndSync(note)
+            if (lastNote != null) {
+                val existingNote = LocalNote.create(lastNote).updateTags(tags.value)
+                repository.updateNoteAndSync(existingNote)
+            }
+        } else {
+            val note = LocalNote(
+                title = title,
+                content = content.value.text,
+                actualDate = actualDate.value,
+                tags = tags.value,
+                cloudUserId = cloudUserId,
+            )
+
+            repository.insertNoteAndSync(note)
+        }
+
+
         clearStoredData()
         isLoading.value = false
     }

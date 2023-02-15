@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.time.Instant
+import java.time.LocalDate
 
 class DiaryRepository(
     private val db: DiaryDatabase,
@@ -94,5 +95,9 @@ class DiaryRepository(
 
     suspend fun assignNotesToUser(cloudUserId: String) = withContext(Dispatchers.IO) {
         db.diaryDAO().assignNotesToNewUser(cloudUserId = cloudUserId)
+    }
+
+    suspend fun getLastNoteByActualDate(actualDate: LocalDate): NoteWithTags? = withContext(Dispatchers.IO) {
+        db.diaryDAO().getLastNoteByActualDate(actualDate)
     }
 }
