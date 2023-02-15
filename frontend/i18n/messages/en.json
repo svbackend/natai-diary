@@ -140,7 +140,7 @@
   "DiaryNewNote": {
     "titleLabel": "Title",
     "contentLabel": "Content",
-    "saveButton": "Save"
+    "addNewNoteButton": "Add note"
   },
   "NoteEditorField": {
     "placeholder": "How was your day?"
