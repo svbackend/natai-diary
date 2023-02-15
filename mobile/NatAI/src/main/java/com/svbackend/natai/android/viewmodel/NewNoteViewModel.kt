@@ -8,12 +8,14 @@ import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.service.TitleGenerator
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class NewNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
     val prefs: SharedPreferences = (application as DiaryApplication).appContainer.sharedPrefs
+    val titleGenerator: TitleGenerator = (application as DiaryApplication).appContainer.titleGenerator
 
     val title = mutableStateOf(
         TextFieldValue(prefs.getString("new_note_title", null) ?: "")
@@ -57,8 +59,12 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
 
         val cloudUserId = prefs.getString("cloud_id", null)
 
+        val title = title.value.text.ifEmpty {
+            titleGenerator.generateTitle()
+        }
+
         val note = LocalNote(
-            title = title.value.text,
+            title = title,
             content = content.value.text,
             actualDate = actualDate.value,
             tags = tags.value,

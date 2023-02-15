@@ -1,14 +1,18 @@
 package com.svbackend.natai.android.ui.screen
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,12 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.*
+import com.svbackend.natai.android.ui.AppDateRow
+import com.svbackend.natai.android.ui.NPrimaryButton
+import com.svbackend.natai.android.ui.NTextField
+import com.svbackend.natai.android.ui.NTextarea
 import com.svbackend.natai.android.ui.component.TagsField
-import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.throttleLatest
 import com.svbackend.natai.android.viewmodel.NewNoteViewModel
 import kotlinx.coroutines.launch
@@ -38,6 +43,7 @@ fun NewNoteScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val tagsSuggestions by vm.tagsSuggestions.collectAsState(initial = emptyList())
+    val emptyNoteError = stringResource(R.string.contentOrTagsRequired)
 
     val onTitleChange: (String) -> Unit = throttleLatest(
         intervalMs = 350L,
@@ -57,10 +63,14 @@ fun NewNoteScreen(
     }
 
     fun addNote(): () -> Unit {
-        if (vm.title.value.text.isEmpty() || vm.content.value.text.isEmpty()) {
+        val title = vm.title.value.text
+        val content = vm.content.value.text
+        val tagsCount = vm.tags.value.count()
+
+        if (title.isEmpty() && content.isEmpty() && tagsCount == 0) {
             return {
                 Toast
-                    .makeText(context, "Title and content are required", Toast.LENGTH_SHORT)
+                    .makeText(context, emptyNoteError, Toast.LENGTH_SHORT)
                     .show()
             }
         }
