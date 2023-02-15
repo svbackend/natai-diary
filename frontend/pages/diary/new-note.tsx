@@ -21,6 +21,8 @@ import {diarySelectMoodModalAtom} from "../../src/modules/diary/atoms/diarySelec
 import {Dialog} from "@headlessui/react";
 import {classNames} from "../../src/utils/classNames";
 import {dateService} from "../../src/modules/common/services/dateService";
+import {diaryAddTagModalAtom} from "../../src/modules/diary/atoms/diaryAddTagModalAtom";
+import icNewLabel from "../../public/assets/img/ic_new_label.svg";
 
 export default function DiaryNewNote() {
 
@@ -163,6 +165,7 @@ function DiaryNewNotePageContent() {
                     <div className="flex flex-row justify-between mb-4">
                         {/* Select mood (left) and "Add tags" button (right) */}
                         <SelectMoodButton moodScore={moodScore}/>
+                        <AddTagsButton tags={tags} onAdd={addTag}/>
                     </div>
 
                     <FormSubmitButton label={t("addNewNoteButton")} loading={isLoading}/>
@@ -186,6 +189,21 @@ function SelectMoodButton({moodScore}: { moodScore: number | null }) {
         >
             <Image src={moodImg} alt={"Select mood"} className={"w-12 h-12"}/>
             <span className={"text-xs text-gray-600"}>#mood</span>
+        </button>
+    )
+}
+
+function AddTagsButton({tags, onAdd}: { onAdd: (tag: CloudTagDto) => void, tags: CloudTagDto[] }) {
+    const [isMenuOpen, setIsMenuOpen] = useAtom(diaryAddTagModalAtom)
+
+    return (
+        <button
+            onClick={() => setIsMenuOpen(true)}
+            className="flex flex-col bg-gray-100 hover:bg-gray-200 rounded items-center"
+            type={"button"}
+        >
+            <Image src={icNewLabel} alt={"Add tag"} className={"w-12 h-12"}/>
+            <span className={"text-xs text-gray-600"}>Add Tag</span>
         </button>
     )
 }
