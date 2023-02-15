@@ -8,12 +8,14 @@ import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.service.TitleGenerator
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class NewNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
     val prefs: SharedPreferences = (application as DiaryApplication).appContainer.sharedPrefs
+    val titleGenerator: TitleGenerator = (application as DiaryApplication).appContainer.titleGenerator
 
     val title = mutableStateOf(
         TextFieldValue(prefs.getString("new_note_title", null) ?: "")
@@ -56,16 +58,32 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
         isLoading.value = true
 
         val cloudUserId = prefs.getString("cloud_id", null)
+        val appendIfPossible = title.value.text.isEmpty() && content.value.text.isEmpty()
 
-        val note = LocalNote(
-            title = title.value.text,
-            content = content.value.text,
-            actualDate = actualDate.value,
-            tags = tags.value,
-            cloudUserId = cloudUserId,
-        )
+        val title = title.value.text.ifEmpty {
+            titleGenerator.generateTitle()
+        }
 
-        repository.insertNoteAndSync(note)
+        if (appendIfPossible) {
+            val lastNote = repository.getLastNoteByActualDate(actualDate.value!!)
+
+            if (lastNote != null) {
+                val existingNote = LocalNote.create(lastNote).updateTags(tags.value)
+                repository.updateNoteAndSync(existingNote)
+            }
+        } else {
+            val note = LocalNote(
+                title = title,
+                content = content.value.text,
+                actualDate = actualDate.value,
+                tags = tags.value,
+                cloudUserId = cloudUserId,
+            )
+
+            repository.insertNoteAndSync(note)
+        }
+
+
         clearStoredData()
         isLoading.value = false
     }

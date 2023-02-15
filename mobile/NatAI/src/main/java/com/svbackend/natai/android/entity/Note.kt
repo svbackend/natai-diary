@@ -34,13 +34,6 @@ data class Note(
         updatedAt = cloudNote.updatedAt
     }
 
-    fun update(title: String, content: String, actualDate: LocalDate) {
-        this.title = title
-        this.content = content
-        this.actualDate = actualDate
-        this.updatedAt = Instant.now()
-    }
-
     companion object {
         fun create(dto: LocalNote) = Note(
             id = dto.id,
@@ -53,33 +46,6 @@ data class Note(
             deletedAt = dto.deletedAt,
             actualDate = dto.actualDate,
         )
-    }
-}
-
-data class NoteEntityDto(
-    val cloudId: String? = null,
-    val title: String,
-    val content: String,
-    val actualDate: LocalDate = LocalDate.now(),
-    val createdAt: Instant = Instant.now(),
-    val updatedAt: Instant = Instant.now(),
-    val deletedAt: Instant? = null,
-    val tags: List<TagEntityDto>,
-) {
-    companion object {
-        fun create(entity: NoteWithTags): NoteEntityDto {
-            val tags = entity.tags.map { TagEntityDto.create(it) }
-            return NoteEntityDto(
-                cloudId = entity.note.cloudId,
-                title = entity.note.title,
-                content = entity.note.content,
-                actualDate = entity.note.actualDate,
-                createdAt = entity.note.createdAt,
-                updatedAt = entity.note.updatedAt,
-                deletedAt = entity.note.deletedAt,
-                tags = tags
-            )
-        }
     }
 }
 
@@ -113,6 +79,25 @@ data class LocalNote(
 
     fun cloneWithCloudId(cloudNoteId: String): LocalNote {
         return this.copy(cloudId = cloudNoteId)
+    }
+
+    fun updateTags(tags: List<TagEntityDto>): LocalNote {
+        val mergedTags = this.tags.toMutableList()
+
+        tags.forEach { tag ->
+            val existingTag = mergedTags.find { it.tag == tag.tag }
+            if (existingTag != null) {
+                mergedTags.remove(existingTag)
+                mergedTags.add(tag)
+            } else {
+                mergedTags.add(tag)
+            }
+        }
+
+        return this.copy(
+            tags = mergedTags,
+            updatedAt = Instant.now(),
+        )
     }
 
     companion object {
