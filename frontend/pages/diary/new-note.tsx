@@ -23,6 +23,7 @@ import {classNames} from "../../src/utils/classNames";
 import {dateService} from "../../src/modules/common/services/dateService";
 import {diaryAddTagModalAtom} from "../../src/modules/diary/atoms/diaryAddTagModalAtom";
 import icNewLabel from "../../public/assets/img/ic_new_label.svg";
+import {DiaryAddTagsModal} from "../../src/modules/diary/components/DiaryAddTagsModal";
 
 export default function DiaryNewNote() {
 
@@ -165,7 +166,7 @@ function DiaryNewNotePageContent() {
                     <div className="flex flex-row justify-between mb-4">
                         {/* Select mood (left) and "Add tags" button (right) */}
                         <SelectMoodButton moodScore={moodScore}/>
-                        <AddTagsButton tags={tags} onAdd={addTag}/>
+                        <AddTagsButton/>
                     </div>
 
                     <FormSubmitButton label={t("addNewNoteButton")} loading={isLoading}/>
@@ -173,6 +174,7 @@ function DiaryNewNotePageContent() {
             </div>
 
             <DiarySelectMoodModal onSelect={(tag: CloudTagDto) => addTag(tag)} moodScore={moodScore}/>
+            <DiaryAddTagsModal addedTags={tags} onAdd={addTag}/>
         </NarrowWrapper>
     )
 }
@@ -193,7 +195,7 @@ function SelectMoodButton({moodScore}: { moodScore: number | null }) {
     )
 }
 
-function AddTagsButton({tags, onAdd}: { onAdd: (tag: CloudTagDto) => void, tags: CloudTagDto[] }) {
+function AddTagsButton() {
     const [isMenuOpen, setIsMenuOpen] = useAtom(diaryAddTagModalAtom)
 
     return (
@@ -202,7 +204,9 @@ function AddTagsButton({tags, onAdd}: { onAdd: (tag: CloudTagDto) => void, tags:
             className="flex flex-col bg-gray-100 hover:bg-gray-200 rounded items-center"
             type={"button"}
         >
-            <Image src={icNewLabel} alt={"Add tag"} className={"w-12 h-12"}/>
+            <div className="w-12 h-12 flex flex-row items-center">
+                <Image src={icNewLabel} alt={"Add tag"} className={"w-8 h-8 mx-auto"}/>
+            </div>
             <span className={"text-xs text-gray-600"}>Add Tag</span>
         </button>
     )

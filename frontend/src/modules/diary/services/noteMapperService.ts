@@ -33,5 +33,22 @@ export const noteMapperService = {
             shortMonth,
             year
         }
+    },
+    getAllTagsSortedByPopularity(notes: CloudNoteDto[]): string[] {
+        const tags = new Map<string, number>()
+
+        notes.forEach(note => {
+            note.tags.forEach(tag => {
+                if (tags.has(tag.tag)) {
+                    tags.set(tag.tag, tags.get(tag.tag)! + 1)
+                } else {
+                    tags.set(tag.tag, 1)
+                }
+            })
+        })
+
+        return Array.from(tags.entries())
+            .sort((a, b) => b[1] - a[1])
+            .map(entry => entry[0])
     }
 }

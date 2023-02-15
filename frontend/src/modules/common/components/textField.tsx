@@ -12,6 +12,8 @@ type TextFieldProps = {
     errors?: FieldErrors,
     register?: any,
     onChange?: any,
+
+    onInput?: any,
     disabled?: boolean,
     readonly?: boolean,
     className?: string,
@@ -26,6 +28,7 @@ export const TextField = ({
                               register,
                               value,
                               onChange,
+                              onInput,
                               errors,
                               required = true,
                               disabled,
@@ -61,6 +64,7 @@ export const TextField = ({
                     )}
                     value={value}
                     onChange={onChange}
+                    onInput={onInput}
                     {...props}
                     {...register}
                 />
