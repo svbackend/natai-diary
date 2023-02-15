@@ -55,7 +55,7 @@ class MainActivity : ScopedActivity() {
         }
 
         //val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
-        val theme = prefs.getString(getString(R.string.pref_theme_key), null) ?: "Pink"
+        val theme = prefs.getString(getString(R.string.pref_theme_key), null) ?: "Default"
         val userTheme: UserTheme = UserTheme.strToTheme(theme)
 
         setContent {
