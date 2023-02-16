@@ -1,7 +1,9 @@
 package com.svbackend.natai.android.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,11 +13,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,7 +32,9 @@ import com.svbackend.natai.android.ui.component.RegularTagsRow
 import com.svbackend.natai.android.ui.component.SpecialTagsRow
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.gradientBackground
+import com.svbackend.natai.android.utils.throttleLatest
 import com.svbackend.natai.android.viewmodel.NoteViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 data class NotesGroup(
@@ -46,12 +52,41 @@ fun MainScreen(
     val notes = vm.notesState
     val currentUser = vm.userState
     val isLoggedIn = currentUser != null
+    val context = LocalContext.current
+
+    val scope = rememberCoroutineScope()
+
+    val pullToRefreshCallback = throttleLatest<Offset>(
+        intervalMs = 500L,
+        coroutineScope = scope,
+        destinationFunction = { dragAmount ->
+            val isPullingDown = dragAmount.y > 0
+
+            if (isPullingDown) {
+                // show short toast message that sync is started
+                Toast
+                    .makeText(context, "Synchronization started..", Toast.LENGTH_SHORT)
+                    .show()
+                scope.launch {
+                    vm.sync()
+                }
+            }
+        }
+    )
+
+    val pullToRefreshModifier = Modifier.pointerInput(Unit) {
+        detectDragGestures { change, dragAmount ->
+            change.consume()
+
+            pullToRefreshCallback(dragAmount)
+        }
+    }
 
     if (notes.isNotEmpty()) {
         val groups = mapNotes(notes)
         Surface(
             color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = pullToRefreshModifier.fillMaxWidth(),
             content = {
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -128,7 +163,7 @@ fun MainScreen(
             shape = MaterialTheme.shapes.large,
             content = {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = pullToRefreshModifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
