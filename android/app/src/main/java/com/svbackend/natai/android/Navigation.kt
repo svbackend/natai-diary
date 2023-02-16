@@ -159,7 +159,10 @@ fun Navigation(
 
         composable(route = Route.SettingsReminderRoute.route) {
             ReminderScreen(
-                onAskForNotificationPermission = onAskForNotificationPermission
+                onAskForNotificationPermission = onAskForNotificationPermission,
+                onSave = {
+                    controller.popBackStack()
+                }
             )
         }
 

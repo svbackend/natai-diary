@@ -15,12 +15,23 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
     private val app: DiaryApplication = (application as DiaryApplication)
     private val prefs: SharedPreferences = app.appContainer.sharedPrefs
 
-    fun changeReminderTime(newTime: LocalTime) {
-        viewModelScope.launch {
-            prefs.edit()
-                .putString(app.getString(R.string.pref_reminder_time_key), newTime.toString())
-                .apply()
-        }
+    val isSaving: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+
+    suspend fun changeReminderTime(newTime: LocalTime) {
+        isSaving.emit(true)
+        prefs.edit()
+            .putString(app.getString(R.string.pref_reminder_time_key), newTime.toString())
+            .apply()
+        isSaving.emit(false)
+    }
+
+    fun initReminderTime(): LocalTime {
+        val time = prefs.getString(app.getString(R.string.pref_reminder_time_key), "21:30")
+        val timeParts = time?.split(":")
+        val hour = timeParts?.get(0)?.toInt() ?: 21
+        val minute = timeParts?.get(1)?.toInt() ?: 30
+        return LocalTime.of(hour, minute)
     }
 
     fun initIsReminderEnabled() {

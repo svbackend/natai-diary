@@ -76,7 +76,7 @@ dependencies {
     val composeVersion = "1.4.0-alpha05"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha05")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha06")
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.animation:animation-graphics:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")

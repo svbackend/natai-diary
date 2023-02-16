@@ -47,4 +47,6 @@
     <string name="pref_reminder_enabled_key">com.svbackend.natai.REMINDER_ENABLED</string>
     <string name="settingsReminderToggle">Enable reminder?</string>
     <string name="contentOrTagsRequired">You can\'t create completely empty note</string>
+    <string name="settingsReminderChangeTime">Change time</string>
+    <string name="save">Save</string>
 </resources>

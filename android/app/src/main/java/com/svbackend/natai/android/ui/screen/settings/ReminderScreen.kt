@@ -4,12 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,17 +16,45 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.viewmodel.ReminderViewModel
+import kotlinx.coroutines.launch
+import java.time.LocalTime
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReminderScreen(
     viewModel: ReminderViewModel = viewModel(),
-    onAskForNotificationPermission: () -> Unit
+    onAskForNotificationPermission: () -> Unit,
+    onSave: () -> Unit,
 ) {
     val isReminderEnabled: Boolean = viewModel
         .isReminderEnabledState
         .collectAsState()
         .value
+
+    val initialTime = viewModel.initReminderTime()
+    val timePickerState = rememberTimePickerState(
+        initialTime.hour,
+        initialTime.minute
+    )
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val onClickSave = {
+        coroutineScope.launch {
+            viewModel.changeReminderTime(
+                LocalTime.of(
+                    timePickerState.hour,
+                    timePickerState.minute
+                )
+            )
+
+            onSave()
+        }
+    }
+
+    val isSaving = viewModel.isSaving.collectAsState().value
 
     viewModel.initIsReminderEnabled()
 
@@ -51,7 +77,6 @@ fun ReminderScreen(
             ReminderToggle(
                 currentValue = isReminderEnabled,
                 onToggle = {
-                    println("---> ReminderToggle: $it")
                     viewModel.toggleReminder(it)
 
                     if (it) {
@@ -59,6 +84,42 @@ fun ReminderScreen(
                     }
                 }
             )
+
+            if (isReminderEnabled) {
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth()
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TimePicker(
+                        state = timePickerState,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                ) {
+                    NPrimaryButton(
+                        onClick = {
+                            onClickSave()
+                        },
+                        loadingText = stringResource(R.string.saving),
+                        isLoading = isSaving,
+                    ) {
+                        Icon(
+                            Icons.Filled.Notifications,
+                            stringResource(R.string.save)
+                        )
+                        Text(
+                            text = stringResource(R.string.save),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -81,6 +142,6 @@ fun ReminderToggle(currentValue: Boolean, onToggle: (Boolean) -> Unit) {
             onCheckedChange = null
         )
         Spacer(Modifier.width(8.dp))
-        Text(stringResource(id = R.string.settingsReminderToggle), )
+        Text(stringResource(id = R.string.settingsReminderToggle))
     }
 }

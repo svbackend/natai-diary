@@ -23,11 +23,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.ui.UserTheme
+import com.svbackend.natai.android.viewmodel.SettingsViewModel
 
 @Composable
 fun SettingsScreen(
+    vm: SettingsViewModel = viewModel(),
     onThemeClick: () -> Unit,
     onReminderClick: () -> Unit,
 ) {
@@ -53,8 +56,9 @@ fun SettingsScreen(
             )
 
             SettingReminderItem(
+                vm = vm,
                 title = stringResource(R.string.settingsReminderTitle),
-                onClick = onReminderClick
+                onClick = onReminderClick,
             )
         }
     }
@@ -92,7 +96,10 @@ fun SettingThemesItem(title: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun SettingReminderItem(title: String, onClick: () -> Unit) {
+fun SettingReminderItem(vm: SettingsViewModel, title: String, onClick: () -> Unit) {
+    val isEnabled = vm.initIsReminderEnabled()
+    val time = vm.initReminderTime()
+
     Row(modifier = Modifier.clickable { onClick() }) {
         Icon(
             Icons.Filled.Notifications,
@@ -116,7 +123,7 @@ fun SettingReminderItem(title: String, onClick: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(16.dp),
-            text = "21:00", // todo get reminder time from shared prefs
+            text = if (isEnabled) time.toString() else "(off)",
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Start
         )
