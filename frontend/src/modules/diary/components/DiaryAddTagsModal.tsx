@@ -5,10 +5,10 @@ import React from "react";
 import {useGetNotes} from "../../../api/apiComponents";
 import {noteMapperService} from "../services/noteMapperService";
 import {diaryAddTagModalAtom} from "../atoms/diaryAddTagModalAtom";
-import {TextField} from "../../common/components/textField";
+import {PlusIcon, PlusSmallIcon, TagIcon, XMarkIcon} from "@heroicons/react/20/solid";
 
 export function DiaryAddTagsModal(
-    {addedTags, onAdd}: { addedTags: CloudTagDto[], onAdd: (tag: CloudTagDto) => void }
+    {addedTags, onAdd, onDelete}: { addedTags: CloudTagDto[], onAdd: (tag: CloudTagDto) => void, onDelete: (tag: string) => void }
 ) {
     const [isMenuOpen, setIsMenuOpen] = useAtom(diaryAddTagModalAtom)
 
@@ -32,8 +32,10 @@ export function DiaryAddTagsModal(
                     {/* The actual dialog panel  */}
                     <Dialog.Panel className="mx-auto max-w-sm rounded bg-white">
                         <DiaryAddTagsModalContent
+                            addedTags={addedTags}
                             suggestedTags={suggestedTags}
                             onAdd={onAdd}
+                            onDelete={onDelete}
                             onClose={() => setIsMenuOpen(false)}
                         />
                     </Dialog.Panel>
@@ -44,15 +46,32 @@ export function DiaryAddTagsModal(
 }
 
 function DiaryAddTagsModalContent({
+                                      addedTags,
                                       suggestedTags,
+                                      onDelete,
                                       onClose,
                                       onAdd
-                                  }: { suggestedTags: string[], onClose: () => void, onAdd: (tag: CloudTagDto) => void }) {
+                                  }: { addedTags: CloudTagDto[], suggestedTags: string[], onDelete: (tag: string) => void, onClose: () => void, onAdd: (tag: CloudTagDto) => void }) {
 
     const [newTag, setNewTag] = React.useState("")
 
     const onInputChange = (val: string) => {
         setNewTag(val)
+    }
+
+    const addTag = (tag: string) => {
+        const [tagName, tagScore] = tag.split(".")
+
+        if (tagName.length === 0) {
+            return
+        }
+
+        const addedTag: CloudTagDto = {
+            tag: tagName,
+            score: tagScore ? Number.parseInt(tagScore) : null,
+        }
+        onAdd(addedTag)
+        setNewTag("")
     }
 
     const getTagsSuggestions = () => {
@@ -64,7 +83,9 @@ function DiaryAddTagsModalContent({
             tags = suggestedTags
         }
 
-        return tags.slice(0, 10)
+        return tags
+            .filter((t) => !addedTags.find((at) => at.tag === t))
+            .slice(0, 10)
     }
 
     const mostPopularTags = getTagsSuggestions()
@@ -96,25 +117,64 @@ function DiaryAddTagsModalContent({
                     {mostPopularTags.map((tag, index) => {
                         return (
                             <button
-                                onClick={() => onAdd({tag: tag, score: null})}
+                                onClick={() => addTag(tag)}
                                 key={index}
                                 className="bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold text-xs px-2 py-1 rounded-full mr-2 mb-2"
                             >
                                 {tag}
+                                <PlusSmallIcon className="w-4 h-4 inline"/>
                             </button>
                         )
                     })}
                 </div>
 
-                <div className="flex flex-row flex-wrap w-100 max-w-full">
-                    {/* new tag input */}
-                    <TextField
-                        label={"New Tag"}
-                        name={"newTag"}
-                        value={newTag}
-                        onInput={(e: { target: { value: string; }; }) => onInputChange(e.target.value)}
-                    />
+                <div className="flex flex-col mb-4">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <TagIcon className="w-5 h-5 text-gray-400" aria-hidden="true"/>
+                        </div>
+                        <input type="text"
+                               value={newTag}
+                               placeholder={"Tags"}
+                               onInput={(e) => onInputChange(e.target.value)}
+                               className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               required/>
+                        <button
+                            onClick={() => addTag(newTag.trim())}
+                            type="button"
+                            className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <PlusIcon className="w-5 h-5"/>
+                        </button>
+                    </div>
                 </div>
+
+                <div className="flex flex-row flex-wrap max-w-full">
+                    {/* added tags badges*/}
+                    {addedTags.map((tag, index) => {
+                        return (
+                            <div
+                                key={index}
+                                className="bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold text-xs px-2 py-1 rounded-full mr-2 mb-2"
+                            >
+                                <span className="cursor-pointer">
+                                    {tag.tag}
+                                </span>
+                                <XMarkIcon className="w-3 h-3 ml-1 inline cursor-pointer" onClick={() => {
+                                    onDelete(tag.tag)
+                                }}/>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+
+            {/* "Done" button */}
+            <div className="flex items-center justify-end p-6 border-t border-gray-300 rounded-b dark:border-gray-600">
+                <button
+                    onClick={onClose}
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Done
+                </button>
             </div>
         </div>
     )

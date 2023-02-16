@@ -24,6 +24,7 @@ import {dateService} from "../../src/modules/common/services/dateService";
 import {diaryAddTagModalAtom} from "../../src/modules/diary/atoms/diaryAddTagModalAtom";
 import icNewLabel from "../../public/assets/img/ic_new_label.svg";
 import {DiaryAddTagsModal} from "../../src/modules/diary/components/DiaryAddTagsModal";
+import {AddedTagsRow} from "../../src/modules/diary/components/AddedTagsRow";
 
 export default function DiaryNewNote() {
 
@@ -111,6 +112,11 @@ function DiaryNewNotePageContent() {
         setTags(newTags)
     }
 
+    const deleteTag = (tag: string) => {
+        const newTags = tags.filter(t => t.tag !== tag)
+        setTags(newTags)
+    }
+
     const onSubmit = async (data: FormValues) => {
         let response: NewNoteResponse
 
@@ -163,6 +169,8 @@ function DiaryNewNotePageContent() {
                         errors={errors}
                     />
 
+                    <AddedTagsRow tags={tags} onDelete={deleteTag}/>
+
                     <div className="flex flex-row justify-between mb-4">
                         {/* Select mood (left) and "Add tags" button (right) */}
                         <SelectMoodButton moodScore={moodScore}/>
@@ -174,7 +182,7 @@ function DiaryNewNotePageContent() {
             </div>
 
             <DiarySelectMoodModal onSelect={(tag: CloudTagDto) => addTag(tag)} moodScore={moodScore}/>
-            <DiaryAddTagsModal addedTags={tags} onAdd={addTag}/>
+            <DiaryAddTagsModal addedTags={tags} onAdd={addTag} onDelete={deleteTag}/>
         </NarrowWrapper>
     )
 }
