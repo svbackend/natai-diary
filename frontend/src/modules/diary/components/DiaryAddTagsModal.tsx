@@ -6,6 +6,7 @@ import {useGetNotes} from "../../../api/apiComponents";
 import {noteMapperService} from "../services/noteMapperService";
 import {diaryAddTagModalAtom} from "../atoms/diaryAddTagModalAtom";
 import {PlusIcon, PlusSmallIcon, TagIcon, XMarkIcon} from "@heroicons/react/20/solid";
+import {specialTags} from "./SpecialTagsRow";
 
 export function DiaryAddTagsModal(
     {addedTags, onAdd, onDelete}: { addedTags: CloudTagDto[], onAdd: (tag: CloudTagDto) => void, onDelete: (tag: string) => void }
@@ -136,7 +137,7 @@ function DiaryAddTagsModalContent({
                         <input type="text"
                                value={newTag}
                                placeholder={"Tags"}
-                               onInput={(e) => onInputChange(e.target.value)}
+                               onInput={(e) => onInputChange((e.target as HTMLInputElement).value)}
                                className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                required/>
                         <button
@@ -150,7 +151,7 @@ function DiaryAddTagsModalContent({
 
                 <div className="flex flex-row flex-wrap max-w-full">
                     {/* added tags badges*/}
-                    {addedTags.map((tag, index) => {
+                    {addedTags.filter(t => !specialTags.includes(t.tag)).map((tag, index) => {
                         return (
                             <div
                                 key={index}

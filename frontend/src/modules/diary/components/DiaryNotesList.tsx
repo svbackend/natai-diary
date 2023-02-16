@@ -63,7 +63,7 @@ export function DiaryNotesViewByDate({date, notes}: { date: string, notes: Cloud
 }
 
 export function DiaryNotePreview({note, isLast}: { note: CloudNoteDto, isLast: boolean }) {
-    const contentPreview = (note.content && note.content.length > 200) ? note.content.substring(0, 100) + "..." : ""
+    const contentPreview = (note.content && note.content.length > 200) ? note.content.substring(0, 100) + "..." : note.content
 
     const hm = new Date(note.createdAt).toTimeString().substring(0, 5)
 

@@ -12,5 +12,12 @@ export const dateService = {
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
         return `${day < 10 ? '0' + day : day} ${month < 10 ? '0' + month : month} ${year}`;
+    },
+    toYMD(date: Date): string {
+        // converts date object to string in format like 2023-01-01
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
     }
 }

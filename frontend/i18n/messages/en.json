@@ -143,6 +143,7 @@
     "addNewNoteButton": "Add note"
   },
   "NoteEditorField": {
-    "placeholder": "How was your day?"
+    "placeholder": "How was your day?",
+    "FieldRequired": "This field is required"
   }
 }

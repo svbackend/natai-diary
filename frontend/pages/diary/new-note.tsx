@@ -25,6 +25,7 @@ import {diaryAddTagModalAtom} from "../../src/modules/diary/atoms/diaryAddTagMod
 import icNewLabel from "../../public/assets/img/ic_new_label.svg";
 import {DiaryAddTagsModal} from "../../src/modules/diary/components/DiaryAddTagsModal";
 import {AddedTagsRow} from "../../src/modules/diary/components/AddedTagsRow";
+import {titleGeneratorService} from "../../src/modules/diary/services/titleGeneratorService";
 
 export default function DiaryNewNote() {
 
@@ -120,13 +121,24 @@ function DiaryNewNotePageContent() {
     const onSubmit = async (data: FormValues) => {
         let response: NewNoteResponse
 
+        if (!data.title.trim() && !data.content.trim() && !tags.length) {
+            return;
+        }
+
+        let title = data.title.trim()
+        let content = data.content.trim()
+
+        if (!title) {
+            title = titleGeneratorService.generateTitle()
+        }
+
         try {
             response = await addNoteRequest({
                 body: {
-                    title: data.title,
-                    content: data.content,
+                    title: title,
+                    content: content,
                     tags: tags,
-                    actualDate: "",
+                    actualDate: dateService.toYMD(actualDate),
                     deletedAt: null,
                 }
             })
@@ -159,13 +171,14 @@ function DiaryNewNotePageContent() {
                         name={"title"}
                         type={"text"}
                         errors={errors}
-                        register={register("title", {required: true})}
+                        register={register("title")}
+                        required={false}
                     />
 
                     <NoteEditorField
                         label={t("contentLabel")}
                         name={"content"}
-                        register={register("content", {required: true})}
+                        register={register("content")}
                         errors={errors}
                     />
 
