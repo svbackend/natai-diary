@@ -11,6 +11,7 @@ import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
+import com.svbackend.natai.android.service.ReminderDataStore
 import com.svbackend.natai.android.service.TitleGenerator
 
 class AppContainer(context: Context) {
@@ -40,6 +41,8 @@ class AppContainer(context: Context) {
     )
 
     val titleGenerator = TitleGenerator()
+
+    val reminderDataStore = ReminderDataStore(prefs = sharedPrefs)
 
     companion object {
         @Volatile

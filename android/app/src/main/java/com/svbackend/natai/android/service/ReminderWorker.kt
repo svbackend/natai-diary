@@ -9,19 +9,25 @@ import androidx.work.WorkerParameters
 import com.svbackend.natai.android.AppContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalTime
 import java.util.*
-
-const val hour = 9
-const val minute = 30
 
 class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val di = AppContainer.getInstance(applicationContext)
 
+        val isReminderEnabled = di.reminderDataStore.isReminderEnabled()
+
+        if (!isReminderEnabled) {
+            return@withContext Result.success()
+        }
+
+        val reminderTime = di.reminderDataStore.getReminderTime()
+
         val currentDate = Calendar.getInstance()
 
-        if (itsLate(currentDate)) {
+        if (itsLate(currentDate, reminderTime)) {
             return@withContext Result.success()
         }
 
@@ -44,9 +50,8 @@ class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
             )
 
         val firstNotificationDate: Calendar = GregorianCalendar.getInstance()
-        firstNotificationDate.set(Calendar.AM_PM, Calendar.PM)
-        firstNotificationDate.set(Calendar.HOUR, hour)
-        firstNotificationDate.set(Calendar.MINUTE, minute)
+        firstNotificationDate.set(Calendar.HOUR_OF_DAY, reminderTime.hour)
+        firstNotificationDate.set(Calendar.MINUTE, reminderTime.minute)
 
         alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC, firstNotificationDate.timeInMillis, pendingIntent
@@ -55,16 +60,15 @@ class ReminderWorker(appContext: Context, workerParams: WorkerParameters) :
         Result.success()
     }
 
-    private fun itsLate(currentDate: Calendar): Boolean {
-        if (currentDate.get(Calendar.AM_PM) != Calendar.PM) {
+    private fun itsLate(currentDate: Calendar, reminderTime: LocalTime): Boolean {
+        val currentHour = currentDate.get(Calendar.HOUR_OF_DAY)
+        val currentMinute = currentDate.get(Calendar.MINUTE)
+
+        if (currentHour < reminderTime.hour) {
             return false
         }
 
-        if (currentDate.get(Calendar.HOUR) < hour) {
-            return false
-        }
-
-        if (currentDate.get(Calendar.HOUR) == hour && currentDate.get(Calendar.MINUTE) < minute) {
+        if (currentHour == reminderTime.hour && currentMinute < reminderTime.minute) {
             return false
         }
 
