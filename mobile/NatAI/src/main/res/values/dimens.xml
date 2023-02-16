@@ -1,5 +1,0 @@
-<resources>
-    <dimen name="newsMoreTextSize">12sp</dimen>
-    <dimen name="form_app_bar_height">250dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-</resources>
