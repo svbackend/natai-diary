@@ -1,6 +1,5 @@
 package com.svbackend.natai.android.ui.component
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -31,7 +30,6 @@ import kotlin.math.roundToInt
 @Composable
 fun TagsField(
     tagsSuggestions: List<String>,
-    context: Context,
     value: TextFieldValue,
     tags: List<TagEntityDto>,
     onAddTag: (TagEntityDto) -> Unit,
@@ -543,7 +541,7 @@ fun MoodTagIcon(modifier: Modifier, score: Int?, isSelected: Boolean = false) {
 
     Image(
         painter = painterResource(id = id),
-        modifier = m,
+        modifier = m.size(96.dp),
         contentDescription = null,
     )
 }

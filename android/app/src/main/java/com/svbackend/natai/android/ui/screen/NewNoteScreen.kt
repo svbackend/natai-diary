@@ -126,9 +126,9 @@ fun NewNoteScreen(
             val tagsValue = vm.tagsFieldValue.value
 
             TagsField(
-                context = context,
-                tags = tags,
+                tagsSuggestions = tagsSuggestions,
                 value = tagsValue,
+                tags = tags,
                 onAddTag = {
                     vm.addTag(it)
                     vm.tagsFieldValue.value = TextFieldValue("")
@@ -136,9 +136,7 @@ fun NewNoteScreen(
                 onDeleteTag = {
                     vm.deleteTag(it)
                 },
-                onValueChange = { vm.tagsFieldValue.value = it },
-                tagsSuggestions = tagsSuggestions,
-            )
+            ) { vm.tagsFieldValue.value = it }
 
             NPrimaryButton(
                 onClick = addNote(),

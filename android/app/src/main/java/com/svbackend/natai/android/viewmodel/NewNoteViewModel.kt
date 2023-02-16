@@ -64,14 +64,18 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
             titleGenerator.generateTitle()
         }
 
+        var appended = false
         if (appendIfPossible) {
             val lastNote = repository.getLastNoteByActualDate(actualDate.value!!)
 
             if (lastNote != null) {
                 val existingNote = LocalNote.create(lastNote).updateTags(tags.value)
                 repository.updateNoteAndSync(existingNote)
+                appended = true
             }
-        } else {
+        }
+
+        if (!appended) {
             val note = LocalNote(
                 title = title,
                 content = content.value.text,

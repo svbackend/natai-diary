@@ -102,7 +102,7 @@ fun EditNoteScreen(
                 }
             )
             TagsField(
-                context = context,
+                tagsSuggestions = tagsSuggestions,
                 value = tagsValue,
                 tags = tags,
                 onAddTag = {
@@ -114,9 +114,7 @@ fun EditNoteScreen(
                     vm.deleteTag(it)
                     saveNote()
                 },
-                onValueChange = { vm.tagsFieldValue.value = it },
-                tagsSuggestions = tagsSuggestions,
-            )
+            ) { vm.tagsFieldValue.value = it }
 
             NPrimaryButton(
                 onClick = saveNote(),
