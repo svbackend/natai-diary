@@ -1,2 +1,0 @@
--keep class com.svbackend.natai.android.entity.** { *; }
--keep class com.svbackend.natai.android.http.** { *; }
