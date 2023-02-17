@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import {Disclosure, Transition} from "@headlessui/react";
+import {Disclosure} from "@headlessui/react";
 import Image from "next/image";
 import flowerSvg from '../../../../public/assets/img/flower.svg';
 import Link from "next/link";
@@ -12,33 +12,62 @@ import {UserDto} from "../../../api/apiSchemas";
 import {CheckCircleIcon} from "@heroicons/react/20/solid";
 import {useTranslations} from "use-intl";
 import {Animate} from "./Animate";
-
+import lightIcon from '../../../../public/assets/theme/light.svg';
 
 const Header = ({router}: { router: NextRouter }) => {
-    const {isLoading} = useAppStateManager()
+    const {user} = useAppStateManager()
+    const from = authService.createUrlForRedirect(router)
 
     return (
         <Disclosure as="nav">
             {({open}) => (
                 <>
                     <header className="p-4 bg-white text-gray-100">
-                        <div className="xl:container mx-auto flex justify-between h-10">
+                        {/* mobile navbar */}
+                        <div className="xl:container mx-auto flex justify-between h-10 lg:hidden">
+                            <div className="flex">
+                                <Disclosure.Button>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         stroke="currentColor"
+                                         className="w-6 h-6 navbar-menu-btn">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                              d="M4 6h16M4 12h16M4 18h16"></path>
+                                    </svg>
+                                </Disclosure.Button>
+                                <Link href="/" aria-label="Back to homepage"
+                                      className="flex items-center p-2">
+
+                                    <ProjectLogo/>
+
+                                    <span className="ml-2 color-name font-poppins font-bold text-xl">Natai</span>
+                                </Link>
+                            </div>
+
+                            <div className="flex">
+                                {!user && (
+                                    <Link
+                                        href={"/registration" + from}
+                                        className="self-center mr-2 px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">
+                                        Sign up
+                                    </Link>
+                                )}
+                                <div className="cursor-pointer rounded-full p-2 bg-gray-200 flex self-center">
+                                    <Image
+                                        src={lightIcon}
+                                        alt={"light theme icon"}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        {/* desktop navbar */}
+                        <div className="hidden xl:container mx-auto justify-between h-10 lg:flex">
                             <Link href="/" aria-label="Back to homepage"
                                   className="flex items-center p-2">
-
                                 <ProjectLogo/>
 
                                 <span className="ml-2 color-name font-poppins font-bold text-xl">Natai</span>
                             </Link>
                             <DesktopNavBar router={router}/>
-                            <Disclosure.Button className="lg:hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor"
-                                     className="w-6 h-6 text-gray-100">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                          d="M4 6h16M4 12h16M4 18h16"></path>
-                                </svg>
-                            </Disclosure.Button>
                         </div>
                     </header>
 
@@ -96,9 +125,11 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
                     <UserDropdownMenu user={user}/>
                 ) : (
                     <>
-                        <Link href={"/login" + from} className="self-center px-8 py-3 font-semibold rounded color-brand">Sign in</Link>
+                        <Link href={"/login" + from}
+                              className="self-center px-8 py-3 font-semibold rounded color-brand">Sign in</Link>
                         <Link href={"/registration" + from}
-                              className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">Sign up</Link>
+                              className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">Sign
+                            up</Link>
                     </>
                 )}
 
@@ -128,7 +159,9 @@ function MobileUserDropdownMenu({user}: { user: UserDto }) {
                 </div>
             </div>
             <div className="mt-3 px-2 space-y-1">
-                <Link className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700" href="/settings">
+                <Link
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                    href="/settings">
                     {t("Settings")}
                 </Link>
             </div>
