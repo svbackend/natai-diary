@@ -30,7 +30,7 @@ const care01 = require("../public/assets/img/care01.svg");
  */
 export default function HomeLandingPage() {
     return (
-        <MainLayout>
+        <MainLayout containerClass={"landing"}>
             <HeroSection/>
             <WhyYouShouldTryNataiDiarySection/>
             <FeaturesSection/>

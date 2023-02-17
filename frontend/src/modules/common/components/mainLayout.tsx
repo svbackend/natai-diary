@@ -98,7 +98,7 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
                     <>
                         <Link href={"/login" + from} className="self-center px-8 py-3 font-semibold rounded color-brand">Sign in</Link>
                         <Link href={"/registration" + from}
-                              className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand">Sign up</Link>
+                              className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">Sign up</Link>
                     </>
                 )}
 
@@ -215,12 +215,12 @@ const Footer = () => {
     )
 }
 
-const MainLayout = ({children}: { children: ReactNode }) => {
+const MainLayout = ({children, containerClass}: { children: ReactNode, containerClass?: string }) => {
     const router = useRouter()
     return (
         <div className="min-h-screen flex flex-col">
             <Header router={router}/>
-            <div className="flex-1 container mx-auto p-3 sm:p-0">
+            <div className={classNames(containerClass || "flex-1 container mx-auto p-3 sm:p-0")}>
                 {children}
             </div>
             <Footer/>
