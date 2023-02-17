@@ -21,14 +21,14 @@ const Header = ({router}: { router: NextRouter }) => {
         <Disclosure as="nav">
             {({open}) => (
                 <>
-                    <header className="p-4 bg-gray-800 text-gray-100">
-                        <div className="container flex justify-between h-10 mx-auto">
+                    <header className="p-4 bg-white text-gray-100">
+                        <div className="xl:container mx-auto flex justify-between h-10">
                             <Link href="/" aria-label="Back to homepage"
                                   className="flex items-center p-2">
 
                                 <ProjectLogo/>
 
-                                <span className="ml-2 text-xl">Natai</span>
+                                <span className="ml-2 color-name font-poppins font-bold text-xl">Natai</span>
                             </Link>
                             <DesktopNavBar router={router}/>
                             <Disclosure.Button className="lg:hidden">
@@ -65,28 +65,28 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
 
     return (
         <>
-            <ul className="items-stretch hidden space-x-3 lg:flex">
+            <ul className="items-stretch hidden space-x-3 lg:flex -my-4">
                 <li className="flex">
                     <Link href={"/"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/") ? "text-violet-400 border-violet-400" : "")}>
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/") ? "nav-item-active" : "")}>
                         Home
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/diary"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/diary") ? "text-violet-400 border-violet-400" : "")}>
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/diary") ? "nav-item-active" : "")}>
                         My Diary
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/stories"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/stories") ? "text-violet-400 border-violet-400" : "")}>
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/stories") ? "nav-item-active" : "")}>
                         Stories
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/static/contacts"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent", isActive("/static/contacts") ? "text-violet-400 border-violet-400" : "")}>
+                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/static/contacts") ? "nav-item-active" : "")}>
                         Contacts
                     </Link>
                 </li>
@@ -232,7 +232,7 @@ const MainLayout = ({children}: { children: ReactNode }) => {
 export const ProjectLogo = () => {
     return (
         <div
-            className="flex items-center justify-center flex-shrink-0 w-12 h-12 rounded-full bg-brand">
+            className="flex items-center justify-center flex-shrink-0 w-12 h-12 rounded-full bg-flower">
             <Image src={flowerSvg} alt={"Flower Natai Diary Logo"} className={"w-7 h-7"}/>
         </div>
     )

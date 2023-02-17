@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Alegreya:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,8 +6,28 @@
 
 @layer base {
     html {
-        font-family: Proxima Nova, system-ui, sans-serif;
+        font-family: 'Poppins', Proxima Nova, system-ui, sans-serif;
     }
+}
+
+
+.nav-item {
+    color: #6D6D9C;
+    font-weight: 400;
+}
+
+.nav-item-active {
+    color: #9571F8;
+    font-weight: 600;
+    border-bottom-color: #9571F8;
+}
+
+.bg-flower {
+    background-color: #E8DFFF;
+}
+
+.color-name {
+    color: #29293E;
 }
 
 .color-brand-secondary {
@@ -15,11 +35,11 @@
 }
 
 .color-brand {
-    color: #6c57a8;
+    color: #9571F8;
 }
 
 .bg-brand {
-    background-color: #6c57a8;
+    background-color: #9571F8;
 }
 
 .font-alegreya {
@@ -29,6 +49,10 @@
 
 .font-alegreya-text {
     font-family: 'Alegreya', serif;
+}
+
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
 }
 
 .hero-section {
@@ -49,11 +73,11 @@
 }
 
 .glass {
-    box-shadow: 0 8px 32px 0 rgba( 0, 0, 0, 0.25 );
-    backdrop-filter: blur( 2px );
-    -webkit-backdrop-filter: blur( 2px );
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     border-radius: 10px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .why-section {
