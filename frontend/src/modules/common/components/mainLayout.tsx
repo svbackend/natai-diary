@@ -96,10 +96,9 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
                     <UserDropdownMenu user={user}/>
                 ) : (
                     <>
-                        <Link href={"/login" + from} className="self-center px-8 py-3 rounded">Sign in</Link>
+                        <Link href={"/login" + from} className="self-center px-8 py-3 font-semibold rounded color-brand">Sign in</Link>
                         <Link href={"/registration" + from}
-                              className="self-center px-8 py-3 font-semibold rounded bg-violet-400 text-gray-900">Sign
-                            up</Link>
+                              className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand">Sign up</Link>
                     </>
                 )}
 
