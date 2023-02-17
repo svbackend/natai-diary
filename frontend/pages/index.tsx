@@ -1,7 +1,7 @@
 import MainLayout from "../src/modules/common/components/mainLayout";
 import Image from "next/image";
 import Link from "next/link";
-import heroSectionImg from "../public/assets/img/dragon-scales.svg";
+import circlesImg from "../public/assets/hero/circles.svg";
 import whySectionImg from "../public/assets/img/abstract-circles.svg";
 import featuresSectionImg from "../public/assets/img/bullseye-gradient.svg";
 
@@ -39,30 +39,53 @@ export default function HomeLandingPage() {
 }
 
 function HeroSection() {
-    const bgStyle = {
-        backgroundImage: `url('${heroSectionImg.src}')`,
+    const heroArtStyle = {
+        backgroundImage: `url('${circlesImg.src}')`,
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "right",
     }
 
     return (
-        <section className={"hero-section bg-hero rounded-lg shadow-sm"} style={bgStyle}>
-            <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10 glass">
-                <h1 className="text-4xl font-bold text-center text-white font-alegreya">Mental-health focused
-                    journaling/diary app</h1>
-                <p className="text-secondary text-xl text-center text-white font-alegreya-text mt-4">
-                    Natai Diary is a diary ✍️ application with ☁️ cloud synchronization available for Android & WEB,
-                    it helps to track your daily activities and how they affect your mood
-                    <Image className={"w-8 h-8 inline"} src={care01} alt={"Natai Diary Mood Icon"}/>
-                </p>
+        <section className={"relative hero-section rounded-b-3xl"}>
+            <div className="bg-section rounded-b-3xl"></div>
+            <div className="bg-hero rounded-b-3xl"></div>
+            <div className="xl:container mx-auto flex flex-row justify-between px-2 pt-24 pb-28">
 
-                <div className="flex flex-row items-center justify-center mt-5">
-                    <Link href="https://play.google.com/store/apps/details?id=com.svbackend.natai"
-                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full border border-white shadow-lg">
-                        Get it on Google Play
-                    </Link>
-                    <Link href={"/diary"}
-                          className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-4 border border-white shadow-lg"}>
-                        Try web version
-                    </Link>
+                <div className="flex flex-col">
+                    <h1 className="text-4xl font-bold text-dark leading-12">
+                        Mental-health focused<br/>
+                        journaling & diary app
+                    </h1>
+                    <p className="text-secondary text-white mt-5">
+                        Natai Diary is a diary ✍️ application with ☁️ cloud synchronization available for Android & WEB,
+                        it helps to track your daily activities and how they affect your mood
+                        <Image className={"w-8 h-8 inline"} src={care01} alt={"Natai Diary Mood Icon"}/>
+                    </p>
+
+                    <div className="flex flex-row mt-8">
+                        <Link href="https://play.google.com/store/apps/details?id=com.svbackend.natai"
+                              target={"_blank"}
+                              className="bg-google shadow hover:shadow-2xl py-4 px-12 rounded-full">
+                            <Image className={"inline"} src={require("../public/assets/button/playStore.png")} alt={"get it on Google Play"}/>
+                        </Link>
+                        <Link href={"/diary"}
+                              className={"bg-brand text-white self-center py-5 px-12 rounded-full ml-4 shadow font-semibold hover:shadow-xl"}>
+                            Try Web Version
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="flex relative -mt-24 -mb-28 flex-grow">
+                    <div className="hero-art" style={heroArtStyle}>
+                        <div className="hero-art-screenshots">
+                            <Image className={"hero-screenshot-1"} src={require("../public/assets/hero/screenshot1.png")} alt={"Natai Diary Screenshot 1"}/>
+                            <Image className={"hero-screenshot-2"} src={require("../public/assets/hero/screenshot2.png")} alt={"Natai Diary Screenshot 2"}/>
+                            <Image className={"w-16 h-16 drop-shadow hero-mood-1"} src={require("../public/assets/mood/10.svg")} alt={"Natai Diary Mood 1"}/>
+                            <Image className={"w-16 h-16 drop-shadow hero-mood-2"} src={require("../public/assets/mood/8.svg")} alt={"Natai Diary Mood 2"}/>
+                            <Image className={"w-16 h-16 drop-shadow hero-mood-3"} src={require("../public/assets/mood/3.svg")} alt={"Natai Diary Mood 3"}/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

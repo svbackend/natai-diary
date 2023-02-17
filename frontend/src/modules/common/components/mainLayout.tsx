@@ -71,11 +71,13 @@ const Header = ({router}: { router: NextRouter }) => {
                         </div>
                     </header>
 
-                    <Animate>
-                        <Disclosure.Panel>
-                            <MobileNavBar router={router}/>
-                        </Disclosure.Panel>
-                    </Animate>
+                    <div className="relative z-10">
+                        <Animate>
+                            <Disclosure.Panel className={"absolute w-full"}>
+                                <MobileNavBar router={router}/>
+                            </Disclosure.Panel>
+                        </Animate>
+                    </div>
                 </>
             )}
         </Disclosure>
@@ -125,11 +127,16 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
                     <UserDropdownMenu user={user}/>
                 ) : (
                     <>
-                        <Link href={"/login" + from}
-                              className="self-center px-8 py-3 font-semibold rounded color-brand">Sign in</Link>
-                        <Link href={"/registration" + from}
-                              className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">Sign
-                            up</Link>
+                        <Link
+                            href={"/login" + from}
+                            className="self-center px-8 py-3 font-semibold rounded color-brand">
+                            Sign in
+                        </Link>
+                        <Link
+                            href={"/registration" + from}
+                            className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">
+                            Sign up
+                        </Link>
                     </>
                 )}
 
@@ -141,27 +148,27 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
 function MobileUserDropdownMenu({user}: { user: UserDto }) {
     const t = useTranslations("MobileUserDropdownMenu")
     return (
-        <div className="pt-4 pb-3 border-t border-gray-700">
+        <div className="pt-4 pb-3 border-t hr-color text-left">
             <div className="flex items-center px-5">
                 <div className="flex-shrink-0">
-                    <div className="flex justify-center align-center h-10 w-10 rounded-full bg-red-600">
+                    <div className="flex justify-center align-center h-10 w-10 rounded-full bg-brand">
                         <span className="font-bold text-white uppercase m-auto">
                             {user.name.at(0)}
                         </span>
                     </div>
                 </div>
                 <div className="ml-3">
-                    <div className="text-base font-medium leading-none text-white">{user.name}</div>
-                    <div className="text-sm font-medium leading-none text-gray-400">
+                    <div className="text-base font-medium leading-none nav-item">{user.name}</div>
+                    <div className="text-sm font-medium leading-none nav-item">
                         {user.email}
                         {user.isEmailVerified && (<CheckCircleIcon className={"ml-1 inline text-green-600 h-4 w-4"}/>)}
                     </div>
                 </div>
             </div>
-            <div className="mt-3 px-2 space-y-1">
+            <div className="mt-3 px-2 space-y-1 text-center">
                 <Link
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-                    href="/settings">
+                    href="/settings"
+                    className={"px-4 -mb-1 border-b-2 border-transparent nav-item"}>
                     {t("Settings")}
                 </Link>
             </div>
@@ -172,42 +179,66 @@ function MobileUserDropdownMenu({user}: { user: UserDto }) {
 const MobileNavBar = ({router}: { router: NextRouter }) => {
     const {user} = useAppStateManager()
     const from = authService.createUrlForRedirect(router);
+    const isActive = (path: string) => {
+        return router.pathname === path
+    }
 
     return (
         <>
-            <ul className="bg-gray-600 px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <ul className="bg-white text-center shadow-2xl px-2 pt-2 pb-3 space-y-2 rounded-b-3xl">
                 <li>
-                    <Link href={"/"}
-                          className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</Link>
+                    <Link
+                        href={"/"}
+                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/") ? "nav-item-active" : "")}>
+                        Home
+                    </Link>
                 </li>
                 <li>
-                    <Link href={"/diary"}
-                          className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">My
-                        Diary</Link>
+                    <Link
+                        href={"/diary"}
+                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/diary") ? "nav-item-active" : "")}>
+                        My Diary
+                    </Link>
                 </li>
                 <li>
-                    <Link href={"/stories"}
-                          className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Stories</Link>
+                    <Link
+                        href={"/stories"}
+                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/stories") ? "nav-item-active" : "")}>
+                        Stories
+                    </Link>
                 </li>
                 <li>
-                    <Link href={"/static/contacts"}
-                          className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contacts</Link>
+                    <Link
+                        href={"/static/contacts"}
+
+                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/static/contacts") ? "nav-item-active" : "")}>
+                        Contacts
+                    </Link>
                 </li>
                 {user ? (
                     <>
                         <MobileUserDropdownMenu user={user}/>
                     </>
                 ) : (
-                    <>
-                        <li>
-                            <Link href={"/login" + from}
-                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</Link>
-                        </li>
-                        <li>
-                            <Link href={"/registration" + from}
-                                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Registration</Link>
-                        </li>
-                    </>
+
+                    <div className="pt-4 pb-3 border-t hr-color">
+                        <div className="flex flex-col items-center px-5">
+                            <li>
+                                <Link
+                                    href={"/login" + from}
+                                    className={"nav-item-active block px-3 py-2 rounded-md text-base font-medium"}>
+                                    Login
+                                </Link>
+                            </li>
+                            <li className={"mt-4 mb-2"}>
+                                <Link
+                                    href={"/registration" + from}
+                                    className={"self-center text-white mr-2 px-16 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20"}>
+                                    Sign Up
+                                </Link>
+                            </li>
+                        </div>
+                    </div>
                 )}
 
 
