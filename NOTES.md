@@ -5,6 +5,11 @@ I also released 1.2 version of the android app,
 added feature to change Reminder/Notification time,
 fixed issue with tags autocompletion, and added ability to write notes without title/content.
 
+Working on web app landing page,
+thinking about using AI to generate title/summary of user's notes as well as weekly suggestions how to improve life based on user's notes.
+
+Next priorities for me is to add ability to edit/delete notes in web app and finally - add ability to attach files to notes.
+
 ### Feb 12, 2023
 
 Today I added modal window for menu on diary page, updated header of diary,
