@@ -52,12 +52,12 @@ function HeroSection() {
             <div className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-28">
 
                 <div className="flex flex-col">
-                    <h1 className="text-4xl font-bold text-dark leading-12 text-center lg:text-left">
-                        Mental-health focused<br/>
-                        journaling & diary app
+                    <h1 className="text-3xl lg:text-4xl font-bold text-dark leading-10 text-center lg:text-left">
+                        <span className="whitespace-nowrap">Mental-health focused</span><br/>
+                        <span className="whitespace-nowrap">journaling & diary app</span>
                     </h1>
                     <p className="mx-auto text-secondary text-white mt-5 text-center lg:text-left">
-                        Natai Diary is a diary ✍️ application with ☁️ cloud synchronization available for Android & WEB,
+                        Natai Diary is a diary application with cloud synchronization available for Android & WEB,
                         it helps to track your daily activities and how they affect your mood
                         <Image className={"w-8 h-8 inline"} src={care01} alt={"Natai Diary Mood Icon"}/>
                     </p>
