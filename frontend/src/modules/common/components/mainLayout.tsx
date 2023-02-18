@@ -62,11 +62,12 @@ const Header = ({router}: { router: NextRouter }) => {
                                 )}
                                 <div
                                     onClick={toggleDarkMode}
-                                    className="cursor-pointer rounded-full p-2 bg-gray-200 flex self-center dark:bg-darkish">
+                                    className="cursor-pointer rounded-full p-2 bg-gray-200 flex self-center dark:bg-darkish w-10 h-10">
                                     {darkMode ? (
                                         <Image
                                             src={darkIcon}
                                             alt={"dark theme icon"}
+                                            className={"mx-auto"}
                                         />
                                     ) : (
                                         <Image
