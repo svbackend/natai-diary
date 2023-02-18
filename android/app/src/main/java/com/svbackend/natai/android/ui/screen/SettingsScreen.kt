@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +34,7 @@ fun SettingsScreen(
     vm: SettingsViewModel = viewModel(),
     onThemeClick: () -> Unit,
     onReminderClick: () -> Unit,
+    onAppInfoClick: () -> Unit,
 ) {
     Surface(
         modifier = Modifier
@@ -59,6 +61,10 @@ fun SettingsScreen(
                 vm = vm,
                 title = stringResource(R.string.settingsReminderTitle),
                 onClick = onReminderClick,
+            )
+
+            SettingAppInfoItem(
+                onClick = onAppInfoClick,
             )
         }
     }
@@ -125,6 +131,28 @@ fun SettingReminderItem(vm: SettingsViewModel, title: String, onClick: () -> Uni
                 .padding(16.dp),
             text = if (isEnabled) time.toString() else "(off)",
             style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Start
+        )
+    }
+}
+
+@Composable
+fun SettingAppInfoItem(onClick: () -> Unit) {
+    Row(modifier = Modifier.clickable { onClick() }) {
+        Icon(
+            Icons.Filled.Info,
+            contentDescription = stringResource(R.string.settingsAppInfoTitle),
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+                .padding(start = 8.dp),
+            text = stringResource(R.string.settingsAppInfoTitle),
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
             textAlign = TextAlign.Start
         )
     }
