@@ -83,6 +83,7 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
                               target={"_blank"}
                               className="flex bg-google shadow hover:shadow-2xl py-4 px-12 rounded-full">
                             <Image className={"mx-auto"} src={require("../public/assets/button/playStore.png")}
+                                   quality="100"
                                    alt={"get it on Google Play"}/>
                         </Link>
                         <Link href={"/diary"}
