@@ -13,23 +13,31 @@ import {CheckCircleIcon} from "@heroicons/react/20/solid";
 import {useTranslations} from "use-intl";
 import {Animate} from "./Animate";
 import lightIcon from '../../../../public/assets/theme/light.svg';
+import darkIcon from '../../../../public/assets/theme/dark.svg';
+import {darkModeAtom} from "../atoms/darkModeAtom";
+import {useAtom} from "jotai/index";
 
 const Header = ({router}: { router: NextRouter }) => {
     const {user} = useAppStateManager()
     const from = authService.createUrlForRedirect(router)
+    const [darkMode, setDarkMode] = useAtom(darkModeAtom)
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode)
+    }
 
     return (
         <Disclosure as="nav">
             {({open}) => (
                 <>
-                    <header className="p-4 bg-white text-gray-100">
+                    <header className="p-4 bg-white dark:bg-nav-bg text-gray-100">
                         {/* mobile navbar */}
                         <div className="xl:container mx-auto flex justify-between h-10 lg:hidden">
                             <div className="flex">
                                 <Disclosure.Button>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                          stroke="currentColor"
-                                         className="w-6 h-6 navbar-menu-btn">
+                                         className="w-6 h-6 navbar-menu-btn dark:text-white">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                               d="M4 6h16M4 12h16M4 18h16"></path>
                                     </svg>
@@ -39,7 +47,8 @@ const Header = ({router}: { router: NextRouter }) => {
 
                                     <ProjectLogo/>
 
-                                    <span className="ml-2 color-name font-poppins font-bold text-xl">Natai</span>
+                                    <span
+                                        className="ml-2 text-dark font-poppins font-bold text-xl dark:text-light">Natai</span>
                                 </Link>
                             </div>
 
@@ -51,11 +60,20 @@ const Header = ({router}: { router: NextRouter }) => {
                                         Sign up
                                     </Link>
                                 )}
-                                <div className="cursor-pointer rounded-full p-2 bg-gray-200 flex self-center">
-                                    <Image
-                                        src={lightIcon}
-                                        alt={"light theme icon"}
-                                    />
+                                <div
+                                    onClick={toggleDarkMode}
+                                    className="cursor-pointer rounded-full p-2 bg-gray-200 flex self-center dark:bg-darkish">
+                                    {darkMode ? (
+                                        <Image
+                                            src={darkIcon}
+                                            alt={"dark theme icon"}
+                                        />
+                                    ) : (
+                                        <Image
+                                            src={lightIcon}
+                                            alt={"light theme icon"}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -65,7 +83,8 @@ const Header = ({router}: { router: NextRouter }) => {
                                   className="flex items-center p-2">
                                 <ProjectLogo/>
 
-                                <span className="ml-2 color-name font-poppins font-bold text-xl">Natai</span>
+                                <span
+                                    className="ml-2 text-dark dark:text-light font-poppins font-bold text-xl">Natai</span>
                             </Link>
                             <DesktopNavBar router={router}/>
                         </div>
@@ -94,30 +113,32 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
         return router.pathname === path
     }
 
+    const activeClass = "font-semibold text-brand dark:text-brand border-brand dark:border-brand"
+
     return (
         <>
             <ul className="items-stretch hidden space-x-3 lg:flex -my-4">
                 <li className="flex">
                     <Link href={"/"}
-                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/") ? activeClass : "border-transparent")}>
                         Home
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/diary"}
-                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/diary") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/diary") ? activeClass : "border-transparent")}>
                         My Diary
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/stories"}
-                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/stories") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/stories") ? activeClass : "border-transparent")}>
                         Stories
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/static/contacts"}
-                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/static/contacts") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/static/contacts") ? activeClass : "border-transparent")}>
                         Contacts
                     </Link>
                 </li>
@@ -148,7 +169,7 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
 function MobileUserDropdownMenu({user}: { user: UserDto }) {
     const t = useTranslations("MobileUserDropdownMenu")
     return (
-        <div className="pt-4 pb-3 border-t hr-color text-left">
+        <div className="pt-4 pb-3 border-t border-sep dark:border-sep-alt text-left">
             <div className="flex items-center px-5">
                 <div className="flex-shrink-0">
                     <div className="flex justify-center align-center h-10 w-10 rounded-full bg-brand">
@@ -158,8 +179,9 @@ function MobileUserDropdownMenu({user}: { user: UserDto }) {
                     </div>
                 </div>
                 <div className="ml-3">
-                    <div className="text-base font-medium leading-none nav-item">{user.name}</div>
-                    <div className="text-sm font-medium leading-none nav-item">
+                    <div
+                        className="text-base font-medium leading-none text-nav-item dark:text-nav-item-alt">{user.name}</div>
+                    <div className="text-sm font-medium leading-none text-nav-item dark:text-nav-item-alt">
                         {user.email}
                         {user.isEmailVerified && (<CheckCircleIcon className={"ml-1 inline text-green-600 h-4 w-4"}/>)}
                     </div>
@@ -168,7 +190,7 @@ function MobileUserDropdownMenu({user}: { user: UserDto }) {
             <div className="mt-3 px-2 space-y-1 text-center">
                 <Link
                     href="/settings"
-                    className={"px-4 -mb-1 border-b-2 border-transparent nav-item"}>
+                    className={"px-4 -mb-1 border-b-2 border-transparent text-nav-item dark:text-nav-item-alt"}>
                     {t("Settings")}
                 </Link>
             </div>
@@ -185,25 +207,25 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
 
     return (
         <>
-            <ul className="bg-white text-center shadow-2xl px-2 pt-2 pb-3 space-y-2 rounded-b-3xl">
+            <ul className="bg-white dark:bg-nav-bg text-center shadow-2xl px-2 pt-2 pb-3 space-y-2 rounded-b-3xl">
                 <li>
                     <Link
                         href={"/"}
-                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/") ? "nav-item-active" : "")}>
+                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         Home
                     </Link>
                 </li>
                 <li>
                     <Link
                         href={"/diary"}
-                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/diary") ? "nav-item-active" : "")}>
+                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/diary") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         My Diary
                     </Link>
                 </li>
                 <li>
                     <Link
                         href={"/stories"}
-                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/stories") ? "nav-item-active" : "")}>
+                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/stories") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         Stories
                     </Link>
                 </li>
@@ -211,7 +233,7 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                     <Link
                         href={"/static/contacts"}
 
-                        className={classNames("nav-item block px-3 py-2 rounded-md text-base font-medium", isActive("/static/contacts") ? "nav-item-active" : "")}>
+                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/static/contacts") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         Contacts
                     </Link>
                 </li>
@@ -221,7 +243,7 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                     </>
                 ) : (
 
-                    <div className="pt-4 pb-3 border-t hr-color">
+                    <div className="pt-4 pb-3 border-t border-sep dark:border-sep-alt">
                         <div className="flex flex-col items-center px-5">
                             <li>
                                 <Link
@@ -281,8 +303,11 @@ const Footer = () => {
 
 const MainLayout = ({children, containerClass}: { children: ReactNode, containerClass?: string }) => {
     const router = useRouter()
+
+    const [darkMode, setDarkMode] = useAtom(darkModeAtom)
+
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className={classNames("min-h-screen flex flex-col", darkMode && "dark")}>
             <Header router={router}/>
             <div className={classNames(containerClass || "flex-1 container mx-auto p-3 sm:p-0")}>
                 {children}

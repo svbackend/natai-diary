@@ -10,12 +10,6 @@
     }
 }
 
-
-.nav-item {
-    color: #6D6D9C;
-    font-weight: 400;
-}
-
 .nav-item-active {
     color: #9571F8;
     font-weight: 600;
@@ -212,10 +206,6 @@
 
 .navbar-menu-btn {
     color: #2C313A;
-}
-
-.hr-color {
-    border-color: #AFAFE8;
 }
 
 .bg-google {
