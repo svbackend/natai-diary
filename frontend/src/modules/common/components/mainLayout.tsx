@@ -30,7 +30,7 @@ const Header = ({router}: { router: NextRouter }) => {
         <Disclosure as="nav">
             {({open}) => (
                 <>
-                    <header className="p-4 bg-white dark:bg-nav-bg text-gray-100">
+                    <header className="p-4 bg-white dark:bg-nav-bg text-gray-100 shadow">
                         {/* mobile navbar */}
                         <div className="xl:container mx-auto flex justify-between h-10 lg:hidden">
                             <div className="flex">
