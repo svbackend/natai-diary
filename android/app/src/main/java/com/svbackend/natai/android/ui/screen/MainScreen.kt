@@ -105,7 +105,10 @@ fun MainScreen(
                 .padding(top = 240.dp),
         ) {
             LazyColumn {
-                items(groups) { group ->
+                items(
+                    items = groups,
+                    key = { group -> group.date.toString() }
+                ) { group ->
                     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
                         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                             Text(

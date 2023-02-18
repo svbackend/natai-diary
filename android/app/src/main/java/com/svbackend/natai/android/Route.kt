@@ -13,6 +13,8 @@ sealed class Route(val route: String) {
 
     object SettingsReminderRoute : Route("settings_reminder")
 
+    object SettingsAppInfoRoute : Route("settings_app_info")
+
     object AnalyticsRoute : Route("analytics")
 
     object LoginRoute : Route("auth_login")

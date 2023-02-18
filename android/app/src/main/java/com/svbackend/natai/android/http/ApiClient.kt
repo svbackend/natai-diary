@@ -8,7 +8,6 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
 import com.svbackend.natai.android.http.exception.*
-import com.svbackend.natai.android.http.model.CloudNote
 import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
 import com.svbackend.natai.android.http.response.*

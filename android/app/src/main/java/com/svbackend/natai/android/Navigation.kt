@@ -12,6 +12,7 @@ import com.svbackend.natai.android.ui.screen.auth.LoginScreen
 import com.svbackend.natai.android.ui.screen.auth.ManageAccountScreen
 import com.svbackend.natai.android.ui.screen.auth.RegistrationScreen
 import com.svbackend.natai.android.ui.screen.auth.TermsScreen
+import com.svbackend.natai.android.ui.screen.settings.AppInfoScreen
 import com.svbackend.natai.android.ui.screen.settings.ReminderScreen
 import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
@@ -96,6 +97,9 @@ fun Navigation(
                 onReminderClick = {
                     controller.go(Route.SettingsReminderRoute.withArgs())
                 },
+                onAppInfoClick = {
+                    controller.go(Route.SettingsAppInfoRoute.withArgs())
+                },
             )
         }
 
@@ -164,6 +168,10 @@ fun Navigation(
                     controller.popBackStack()
                 }
             )
+        }
+
+        composable(route = Route.SettingsAppInfoRoute.route) {
+            AppInfoScreen()
         }
 
         composable(route = Route.TermsRoute.route) {
