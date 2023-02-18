@@ -37,8 +37,10 @@ export default function HomeLandingPage() {
     return (
         <MainLayout containerClass={"landing"}>
             <HeroSection isDarkMode={isDarkMode}/>
+            {/*
             <WhyYouShouldTryNataiDiarySection/>
             <FeaturesSection/>
+            */}
         </MainLayout>
     )
 }
@@ -61,8 +63,8 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
     }
 
     return (
-        <section className={"relative hero-section rounded-b-3xl"}>
-            <div className="bg-section rounded-b-3xl"></div>
+        <section className={"relative hero-section"}>
+            <div className="bg-section"></div>
             <div className="bg-hero rounded-b-3xl"></div>
             <div
                 className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-28">

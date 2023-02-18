@@ -1,4 +1,4 @@
-import {ReactNode} from "react";
+import React, {ReactNode} from "react";
 import {Disclosure} from "@headlessui/react";
 import Image from "next/image";
 import flowerSvg from '../../../../public/assets/img/flower.svg';
@@ -16,6 +16,7 @@ import lightIcon from '../../../../public/assets/theme/light.svg';
 import darkIcon from '../../../../public/assets/theme/dark.svg';
 import {darkModeAtom} from "../atoms/darkModeAtom";
 import {useAtom} from "jotai/index";
+import {Footer} from "./Footer";
 
 const Header = ({router}: { router: NextRouter }) => {
     const {user} = useAppStateManager()
@@ -105,7 +106,11 @@ const Header = ({router}: { router: NextRouter }) => {
 }
 
 
-const DesktopNavBar = ({router, darkMode, onToggleDarkMode}: { router: NextRouter, darkMode: boolean, onToggleDarkMode: () => void }) => {
+const DesktopNavBar = ({
+                           router,
+                           darkMode,
+                           onToggleDarkMode
+                       }: { router: NextRouter, darkMode: boolean, onToggleDarkMode: () => void }) => {
     const from = authService.createUrlForRedirect(router)
 
     const {user} = useAppStateManager()
@@ -289,45 +294,13 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
     )
 }
 
-const Footer = () => {
-    return (
-        <footer className="px-4 py-8 bg-gray-800 text-gray-400">
-            <div
-                className="container flex flex-wrap items-center justify-center mx-auto space-y-4 sm:justify-between sm:space-y-0">
-                <div className="flex flex-row pr-3 space-x-4 sm:space-x-8">
-                    <ProjectLogo/>
-                    <ul className="flex flex-wrap items-center space-x-4 sm:space-x-8">
-                        <li>
-                            <Link href={"/static/terms"}>Terms of Use</Link>
-                        </li>
-                        <li>
-                            <Link href={"/static/privacy"}>Privacy</Link>
-                        </li>
-                    </ul>
-                </div>
-                <ul className="flex flex-wrap pl-3 space-x-4 sm:space-x-8">
-                    <li>
-                        <Link href="#">Instagram</Link>
-                    </li>
-                    <li>
-                        <Link href="#">Facebook</Link>
-                    </li>
-                    <li>
-                        <Link href="#">Twitter</Link>
-                    </li>
-                </ul>
-            </div>
-        </footer>
-    )
-}
-
-const MainLayout = ({children, containerClass}: { children: ReactNode, containerClass?: string }) => {
+function MainLayout({children, containerClass}: { children: ReactNode, containerClass?: string }) {
     const router = useRouter()
 
     const [darkMode, setDarkMode] = useAtom(darkModeAtom)
 
     return (
-        <div className={classNames("min-h-screen flex flex-col", darkMode && "dark")}>
+        <div className={classNames("main-layout min-h-screen flex flex-col", darkMode && "dark")}>
             <Header router={router}/>
             <div className={classNames(containerClass || "flex-1 container mx-auto p-3 sm:p-0")}>
                 {children}
