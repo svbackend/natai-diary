@@ -99,25 +99,25 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
             <ul className="items-stretch hidden space-x-3 lg:flex -my-4">
                 <li className="flex">
                     <Link href={"/"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/") ? "nav-item-active" : "")}>
                         Home
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/diary"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/diary") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/diary") ? "nav-item-active" : "")}>
                         My Diary
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/stories"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/stories") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/stories") ? "nav-item-active" : "")}>
                         Stories
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/static/contacts"}
-                          className={classNames("flex items-center px-4 -mb-1 border-b-2 border-transparent nav-item", isActive("/static/contacts") ? "nav-item-active" : "")}>
+                          className={classNames("flex items-center px-4 border-b-2 border-transparent nav-item", isActive("/static/contacts") ? "nav-item-active" : "")}>
                         Contacts
                     </Link>
                 </li>

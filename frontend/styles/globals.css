@@ -55,6 +55,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+.landing {
+    overflow: hidden;
+}
+
 .bg-section {
     position: absolute;
     background: #ECEAFF;
@@ -98,6 +102,7 @@
     position: relative;
     flex: 1;
     width: 100%;
+    min-height: 465px; /* Height of the phone screenshot image /public/assets/*/
 }
 
 .hero-art-screenshots {
@@ -141,6 +146,40 @@
     bottom: 15%;
 }
 
+@media (max-width: 1023px) {
+    .hero-art {
+        min-height: 300px;
+    }
+    .hero-section {
+        overflow: hidden;
+    }
+
+    /* Hero screenshots position for MOBILES */
+    .hero-screenshot-2 {
+        left: -10%;
+        top: 7%;
+    }
+
+    .hero-screenshot-1 {
+        right: -10%;
+        top: 0;
+    }
+
+    .hero-mood-1 {
+        top: 5%;
+        right: 45%;
+    }
+
+    .hero-mood-2 {
+        bottom: 0;
+        left: 0;
+    }
+
+    .hero-mood-3 {
+        right: 0;
+        bottom: 0;
+    }
+}
 
 .glass {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);

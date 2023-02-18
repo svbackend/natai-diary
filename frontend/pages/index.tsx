@@ -41,7 +41,6 @@ export default function HomeLandingPage() {
 function HeroSection() {
     const heroArtStyle = {
         backgroundImage: `url('${circlesImg.src}')`,
-        backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "right",
     }
@@ -50,34 +49,34 @@ function HeroSection() {
         <section className={"relative hero-section rounded-b-3xl"}>
             <div className="bg-section rounded-b-3xl"></div>
             <div className="bg-hero rounded-b-3xl"></div>
-            <div className="xl:container mx-auto flex flex-row justify-between px-2 pt-24 pb-28">
+            <div className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-28">
 
                 <div className="flex flex-col">
-                    <h1 className="text-4xl font-bold text-dark leading-12">
+                    <h1 className="text-4xl font-bold text-dark leading-12 text-center lg:text-left">
                         Mental-health focused<br/>
                         journaling & diary app
                     </h1>
-                    <p className="text-secondary text-white mt-5">
+                    <p className="mx-auto text-secondary text-white mt-5 text-center lg:text-left">
                         Natai Diary is a diary ✍️ application with ☁️ cloud synchronization available for Android & WEB,
                         it helps to track your daily activities and how they affect your mood
                         <Image className={"w-8 h-8 inline"} src={care01} alt={"Natai Diary Mood Icon"}/>
                     </p>
 
-                    <div className="flex flex-row mt-8">
+                    <div className="flex flex-col lg:flex-row mt-4 lg:mt-8 px-8 lg:px-0">
                         <Link href="https://play.google.com/store/apps/details?id=com.svbackend.natai"
                               target={"_blank"}
                               className="bg-google shadow hover:shadow-2xl py-4 px-12 rounded-full">
-                            <Image className={"inline"} src={require("../public/assets/button/playStore.png")} alt={"get it on Google Play"}/>
+                            <Image className={"mx-auto"} src={require("../public/assets/button/playStore.png")} alt={"get it on Google Play"}/>
                         </Link>
                         <Link href={"/diary"}
-                              className={"bg-brand text-white self-center py-5 px-12 rounded-full ml-4 shadow font-semibold hover:shadow-xl"}>
+                              className={"w-full lg:w-auto bg-brand text-center text-white self-center mt-4 lg:mt-0 py-5 px-12 rounded-full ml-0 lg:ml-4 shadow font-semibold hover:shadow-xl"}>
                             Try Web Version
                         </Link>
                     </div>
                 </div>
 
-                <div className="flex relative -mt-24 -mb-28 flex-grow">
-                    <div className="hero-art" style={heroArtStyle}>
+                <div className="flex relative lg:-mt-24 lg:-mb-28 lg:flex-grow">
+                    <div className="hero-art bg-cover lg:bg-contain" style={heroArtStyle}>
                         <div className="hero-art-screenshots">
                             <Image className={"hero-screenshot-1"} src={require("../public/assets/hero/screenshot1.png")} alt={"Natai Diary Screenshot 1"}/>
                             <Image className={"hero-screenshot-2"} src={require("../public/assets/hero/screenshot2.png")} alt={"Natai Diary Screenshot 2"}/>
