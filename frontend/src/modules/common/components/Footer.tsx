@@ -23,19 +23,22 @@ export function Footer() {
                 <div className="flex flex-col items-center lg:items-end mt-8 lg:mt-0">
                     <ul className="flex flex-row gap-2">
                         <li className={"flex items-center w-12 h-12 bg-brand rounded-full"}>
-                            <a href="https://www.instagram.com/natai.app/" target="_blank" className={"mx-auto"}>
+                            <Link href="https://www.instagram.com/natai.app/" target="_blank" rel="noreferrer"
+                                  className={"mx-auto"}>
                                 <InstagramIcon className="h-6 w-6 text-nav-item dark:text-nav-item-alt"/>
-                            </a>
+                            </Link>
                         </li>
                         <li className={"flex items-center w-12 h-12 bg-brand rounded-full"}>
-                            <a href="https://www.facebook.com/natai.app/" target="_blank" className={"mx-auto"}>
+                            <Link href="https://www.facebook.com/natai.app/" target="_blank" rel="noreferrer"
+                                  className={"mx-auto"}>
                                 <FacebookIcon className="h-6 w-6 text-nav-item dark:text-nav-item-alt"/>
-                            </a>
+                            </Link>
                         </li>
                         <li className={"flex items-center w-12 h-12 bg-brand rounded-full"}>
-                            <a href="https://twitter.com/natai_app" target="_blank" className={"mx-auto"}>
+                            <Link href="https://twitter.com/natai_app" target="_blank" rel="noreferrer"
+                                  className={"mx-auto"}>
                                 <TwitterIcon className="h-6 w-6 text-nav-item dark:text-nav-item-alt"/>
-                            </a>
+                            </Link>
                         </li>
 
                     </ul>
