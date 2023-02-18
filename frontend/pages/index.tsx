@@ -2,8 +2,11 @@ import MainLayout from "../src/modules/common/components/mainLayout";
 import Image from "next/image";
 import Link from "next/link";
 import circlesImg from "../public/assets/hero/circles.svg";
+import circlesDarkImg from "../public/assets/hero/circles-dark.svg";
 import whySectionImg from "../public/assets/img/abstract-circles.svg";
 import featuresSectionImg from "../public/assets/img/bullseye-gradient.svg";
+import {useAtom} from "jotai/index";
+import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
 
 const care01 = require("../public/assets/img/care01.svg");
 
@@ -29,18 +32,30 @@ const care01 = require("../public/assets/img/care01.svg");
  * Offline-first - you can use it even when you don't have internet connection, all notes will be synced as soon as you get back online
  */
 export default function HomeLandingPage() {
+    const [isDarkMode] = useAtom(darkModeAtom)
+
     return (
         <MainLayout containerClass={"landing"}>
-            <HeroSection/>
+            <HeroSection isDarkMode={isDarkMode}/>
             <WhyYouShouldTryNataiDiarySection/>
             <FeaturesSection/>
         </MainLayout>
     )
 }
 
-function HeroSection() {
+function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
+    let screenshot1, screenshot2;
+
+    if (isDarkMode) {
+        screenshot1 = require("../public/assets/hero/screenshot1-dark.png");
+        screenshot2 = require("../public/assets/hero/screenshot2-dark.png");
+    } else {
+        screenshot1 = require("../public/assets/hero/screenshot1.png");
+        screenshot2 = require("../public/assets/hero/screenshot2.png");
+    }
+
     const heroArtStyle = {
-        backgroundImage: `url('${circlesImg.src}')`,
+        backgroundImage: isDarkMode ? `url('${circlesDarkImg.src}')` : `url('${circlesImg.src}')`,
         backgroundRepeat: "no-repeat",
         backgroundPosition: "right",
     }
@@ -49,14 +64,15 @@ function HeroSection() {
         <section className={"relative hero-section rounded-b-3xl"}>
             <div className="bg-section rounded-b-3xl"></div>
             <div className="bg-hero rounded-b-3xl"></div>
-            <div className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-28">
+            <div
+                className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-28">
 
                 <div className="flex flex-col">
-                    <h1 className="text-3xl lg:text-4xl font-bold text-dark leading-10 text-center lg:text-left">
+                    <h1 className="text-3xl lg:text-4xl font-bold text-dark dark:text-light leading-10 text-center lg:text-left">
                         <span className="whitespace-nowrap">Mental-health focused</span><br/>
                         <span className="whitespace-nowrap">journaling & diary app</span>
                     </h1>
-                    <p className="mx-auto text-secondary text-white mt-5 text-center lg:text-left">
+                    <p className="mx-auto text-secondary text-white dark:text-nav-item-alt mt-5 text-center lg:text-left">
                         Natai Diary is a diary application with cloud synchronization available for Android & WEB,
                         it helps to track your daily activities and how they affect your mood
                         <Image className={"w-8 h-8 inline"} src={care01} alt={"Natai Diary Mood Icon"}/>
@@ -65,11 +81,12 @@ function HeroSection() {
                     <div className="flex flex-col lg:flex-row mt-4 lg:mt-8 px-8 lg:px-0">
                         <Link href="https://play.google.com/store/apps/details?id=com.svbackend.natai"
                               target={"_blank"}
-                              className="bg-google shadow hover:shadow-2xl py-4 px-12 rounded-full">
-                            <Image className={"mx-auto"} src={require("../public/assets/button/playStore.png")} alt={"get it on Google Play"}/>
+                              className="flex bg-google shadow hover:shadow-2xl py-4 px-12 rounded-full">
+                            <Image className={"mx-auto"} src={require("../public/assets/button/playStore.png")}
+                                   alt={"get it on Google Play"}/>
                         </Link>
                         <Link href={"/diary"}
-                              className={"w-full lg:w-auto bg-brand text-center text-white self-center mt-4 lg:mt-0 py-5 px-12 rounded-full ml-0 lg:ml-4 shadow font-semibold hover:shadow-xl"}>
+                              className={"w-full h-full flex items-center justify-center lg:w-auto bg-brand text-center text-white self-center mt-4 lg:mt-0 py-5 px-12 rounded-full ml-0 lg:ml-4 shadow font-semibold hover:shadow-xl"}>
                             Try Web Version
                         </Link>
                     </div>
@@ -78,11 +95,14 @@ function HeroSection() {
                 <div className="flex relative lg:-mt-24 lg:-mb-28 lg:flex-grow">
                     <div className="hero-art bg-cover lg:bg-contain" style={heroArtStyle}>
                         <div className="hero-art-screenshots">
-                            <Image className={"hero-screenshot-1"} src={require("../public/assets/hero/screenshot1.png")} alt={"Natai Diary Screenshot 1"}/>
-                            <Image className={"hero-screenshot-2"} src={require("../public/assets/hero/screenshot2.png")} alt={"Natai Diary Screenshot 2"}/>
-                            <Image className={"w-16 h-16 drop-shadow hero-mood-1"} src={require("../public/assets/mood/10.svg")} alt={"Natai Diary Mood 1"}/>
-                            <Image className={"w-16 h-16 drop-shadow hero-mood-2"} src={require("../public/assets/mood/8.svg")} alt={"Natai Diary Mood 2"}/>
-                            <Image className={"w-16 h-16 drop-shadow hero-mood-3"} src={require("../public/assets/mood/3.svg")} alt={"Natai Diary Mood 3"}/>
+                            <Image className={"hero-screenshot-1"} src={screenshot1} alt={"Natai Diary Screenshot 1"}/>
+                            <Image className={"hero-screenshot-2"} src={screenshot2} alt={"Natai Diary Screenshot 2"}/>
+                            <Image className={"w-16 h-16 drop-shadow hero-mood-1"}
+                                   src={require("../public/assets/mood/10.svg")} alt={"Natai Diary Mood 1"}/>
+                            <Image className={"w-16 h-16 drop-shadow hero-mood-2"}
+                                   src={require("../public/assets/mood/8.svg")} alt={"Natai Diary Mood 2"}/>
+                            <Image className={"w-16 h-16 drop-shadow hero-mood-3"}
+                                   src={require("../public/assets/mood/3.svg")} alt={"Natai Diary Mood 3"}/>
                         </div>
                     </div>
                 </div>
@@ -131,15 +151,17 @@ function WhyYouShouldTryNataiDiarySection() {
     return (
         <section className={"why-section bg-why rounded-lg shadow-sm"} style={bgStyle}>
             <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10">
-                <h1 className="text-4xl font-bold text-center text-white font-alegreya">Why you should try Natai Diary?</h1>
+                <h1 className="text-4xl font-bold text-center text-white font-alegreya">Why you should try Natai
+                    Diary?</h1>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 grid-flow-row w-full mt-5 px-5 gap-4">
-                    {items.map((item, index) => <WhyCardItem key={index} title={item.title} description={item.description}/>)}
+                    {items.map((item, index) => <WhyCardItem key={index} title={item.title}
+                                                             description={item.description}/>)}
                 </div>
 
                 <div className="flex flex-row items-center justify-center mt-5">
                     <Link href={"/stories"}
-                            className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-4 border border-white shadow-lg"}>
+                          className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-4 border border-white shadow-lg"}>
                         Read community stories
                     </Link>
                 </div>
@@ -198,7 +220,8 @@ function FeaturesSection() {
                 <h1 className="text-4xl font-bold text-center text-white font-alegreya">Features</h1>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 grid-flow-row w-full mt-5 px-5 gap-4">
-                    {items.map((item, index) => <FeatureCardItem key={index} title={item.title} description={item.description}/>)}
+                    {items.map((item, index) => <FeatureCardItem key={index} title={item.title}
+                                                                 description={item.description}/>)}
                 </div>
             </div>
         </section>

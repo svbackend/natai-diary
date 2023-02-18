@@ -87,7 +87,7 @@ const Header = ({router}: { router: NextRouter }) => {
                                 <span
                                     className="ml-2 text-dark dark:text-light font-poppins font-bold text-xl">Natai</span>
                             </Link>
-                            <DesktopNavBar router={router}/>
+                            <DesktopNavBar router={router} darkMode={darkMode} onToggleDarkMode={toggleDarkMode}/>
                         </div>
                     </header>
 
@@ -105,7 +105,7 @@ const Header = ({router}: { router: NextRouter }) => {
 }
 
 
-const DesktopNavBar = ({router}: { router: NextRouter }) => {
+const DesktopNavBar = ({router, darkMode, onToggleDarkMode}: { router: NextRouter, darkMode: boolean, onToggleDarkMode: () => void }) => {
     const from = authService.createUrlForRedirect(router)
 
     const {user} = useAppStateManager()
@@ -162,6 +162,23 @@ const DesktopNavBar = ({router}: { router: NextRouter }) => {
                     </>
                 )}
 
+                <div
+                    onClick={onToggleDarkMode}
+                    className="cursor-pointer ml-4 rounded-full p-2 bg-gray-200 flex self-center dark:bg-darkish w-10 h-10">
+                    {darkMode ? (
+                        <Image
+                            src={darkIcon}
+                            alt={"dark theme icon"}
+                            className={"mx-auto"}
+                        />
+                    ) : (
+                        <Image
+                            src={lightIcon}
+                            alt={"light theme icon"}
+                        />
+                    )}
+                </div>
+
             </div>
         </>
     )
@@ -171,7 +188,7 @@ function MobileUserDropdownMenu({user}: { user: UserDto }) {
     const t = useTranslations("MobileUserDropdownMenu")
     return (
         <div className="pt-4 pb-3 border-t border-sep dark:border-sep-alt text-left">
-            <div className="flex items-center px-5">
+            <div className="flex flex-col items-center px-5">
                 <div className="flex-shrink-0">
                     <div className="flex justify-center align-center h-10 w-10 rounded-full bg-brand">
                         <span className="font-bold text-white uppercase m-auto">
@@ -179,9 +196,11 @@ function MobileUserDropdownMenu({user}: { user: UserDto }) {
                         </span>
                     </div>
                 </div>
-                <div className="ml-3">
+                <div className="my-3 w-full text-center">
                     <div
-                        className="text-base font-medium leading-none text-nav-item dark:text-nav-item-alt">{user.name}</div>
+                        className="text-base font-medium leading-none text-nav-item dark:text-nav-item-alt mb-2">
+                        {user.name}
+                    </div>
                     <div className="text-sm font-medium leading-none text-nav-item dark:text-nav-item-alt">
                         {user.email}
                         {user.isEmailVerified && (<CheckCircleIcon className={"ml-1 inline text-green-600 h-4 w-4"}/>)}
