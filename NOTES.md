@@ -6,6 +6,12 @@ I'm really happy with the result so far.
 I already converted navbar, footer, hero section and "why you should use Natai" section from figma design
 to html/tailwind, and it looks pretty good. Especially I like dark theme, I will keep it as default for now.
 
+Yesterday I thought that my laptop died after I tried to pull out RAM to see if it's replaceable,
+it didn't turn on anymore, until I reset BIOS settings, and now it's working again.
+
+Ordered new 2x8gb RAM because currently I'm using 2x4gb DDR4 2133mhz, but it's not enough for my needs,
+my laptop is getting old and slow (and so do I) so I decided to upgrade it a bit, but I don't want to buy a new one,
+because I don't have too much money, I would rather spend it on Natai marketing/design.
 
 ### Feb 17, 2023
 
