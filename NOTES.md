@@ -1,3 +1,12 @@
+### Feb 19, 2023
+
+This weekend I was working on web app landing page, and I really like how it's going, I found a nice designer on upwork,
+and he's doing a great job - in just a day UI of landing page looks much more professional and stylish,
+I'm really happy with the result so far.
+I already converted navbar, footer, hero section and "why you should use Natai" section from figma design
+to html/tailwind, and it looks pretty good. Especially I like dark theme, I will keep it as default for now.
+
+
 ### Feb 17, 2023
 
 This week I added ability to write notes, add tags and select mood in web app.
