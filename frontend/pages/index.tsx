@@ -3,9 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import circlesImg from "../public/assets/hero/circles.svg";
 import circlesDarkImg from "../public/assets/hero/circles-dark.svg";
-import whySectionGirlImg from "../public/assets/why/girl.png";
+import whySectionGirlImg from "../public/assets/why/girl-new.png";
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
 
 const care01 = require("../public/assets/img/care01.svg");
 
@@ -167,16 +172,16 @@ function WhyYouShouldTryNataiDiarySection() {
                 </span>
             </h2>
 
-            <div className="container mx-auto flex justify-between mt-28 ">
+            <div className="container mx-auto flex justify-between mt-16 lg:mt-28 ">
                 <div className="hidden lg:flex">
                     <Image src={whySectionGirlImg} alt={"Girl during journaling"}/>
                 </div>
-                <div className="flex justify-end">
+                <div className="hidden lg:flex lg:justify-end">
                     <div className="grid grid-cols-2 gap-x-8 gap-y-20">
                         {items.map((item, index) => {
                             return (
                                 <WhyCardItem
-                                    key={index}
+                                    key={`why-desktop-${index}`}
                                     img={item.img}
                                     title={item.title}
                                     description={item.description}
@@ -185,6 +190,32 @@ function WhyYouShouldTryNataiDiarySection() {
                         })}
                     </div>
                 </div>
+                <div className="flex flex-col lg:hidden">
+                    <Swiper
+                        slidesPerView={"auto"}
+                        //centeredSlides={true}
+                        // spaceBetween={30}
+                        pagination={{
+                            clickable: true,
+                        }}
+                        modules={[Pagination]}
+                        className="why-section-swiper"
+                    >
+                            {items.map((item, index) => {
+                                return (
+                                    <SwiperSlide>
+                                        <WhyCardItem
+                                            key={`why-mobile-${index}`}
+                                            img={item.img}
+                                            title={item.title}
+                                            description={item.description}
+                                        />
+                                    </SwiperSlide>
+                                )
+                            })}
+                    </Swiper>
+                </div>
+
             </div>
         </section>
     )
@@ -220,7 +251,7 @@ function FeaturesSection() {
 
     const FeatureCardItem = ({title, description}: { title: string, description: string }) => {
         return (
-            <div className="flex flex-col card glass text-xl text-white font-alegreya-text p-4">
+            <div className="flex flex-col card glass text-xl text-white p-4">
                 <h3>{title}</h3>
 
                 <p className="text-sm text-white mt-2">

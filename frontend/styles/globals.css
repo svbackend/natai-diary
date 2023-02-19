@@ -36,15 +36,6 @@
     background-color: #9571F8;
 }
 
-.font-alegreya {
-    font-family: 'Alegreya', serif;
-    letter-spacing: 0.1rem;
-}
-
-.font-alegreya-text {
-    font-family: 'Alegreya', serif;
-}
-
 .font-poppins {
     font-family: 'Poppins', sans-serif;
 }
@@ -238,4 +229,8 @@
 
 .dark .brand-highlight {
     background-color: #364652;
+}
+
+.why-section-swiper {
+    padding-top: 2.5rem !important;
 }
