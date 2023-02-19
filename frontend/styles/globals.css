@@ -198,15 +198,6 @@
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.why-section {
-    max-width: 1082px;
-    margin: 0 auto;
-}
-
-.bg-why {
-    background-attachment: fixed;
-}
-
 .features-section {
     max-width: 1082px;
     margin: 0 auto 3rem auto;
@@ -229,4 +220,22 @@
 
 .leading-12 {
     line-height: 3rem;
+}
+
+.why-card-item {
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.08);
+}
+
+.brand-highlight {
+    position: absolute;
+    background-color: #E4F4FF;
+    width: 200px;
+    height: 24px;
+    z-index: -1;
+    left: -5px;
+    top: 20px;
+}
+
+.dark .brand-highlight {
+    background-color: #364652;
 }

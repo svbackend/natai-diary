@@ -3,8 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import circlesImg from "../public/assets/hero/circles.svg";
 import circlesDarkImg from "../public/assets/hero/circles-dark.svg";
-import whySectionImg from "../public/assets/img/abstract-circles.svg";
-import featuresSectionImg from "../public/assets/img/bullseye-gradient.svg";
+import whySectionGirlImg from "../public/assets/why/girl.png";
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
 
@@ -37,10 +36,9 @@ export default function HomeLandingPage() {
     return (
         <MainLayout containerClass={"landing"}>
             <HeroSection isDarkMode={isDarkMode}/>
-            {/*
+
             <WhyYouShouldTryNataiDiarySection/>
-            <FeaturesSection/>
-            */}
+            {/* <FeaturesSection/> */}
         </MainLayout>
     )
 }
@@ -63,7 +61,7 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
     }
 
     return (
-        <section className={"relative hero-section"}>
+        <section className={"relative hero-section overflow-hidden"}>
             <div className="bg-section"></div>
             <div className="bg-hero rounded-b-3xl"></div>
             <div
@@ -118,33 +116,41 @@ function WhyYouShouldTryNataiDiarySection() {
 
     const items = [
         {
-            title: "It helps you to remember your daily life",
-            description: "Stay more grounded, self-aware, mindful of what you do and how you feel"
+            title: "Remember your daily life",
+            description: "Stay more grounded, self-aware, mindful of what you do and how you feel.",
+            img: require("../public/assets/mood/10.svg"),
         },
         {
-            title: "Journaling is a small habit that can make a big difference in your life",
-            description: "Start making notes, build 1 good habit at a time and see how it changes your life"
+            title: "Build good habits",
+            description: "Start making notes, build 1 good habit at a time and see how it changes your life.",
+            img: require("../public/assets/mood/9.svg"),
         },
         {
-            title: "It brings you closer to supporting and welcoming community",
-            description: "Natai is not just an application, it's a community of people who share their struggles and victories."
+            title: "Supportive community",
+            description: "Natai is not just an application, it's a community of people who share their struggles and victories.",
+            img: require("../public/assets/mood/8.svg"),
         },
         {
-            title: "It's free and open source, no ads whatsoever",
-            description: "Built with ❤️ by a small team of developers, designers and mental health advocates"
+            title: "It's free and open-source",
+            description: "Built with ❤️ by a small team of developers, designers and mental health advocates.",
+            img: require("../public/assets/mood/7.svg"),
         }
     ]
 
-    const bgStyle = {
-        backgroundImage: `url('${whySectionImg.src}')`,
-    }
-
-    const WhyCardItem = ({title, description}: { title: string, description: string }) => {
+    const WhyCardItem = ({img, title, description}: { img: any, title: string, description: string }) => {
         return (
-            <div className="flex flex-col card glass text-xl text-white font-alegreya-text p-4">
-                <h3>{title}</h3>
+            <div className="flex flex-col px-4 py-4 pt-8 bg-white dark:bg-why rounded-3xl why-card-item relative max-w-xs">
+                <div className="flex absolute -top-12 w-20 h-20 rounded-full bg-light2 dark:bg-transparent">
+                    <Image
+                        className={"w-16 h-16 mx-auto self-center"}
+                        src={img}
+                        alt={`${title} icon`}
+                    />
+                </div>
 
-                <p className="text-sm text-white mt-2">
+                <h3 className={"mt-2 text-xl text-dark dark:text-light font-bold"}>{title}</h3>
+
+                <p className="text-nav-item dark:text-nav-item-alt mt-2">
                     {description}
                 </p>
             </div>
@@ -152,21 +158,32 @@ function WhyYouShouldTryNataiDiarySection() {
     }
 
     return (
-        <section className={"why-section bg-why rounded-lg shadow-sm"} style={bgStyle}>
-            <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10">
-                <h1 className="text-4xl font-bold text-center text-white font-alegreya">Why you should try Natai
-                    Diary?</h1>
+        <section className={"bg-whitish dark:bg-nav-bg py-12 lg:py-20 px-4 lg:px-0"}>
+            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
+                Why you should try&nbsp;
+                <span className={"text-brand whitespace-nowrap relative z-10"}>
+                    Natai Diary?
+                    <span className="brand-highlight"></span>
+                </span>
+            </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 grid-flow-row w-full mt-5 px-5 gap-4">
-                    {items.map((item, index) => <WhyCardItem key={index} title={item.title}
-                                                             description={item.description}/>)}
+            <div className="container mx-auto flex justify-between mt-28 ">
+                <div className="hidden lg:flex">
+                    <Image src={whySectionGirlImg} alt={"Girl during journaling"}/>
                 </div>
-
-                <div className="flex flex-row items-center justify-center mt-5">
-                    <Link href={"/stories"}
-                          className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-4 border border-white shadow-lg"}>
-                        Read community stories
-                    </Link>
+                <div className="flex justify-end">
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-20">
+                        {items.map((item, index) => {
+                            return (
+                                <WhyCardItem
+                                    key={index}
+                                    img={item.img}
+                                    title={item.title}
+                                    description={item.description}
+                                />
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
         </section>
@@ -213,20 +230,8 @@ function FeaturesSection() {
         )
     }
 
-    const bgStyle = {
-        backgroundImage: `url('${featuresSectionImg.src}')`,
-    }
-
     return (
-        <section className={"features-section bg-features rounded-lg shadow-sm mb-12"} style={bgStyle}>
-            <div className="flex flex-col items-center justify-center mt-5 p-5 sm:p-10">
-                <h1 className="text-4xl font-bold text-center text-white font-alegreya">Features</h1>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 grid-flow-row w-full mt-5 px-5 gap-4">
-                    {items.map((item, index) => <FeatureCardItem key={index} title={item.title}
-                                                                 description={item.description}/>)}
-                </div>
-            </div>
+        <section>
         </section>
     )
 }
