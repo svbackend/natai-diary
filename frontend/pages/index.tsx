@@ -67,7 +67,7 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
             <div className="bg-section"></div>
             <div className="bg-hero rounded-b-3xl"></div>
             <div
-                className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-28">
+                className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-44">
 
                 <div className="flex flex-col">
                     <h1 className="text-3xl lg:text-4xl font-bold text-dark dark:text-light leading-10 text-center lg:text-left">
@@ -96,7 +96,7 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
                 </div>
 
                 <div className="flex relative lg:-mt-24 lg:-mb-28 lg:flex-grow">
-                    <div className="hero-art bg-cover lg:bg-contain" style={heroArtStyle}>
+                    <div className="hero-art bg-cover lg:-mb-28 lg:bg-auto" style={heroArtStyle}>
                         <div className="hero-art-screenshots">
                             <Image className={"hero-screenshot-1"} src={screenshot1} alt={"Natai Diary Screenshot 1"}/>
                             <Image className={"hero-screenshot-2"} src={screenshot2} alt={"Natai Diary Screenshot 2"}/>

@@ -1,11 +1,11 @@
-<svg width="640" height="550" viewBox="0 0 640 550" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle opacity="0.5" cx="320" cy="261" r="319.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle opacity="0.6" cx="320" cy="261" r="289.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle opacity="0.7" cx="320" cy="261" r="259.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle opacity="0.8" cx="320" cy="261" r="229.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle opacity="0.9" cx="320" cy="261" r="199.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle cx="320" cy="261" r="169.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle cx="320" cy="261" r="139.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle cx="320" cy="261" r="109.5" fill="white" fill-opacity="0.06" stroke="white"/>
-<circle cx="320" cy="261" r="79.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<svg width="640" height="640" viewBox="0 0 640 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle opacity="0.5" cx="320" cy="320" r="319.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle opacity="0.6" cx="320" cy="320" r="289.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle opacity="0.7" cx="320" cy="320" r="259.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle opacity="0.8" cx="320" cy="320" r="229.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle opacity="0.9" cx="320" cy="320" r="199.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle cx="320" cy="320" r="169.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle cx="320" cy="320" r="139.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle cx="320" cy="320" r="109.5" fill="white" fill-opacity="0.06" stroke="white"/>
+<circle cx="320" cy="320" r="79.5" fill="white" fill-opacity="0.06" stroke="white"/>
 </svg>
