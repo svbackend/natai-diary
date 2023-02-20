@@ -190,8 +190,6 @@
 }
 
 .features-section {
-    max-width: 1082px;
-    margin: 0 auto 3rem auto;
 }
 
 .bg-features {
@@ -262,3 +260,15 @@ SWIPER START
 /***
 SWIPER END
 */
+
+.bg-section-features {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -3;
+    background: #fafaff;
+}
+
+.dark .bg-section-features {
+    background: #1C1B20;
+}

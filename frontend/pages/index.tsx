@@ -18,6 +18,8 @@ import cloudIcon from "../public/assets/icons/cloud.svg"
 import adsIcon from "../public/assets/icons/ads.svg"
 import wifiIcon from "../public/assets/icons/wifi.svg"
 
+import feat1Img from "../public/assets/features/feat1.png"
+
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
 
@@ -267,45 +269,47 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
     const items = [
         {
             title: "Track your mood daily via fun hand-drawn art",
-            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life.",
+            img: feat1Img,
         },
         {
             title: "Track your activities via tags - with no limits, you can create your own tags",
-            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+            description: "Gain valuable insights into your well-being and make positive changes in your life by analyzing your tagged activities over time.",
+            img: feat1Img,
         },
         {
-            title: "On \"Insights\" tab you can see how your activities and mood are correlated",
-            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
+            title: "You can see how your activities and mood are correlated",
+            description: "Natai Diary helps you to visualize the link between your daily activities and mood, giving you a better understanding of how to optimize your mental well-being.",
+            img: feat1Img,
         },
-        {
-            title: "Cloud synchronization - don't lose your data switching between devices",
-            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
-        },
-        {
-            title: "Web and mobile apps - you can use it on your phone, tablet or computer whatever works best for you at the moment",
-            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
-        },
-        {
-            title: "Offline-first - you can use it even when you don't have internet connection, all notes will be synced as soon as you get back online",
-            description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life."
-        }
     ]
 
-    const FeatureCardItem = ({title, description}: { title: string, description: string }) => {
+    const FeatureCardItem = ({title, description, img}: { title: string, description: string, img: any }) => {
         return (
-            <div className="flex flex-col card glass text-xl text-white p-4">
-                <h3>{title}</h3>
+            <div className="flex pt-20 relative">
+                <div className="relative flex flex-col lg:flex-row lg:justify-between xl:container mx-auto">
+                    <div className="bg-hero"></div>
 
-                <p className="text-sm text-white mt-2">
-                    {description}
-                </p>
+                    <div className="flex flex-col max-w-md">
+                        <h3 className={"font-bold text-2xl text-dark dark:text-light"}>{title}</h3>
+
+                        <p className="mt-4 text-nav-item dark:text-nav-item-alt">
+                            {description}
+                        </p>
+                    </div>
+                    <div className="flex">
+                        <Image src={img} alt={`Feature '${title}' screenshot`}/>
+                    </div>
+                </div>
             </div>
         )
     }
 
     return (
-        <section className={"relative features-section overflow-hidden"}>
-            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
+        <section className={"relative features-section overflow-hidden bg-whitish dark:bg-nav-bg pt-4 lg:pt-8"}>
+            <div className="bg-section-features"></div>
+
+            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center mt-4 lg:mt-8"}>
                 <span className={"text-brand whitespace-nowrap relative z-10"}>
                     Natai Diary
                     <span className="brand-highlight w-[184px]"></span>
@@ -314,7 +318,14 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
             </h2>
 
             <div className="flex flex-col">
-                {}
+                {items.map((row, idx) => (
+                    <FeatureCardItem
+                        key={`feature-${idx}`}
+                        title={row.title}
+                        description={row.description}
+                        img={row.img}
+                    />
+                ))}
             </div>
         </section>
     )
@@ -339,8 +350,6 @@ function UseAnywhereSection({isDarkMode}: { isDarkMode: boolean }) {
             img: wifiIcon,
         },
     ]
-
-    const girlImg = isDarkMode ? whySectionGirlDarkImg : whySectionGirlImg
 
     const WhyCardItem = ({img, title, description}: { img: any, title: string, description: string }) => {
         return (
