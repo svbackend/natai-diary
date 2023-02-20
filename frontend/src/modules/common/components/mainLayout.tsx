@@ -57,7 +57,7 @@ const Header = ({router}: { router: NextRouter }) => {
                                 {!user && (
                                     <Link
                                         href={"/registration" + from}
-                                        className="self-center mr-2 px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">
+                                        className="self-center mr-2 px-8 py-2 lg:px-8 lg:py-3 rounded-3xl font-semibold bg-brand hover:bg-opacity-20">
                                         Sign up
                                     </Link>
                                 )}
@@ -156,12 +156,12 @@ const DesktopNavBar = ({
                     <>
                         <Link
                             href={"/login" + from}
-                            className="self-center px-8 py-3 font-semibold rounded color-brand">
+                            className="self-center px-8 py-3 font-semibold color-brand">
                             Sign in
                         </Link>
                         <Link
                             href={"/registration" + from}
-                            className="self-center px-8 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20">
+                            className="self-center px-8 rounded-3xl py-3 font-semibold bg-brand hover:bg-opacity-20">
                             Sign up
                         </Link>
                     </>
@@ -280,7 +280,7 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                             <li className={"mt-4 mb-2"}>
                                 <Link
                                     href={"/registration" + from}
-                                    className={"self-center text-white mr-2 px-16 rounded-3xl py-3 font-semibold rounded bg-brand hover:bg-opacity-20"}>
+                                    className={"self-center text-white mr-2 px-16 rounded-3xl py-3 font-semibold bg-brand hover:bg-opacity-20"}>
                                     Sign Up
                                 </Link>
                             </li>

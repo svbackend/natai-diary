@@ -4,11 +4,25 @@ import Link from "next/link";
 import circlesImg from "../public/assets/hero/circles.svg";
 import circlesDarkImg from "../public/assets/hero/circles-dark.svg";
 import whySectionGirlImg from "../public/assets/why/girl-new.png";
+import whySectionGirlDarkImg from "../public/assets/why/girl-dark.png";
+
+import screenshot1Img from "../public/assets/hero/screenshot1.png"
+import screenshot2Img from "../public/assets/hero/screenshot2.png"
+import screenshot1DarkImg from "../public/assets/hero/screenshot1-dark.png"
+import screenshot2DarkImg from "../public/assets/hero/screenshot2-dark.png"
+import pencilIcon from "../public/assets/icons/pencil.svg"
+import adsIcon from "../public/assets/icons/ads.svg"
+import cloudIcon from "../public/assets/icons/cloud.svg"
+import coupleIcon from "../public/assets/icons/couple.svg"
+import plantsIcon from "../public/assets/icons/plants.svg"
+import receiveIcon from "../public/assets/icons/receive.svg"
+import wifiIcon from "../public/assets/icons/wifi.svg"
+
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper";
+import {Swiper, SwiperSlide} from "swiper/react";
+import {Pagination} from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 
@@ -42,7 +56,7 @@ export default function HomeLandingPage() {
         <MainLayout containerClass={"landing"}>
             <HeroSection isDarkMode={isDarkMode}/>
 
-            <WhyYouShouldTryNataiDiarySection/>
+            <WhyYouShouldTryNataiDiarySection isDarkMode={isDarkMode}/>
             {/* <FeaturesSection/> */}
         </MainLayout>
     )
@@ -52,11 +66,11 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
     let screenshot1, screenshot2;
 
     if (isDarkMode) {
-        screenshot1 = require("../public/assets/hero/screenshot1-dark.png");
-        screenshot2 = require("../public/assets/hero/screenshot2-dark.png");
+        screenshot1 = screenshot1DarkImg;
+        screenshot2 = screenshot2DarkImg;
     } else {
-        screenshot1 = require("../public/assets/hero/screenshot1.png");
-        screenshot2 = require("../public/assets/hero/screenshot2.png");
+        screenshot1 = screenshot1Img;
+        screenshot2 = screenshot2Img;
     }
 
     const heroArtStyle = {
@@ -86,13 +100,14 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
                     <div className="flex flex-col lg:flex-row mt-4 lg:mt-8 px-8 lg:px-0">
                         <Link href="https://play.google.com/store/apps/details?id=com.svbackend.natai"
                               target={"_blank"}
-                              className="flex bg-google shadow hover:shadow-2xl py-4 px-12 rounded-full">
+                              className="flex bg-google shadow hover:shadow-2xl py-2 px-8 lg:py-4 lg:px-12 rounded-full">
                             <Image className={"mx-auto"} src={require("../public/assets/button/playStore.png")}
+                                   priority={true}
                                    quality="100"
                                    alt={"get it on Google Play"}/>
                         </Link>
                         <Link href={"/diary"}
-                              className={"w-full h-full flex items-center justify-center lg:w-auto bg-brand text-center text-white self-center mt-4 lg:mt-0 py-5 px-12 rounded-full ml-0 lg:ml-4 shadow font-semibold hover:shadow-xl"}>
+                              className={"w-full h-full flex items-center justify-center lg:w-auto bg-brand text-center text-white self-center mt-4 lg:mt-0 py-3 px-8 lg:py-5 lg:px-12 rounded-full ml-0 lg:ml-4 shadow font-semibold hover:shadow-xl"}>
                             Try Web Version
                         </Link>
                     </div>
@@ -101,14 +116,33 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
                 <div className="flex relative lg:-mt-24 lg:-mb-28 lg:flex-grow">
                     <div className="hero-art bg-cover lg:-mb-28 lg:bg-auto" style={heroArtStyle}>
                         <div className="hero-art-screenshots">
-                            <Image className={"hero-screenshot-1"} src={screenshot1} alt={"Natai Diary Screenshot 1"}/>
-                            <Image className={"hero-screenshot-2"} src={screenshot2} alt={"Natai Diary Screenshot 2"}/>
-                            <Image className={"w-16 h-16 drop-shadow hero-mood-1"}
-                                   src={require("../public/assets/mood/10.svg")} alt={"Natai Diary Mood 1"}/>
-                            <Image className={"w-16 h-16 drop-shadow hero-mood-2"}
-                                   src={require("../public/assets/mood/8.svg")} alt={"Natai Diary Mood 2"}/>
-                            <Image className={"w-16 h-16 drop-shadow hero-mood-3"}
-                                   src={require("../public/assets/mood/3.svg")} alt={"Natai Diary Mood 3"}/>
+                            <Image
+                                className={"hero-screenshot-1"}
+                                priority={true}
+                                src={screenshot1}
+                                alt={"Natai Diary Screenshot 1"}
+                                placeholder={"blur"}
+                            />
+                            <Image
+                                className={"hero-screenshot-2"}
+                                priority={true}
+                                src={screenshot2}
+                                alt={"Natai Diary Screenshot 2"}
+                                placeholder={"blur"}
+                            />
+                            <Image
+                                className={"w-16 h-16 drop-shadow hero-mood-1"}
+                                src={require("../public/assets/mood/10.svg")} alt={"Natai Diary Mood 1"}
+                            />
+                            <Image
+                                className={"w-16 h-16 drop-shadow hero-mood-2"}
+                                src={require("../public/assets/mood/8.svg")} alt={"Natai Diary Mood 2"}
+                            />
+                            <Image
+                                className={"w-16 h-16 drop-shadow hero-mood-3"}
+                                src={require("../public/assets/mood/3.svg")}
+                                alt={"Natai Diary Mood 3"}
+                            />
                         </div>
                     </div>
                 </div>
@@ -117,35 +151,38 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
     )
 }
 
-function WhyYouShouldTryNataiDiarySection() {
+function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean }) {
 
     const items = [
         {
             title: "Remember your daily life",
             description: "Stay more grounded, self-aware, mindful of what you do and how you feel.",
-            img: require("../public/assets/mood/10.svg"),
+            img: pencilIcon,
         },
         {
             title: "Build good habits",
             description: "Start making notes, build 1 good habit at a time and see how it changes your life.",
-            img: require("../public/assets/mood/9.svg"),
+            img: plantsIcon,
         },
         {
             title: "Supportive community",
             description: "Natai is not just an application, it's a community of people who share their struggles and victories.",
-            img: require("../public/assets/mood/8.svg"),
+            img: coupleIcon,
         },
         {
             title: "It's free and open-source",
             description: "Built with ❤️ by a small team of developers, designers and mental health advocates.",
-            img: require("../public/assets/mood/7.svg"),
+            img: receiveIcon,
         }
     ]
 
+    const girlImg = isDarkMode ? whySectionGirlDarkImg : whySectionGirlImg
+
     const WhyCardItem = ({img, title, description}: { img: any, title: string, description: string }) => {
         return (
-            <div className="flex flex-col px-4 py-4 pt-8 bg-white dark:bg-why rounded-3xl why-card-item relative max-w-xs">
-                <div className="flex absolute -top-12 w-20 h-20 rounded-full bg-light2 dark:bg-transparent">
+            <div
+                className="flex flex-col px-4 py-4 pt-8 bg-white dark:bg-why rounded-3xl why-card-item relative max-w-xs">
+                <div className="flex absolute p-4 -top-12 w-20 h-20 rounded-full bg-light2 dark:bg-why">
                     <Image
                         className={"w-16 h-16 mx-auto self-center"}
                         src={img}
@@ -174,7 +211,7 @@ function WhyYouShouldTryNataiDiarySection() {
 
             <div className="container mx-auto flex justify-between mt-16 lg:mt-28 ">
                 <div className="hidden lg:flex">
-                    <Image src={whySectionGirlImg} alt={"Girl during journaling"}/>
+                    <Image src={girlImg} alt={"Girl during journaling"}/>
                 </div>
                 <div className="hidden lg:flex lg:justify-end">
                     <div className="grid grid-cols-2 gap-x-8 gap-y-20">
@@ -190,29 +227,27 @@ function WhyYouShouldTryNataiDiarySection() {
                         })}
                     </div>
                 </div>
-                <div className="flex flex-col lg:hidden">
+                <div className="lg:hidden flex">
                     <Swiper
-                        slidesPerView={"auto"}
-                        //centeredSlides={true}
-                        // spaceBetween={30}
+                        slidesPerView={1.3}
+                        spaceBetween={10}
                         pagination={{
                             clickable: true,
                         }}
                         modules={[Pagination]}
                         className="why-section-swiper"
                     >
-                            {items.map((item, index) => {
-                                return (
-                                    <SwiperSlide>
-                                        <WhyCardItem
-                                            key={`why-mobile-${index}`}
-                                            img={item.img}
-                                            title={item.title}
-                                            description={item.description}
-                                        />
-                                    </SwiperSlide>
-                                )
-                            })}
+                        {items.map((item, index) => {
+                            return (
+                                <SwiperSlide key={`why-mobile-${index}`}>
+                                    <WhyCardItem
+                                        img={item.img}
+                                        title={item.title}
+                                        description={item.description}
+                                    />
+                                </SwiperSlide>
+                            )
+                        })}
                     </Swiper>
                 </div>
 
