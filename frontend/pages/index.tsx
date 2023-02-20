@@ -14,6 +14,9 @@ import pencilIcon from "../public/assets/icons/pencil.svg"
 import coupleIcon from "../public/assets/icons/couple.svg"
 import plantsIcon from "../public/assets/icons/plants.svg"
 import receiveIcon from "../public/assets/icons/receive.svg"
+import cloudIcon from "../public/assets/icons/cloud.svg"
+import adsIcon from "../public/assets/icons/ads.svg"
+import wifiIcon from "../public/assets/icons/wifi.svg"
 
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
@@ -52,9 +55,9 @@ export default function HomeLandingPage() {
     return (
         <MainLayout containerClass={"landing"}>
             <HeroSection isDarkMode={isDarkMode}/>
-
             <WhyYouShouldTryNataiDiarySection isDarkMode={isDarkMode}/>
-            {/* <FeaturesSection/> */}
+            <FeaturesSection isDarkMode={isDarkMode}/>
+            <UseAnywhereSection isDarkMode={isDarkMode}/>
         </MainLayout>
     )
 }
@@ -79,7 +82,7 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
     return (
         <section className={"relative hero-section overflow-hidden"}>
             <div className="bg-section"></div>
-            <div className="bg-hero rounded-b-3xl"></div>
+            <div className="bg-hero"></div>
             <div
                 className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-44">
 
@@ -197,12 +200,12 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
     }
 
     return (
-        <section className={"bg-whitish dark:bg-nav-bg py-12 lg:py-20 px-4 lg:px-0"}>
+        <section className={"why-section bg-whitish dark:bg-nav-bg py-12 lg:py-20 px-4 lg:px-0"}>
             <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
                 Why you should try&nbsp;
                 <span className={"text-brand whitespace-nowrap relative z-10"}>
                     Natai Diary?
-                    <span className="brand-highlight"></span>
+                    <span className="brand-highlight w-[200px]"></span>
                 </span>
             </h2>
 
@@ -224,28 +227,35 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
                         })}
                     </div>
                 </div>
-                <div className="lg:hidden relative flex w-full swiper-min-height">
-                    <Swiper
-                        slidesPerView={1.2}
-                        spaceBetween={30}
-                        pagination={{
-                            clickable: true,
-                        }}
-                        modules={[Pagination]}
-                        className="mySwiper"
-                    >
-                        {items.map((item, index) => {
-                            return (
-                                <SwiperSlide key={`why-mobile-${index}`}>
-                                    <WhyCardItem
-                                        img={item.img}
-                                        title={item.title}
-                                        description={item.description}
-                                    />
-                                </SwiperSlide>
-                            )
-                        })}
-                    </Swiper>
+                <div className="lg:hidden relative flex flex-col w-full swiper-min-height">
+                    <div className="flex">
+                        <Swiper
+                            slidesPerView={1.2}
+                            spaceBetween={30}
+                            pagination={{
+                                clickable: true,
+                            }}
+                            modules={[Pagination]}
+                            className="mySwiper"
+                        >
+                            {items.map((item, index) => {
+                                return (
+                                    <SwiperSlide key={`why-mobile-${index}`}>
+                                        <WhyCardItem
+                                            img={item.img}
+                                            title={item.title}
+                                            description={item.description}
+                                        />
+                                    </SwiperSlide>
+                                )
+                            })}
+                        </Swiper>
+                    </div>
+
+                    <Link href={"/registration"}
+                          className={"mt-4 w-full rounded-3xl text-center font-semibold py-3 mx-auto bg-brand text-white"}>
+                        Create an account
+                    </Link>
                 </div>
 
             </div>
@@ -253,7 +263,7 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
     )
 }
 
-function FeaturesSection() {
+function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
     const items = [
         {
             title: "Track your mood daily via fun hand-drawn art",
@@ -294,7 +304,123 @@ function FeaturesSection() {
     }
 
     return (
-        <section>
+        <section className={"relative features-section overflow-hidden"}>
+            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
+                <span className={"text-brand whitespace-nowrap relative z-10"}>
+                    Natai Diary
+                    <span className="brand-highlight w-[184px]"></span>
+                </span>
+                &nbsp;as your friend!
+            </h2>
+
+            <div className="flex flex-col">
+                {}
+            </div>
+        </section>
+    )
+}
+
+function UseAnywhereSection({isDarkMode}: { isDarkMode: boolean }) {
+
+    const items = [
+        {
+            title: "Cloud synchronization",
+            description: "We keep your progress, ensuring your data is always accessible on all your devices.",
+            img: cloudIcon,
+        },
+        {
+            title: "Web and mobile apps",
+            description: "You can use it on your phone, tablet or computer whatever works best for you at the moment.",
+            img: adsIcon,
+        },
+        {
+            title: "Offline first",
+            description: "You can use it even when you don't have internet connection, all notes will be synced once you get back online.",
+            img: wifiIcon,
+        },
+    ]
+
+    const girlImg = isDarkMode ? whySectionGirlDarkImg : whySectionGirlImg
+
+    const WhyCardItem = ({img, title, description}: { img: any, title: string, description: string }) => {
+        return (
+            <div
+                className="flex flex-col px-4 py-4 pt-8 bg-white dark:bg-why rounded-3xl why-card-item relative max-w-xs h-full">
+                <div className="flex absolute p-4 -top-12 w-20 h-20 rounded-full bg-light2 dark:bg-why">
+                    <Image
+                        className={"w-16 h-16 mx-auto self-center"}
+                        src={img}
+                        alt={`${title} icon`}
+                    />
+                </div>
+
+                <h3 className={"mt-2 text-xl text-dark dark:text-light font-bold"}>{title}</h3>
+
+                <p className="text-nav-item dark:text-nav-item-alt mt-2">
+                    {description}
+                </p>
+            </div>
+        )
+    }
+
+    return (
+        <section className={"why-section bg-whitish dark:bg-nav-bg py-12 lg:py-20 px-4 lg:px-0"}>
+            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
+                Use&nbsp;
+                <span className={"text-brand whitespace-nowrap relative z-10"}>
+                    Natai Diary
+                    <span className="brand-highlight w-[184px]"></span>
+                </span>
+                &nbsp;anytime & anywhere!
+            </h2>
+
+            <div className="container mx-auto flex justify-between mt-12 lg:mt-28 ">
+                <div className="hidden lg:flex lg:justify-between mx-auto">
+                    <div className="grid grid-cols-3 gap-x-8 gap-y-20">
+                        {items.map((item, index) => {
+                            return (
+                                <WhyCardItem
+                                    key={`why-desktop-${index}`}
+                                    img={item.img}
+                                    title={item.title}
+                                    description={item.description}
+                                />
+                            )
+                        })}
+                    </div>
+                </div>
+                <div className="lg:hidden relative flex flex-col w-full swiper-min-height">
+                    <div className="flex">
+                        <Swiper
+                            slidesPerView={1.2}
+                            spaceBetween={30}
+                            pagination={{
+                                clickable: true,
+                            }}
+                            modules={[Pagination]}
+                            className="mySwiper"
+                        >
+                            {items.map((item, index) => {
+                                return (
+                                    <SwiperSlide key={`why-mobile-${index}`}>
+                                        <WhyCardItem
+                                            img={item.img}
+                                            title={item.title}
+                                            description={item.description}
+                                        />
+                                    </SwiperSlide>
+                                )
+                            })}
+                        </Swiper>
+                    </div>
+
+                    <Link href={"/diary"}
+                          className={"mt-4 w-full rounded-3xl text-center font-semibold py-3 mx-auto bg-brand text-white"}>
+                        Try web version
+                    </Link>
+                </div>
+
+            </div>
         </section>
     )
 }

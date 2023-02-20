@@ -220,7 +220,6 @@
 .brand-highlight {
     position: absolute;
     background-color: #E4F4FF;
-    width: 200px;
     height: 24px;
     z-index: -1;
     left: -5px;
@@ -231,26 +230,33 @@
     background-color: #364652;
 }
 
-.why-section-swiper {
-}
-
 /***
 SWIPER START
  */
 
-.swiper-slide {
+.why-section .swiper {
+    padding-bottom: 2rem;
+}
+
+.why-section .swiper-slide {
     padding-top: 4rem;
 }
 
-.swiper-min-height {
+.why-section .swiper-min-height {
     min-height: 190px;
 }
 
-.swiper-pagination-bullet-active {
-    background: #9571F8 !important;
+.why-section .swiper-pagination-bullet {
+    background: #C3C3C3 !important;
 }
 
-.swiper-wrapper {
+.why-section .swiper-pagination-bullet-active {
+    background: #9571F8 !important;
+    transform: scale(150%);
+}
+
+.why-section .swiper-pagination-bullets {
+    bottom: -4px !important;
 }
 
 /***
