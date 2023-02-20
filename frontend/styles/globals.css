@@ -233,3 +233,26 @@
 
 .why-section-swiper {
 }
+
+/***
+SWIPER START
+ */
+
+.swiper-slide {
+    padding-top: 4rem;
+}
+
+.swiper-min-height {
+    min-height: 190px;
+}
+
+.swiper-pagination-bullet-active {
+    background: #9571F8 !important;
+}
+
+.swiper-wrapper {
+}
+
+/***
+SWIPER END
+*/

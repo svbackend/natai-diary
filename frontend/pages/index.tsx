@@ -11,12 +11,9 @@ import screenshot2Img from "../public/assets/hero/screenshot2.png"
 import screenshot1DarkImg from "../public/assets/hero/screenshot1-dark.png"
 import screenshot2DarkImg from "../public/assets/hero/screenshot2-dark.png"
 import pencilIcon from "../public/assets/icons/pencil.svg"
-import adsIcon from "../public/assets/icons/ads.svg"
-import cloudIcon from "../public/assets/icons/cloud.svg"
 import coupleIcon from "../public/assets/icons/couple.svg"
 import plantsIcon from "../public/assets/icons/plants.svg"
 import receiveIcon from "../public/assets/icons/receive.svg"
-import wifiIcon from "../public/assets/icons/wifi.svg"
 
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
@@ -181,7 +178,7 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
     const WhyCardItem = ({img, title, description}: { img: any, title: string, description: string }) => {
         return (
             <div
-                className="flex flex-col px-4 py-4 pt-8 bg-white dark:bg-why rounded-3xl why-card-item relative max-w-xs">
+                className="flex flex-col px-4 py-4 pt-8 bg-white dark:bg-why rounded-3xl why-card-item relative max-w-xs h-full">
                 <div className="flex absolute p-4 -top-12 w-20 h-20 rounded-full bg-light2 dark:bg-why">
                     <Image
                         className={"w-16 h-16 mx-auto self-center"}
@@ -209,7 +206,7 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
                 </span>
             </h2>
 
-            <div className="container mx-auto flex justify-between mt-16 lg:mt-28 ">
+            <div className="container mx-auto flex justify-between mt-12 lg:mt-28 ">
                 <div className="hidden lg:flex">
                     <Image src={girlImg} alt={"Girl during journaling"}/>
                 </div>
@@ -227,15 +224,15 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
                         })}
                     </div>
                 </div>
-                <div className="lg:hidden flex">
+                <div className="lg:hidden relative flex w-full swiper-min-height">
                     <Swiper
-                        slidesPerView={1.3}
-                        spaceBetween={10}
+                        slidesPerView={1.2}
+                        spaceBetween={30}
                         pagination={{
                             clickable: true,
                         }}
                         modules={[Pagination]}
-                        className="why-section-swiper"
+                        className="mySwiper"
                     >
                         {items.map((item, index) => {
                             return (
