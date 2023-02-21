@@ -1,9 +1,15 @@
 # natai-diary
 
-AI Enhanced Diary application + website built using Kotlin Multiplatform Mobile (KMM), PHP & Symfony on backend, NextJS
+AI Enhanced Diary application + website built using Jetpack Compose for android, PHP & Symfony on backend, NextJS
 on frontend, and PostgreSQL as database.
 
-![](android-app-example.gif)
+![](.github/app-example.gif)
+
+## Download
+
+[https://natai.app - WEB version](https://natai.app)
+
+[![](.github/play-store-badge.png)](https://play.google.com/store/apps/details?id=com.svbackend.natai)
 
 ## Development
 
