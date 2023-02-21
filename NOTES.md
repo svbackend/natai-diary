@@ -1,3 +1,13 @@
+### Feb 20, 2023
+
+Today after work I wasn't feeling very motivated, but I still made at least some progress with landing page.
+There's features section, and it's pretty hard to convert from figma because
+there are a lot of small pieces with "position: absolute" as well as gradient multicolor backgrounds
+and huge differences between desktop and mobile versions.
+
+Looks like I need another 2-3 evenings to finish it, 
+and then I finally can do files/media attachments and continue to work on web version. 
+
 ### Feb 19, 2023
 
 This weekend I was working on web app landing page, and I really like how it's going, I found a nice designer on upwork,
