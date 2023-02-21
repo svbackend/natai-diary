@@ -29,7 +29,8 @@ import mood3 from "../public/assets/mood/3.svg"
 import mood2 from "../public/assets/mood/2.svg"
 
 import feat1Img from "../public/assets/features/feat1.png"
-import feat2Img from "../public/assets/features/feat2-desktop.png"
+import feat2Img from "../public/assets/features/feat2.png"
+import feat3Img from "../public/assets/features/feat3.png"
 
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
@@ -273,7 +274,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
         {
             title: "You can see how your activities and mood are correlated",
             description: "Natai Diary helps you to visualize the link between your daily activities and mood, giving you a better understanding of how to optimize your mental well-being.",
-            img: feat1Img,
+            img: feat3Img,
             smiles: [mood2, mood6, mood10]
         },
     ]
@@ -287,7 +288,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
         }
     ) => {
         return (
-            <div className="flex flex-col mt-72 relative px-8 lg:px-0">
+            <div className="flex flex-col mt-80 lg:mt-72 relative px-8 lg:px-0">
                 <div
                     className="relative flex flex-col lg:flex-row lg:justify-between items-center xl:container mx-auto rounded-3xl overflow-hidden">
                     <div className="bg-feature-card rounded-3xl overflow-hidden"></div>
@@ -336,13 +337,13 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
         }
     ) => {
         return (
-            <div className="flex flex-col mt-72 relative px-8 lg:px-0">
+            <div className="flex flex-col mt-80 lg:mt-72 relative px-8 lg:px-0">
                 <div
-                    className="relative flex flex-col lg:flex-row lg:justify-between items-center xl:container mx-auto rounded-3xl overflow-hidden">
+                    className="relative flex flex-col lg:flex-row lg:justify-end items-end xl:container mx-auto rounded-3xl overflow-hidden">
                     <div className="bg-feature-card rounded-3xl overflow-hidden"></div>
                     <div className="bg-feature-card-circles rounded-3xl overflow-hidden"></div>
 
-                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:ml-28">
+                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:mr-28">
                         <h3 className={"font-bold text-lg lg:text-2xl text-dark dark:text-light"}>{title}</h3>
 
                         <p className="mt-6 text-nav-item dark:text-nav-item-alt">
@@ -380,7 +381,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
         <section className={"relative features-section overflow-hidden"}>
             <div className="bg-section-features"></div>
 
-            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center mt-4 lg:mt-8"}>
+            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center mt-4 lg:mt-8 mb-8 lg:mb-0"}>
                 <span className={"text-brand whitespace-nowrap relative z-10"}>
                     Natai Diary
                     <span className="brand-highlight w-[184px]"></span>
