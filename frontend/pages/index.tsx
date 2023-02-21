@@ -18,6 +18,16 @@ import cloudIcon from "../public/assets/icons/cloud.svg"
 import adsIcon from "../public/assets/icons/ads.svg"
 import wifiIcon from "../public/assets/icons/wifi.svg"
 
+import mood10 from "../public/assets/mood/10.svg"
+import mood9 from "../public/assets/mood/9.svg"
+import mood8 from "../public/assets/mood/8.svg"
+import mood7 from "../public/assets/mood/7.svg"
+import mood6 from "../public/assets/mood/6.svg"
+import mood5 from "../public/assets/mood/5.svg"
+import mood4 from "../public/assets/mood/4.svg"
+import mood3 from "../public/assets/mood/3.svg"
+import mood2 from "../public/assets/mood/2.svg"
+
 import feat1Img from "../public/assets/features/feat1.png"
 
 import {useAtom} from "jotai/index";
@@ -27,30 +37,10 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
+import {classNames} from "../src/utils/classNames";
 
 const care01 = require("../public/assets/img/care01.svg");
 
-/**
- * Natai Diary landing & home page
- *
- * Why you should try Natai Diary?
- * - It helps you to remember your daily life
- * - It helps you to understand what brings you joy and happiness to focus on those things
- * - It helps you to stay more self-aware and mindful
- * - Journaling is a small habit that can make a big difference in your life
- * - It brings you closer to supporting and welcoming community
- * - It's free and open source, no ads whatsoever
- *
- * It's proven that journaling helps your mental health and well-being. Start making small notes today!
- *
- * Features:
- * Track your mood daily via fun hand-drawn art
- * Track your activities via tags - with no limits, you can create your own tags
- * On "Insights" tab you can see how your activities and mood are correlated
- * Cloud synchronization - don't lose your data switching between devices
- * Web and mobile apps - you can use it on your phone, tablet or computer whatever works best for you at the moment
- * Offline-first - you can use it even when you don't have internet connection, all notes will be synced as soon as you get back online
- */
 export default function HomeLandingPage() {
     const [isDarkMode] = useAtom(darkModeAtom)
 
@@ -271,42 +261,65 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
             title: "Track your mood daily via fun hand-drawn art",
             description: "Natai Diary has a unique feature to track your mood daily via fun hand-drawn art, it helps you to understand your emotions better and how they affect your daily life.",
             img: feat1Img,
+            smiles: [mood9, mood4, mood3]
         },
         {
             title: "Track your activities via tags - with no limits, you can create your own tags",
             description: "Gain valuable insights into your well-being and make positive changes in your life by analyzing your tagged activities over time.",
             img: feat1Img,
+            smiles: [mood7, mood8, mood5]
         },
         {
             title: "You can see how your activities and mood are correlated",
             description: "Natai Diary helps you to visualize the link between your daily activities and mood, giving you a better understanding of how to optimize your mental well-being.",
             img: feat1Img,
+            smiles: [mood2, mood6, mood10]
         },
     ]
 
-    const FeatureCardItem = ({title, description, img}: { title: string, description: string, img: any }) => {
+    const FeatureCardItem = ({title, description, img, smiles}: { title: string, description: string, img: any, smiles: any[] }) => {
         return (
-            <div className="flex pt-20 relative">
-                <div className="relative flex flex-col lg:flex-row lg:justify-between xl:container mx-auto">
-                    <div className="bg-hero"></div>
+            <div className="flex flex-col lg:mt-72 relative">
+                <div
+                    className="relative flex flex-col lg:flex-row lg:justify-between items-center xl:container mx-auto rounded-3xl overflow-hidden">
+                    <div className="bg-feature-card rounded-3xl overflow-hidden"></div>
+                    <div className="bg-feature-card-circles rounded-3xl overflow-hidden"></div>
 
-                    <div className="flex flex-col max-w-md">
+                    <div className="flex flex-col max-w-md lg:my-20 lg:ml-28">
                         <h3 className={"font-bold text-2xl text-dark dark:text-light"}>{title}</h3>
 
-                        <p className="mt-4 text-nav-item dark:text-nav-item-alt">
+                        <p className="mt-6 text-nav-item dark:text-nav-item-alt">
                             {description}
                         </p>
                     </div>
-                    <div className="flex">
-                        <Image src={img} alt={`Feature '${title}' screenshot`}/>
-                    </div>
+                </div>
+
+                <div className="flex relative items-end xl:container mx-auto rounded-3xl">
+                    <Image
+                        className={"absolute feature-screenshot-right"}
+                        src={img}
+                        alt={`Feature '${title}' screenshot`}
+                    />
+                    <Image
+                        className={"absolute feature-lines-right"}
+                        src={require("../public/assets/features/lines.svg")}
+                        alt={`Lines decoration`}
+                    />
+
+                    {/** features-mood-1 features-mood-2 features-mood-3 */}
+                    {smiles.map((moodSmileImg,idx) => (
+                        <Image
+                            className={classNames("w-16 h-16 drop-shadow", `features-mood-${1+idx}`)}
+                            src={moodSmileImg} alt={"Natai Diary Mood Icon"}
+                        />
+                    ))}
                 </div>
             </div>
         )
     }
 
     return (
-        <section className={"relative features-section overflow-hidden bg-whitish dark:bg-nav-bg pt-4 lg:pt-8"}>
+        <section className={"relative features-section overflow-hidden"}>
             <div className="bg-section-features"></div>
 
             <h2 className={"text-3xl text-dark dark:text-light font-bold text-center mt-4 lg:mt-8"}>
@@ -324,6 +337,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                         title={row.title}
                         description={row.description}
                         img={row.img}
+                        smiles={row.smiles}
                     />
                 ))}
             </div>
