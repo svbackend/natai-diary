@@ -13,6 +13,9 @@ api-up:
 frontend-up:
 	cd frontend && npm run dev
 
+frontend-build:
+	cd frontend && npm run build
+
 test:
 	cd api && bin/phpunit
 
