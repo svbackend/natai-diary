@@ -29,6 +29,7 @@ import mood3 from "../public/assets/mood/3.svg"
 import mood2 from "../public/assets/mood/2.svg"
 
 import feat1Img from "../public/assets/features/feat1.png"
+import feat2Img from "../public/assets/features/feat2-desktop.png"
 
 import {useAtom} from "jotai/index";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
@@ -266,7 +267,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
         {
             title: "Track your activities via tags - with no limits, you can create your own tags",
             description: "Gain valuable insights into your well-being and make positive changes in your life by analyzing your tagged activities over time.",
-            img: feat1Img,
+            img: feat2Img,
             smiles: [mood7, mood8, mood5]
         },
         {
@@ -277,16 +278,23 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
         },
     ]
 
-    const FeatureCardItem = ({title, description, img, smiles}: { title: string, description: string, img: any, smiles: any[] }) => {
+    const FeatureCardItem1 = (
+        {title, description, img, smiles}: {
+            title: string,
+            description: string,
+            img: any,
+            smiles: any[]
+        }
+    ) => {
         return (
-            <div className="flex flex-col lg:mt-72 relative">
+            <div className="flex flex-col mt-72 relative px-8 lg:px-0">
                 <div
                     className="relative flex flex-col lg:flex-row lg:justify-between items-center xl:container mx-auto rounded-3xl overflow-hidden">
                     <div className="bg-feature-card rounded-3xl overflow-hidden"></div>
                     <div className="bg-feature-card-circles rounded-3xl overflow-hidden"></div>
 
-                    <div className="flex flex-col max-w-md lg:my-20 lg:ml-28">
-                        <h3 className={"font-bold text-2xl text-dark dark:text-light"}>{title}</h3>
+                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:ml-28">
+                        <h3 className={"font-bold text-lg lg:text-2xl text-dark dark:text-light"}>{title}</h3>
 
                         <p className="mt-6 text-nav-item dark:text-nav-item-alt">
                             {description}
@@ -294,7 +302,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                     </div>
                 </div>
 
-                <div className="flex relative items-end xl:container mx-auto rounded-3xl">
+                <div className="flex relative items-end container mx-auto rounded-3xl">
                     <Image
                         className={"absolute feature-screenshot-right"}
                         src={img}
@@ -307,9 +315,59 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                     />
 
                     {/** features-mood-1 features-mood-2 features-mood-3 */}
-                    {smiles.map((moodSmileImg,idx) => (
+                    {smiles.map((moodSmileImg, idx) => (
                         <Image
-                            className={classNames("w-16 h-16 drop-shadow", `features-mood-${1+idx}`)}
+                            key={`features-mood-${1 + idx}`}
+                            className={classNames("w-16 h-16 drop-shadow", `features-mood-${1 + idx}`)}
+                            src={moodSmileImg} alt={"Natai Diary Mood Icon"}
+                        />
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    const FeatureCardItem2 = (
+        {title, description, img, smiles}: {
+            title: string,
+            description: string,
+            img: any,
+            smiles: any[]
+        }
+    ) => {
+        return (
+            <div className="flex flex-col mt-72 relative px-8 lg:px-0">
+                <div
+                    className="relative flex flex-col lg:flex-row lg:justify-between items-center xl:container mx-auto rounded-3xl overflow-hidden">
+                    <div className="bg-feature-card rounded-3xl overflow-hidden"></div>
+                    <div className="bg-feature-card-circles rounded-3xl overflow-hidden"></div>
+
+                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:ml-28">
+                        <h3 className={"font-bold text-lg lg:text-2xl text-dark dark:text-light"}>{title}</h3>
+
+                        <p className="mt-6 text-nav-item dark:text-nav-item-alt">
+                            {description}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex relative items-end container mx-auto rounded-3xl">
+                    <Image
+                        className={"absolute feature-screenshot-left"}
+                        src={img}
+                        alt={`Feature '${title}' screenshot`}
+                    />
+                    <Image
+                        className={"absolute feature-lines-left"}
+                        src={require("../public/assets/features/lines.svg")}
+                        alt={`Lines decoration`}
+                    />
+
+                    {/** features-mood-1 features-mood-2 features-mood-3 */}
+                    {smiles.map((moodSmileImg, idx) => (
+                        <Image
+                            key={`features-mood-${1 + idx}`}
+                            className={classNames("w-16 h-16 drop-shadow left", `features-mood-${1 + idx}`)}
                             src={moodSmileImg} alt={"Natai Diary Mood Icon"}
                         />
                     ))}
@@ -332,13 +390,23 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
 
             <div className="flex flex-col">
                 {items.map((row, idx) => (
-                    <FeatureCardItem
-                        key={`feature-${idx}`}
-                        title={row.title}
-                        description={row.description}
-                        img={row.img}
-                        smiles={row.smiles}
-                    />
+                    idx % 2 === 0 ? (
+                        <FeatureCardItem1
+                            key={`feature-${idx}`}
+                            title={row.title}
+                            description={row.description}
+                            img={row.img}
+                            smiles={row.smiles}
+                        />
+                    ) : (
+                        <FeatureCardItem2
+                            key={`feature-${idx}`}
+                            title={row.title}
+                            description={row.description}
+                            img={row.img}
+                            smiles={row.smiles}
+                        />
+                    )
                 ))}
             </div>
         </section>
