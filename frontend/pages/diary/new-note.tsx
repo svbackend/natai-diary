@@ -26,6 +26,8 @@ import icNewLabel from "../../public/assets/img/ic_new_label.svg";
 import {DiaryAddTagsModal} from "../../src/modules/diary/components/DiaryAddTagsModal";
 import {AddedTagsRow} from "../../src/modules/diary/components/AddedTagsRow";
 import {titleGeneratorService} from "../../src/modules/diary/services/titleGeneratorService";
+import {storageService} from "../../src/modules/common/services/storageService";
+import {useDebounceEffect} from "../../src/utils/useDebounceEffect";
 
 export default function DiaryNewNote() {
 
@@ -98,7 +100,14 @@ function DiaryNewNotePageContent() {
     const t = useTranslations("DiaryNewNote");
     const router = useRouter()
 
-    const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>();
+    const persistedFormData = storageService.getNewNoteFormData()
+
+    const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>({
+        defaultValues: {
+            title: persistedFormData.title,
+            content: persistedFormData.content,
+        }
+    });
     const {mutateAsync: addNoteRequest, isError, error, isLoading} = usePostNotes()
 
     const [tags, setTags] = useState<CloudTagDto[]>([])
@@ -107,6 +116,16 @@ function DiaryNewNotePageContent() {
     const moodScore = moodTag ? moodTag.score : null
 
     const [actualDate, setActualDate] = useState<Date>(new Date)
+
+    const currentTitle = watch("title")
+    const currentContent = watch("content")
+
+    useDebounceEffect(() => {
+        storageService.setNewNoteFormData({
+            title: currentTitle,
+            content: currentContent,
+        })
+    }, 500, [currentTitle, currentContent])
 
     const addTag = (tag: CloudTagDto) => {
         const newTags = [...tags.filter(t => t.tag !== tag.tag), tag]
@@ -142,6 +161,7 @@ function DiaryNewNotePageContent() {
                     deletedAt: null,
                 }
             })
+            storageService.deleteNewNoteFormData()
         } catch (e) {
             // todo scroll into view AlertApiError
             return;

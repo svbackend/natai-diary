@@ -1,4 +1,3 @@
-import {useState} from "react";
 import {useTranslations} from "use-intl";
 import {classNames} from "../../../utils/classNames";
 import {FieldErrors} from "react-hook-form/dist/types/errors";
@@ -13,7 +12,6 @@ type NoteEditorFieldProps = {
 
 export function NoteEditorField(
     {
-        value,
         label,
         name,
         register,
@@ -44,7 +42,6 @@ export function NoteEditorField(
                     )}
                     {...register}
                 >
-                    {value ? value : ""}
                 </textarea>
             </div>
             {isErrored && (
