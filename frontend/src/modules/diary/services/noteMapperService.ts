@@ -23,10 +23,15 @@ export const noteMapperService = {
         return Array.from(notesByDate.entries())
     },
     getDateInfo(date: string) {
-        const d = new Date(date)
-        const dayOfMonth = d.toLocaleDateString("en-US", {day: "numeric"})
-        const shortMonth = d.toLocaleDateString("en-US", {month: "short"})
-        const year = d.toLocaleDateString("en-US", {year: "numeric"})
+        const [y, m, d] = date.split("-")
+        const utc = new Date(
+            parseInt(y),
+            parseInt(m) - 1,
+            parseInt(d)
+        )
+        const dayOfMonth = utc.toLocaleDateString("en-US", {day: "numeric"})
+        const shortMonth = utc.toLocaleDateString("en-US", {month: "short"})
+        const year = utc.toLocaleDateString("en-US", {year: "numeric"})
 
         return {
             dayOfMonth,

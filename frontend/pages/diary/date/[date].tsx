@@ -13,13 +13,15 @@ export default function ViewNotesByDatePage() {
 
     const {date} = router.query
 
+    const filteredNotes = notes?.notes?.filter(note => note.deletedAt === null)
+
     return (
         <>
             <MainLayout>
                 <div className="w-full max-w-xl mx-auto mt-4">
                     {isLoading && <AppSpinner/>}
-                    {notes?.notes && typeof date === "string" &&
-                        <DiaryNotesByDateList date={date} notes={notes?.notes}/>}
+                    {filteredNotes && typeof date === "string" &&
+                        <DiaryNotesByDateList date={date} notes={filteredNotes}/>}
                 </div>
             </MainLayout>
         </>

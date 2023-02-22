@@ -1,7 +1,6 @@
 import MainLayout from "../../src/modules/common/components/mainLayout";
 import {useAppStateManager} from "../../src/modules/common/state";
 import AppSpinner from "../../src/modules/common/components/AppSpinner";
-import Link from "next/link";
 import {useTranslations} from "use-intl";
 import {UserDto} from "../../src/api/apiSchemas";
 import {useGetNotes} from "../../src/api/apiComponents";
@@ -30,12 +29,14 @@ function DiaryPageContent({user}: { user: UserDto }) {
     const t = useTranslations("DiaryPage");
     const {data: notes, isLoading, isError, error} = useGetNotes({})
 
+    const filteredNotes = notes?.notes?.filter(note => note.deletedAt === null)
+
     return (
         <>
             <NarrowWrapper>
                 <DiaryHeader user={user}/>
                 {isLoading && <AppSpinner/>}
-                {notes?.notes && <DiaryNotesPreviewList notes={notes?.notes}/>}
+                {filteredNotes && <DiaryNotesPreviewList notes={filteredNotes}/>}
             </NarrowWrapper>
         </>
     )

@@ -142,8 +142,21 @@
     "contentLabel": "Content",
     "addNewNoteButton": "Add note"
   },
+  "DiaryEditNote": {
+    "titleLabel": "Title",
+    "contentLabel": "Content",
+    "saveNoteButton": "Save"
+  },
   "NoteEditorField": {
     "placeholder": "How was your day?",
     "FieldRequired": "This field is required"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist"
+  },
+  "ViewNotePage": {
+    "editButton": "Edit",
+    "deleteButton": "Delete"
   }
 }
