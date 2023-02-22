@@ -67,6 +67,7 @@ $updateSchemaDoctrineCommand = function () use ($application) {
         'command' => 'doctrine:schema:update',
         '--no-interaction' => true,
         '--force' => true,
+        '--complete' => true,
     ]);
     $input->setInteractive(false);
     $application->run($input, new ConsoleOutput());

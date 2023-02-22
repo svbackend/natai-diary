@@ -10,11 +10,11 @@ class ValidationRule
     {
         return new Assert\Required([
             new Assert\NotBlank(),
-            new Assert\Length(['min' => 8]),
-            new Assert\Regex([
-                'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/',
-                'message' => 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.',
-            ]),
+            new Assert\Length(['min' => 6]),
+//            new Assert\Regex([
+//                'pattern' => '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/',
+//                'message' => 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.',
+//            ]),
         ]);
     }
 
