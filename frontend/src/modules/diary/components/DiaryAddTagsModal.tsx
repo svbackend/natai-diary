@@ -1,5 +1,5 @@
 import {CloudTagDto} from "../../../api/apiSchemas";
-import {useAtom} from "jotai/index";
+import {useAtom} from "jotai";
 import {Dialog} from "@headlessui/react";
 import React from "react";
 import {useGetNotes} from "../../../api/apiComponents";

@@ -32,7 +32,7 @@ import feat1Img from "../public/assets/features/feat1.png"
 import feat2Img from "../public/assets/features/feat2.png"
 import feat3Img from "../public/assets/features/feat3.png"
 
-import {useAtom} from "jotai/index";
+import {useAtom} from "jotai";
 import {darkModeAtom} from "../src/modules/common/atoms/darkModeAtom";
 
 import {Swiper, SwiperSlide} from "swiper/react";

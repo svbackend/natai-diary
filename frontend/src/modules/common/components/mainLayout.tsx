@@ -15,7 +15,7 @@ import {Animate} from "./Animate";
 import lightIcon from '../../../../public/assets/theme/light.svg';
 import darkIcon from '../../../../public/assets/theme/dark.svg';
 import {darkModeAtom} from "../atoms/darkModeAtom";
-import {useAtom} from "jotai/index";
+import {useAtom} from "jotai";
 import {Footer} from "./Footer";
 
 const Header = ({router}: { router: NextRouter }) => {
