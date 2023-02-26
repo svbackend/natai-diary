@@ -9,7 +9,6 @@ use App\Common\OpenApi\Ref\ValidationErrorResponseRef;
 use App\Diary\DTO\CloudTagDto;
 use App\Diary\Entity\Note;
 use App\Diary\Entity\NoteTag;
-use App\Diary\Http\Request\NewNoteRequest;
 use App\Diary\Http\Request\V1\NewNoteRequestV1;
 use App\Diary\Http\Response\NewNoteResponse;
 use App\Diary\Repository\NoteRepository;
@@ -39,7 +38,7 @@ class NewNoteActionV1 extends BaseAction
 
     /**
      * @deprecated use /api/v2/notes
-     * @OA\RequestBody(@Model(type=NewNoteRequest::class))
+     * @OA\RequestBody(@Model(type=NewNoteRequestV1::class))
      * @OA\Response(response=201, description="success", @Model(type=NewNoteResponse::class))
      * @OA\Response(response=400,  description="validation error", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=401,  description="not authorized", @Model(type=AuthRequiredErrorResponse::class))

@@ -3,7 +3,6 @@
 namespace App\Tests\Functional\Diary\Controller\V1;
 
 use App\Auth\DataFixtures\UserFixture;
-use App\Auth\Entity\User;
 use App\Diary\Controller\V1\NewNoteActionV1;
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @see NewNoteActionV1
  */
-class NewNoteActionTestV1 extends AbstractFunctionalTest
+class NewNoteActionV1Test extends AbstractFunctionalTest
 {
     public function testCreateNoteSuccess(): void
     {

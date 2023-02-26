@@ -16,6 +16,8 @@ class UpdateNoteRequest implements HttpInputInterface
         public ?\DateTimeImmutable $deletedAt,
         /** @var CloudTagDto[] $tags */
         public array $tags = [],
+        /** @var string[] $attachments */
+        public array $attachments = [],
     )
     {
     }
@@ -33,6 +35,10 @@ class UpdateNoteRequest implements HttpInputInterface
                     'tag' => new Assert\Required([new Assert\NotBlank, new Assert\Type('string'),]),
                     'score' => new Assert\Optional([new Assert\Type('integer'),]),
                 ]),
+            ]),
+            'attachments' => new Assert\All([
+                new Assert\NotBlank(),
+                new Assert\Uuid()
             ]),
         ]);
     }

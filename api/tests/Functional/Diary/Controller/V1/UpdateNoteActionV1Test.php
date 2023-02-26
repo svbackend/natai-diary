@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Tests\Functional\Diary\Controller;
+namespace App\Tests\Functional\Diary\Controller\V1;
 
 use App\Auth\DataFixtures\UserFixture;
-use App\Diary\Controller\UpdateNoteAction;
+use App\Diary\Controller\V1\UpdateNoteActionV1;
 use App\Diary\DataFixtures\NoteFixture;
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @see UpdateNoteAction
+ * @see UpdateNoteActionV1
  */
-class UpdateNoteActionTest extends AbstractFunctionalTest
+class UpdateNoteActionV1Test extends AbstractFunctionalTest
 {
     public function testUpdateNoteSuccess(): void
     {
@@ -21,7 +21,7 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
 
         $noteId = NoteFixture::NOTE_ID;
 
-        $response = $client->request('PUT', "/api/v2/notes/$noteId", [
+        $response = $client->request('PUT', "/api/v1/notes/$noteId", [
             'json' => [
                 'title' => 'New title',
                 'content' => 'New content',
@@ -36,7 +36,6 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                         'score' => null,
                     ]
                 ],
-                'attachments' => [],
                 'updatedAt' => '2022-11-19 14:00:00',
                 'deletedAt' => null,
             ],
@@ -76,7 +75,7 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
 
         $noteId = NoteFixture::NOTE_ID;
 
-        $response = $client->request('PUT', "/api/v2/notes/$noteId", [
+        $response = $client->request('PUT', "/api/v1/notes/$noteId", [
             'json' => [
                 'title' => '',
                 'content' => '',
@@ -84,7 +83,6 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                 'tags' => [],
                 'updatedAt' => '2022-11-19 14:00:00',
                 'deletedAt' => '2022-11-19 14:00:00',
-                'attachments' => [],
             ],
         ]);
 
@@ -119,7 +117,7 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
 
         $noteId = NoteFixture::NOTE_ID;
 
-        $response = $client->request('PUT', "/api/v2/notes/$noteId", [
+        $response = $client->request('PUT', "/api/v1/notes/$noteId", [
             'json' => [
                 'title' => null,
                 'content' => null,
@@ -127,7 +125,6 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                 'tags' => [],
                 'updatedAt' => '2022-11-19 14:00:00',
                 'deletedAt' => '2022-11-19 14:00:00',
-                'attachments' => [],
             ],
         ]);
 
@@ -142,7 +139,7 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
 
         $noteId = NoteFixture::NOTE_ID;
 
-        $response = $client->request('PUT', "/api/v2/notes/$noteId", [
+        $response = $client->request('PUT', "/api/v1/notes/$noteId", [
             'json' => [
                 'title' => null,
                 'content' => null,
@@ -150,7 +147,6 @@ class UpdateNoteActionTest extends AbstractFunctionalTest
                 'tags' => [],
                 'updatedAt' => '2022-11-19 14:00:00',
                 'deletedAt' => '2022-11-19 14:00:00',
-                'attachments' => [],
             ],
         ]);
 

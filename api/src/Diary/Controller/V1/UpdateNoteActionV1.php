@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Diary\Controller;
+namespace App\Diary\Controller\V1;
 
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
@@ -9,11 +9,10 @@ use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\AccessDeniedErrorRef;
 use App\Common\OpenApi\Ref\NotFoundErrorRef;
 use App\Common\OpenApi\Ref\ValidationErrorResponseRef;
-use App\Diary\Http\Request\UpdateNoteRequest;
+use App\Diary\Http\Request\V1\UpdateNoteRequestV1;
 use App\Diary\Repository\NoteRepository;
 use App\Diary\Repository\NoteTagRepository;
 use App\Diary\Security\Voter\NoteVoter;
-use App\Diary\Service\NoteFileAttacherService;
 use App\Tests\Functional\Diary\Controller\UpdateNoteActionTest;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -28,19 +27,19 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
  * @see UpdateNoteActionTest
  * @OA\Tag(name="Diary")
  */
-class UpdateNoteAction extends BaseAction
+class UpdateNoteActionV1 extends BaseAction
 {
     public function __construct(
         private EntityManagerInterface $em,
         private NoteRepository $notes,
         private NoteTagRepository $noteTags,
-        private NoteFileAttacherService $fileAttacherService,
     )
     {
     }
 
     /**
-     * @OA\RequestBody(@Model(type=UpdateNoteRequest::class))
+     * @deprecated use /api/v2/notes/{id} instead
+     * @OA\RequestBody(@Model(type=UpdateNoteRequestV1::class))
      * @OA\Response(response=200, description="success")
      * @OA\Response(response=400, description="bad request", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=401, description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
@@ -48,11 +47,11 @@ class UpdateNoteAction extends BaseAction
      * @OA\Response(response=404, description="not found", @Model(type=NotFoundErrorRef::class))
      * @Security(name="ApiToken")
      */
-    #[Route('/api/v2/notes/{id}', methods: ['PUT'])]
+    #[Route('/api/v1/notes/{id}', methods: ['PUT'])]
     public function __invoke(
         #[CurrentUser] User $user,
         string $id,
-        UpdateNoteRequest $editNoteRequest,
+        UpdateNoteRequestV1 $editNoteRequest,
     ): HttpOutputInterface
     {
         $note = $this->notes->find($id);
@@ -74,8 +73,6 @@ class UpdateNoteAction extends BaseAction
         );
 
         $this->noteTags->updateTags($note, $editNoteRequest->tags);
-
-        $this->fileAttacherService->attachFilesToNote($user, $note, $editNoteRequest->attachments);
 
         $this->em->flush();
 
