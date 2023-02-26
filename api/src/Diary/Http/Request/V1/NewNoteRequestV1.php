@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Diary\Http\Request;
+namespace App\Diary\Http\Request\V1;
 
 use App\Common\Http\Request\HttpInputInterface;
 use App\Diary\DTO\CloudTagDto;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class NewNoteRequest implements HttpInputInterface
+class NewNoteRequestV1 implements HttpInputInterface
 {
     public function __construct(
         public string $title,

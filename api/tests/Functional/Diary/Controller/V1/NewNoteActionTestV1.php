@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Tests\Functional\Diary\Controller;
+namespace App\Tests\Functional\Diary\Controller\V1;
 
 use App\Auth\DataFixtures\UserFixture;
-use App\Diary\Controller\NewNoteAction;
+use App\Auth\Entity\User;
+use App\Diary\Controller\V1\NewNoteActionV1;
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @see NewNoteAction
+ * @see NewNoteActionV1
  */
-class NewNoteActionTest extends AbstractFunctionalTest
+class NewNoteActionTestV1 extends AbstractFunctionalTest
 {
     public function testCreateNoteSuccess(): void
     {
@@ -19,7 +20,7 @@ class NewNoteActionTest extends AbstractFunctionalTest
         $this->loginUserById($client, $userId);
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $response = $client->request('POST', '/api/v2/notes', [
+        $response = $client->request('POST', '/api/v1/notes', [
             'json' => [
                 'actualDate' => $today,
                 'title' => 'Title',
@@ -27,8 +28,7 @@ class NewNoteActionTest extends AbstractFunctionalTest
                 'tags' => [
                     ['tag' => 'Tag 1', 'score' => 6],
                     ['tag' => 'Tag 2', 'score' => null],
-                ],
-                'attachments' => [],
+                ]
             ],
         ]);
 

@@ -2,6 +2,10 @@ common:
   type: attribute
   resource: ../src/Common/Controller/
 
+attachment:
+  type: attribute
+  resource: ../src/Attachment/Controller/
+
 auth:
   type: attribute
   resource: ../src/Auth/Controller/

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Diary\Controller;
+namespace App\Diary\Controller\V1;
 
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
@@ -10,10 +10,10 @@ use App\Diary\DTO\CloudTagDto;
 use App\Diary\Entity\Note;
 use App\Diary\Entity\NoteTag;
 use App\Diary\Http\Request\NewNoteRequest;
+use App\Diary\Http\Request\V1\NewNoteRequestV1;
 use App\Diary\Http\Response\NewNoteResponse;
 use App\Diary\Repository\NoteRepository;
 use App\Diary\Repository\NoteTagRepository;
-use App\Diary\Service\NoteFileAttacherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -23,31 +23,32 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Uid\Uuid;
 
 /**
+ * We return all notes for the current user. Even the deleted ones, frontend (or Android app) will filter them out.
  * @see NewNoteActionTest
  * @OA\Tag(name="Diary")
  */
-class NewNoteAction extends BaseAction
+class NewNoteActionV1 extends BaseAction
 {
     public function __construct(
         private NoteRepository $notes,
         private NoteTagRepository $noteTags,
         private EntityManagerInterface $em,
-        private NoteFileAttacherService $fileAttacherService,
     )
     {
     }
 
     /**
+     * @deprecated use /api/v2/notes
      * @OA\RequestBody(@Model(type=NewNoteRequest::class))
      * @OA\Response(response=201, description="success", @Model(type=NewNoteResponse::class))
      * @OA\Response(response=400,  description="validation error", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=401,  description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
      * @Security(name="ApiToken")
      */
-    #[Route('/api/v2/notes', methods: ['POST'])]
+    #[Route('/api/v1/notes', methods: ['POST'])]
     public function __invoke(
         #[CurrentUser] User $user,
-        NewNoteRequest $newNoteRequest,
+        NewNoteRequestV1 $newNoteRequest,
     ): NewNoteResponse
     {
         $newNoteId = Uuid::v4();
@@ -75,12 +76,6 @@ class NewNoteAction extends BaseAction
             );
             $this->noteTags->save($newNoteTag);
         }
-
-        $this->fileAttacherService->attachFilesToNote(
-            user: $user,
-            note: $newNote,
-            attachmentsIds: $newNoteRequest->attachments,
-        );
 
         $this->em->flush();
 

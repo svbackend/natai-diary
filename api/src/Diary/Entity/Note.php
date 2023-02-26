@@ -4,6 +4,7 @@ namespace App\Diary\Entity;
 
 use App\Auth\Entity\User;
 use App\Diary\Repository\NoteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,6 +42,9 @@ class Note
     #[ORM\OneToMany(mappedBy: 'note', targetEntity: NoteTag::class)]
     private Collection $tags;
 
+    #[ORM\OneToMany(mappedBy: 'note', targetEntity: NoteAttachment::class)]
+    private Collection $attachments;
+
     public function __construct(
         UuidV4 $id,
         User $user,
@@ -56,6 +60,8 @@ class Note
         $this->content = $content;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->tags = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
     }
 
     public function delete(): void
@@ -91,5 +97,10 @@ class Note
     public function getTags(): Collection
     {
         return $this->tags;
+    }
+
+    public function getAttachments(): Collection
+    {
+        return $this->attachments;
     }
 }

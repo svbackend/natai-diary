@@ -10,10 +10,12 @@ class NoteVoter extends BaseVoter
 {
     public const EDIT = 'edit';
     public const DELETE = 'delete';
+    public const UPLOAD = 'upload';
 
     private const ATTRIBUTES = [
         self::EDIT,
         self::DELETE,
+        self::UPLOAD,
     ];
 
     protected function supports(string $attribute, $subject): bool
@@ -30,6 +32,14 @@ class NoteVoter extends BaseVoter
     }
 
     public function canEdit(Note $note, User $user): bool
+    {
+        $noteOwnerId = $note->getUser()->getId();
+        $userId = $user->getId();
+
+        return $noteOwnerId->equals($userId);
+    }
+
+    public function canUpload(Note $note, User $user): bool
     {
         $noteOwnerId = $note->getUser()->getId();
         $userId = $user->getId();

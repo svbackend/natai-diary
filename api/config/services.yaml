@@ -35,3 +35,11 @@ services:
   App\Common\Controller\ApiDocAction:
     arguments:
       - '@nelmio_api_doc.render_docs'
+
+  Aws\S3\S3Client:
+    arguments:
+      - version: 'latest'
+        region: '%env(AWS_REGION)%'
+        credentials:
+          key: '%env(AWS_S3_KEY)%'
+          secret: '%env(AWS_S3_SECRET)%'
