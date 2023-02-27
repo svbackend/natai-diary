@@ -1,22 +1,80 @@
 import {XMarkIcon} from "@heroicons/react/24/outline";
+import {useEffect, useState} from "react";
+import {LocalNoteAttachment} from "./DiaryAddFilesModal";
 
-export function AddedFilesRow({files: files, onDelete: onDelete}: { files: FileList, onDelete: (file: File) => void }) {
-    const filesArr = Array.from(files)
-
+export function AddedFilesRow({files: files, onDelete: onDelete}: { files: LocalNoteAttachment[], onDelete: (file: File) => void }) {
     const fileKey = (file: File) => `${file.name}-${file.size}`
 
     return (
         <div className="flex flex-row my-2 overflow-auto">
-            {filesArr.map(file => <AddedFileBadge key={fileKey(file)} file={file} onDelete={onDelete}/>)}
+            {files.map(file => <AddedFileBadge key={fileKey(file.originalFile)} file={file.originalFile} onDelete={onDelete}/>)}
         </div>
     )
 }
 
 function AddedFileBadge({file, onDelete}: { file: File, onDelete: (file: File) => void }) {
     return (
-        <span className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 w-auto">
-            {file.name}
+        <div>
+
+            <AttachedFilePreview file={file}/>
+
             <XMarkIcon className="w-4 h-4 inline ml-2 cursor-pointer" onClick={() => onDelete(file)}/>
-        </span>
+        </div>
     )
+}
+
+function AttachedFilePreview({file}: { file: File }) {
+    const [preview, setPreview] = useState<string | ArrayBuffer | null>(null)
+
+    const isImage = file.type.startsWith("image/")
+
+    useEffect(() => {
+        let fileReader: FileReader, isCancel = false;
+        if (file && isImage) {
+            fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                // @ts-ignore
+                const { result } = e.target;
+                if (result && !isCancel) {
+                    setPreview(result)
+                }
+            }
+            fileReader.readAsDataURL(file);
+        }
+        return () => {
+            isCancel = true;
+            if (fileReader && fileReader.readyState === 1) {
+                fileReader.abort();
+            }
+        }
+
+    }, [file]);
+
+    return (
+        <div className="flex flex-col items-center">
+            {isImage && preview && <img src={preview as string} alt={file.name} className="w-20 h-20 rounded"/>}
+            {!isImage && <div className="w-32 h-32 bg-gray-200"/>}
+            <span className="text-xs text-gray-500">{getShortenedFileName(file.name)}</span>
+        </div>
+    )
+}
+
+const getShortenedFileName = (fileName: string) => {
+    // returns file name with extension, but cuts middle part of the name if it's too long
+    const MAX_LENGTH = 12;
+    const EXTENSION_LENGTH = 4;
+    const MAX_NAME_LENGTH = MAX_LENGTH - EXTENSION_LENGTH;
+
+    if (fileName.length <= MAX_LENGTH) {
+        return fileName;
+    }
+
+    const extension = fileName.slice(-EXTENSION_LENGTH);
+    const name = fileName.slice(0, fileName.length - EXTENSION_LENGTH);
+
+    const namePartLength = Math.floor(MAX_NAME_LENGTH / 2);
+    const namePart1 = name.slice(0, namePartLength);
+    const namePart2 = name.slice(-namePartLength);
+
+    return `${namePart1}...${namePart2}${extension}`;
 }

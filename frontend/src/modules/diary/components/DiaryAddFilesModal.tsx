@@ -131,6 +131,13 @@ function DiaryAddFilesModalContent({
 
             try {
                 await uploadFile(file, signedUploadUrl.uploadUrl)
+
+                updateFileUploadInfo({
+                    fileId: file.id,
+                    isLoading: false,
+                    error: null,
+                    progress: 100
+                })
             } catch (e) {
                 let strErr = "" + e
 
@@ -141,6 +148,8 @@ function DiaryAddFilesModalContent({
                     progress: 0
                 })
             }
+
+
         }
     }
 
@@ -194,8 +203,8 @@ function DiaryAddFilesModalContent({
                 </div>
 
                 <div className="flex flex-col my-2 overflow-auto">
-                    {addedFiles.map(file => <AddedFilesRow key={file.id} file={file} onDelete={onDelete}
-                                                           uploadInfo={getUploadInfoByFile(file)}/>)}
+                    {addedFiles.map(file => <AddedFileRow key={file.id} file={file} onDelete={onDelete}
+                                                          uploadInfo={getUploadInfoByFile(file)}/>)}
                 </div>
             </div>
 
@@ -254,11 +263,11 @@ function DropZone({onAdd}: { onAdd: (files: LocalNoteAttachment[]) => void }) {
     )
 }
 
-function AddedFilesRow({
-                           file,
-                           onDelete,
-                           uploadInfo
-                       }: { file: LocalNoteAttachment, onDelete: (file: LocalNoteAttachment) => void, uploadInfo: AttachmentUploadInfo }) {
+function AddedFileRow({
+                          file,
+                          onDelete,
+                          uploadInfo
+                      }: { file: LocalNoteAttachment, onDelete: (file: LocalNoteAttachment) => void, uploadInfo: AttachmentUploadInfo }) {
     const bytesToReadableStr = (bytes: number) => {
         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
         if (bytes === 0) return '0 Byte'
@@ -282,6 +291,14 @@ function AddedFilesRow({
 
                     {uploadInfo.isLoading && (
                         <ProgressBar progress={uploadInfo.progress}/>
+                    )}
+
+                    {uploadInfo.progress === 100 && !uploadInfo.isLoading && (
+                        <span
+                            className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
+                            <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+                            Uploaded
+                        </span>
                     )}
 
                     {uploadInfo.error && (
