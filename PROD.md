@@ -16,3 +16,31 @@
 * `cd repo && cp .env.dist .env` (edit .env file)
 * `cd api && cp .env .env.local` (edit .env.local file)
 * `cd ../frontend && cp .env .env.local` (edit .env.local file)
+
+### S3 Bucket
+
+* Create a new S3 bucket (e.g. natai) - **WITHOUT** public access
+* Add cors configuration to the bucket (s3 -> bucket -> permissions -> cors configuration)
+
+```json
+[
+  {
+    "AllowedHeaders": [
+      "*"
+    ],
+    "AllowedMethods": [
+      "GET",
+      "PUT",
+      "POST",
+      "DELETE",
+      "HEAD"
+    ],
+    "AllowedOrigins": [
+      "https://natai.app",
+      "http://127.0.0.1",
+      "http://localhost"
+    ],
+    "ExposeHeaders": []
+  }
+]
+```

@@ -7,6 +7,38 @@ export type StaticContentResponse = {
   terms: string;
 };
 
+export type UploadAttachmentRequest = {
+  ext: string;
+};
+
+export type SignedUploadUrl = {
+  uploadUrl: string;
+  attachmentId: UuidV4;
+  /**
+   * @format date-time
+   */
+  expiresAt: string;
+};
+
+export type AuthRequiredErrorResponse = {
+  /**
+   * @example https://tools.ietf.org/html/rfc2616#section-10
+   */
+  type: string;
+  /**
+   * @example An error occurred
+   */
+  title: string;
+  /**
+   * @example 401
+   */
+  status: number;
+  /**
+   * @example Unauthorized
+   */
+  detail: string;
+};
+
 export type ChangeEmailRequest = {
   newEmail: string;
 };
@@ -59,25 +91,6 @@ export type ChangeEmailConfirmationErrorRef = {
 export type ChangePasswordRequest = {
   oldPassword: string;
   newPassword: string;
-};
-
-export type AuthRequiredErrorResponse = {
-  /**
-   * @example https://tools.ietf.org/html/rfc2616#section-10
-   */
-  type: string;
-  /**
-   * @example An error occurred
-   */
-  title: string;
-  /**
-   * @example 401
-   */
-  status: number;
-  /**
-   * @example Unauthorized
-   */
-  detail: string;
 };
 
 export type ChangePasswordErrorRef = {
@@ -159,7 +172,7 @@ export type VerifyEmailResponseRef = {
   code: string;
 };
 
-export type UpdateNoteRequest = {
+export type UpdateNoteRequestV1 = {
   title: string;
   content: string;
   /**
@@ -219,7 +232,7 @@ export type FindAllNotesResponse = {
   notes: CloudNoteDto[];
 };
 
-export type NewNoteRequest = {
+export type NewNoteRequestV1 = {
   title: string;
   content: string;
   /**
@@ -238,6 +251,47 @@ export type NewNoteRequest = {
 export type NewNoteResponse = {
   noteId: UuidV4;
 };
+
+export type NewNoteRequest = {
+  title: string;
+  content: string;
+  /**
+   * @format date-time
+   * @example 2022-11-05
+   */
+  actualDate: string;
+  /**
+   * @format date-time
+   * @example null
+   */
+  deletedAt: string | null;
+  tags: CloudTagDto[];
+  attachments: string[];
+};
+
+export type UpdateNoteRequest = {
+  title: string;
+  content: string;
+  /**
+   * @format date-time
+   */
+  actualDate: string;
+  /**
+   * @format date-time
+   */
+  updatedAt: string;
+  /**
+   * @format date-time
+   */
+  deletedAt: string | null;
+  tags: CloudTagDto[];
+  attachments: string[];
+};
+
+/**
+ * @format uuid
+ */
+export type UuidV4 = string;
 
 export type ValidationErrorItem = {
   /**
@@ -261,11 +315,6 @@ export type UserDto = {
   name: string;
   roles: string[];
 };
-
-/**
- * @format uuid
- */
-export type UuidV4 = string;
 
 export type CloudTagDto = {
   tag: string;

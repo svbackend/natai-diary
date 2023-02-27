@@ -24,6 +24,11 @@ import ActualDateRow from "../../src/modules/diary/components/ActualDateRow";
 import SelectMoodButton from "../../src/modules/diary/components/SelectMoodButton";
 import AddTagsButton from "../../src/modules/diary/components/AddTagsButton";
 import DiarySelectMoodModal from "../../src/modules/diary/components/DiarySelectMoodModal";
+import {CloudArrowUpIcon} from "@heroicons/react/24/outline";
+import {AddedFilesRow} from "../../src/modules/diary/components/AddedFilesRow";
+import {DiaryAddFilesModal} from "../../src/modules/diary/components/DiaryAddFilesModal";
+import {useAtom} from "jotai";
+import {diaryAddAttachmentModalAtom} from "../../src/modules/diary/atoms/diaryAddAttachmentModalAtom";
 
 export default function DiaryNewNote() {
 
@@ -119,6 +124,18 @@ function DiaryNewNotePageContent() {
         await router.push("/diary")
     }
 
+    const [files, setFiles] = useState<File[]>([])
+
+    const onFilesSelected = (files: FileList) => {
+        console.log(files)
+        setFiles(Array.from(files))
+    }
+
+    const deleteFile = (f: File) => {
+        const newFiles = Array.from(files || []).filter(file => file !== f)
+        setFiles(newFiles)
+    }
+
     return (
         <NarrowWrapper>
             <div className="p-4">
@@ -153,10 +170,17 @@ function DiaryNewNotePageContent() {
 
                     <AddedTagsRow tags={tags} onDelete={deleteTag}/>
 
+                    {files && files.length > 0 && (
+                        <AddedFilesRow files={files} onDelete={deleteFile}/>
+                    )}
+
+
                     <div className="flex flex-row justify-between mb-4">
-                        {/* Select mood (left) and "Add tags" button (right) */}
                         <SelectMoodButton moodScore={moodScore}/>
-                        <AddTagsButton/>
+                        <div className="flex justify-around gap-2">
+                            <AddAttachmentsButton/>
+                            <AddTagsButton/>
+                        </div>
                     </div>
 
                     <FormSubmitButton label={t("addNewNoteButton")} loading={isLoading}/>
@@ -165,6 +189,25 @@ function DiaryNewNotePageContent() {
 
             <DiarySelectMoodModal onSelect={(tag: CloudTagDto) => addTag(tag)} moodScore={moodScore}/>
             <DiaryAddTagsModal addedTags={tags} onAdd={addTag} onDelete={deleteTag}/>
+            <DiaryAddFilesModal addedFiles={files} onAdd={onFilesSelected} onDelete={deleteFile}/>
+
         </NarrowWrapper>
+    )
+}
+
+function AddAttachmentsButton() {
+    const [isOpen, setIsOpen] = useAtom(diaryAddAttachmentModalAtom)
+
+    return (
+        <button
+            onClick={() => setIsOpen(true)}
+            className="flex flex-col bg-gray-100 hover:bg-gray-200 rounded items-center"
+            type={"button"}
+        >
+            <div className="w-12 h-12 flex flex-row items-center">
+                <CloudArrowUpIcon className={"w-6 h-6 mx-auto"}/>
+            </div>
+            <span className={"text-xs text-gray-600"}>Add File</span>
+        </button>
     )
 }

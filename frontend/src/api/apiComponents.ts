@@ -52,6 +52,50 @@ export const useGetStatic = <TData = Schemas.StaticContentResponse>(
   );
 };
 
+export type PostAttachmentsError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.AuthRequiredErrorResponse;
+}>;
+
+export type PostAttachmentsVariables = {
+  body: Schemas.UploadAttachmentRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostAttachments = (
+  variables: PostAttachmentsVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.SignedUploadUrl,
+    PostAttachmentsError,
+    Schemas.UploadAttachmentRequest,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/attachments", method: "post", ...variables, signal });
+
+export const usePostAttachments = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.SignedUploadUrl,
+      PostAttachmentsError,
+      PostAttachmentsVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    Schemas.SignedUploadUrl,
+    PostAttachmentsError,
+    PostAttachmentsVariables
+  >(
+    (variables: PostAttachmentsVariables) =>
+      fetchPostAttachments({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type PostChangeEmailError = Fetcher.ErrorWrapper<
   | {
       status: 400;
@@ -596,7 +640,7 @@ export type PutNotesByIdError = Fetcher.ErrorWrapper<
 >;
 
 export type PutNotesByIdVariables = {
-  body: Schemas.UpdateNoteRequest;
+  body: Schemas.UpdateNoteRequestV1;
   pathParams: PutNotesByIdPathParams;
 } & ApiContext["fetcherOptions"];
 
@@ -607,7 +651,7 @@ export const fetchPutNotesById = (
   apiFetch<
     undefined,
     PutNotesByIdError,
-    Schemas.UpdateNoteRequest,
+    Schemas.UpdateNoteRequestV1,
     {},
     {},
     PutNotesByIdPathParams
@@ -749,7 +793,7 @@ export type PostNotesError = Fetcher.ErrorWrapper<
 >;
 
 export type PostNotesVariables = {
-  body: Schemas.NewNoteRequest;
+  body: Schemas.NewNoteRequestV1;
 } & ApiContext["fetcherOptions"];
 
 export const fetchPostNotes = (
@@ -759,7 +803,7 @@ export const fetchPostNotes = (
   apiFetch<
     Schemas.NewNoteResponse,
     PostNotesError,
-    Schemas.NewNoteRequest,
+    Schemas.NewNoteRequestV1,
     {},
     {},
     {}
@@ -783,6 +827,119 @@ export const usePostNotes = (
   >(
     (variables: PostNotesVariables) =>
       fetchPostNotes({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
+export type PostApiV2NotesError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+>;
+
+export type PostApiV2NotesVariables = {
+  body: Schemas.NewNoteRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostApiV2Notes = (
+  variables: PostApiV2NotesVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.NewNoteResponse,
+    PostApiV2NotesError,
+    Schemas.NewNoteRequest,
+    {},
+    {},
+    {}
+  >({ url: "/api/v2/notes", method: "post", ...variables, signal });
+
+export const usePostApiV2Notes = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.NewNoteResponse,
+      PostApiV2NotesError,
+      PostApiV2NotesVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    Schemas.NewNoteResponse,
+    PostApiV2NotesError,
+    PostApiV2NotesVariables
+  >(
+    (variables: PostApiV2NotesVariables) =>
+      fetchPostApiV2Notes({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
+export type PutApiV2NotesByIdPathParams = {
+  id: string;
+};
+
+export type PutApiV2NotesByIdError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 403;
+      payload: Schemas.AccessDeniedErrorRef;
+    }
+  | {
+      status: 404;
+      payload: Schemas.NotFoundErrorRef;
+    }
+>;
+
+export type PutApiV2NotesByIdVariables = {
+  body: Schemas.UpdateNoteRequest;
+  pathParams: PutApiV2NotesByIdPathParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPutApiV2NotesById = (
+  variables: PutApiV2NotesByIdVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    undefined,
+    PutApiV2NotesByIdError,
+    Schemas.UpdateNoteRequest,
+    {},
+    {},
+    PutApiV2NotesByIdPathParams
+  >({ url: "/api/v2/notes/{id}", method: "put", ...variables, signal });
+
+export const usePutApiV2NotesById = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PutApiV2NotesByIdError,
+      PutApiV2NotesByIdVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    undefined,
+    PutApiV2NotesByIdError,
+    PutApiV2NotesByIdVariables
+  >(
+    (variables: PutApiV2NotesByIdVariables) =>
+      fetchPutApiV2NotesById({ ...fetcherOptions, ...variables }),
     options
   );
 };
