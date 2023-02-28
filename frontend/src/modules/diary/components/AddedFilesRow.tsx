@@ -2,23 +2,26 @@ import {XMarkIcon} from "@heroicons/react/24/outline";
 import {useEffect, useState} from "react";
 import {LocalNoteAttachment} from "./DiaryAddFilesModal";
 
-export function AddedFilesRow({files: files, onDelete: onDelete}: { files: LocalNoteAttachment[], onDelete: (file: File) => void }) {
+export function AddedFilesRow({files: files, onDelete: onDelete}: { files: LocalNoteAttachment[], onDelete: (file: LocalNoteAttachment) => void }) {
     const fileKey = (file: File) => `${file.name}-${file.size}`
 
     return (
-        <div className="flex flex-row my-2 overflow-auto">
-            {files.map(file => <AddedFileBadge key={fileKey(file.originalFile)} file={file.originalFile} onDelete={onDelete}/>)}
+        <div className="flex flex-nowrap w-full max-w-full gap-2 mb-2 overflow-auto pb-2">
+            {files.map(file => <AddedFileBadge key={fileKey(file.originalFile)} file={file} onDelete={onDelete}/>)}
         </div>
     )
 }
 
-function AddedFileBadge({file, onDelete}: { file: File, onDelete: (file: File) => void }) {
+function AddedFileBadge({file, onDelete}: { file: LocalNoteAttachment, onDelete: (file: LocalNoteAttachment) => void }) {
     return (
-        <div>
+        <div className={"flex flex-1 flex-col border p-2 rounded w-full"}>
+            <AttachedFilePreview file={file.originalFile}/>
 
-            <AttachedFilePreview file={file}/>
+            <div className={"flex items-center mt-1 w-full"}>
+                <span className="text-xs text-gray-500 whitespace-nowrap">{getShortenedFileName(file.name)}</span>
+                <XMarkIcon className="w-4 h-4 inline ml-1 cursor-pointer" onClick={() => onDelete(file)}/>
+            </div>
 
-            <XMarkIcon className="w-4 h-4 inline ml-2 cursor-pointer" onClick={() => onDelete(file)}/>
         </div>
     )
 }
@@ -27,15 +30,18 @@ function AttachedFilePreview({file}: { file: File }) {
     const [preview, setPreview] = useState<string | ArrayBuffer | null>(null)
 
     const isImage = file.type.startsWith("image/")
+    const [isPreviewLoading, setIsPreviewLoading] = useState(false)
 
     useEffect(() => {
         let fileReader: FileReader, isCancel = false;
         if (file && isImage) {
+            setIsPreviewLoading(true)
             fileReader = new FileReader();
             fileReader.onload = (e) => {
                 // @ts-ignore
                 const { result } = e.target;
                 if (result && !isCancel) {
+                    setIsPreviewLoading(false)
                     setPreview(result)
                 }
             }
@@ -51,10 +57,10 @@ function AttachedFilePreview({file}: { file: File }) {
     }, [file]);
 
     return (
-        <div className="flex flex-col items-center">
-            {isImage && preview && <img src={preview as string} alt={file.name} className="w-20 h-20 rounded"/>}
-            {!isImage && <div className="w-32 h-32 bg-gray-200"/>}
-            <span className="text-xs text-gray-500">{getShortenedFileName(file.name)}</span>
+        <div className="flex flex-col items-center w-full">
+            {isPreviewLoading && <div className="w-20 h-20 bg-gray-200 rounded animate-pulse"/>}
+            {isImage && !isPreviewLoading && preview && <img src={preview as string} alt={file.name} className="w-20 h-20 rounded"/>}
+            {!isImage && <div className="w-20 h-20 bg-gray-200">{file.type}</div>}
         </div>
     )
 }

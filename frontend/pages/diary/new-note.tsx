@@ -94,6 +94,10 @@ function DiaryNewNotePageContent() {
     const onSubmit = async (data: FormValues) => {
         let response: NewNoteResponse
 
+        const attachments = files.map(file => file.cloudAttachmentId)
+        console.log("attachments", attachments)
+        return;
+
         if (!data.title.trim() && !data.content.trim() && !tags.length) {
             return;
         }
@@ -130,9 +134,8 @@ function DiaryNewNotePageContent() {
         setFiles(files)
     }
 
-    const deleteFile = (f: File) => {
-        const newFiles = Array.from(files || []).filter(file => file !== f)
-        setFiles(newFiles)
+    const deleteFile = (f: LocalNoteAttachment) => {
+        setFiles(oldFiles => oldFiles.filter(file => file.id !== f.id))
     }
 
     return (
@@ -167,12 +170,13 @@ function DiaryNewNotePageContent() {
                         errors={errors}
                     />
 
-                    <AddedTagsRow tags={tags} onDelete={deleteTag}/>
+                    {tags && tags.length > 0 && (
+                        <AddedTagsRow tags={tags} onDelete={deleteTag}/>
+                    )}
 
                     {files && files.length > 0 && (
                         <AddedFilesRow files={files} onDelete={deleteFile}/>
                     )}
-
 
                     <div className="flex flex-row justify-between mb-4">
                         <SelectMoodButton moodScore={moodScore}/>

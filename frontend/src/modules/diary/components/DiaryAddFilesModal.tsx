@@ -114,6 +114,21 @@ function DiaryAddFilesModalContent({
         })
     }
 
+    const setFileAttachmentId = (fileId: string, attachmentId: string) => {
+        const updatedFiles = addedFiles.map(file => {
+            if (file.id === fileId) {
+                return {
+                    ...file,
+                    cloudAttachmentId: attachmentId
+                }
+            } else {
+                return file
+            }
+        })
+
+        onAdd(updatedFiles)
+    }
+
     const onFilesSelected = async (files: LocalNoteAttachment[]) => {
         onAdd(files)
 
@@ -131,6 +146,8 @@ function DiaryAddFilesModalContent({
 
             try {
                 await uploadFile(file, signedUploadUrl.uploadUrl)
+
+                setFileAttachmentId(file.id, signedUploadUrl.attachmentId)
 
                 updateFileUploadInfo({
                     fileId: file.id,
@@ -246,7 +263,7 @@ function DropZone({onAdd}: { onAdd: (files: LocalNoteAttachment[]) => void }) {
     };
 
     return (
-        <div className="max-w-xl">
+        <div className="w-full">
             <label
                 onClick={onClick}
                 className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
