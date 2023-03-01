@@ -7,7 +7,10 @@ use Symfony\Component\Uid\Uuid;
 
 class CloudNoteDto
 {
-    /** @param CloudTagDto[] $tags */
+    /**
+     * @param CloudTagDto[] $tags
+     * @param string[] $attachments - array of attachment ids (uuids)
+     */
     public function __construct(
         public Uuid $id,
         public Uuid $userId,
@@ -18,6 +21,7 @@ class CloudNoteDto
         public \DateTimeInterface $updatedAt,
         public ?\DateTimeInterface $deletedAt,
         public array $tags,
+        public array $attachments,
     )
     {
     }

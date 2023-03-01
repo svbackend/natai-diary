@@ -2,6 +2,7 @@
 
 namespace App\Diary\Repository;
 
+use App\Auth\Entity\User;
 use App\Diary\DTO\CloudNoteDto;
 use App\Diary\DTO\CloudTagDto;
 use App\Diary\Entity\Note;
@@ -52,6 +53,8 @@ class NoteRepository extends ServiceEntityRepository
         $notesQuery = $this->createQueryBuilder('n')
             ->leftJoin('n.tags', 'nt', 'WITH')
             ->addSelect('nt')
+            ->leftJoin('n.attachments', 'na', 'WITH')
+            ->addSelect('na')
             ->where('n.user = :userId')
             ->setParameter('userId', $userId)
             ->orderBy('n.actualDate', 'DESC')
@@ -73,6 +76,15 @@ class NoteRepository extends ServiceEntityRepository
                 tag: $tag['tag'],
                 score: $tag['score'],
             ), $note['tags']),
+            attachments: array_map(fn($attachment) => $attachment['id'], $note['attachments'])
         ), $notes);
+    }
+
+    public function findByIdAndUser(string $id, User $user): ?Note
+    {
+        return $this->findOneBy([
+            'id' => $id,
+            'user' => $user,
+        ]);
     }
 }

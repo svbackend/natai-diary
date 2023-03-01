@@ -831,6 +831,92 @@ export const usePostNotes = (
   );
 };
 
+export type GetNotesByIdAttachmentsPathParams = {
+  id: string;
+};
+
+export type GetNotesByIdAttachmentsQueryParams = {
+  /**
+   * Ids of attachments to get signed url to download them.
+   */
+  ["attachments[]"]: string[];
+};
+
+export type GetNotesByIdAttachmentsError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.GetNoteAttachmentsErrorRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 404;
+      payload: Schemas.NotFoundErrorRef;
+    }
+  | {
+      status: 422;
+      payload: Schemas.GetNoteAttachmentsErrorRef;
+    }
+>;
+
+export type GetNotesByIdAttachmentsVariables = {
+  pathParams: GetNotesByIdAttachmentsPathParams;
+  queryParams: GetNotesByIdAttachmentsQueryParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchGetNotesByIdAttachments = (
+  variables: GetNotesByIdAttachmentsVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.NoteAttachmentsResponse,
+    GetNotesByIdAttachmentsError,
+    undefined,
+    {},
+    GetNotesByIdAttachmentsQueryParams,
+    GetNotesByIdAttachmentsPathParams
+  >({
+    url: "/api/v1/notes/{id}/attachments",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetNotesByIdAttachments = <
+  TData = Schemas.NoteAttachmentsResponse
+>(
+  variables: GetNotesByIdAttachmentsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.NoteAttachmentsResponse,
+      GetNotesByIdAttachmentsError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.NoteAttachmentsResponse,
+    GetNotesByIdAttachmentsError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/notes/{id}/attachments",
+      operationId: "getNotesByIdAttachments",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetNotesByIdAttachments({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type PostNotesV2Error = Fetcher.ErrorWrapper<
   | {
       status: 400;
@@ -964,4 +1050,9 @@ export type QueryOperation =
       path: "/api/v1/notes";
       operationId: "getNotes";
       variables: GetNotesVariables;
+    }
+  | {
+      path: "/api/v1/notes/{id}/attachments";
+      operationId: "getNotesByIdAttachments";
+      variables: GetNotesByIdAttachmentsVariables;
     };

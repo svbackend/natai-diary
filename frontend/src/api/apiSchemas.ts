@@ -252,6 +252,17 @@ export type NewNoteResponse = {
   noteId: UuidV4;
 };
 
+export type NoteAttachmentsResponse = {
+  attachments: CloudAttachmentDto[];
+};
+
+export type GetNoteAttachmentsErrorRef = {
+  /**
+   * @example attachments_not_array
+   */
+  code: "attachments_not_array" | "attachments_not_uuids";
+};
+
 export type NewNoteRequest = {
   title: string;
   content: string;
@@ -344,6 +355,12 @@ export type CloudNoteDto = {
    */
   deletedAt: string | null;
   tags: CloudTagDto[];
+  attachments: string[];
+};
+
+export type CloudAttachmentDto = {
+  attachmentId: Uuid;
+  signedUrl: string;
 };
 
 /**

@@ -1,8 +1,8 @@
-import {useDeleteNotesById, useGetNotes} from "../../../src/api/apiComponents";
+import {fetchGetNotesByIdAttachments, useDeleteNotesById, useGetNotes} from "../../../src/api/apiComponents";
 import React, {useEffect, useState} from "react";
 import AppSpinner from "../../../src/modules/common/components/AppSpinner";
 import {useRouter} from "next/router";
-import {CloudNoteDto} from "../../../src/api/apiSchemas";
+import {CloudAttachmentDto, CloudNoteDto} from "../../../src/api/apiSchemas";
 import {DiaryNoteView} from "../../../src/modules/diary/components/DiaryNotesList";
 import MainLayout from "../../../src/modules/common/components/mainLayout";
 import {AlertApiError} from "../../../src/modules/common/components/alert";
@@ -11,6 +11,9 @@ import {useTranslations} from "use-intl";
 
 export default function ViewNotesByDatePage() {
     const {data: notes, isLoading, isError, error} = useGetNotes({})
+
+    const [attachments, setAttachments] = useState<CloudAttachmentDto[]>([])
+
     const router = useRouter()
     const t = useTranslations("ViewNotePage");
 
@@ -23,6 +26,18 @@ export default function ViewNotesByDatePage() {
             let noteById = notes.notes.find(n => n.id === id)
             if (noteById) {
                 setNote(noteById)
+
+                fetchGetNotesByIdAttachments({
+                    pathParams: {
+                        id: id
+                    }, queryParams: {
+                        "attachments[]": noteById.attachments
+                    }
+                }).then((res) => {
+                    setAttachments(res.attachments)
+                }).catch((err) => {
+                    console.log(err)
+                })
             }
         }
     }, [notes, id])
@@ -69,5 +84,14 @@ export default function ViewNotesByDatePage() {
                 </div>
             </MainLayout>
         </>
+    )
+}
+
+function NoteAttachments({attachments}: { attachments: CloudAttachmentDto[] }) {
+    // todo
+    return (
+        <div className="flex flex-col">
+
+        </div>
     )
 }

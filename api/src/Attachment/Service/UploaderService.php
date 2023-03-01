@@ -65,23 +65,4 @@ class UploaderService
             expiresAt: $expiresAt,
         );
     }
-
-    public function getDownloadUrl(string $key): string
-    {
-        $bucket = Env::getAwsUploadBucket();
-
-        $s3Params = [
-            'Bucket' => $bucket,
-            'Key' => $key,
-        ];
-
-        $downloadURL = $this->s3
-            ->createPresignedRequest(
-                $this->s3->getCommand('GetObject', $s3Params),
-                sprintf('+%d seconds', self::URL_EXPIRATION_SECONDS)
-            )
-            ->getUri();
-
-        return (string)$downloadURL;
-    }
 }

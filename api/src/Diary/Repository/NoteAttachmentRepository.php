@@ -2,9 +2,11 @@
 
 namespace App\Diary\Repository;
 
+use App\Diary\Entity\Note;
 use App\Diary\Entity\NoteAttachment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @extends ServiceEntityRepository<NoteFileAttachment>
@@ -50,5 +52,21 @@ class NoteAttachmentRepository extends ServiceEntityRepository
         foreach ($attachments as $attachment) {
             $this->remove($attachment);
         }
+    }
+
+    /**
+     * @param UuidV4[] $attachmentsUuids
+     * @param Note $note
+     * @return NoteAttachment[]
+     */
+    public function findByIdsAndNote(array $attachmentsUuids, Note $note): array
+    {
+        return $this->createQueryBuilder('na')
+            ->andWhere('na.attachment IN (:ids)')
+            ->setParameter('ids', $attachmentsUuids)
+            ->andWhere('na.note = :note')
+            ->setParameter('note', $note)
+            ->getQuery()
+            ->getResult();
     }
 }
