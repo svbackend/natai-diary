@@ -831,7 +831,7 @@ export const usePostNotes = (
   );
 };
 
-export type PostApiV2NotesError = Fetcher.ErrorWrapper<
+export type PostNotesV2Error = Fetcher.ErrorWrapper<
   | {
       status: 400;
       payload: Schemas.ValidationErrorResponseRef;
@@ -842,29 +842,29 @@ export type PostApiV2NotesError = Fetcher.ErrorWrapper<
     }
 >;
 
-export type PostApiV2NotesVariables = {
+export type PostNotesV2Variables = {
   body: Schemas.NewNoteRequest;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPostApiV2Notes = (
-  variables: PostApiV2NotesVariables,
+export const fetchPostNotesV2 = (
+  variables: PostNotesV2Variables,
   signal?: AbortSignal
 ) =>
   apiFetch<
     Schemas.NewNoteResponse,
-    PostApiV2NotesError,
+    PostNotesV2Error,
     Schemas.NewNoteRequest,
     {},
     {},
     {}
   >({ url: "/api/v2/notes", method: "post", ...variables, signal });
 
-export const usePostApiV2Notes = (
+export const usePostNotesV2 = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       Schemas.NewNoteResponse,
-      PostApiV2NotesError,
-      PostApiV2NotesVariables
+      PostNotesV2Error,
+      PostNotesV2Variables
     >,
     "mutationFn"
   >
@@ -872,20 +872,20 @@ export const usePostApiV2Notes = (
   const { fetcherOptions } = useApiContext();
   return reactQuery.useMutation<
     Schemas.NewNoteResponse,
-    PostApiV2NotesError,
-    PostApiV2NotesVariables
+    PostNotesV2Error,
+    PostNotesV2Variables
   >(
-    (variables: PostApiV2NotesVariables) =>
-      fetchPostApiV2Notes({ ...fetcherOptions, ...variables }),
+    (variables: PostNotesV2Variables) =>
+      fetchPostNotesV2({ ...fetcherOptions, ...variables }),
     options
   );
 };
 
-export type PutApiV2NotesByIdPathParams = {
+export type PutNotesByIdV2PathParams = {
   id: string;
 };
 
-export type PutApiV2NotesByIdError = Fetcher.ErrorWrapper<
+export type PutNotesByIdV2Error = Fetcher.ErrorWrapper<
   | {
       status: 400;
       payload: Schemas.ValidationErrorResponseRef;
@@ -904,30 +904,30 @@ export type PutApiV2NotesByIdError = Fetcher.ErrorWrapper<
     }
 >;
 
-export type PutApiV2NotesByIdVariables = {
+export type PutNotesByIdV2Variables = {
   body: Schemas.UpdateNoteRequest;
-  pathParams: PutApiV2NotesByIdPathParams;
+  pathParams: PutNotesByIdV2PathParams;
 } & ApiContext["fetcherOptions"];
 
-export const fetchPutApiV2NotesById = (
-  variables: PutApiV2NotesByIdVariables,
+export const fetchPutNotesByIdV2 = (
+  variables: PutNotesByIdV2Variables,
   signal?: AbortSignal
 ) =>
   apiFetch<
     undefined,
-    PutApiV2NotesByIdError,
+    PutNotesByIdV2Error,
     Schemas.UpdateNoteRequest,
     {},
     {},
-    PutApiV2NotesByIdPathParams
+    PutNotesByIdV2PathParams
   >({ url: "/api/v2/notes/{id}", method: "put", ...variables, signal });
 
-export const usePutApiV2NotesById = (
+export const usePutNotesByIdV2 = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       undefined,
-      PutApiV2NotesByIdError,
-      PutApiV2NotesByIdVariables
+      PutNotesByIdV2Error,
+      PutNotesByIdV2Variables
     >,
     "mutationFn"
   >
@@ -935,11 +935,11 @@ export const usePutApiV2NotesById = (
   const { fetcherOptions } = useApiContext();
   return reactQuery.useMutation<
     undefined,
-    PutApiV2NotesByIdError,
-    PutApiV2NotesByIdVariables
+    PutNotesByIdV2Error,
+    PutNotesByIdV2Variables
   >(
-    (variables: PutApiV2NotesByIdVariables) =>
-      fetchPutApiV2NotesById({ ...fetcherOptions, ...variables }),
+    (variables: PutNotesByIdV2Variables) =>
+      fetchPutNotesByIdV2({ ...fetcherOptions, ...variables }),
     options
   );
 };

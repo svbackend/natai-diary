@@ -1,6 +1,6 @@
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import {useEffect, useState} from "react";
-import {LocalNoteAttachment} from "./DiaryAddFilesModal";
+import {LocalNoteAttachment} from "../services/attachmentService";
 
 export function AddedFilesRow({files: files, onDelete: onDelete}: { files: LocalNoteAttachment[], onDelete: (file: LocalNoteAttachment) => void }) {
     const fileKey = (file: File) => `${file.name}-${file.size}`
@@ -14,7 +14,7 @@ export function AddedFilesRow({files: files, onDelete: onDelete}: { files: Local
 
 function AddedFileBadge({file, onDelete}: { file: LocalNoteAttachment, onDelete: (file: LocalNoteAttachment) => void }) {
     return (
-        <div className={"flex flex-1 flex-col border p-2 rounded w-full"}>
+        <div className={"flex flex-col border p-2 rounded"}>
             <AttachedFilePreview file={file.originalFile}/>
 
             <div className={"flex items-center mt-1 w-full"}>
@@ -57,7 +57,7 @@ function AttachedFilePreview({file}: { file: File }) {
     }, [file]);
 
     return (
-        <div className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center">
             {isPreviewLoading && <div className="w-20 h-20 bg-gray-200 rounded animate-pulse"/>}
             {isImage && !isPreviewLoading && preview && <img src={preview as string} alt={file.name} className="w-20 h-20 rounded"/>}
             {!isImage && <div className="w-20 h-20 bg-gray-200">{file.type}</div>}

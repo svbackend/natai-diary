@@ -7,7 +7,7 @@ import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {TextField} from "../../src/modules/common/components/textField";
 import {useTranslations} from "use-intl";
 import {useForm} from "react-hook-form";
-import {usePostNotes} from "../../src/api/apiComponents";
+import {usePostNotesV2} from "../../src/api/apiComponents";
 import {CloudTagDto, NewNoteResponse} from "../../src/api/apiSchemas";
 import {EaseOutTransition} from "../../src/modules/common/components/EaseOutTransition";
 import {AlertApiError} from "../../src/modules/common/components/alert";
@@ -26,9 +26,14 @@ import AddTagsButton from "../../src/modules/diary/components/AddTagsButton";
 import DiarySelectMoodModal from "../../src/modules/diary/components/DiarySelectMoodModal";
 import {CloudArrowUpIcon} from "@heroicons/react/24/outline";
 import {AddedFilesRow} from "../../src/modules/diary/components/AddedFilesRow";
-import {DiaryAddFilesModal, LocalNoteAttachment} from "../../src/modules/diary/components/DiaryAddFilesModal";
+import {DiaryAddFilesModal} from "../../src/modules/diary/components/DiaryAddFilesModal";
 import {useAtom} from "jotai";
 import {diaryAddAttachmentModalAtom} from "../../src/modules/diary/atoms/diaryAddAttachmentModalAtom";
+import {
+    FilesUpdateCallback,
+    FilesUpdateCallback1,
+    LocalNoteAttachment
+} from "../../src/modules/diary/services/attachmentService";
 
 export default function DiaryNewNote() {
 
@@ -62,7 +67,7 @@ function DiaryNewNotePageContent() {
             content: persistedFormData.content,
         }
     });
-    const {mutateAsync: addNoteRequest, isError, error, isLoading} = usePostNotes()
+    const {mutateAsync: addNoteRequest, isError, error, isLoading} = usePostNotesV2()
 
     const [tags, setTags] = useState<CloudTagDto[]>([])
 
@@ -94,9 +99,10 @@ function DiaryNewNotePageContent() {
     const onSubmit = async (data: FormValues) => {
         let response: NewNoteResponse
 
-        const attachments = files.map(file => file.cloudAttachmentId)
-        console.log("attachments", attachments)
-        return;
+        // @ts-ignore
+        const attachments: string[] = files
+            .filter(file => file.cloudAttachmentId !== null)
+            .map(file => file.cloudAttachmentId)
 
         if (!data.title.trim() && !data.content.trim() && !tags.length) {
             return;
@@ -117,6 +123,7 @@ function DiaryNewNotePageContent() {
                     tags: tags,
                     actualDate: dateService.toYMD(actualDate),
                     deletedAt: null,
+                    attachments: attachments,
                 }
             })
             storageService.deleteNewNoteFormData()
@@ -130,8 +137,8 @@ function DiaryNewNotePageContent() {
 
     const [files, setFiles] = useState<LocalNoteAttachment[]>([])
 
-    const onFilesSelected = (files: LocalNoteAttachment[]) => {
-        setFiles(files)
+    const onUpdateFiles: FilesUpdateCallback = (updateCallback: FilesUpdateCallback1) => {
+        setFiles(oldFiles => updateCallback(oldFiles))
     }
 
     const deleteFile = (f: LocalNoteAttachment) => {
@@ -192,7 +199,7 @@ function DiaryNewNotePageContent() {
 
             <DiarySelectMoodModal onSelect={(tag: CloudTagDto) => addTag(tag)} moodScore={moodScore}/>
             <DiaryAddTagsModal addedTags={tags} onAdd={addTag} onDelete={deleteTag}/>
-            <DiaryAddFilesModal addedFiles={files} onAdd={onFilesSelected} onDelete={deleteFile}/>
+            <DiaryAddFilesModal addedFiles={files} onUpdate={onUpdateFiles} onDelete={deleteFile}/>
 
         </NarrowWrapper>
     )

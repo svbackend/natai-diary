@@ -4,24 +4,7 @@ import React, {ChangeEvent, useRef, useState} from "react";
 import {diaryAddAttachmentModalAtom} from "../atoms/diaryAddAttachmentModalAtom";
 import {CloudArrowUpIcon} from "@heroicons/react/24/outline";
 import {usePostAttachments} from "../../../api/apiComponents";
-
-export type AttachmentUploadInfo = {
-    fileId: string
-    isLoading: boolean
-    error: null | string
-    progress: number
-}
-
-export type LocalNoteAttachment = {
-    id: string
-
-    cloudAttachmentId: null | string
-    name: string
-    size: number
-    type: string
-    ext: string
-    originalFile: File
-}
+import {AttachmentUploadInfo, FilesUpdateCallback, LocalNoteAttachment} from "../services/attachmentService";
 
 const uploadFileRequest = (url: string, file: File, onProgress: (progress: number) => void) => {
     return new Promise((resolve, reject) => {
@@ -46,9 +29,9 @@ const uploadFileRequest = (url: string, file: File, onProgress: (progress: numbe
 export function DiaryAddFilesModal(
     {
         addedFiles,
-        onAdd,
+        onUpdate,
         onDelete
-    }: { addedFiles: LocalNoteAttachment[], onAdd: (files: LocalNoteAttachment[]) => void, onDelete: (file: LocalNoteAttachment) => void }
+    }: { addedFiles: LocalNoteAttachment[], onUpdate: FilesUpdateCallback, onDelete: (file: LocalNoteAttachment) => void }
 ) {
     const [isMenuOpen, setIsMenuOpen] = useAtom(diaryAddAttachmentModalAtom)
 
@@ -69,7 +52,7 @@ export function DiaryAddFilesModal(
                     <Dialog.Panel className="mx-auto max-w-lg rounded bg-white">
                         <DiaryAddFilesModalContent
                             addedFiles={addedFiles}
-                            onAdd={onAdd}
+                            onUpdate={onUpdate}
                             onDelete={onDelete}
                             onClose={() => setIsMenuOpen(false)}
                         />
@@ -84,8 +67,8 @@ function DiaryAddFilesModalContent({
                                        addedFiles,
                                        onDelete,
                                        onClose,
-                                       onAdd
-                                   }: { addedFiles: LocalNoteAttachment[], onDelete: (file: LocalNoteAttachment) => void, onClose: () => void, onAdd: (files: LocalNoteAttachment[]) => void }) {
+                                       onUpdate
+                                   }: { addedFiles: LocalNoteAttachment[], onDelete: (file: LocalNoteAttachment) => void, onClose: () => void, onUpdate: FilesUpdateCallback }) {
 
     const {mutateAsync: generateUploadUrl} = usePostAttachments()
 
@@ -115,22 +98,31 @@ function DiaryAddFilesModalContent({
     }
 
     const setFileAttachmentId = (fileId: string, attachmentId: string) => {
-        const updatedFiles = addedFiles.map(file => {
-            if (file.id === fileId) {
-                return {
-                    ...file,
-                    cloudAttachmentId: attachmentId
-                }
-            } else {
-                return file
-            }
-        })
 
-        onAdd(updatedFiles)
+
+        onUpdate((oldFiles) => {
+            const updatedFiles = oldFiles.map(file => {
+                if (file.id === fileId) {
+                    return {
+                        ...file,
+                        cloudAttachmentId: attachmentId
+                    }
+                } else {
+                    return file
+                }
+            })
+
+            console.log("setFileAttachmentId", fileId, attachmentId, updatedFiles)
+
+            return updatedFiles
+        })
     }
 
     const onFilesSelected = async (files: LocalNoteAttachment[]) => {
-        onAdd(files)
+        onUpdate(oldFiles => {
+            const oldFilesToKeep = oldFiles.filter(oldFile => !files.find(file => file.id === oldFile.id))
+            return [...oldFilesToKeep, ...files]
+        })
 
         for (const file of files) {
             const signedUploadUrl = await generateUploadUrl({

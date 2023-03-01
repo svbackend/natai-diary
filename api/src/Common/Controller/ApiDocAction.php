@@ -57,14 +57,23 @@ class ApiDocAction extends BaseAction
             foreach ($path as $methodKey => $method) {
                 $modifiedMethod = $method;
                 if (isset($modifiedMethod['operationId'])) {
-                    $endpointName = strtr($pathKey, [
-                        '/api/v1/' => '',
+                    // remove api/v1 api/v2 api/v3 and so on from the beginning of the path
+                    $endpointName = preg_replace('/^\/api\/v\d+\//', '', $pathKey);
+                    $endpointVersion = $this->getEndpointVersion($pathKey);
+
+                    $endpointName = strtr($endpointName, [
                         '/' => '_',
                         '-' => '_',
                         '{' => 'by_',
                         '}' => ''
                     ]);
+
                     $newOperationId = "{$methodKey}_{$endpointName}";
+
+                    if ($endpointVersion !== 'v1') {
+                        $newOperationId .= "_{$endpointVersion}";
+                    }
+
                     $modifiedMethod['operationId'] = $newOperationId;
                     $modifiedPath[$methodKey] = $modifiedMethod;
                 }
@@ -76,5 +85,11 @@ class ApiDocAction extends BaseAction
         $modifiedDocs['paths'] = $modifiedPaths;
 
         return $this->json($modifiedDocs);
+    }
+
+    private function getEndpointVersion(string $path): string
+    {
+        $pathParts = explode('/', $path);
+        return $pathParts[2];
     }
 }
