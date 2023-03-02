@@ -68,7 +68,7 @@ export default function ViewNotePage() {
     return (
         <>
             <MainLayout>
-                <div className="w-full max-w-xl mx-auto mt-4">
+                <div className="w-full max-w-xl mx-auto mt-4 mb-4">
                     {isLoading && <AppSpinner/>}
 
                     {!isLoading && isError && <AlertApiError error={error}/>}
@@ -108,7 +108,7 @@ function DiaryNoteAttachments({attachments, isLoading}: { attachments: CloudAtta
     //const photos = attachments.filter(a => a.type === "photo")
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col my-2">
             <PhotoAttachments attachments={attachments}/>
         </div>
     )

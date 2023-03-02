@@ -1,10 +1,11 @@
 import {useAtom} from "jotai";
 import {Dialog} from "@headlessui/react";
-import React, {ChangeEvent, useRef, useState} from "react";
+import React, {ChangeEvent, useRef} from "react";
 import {diaryAddAttachmentModalAtom} from "../atoms/diaryAddAttachmentModalAtom";
 import {CloudArrowUpIcon} from "@heroicons/react/24/outline";
 import {usePostAttachments} from "../../../api/apiComponents";
 import {AttachmentUploadInfo, FilesUpdateCallback, LocalNoteAttachment} from "../services/attachmentService";
+import {diaryUploadedAttachmentsInfoAtom} from "../atoms/diaryUploadedAttachmentsInfoAtom";
 
 const uploadFileRequest = (url: string, file: File, onProgress: (progress: number) => void) => {
     return new Promise((resolve, reject) => {
@@ -72,7 +73,7 @@ function DiaryAddFilesModalContent({
 
     const {mutateAsync: generateUploadUrl} = usePostAttachments()
 
-    const [filesUploadInfo, setFilesUploadInfo] = useState<AttachmentUploadInfo[]>([])
+    const [filesUploadInfo, setFilesUploadInfo] = useAtom(diaryUploadedAttachmentsInfoAtom)
 
     const updateFileUploadInfo = (info: AttachmentUploadInfo) => {
         setFilesUploadInfo(oldFilesUploadInfo => {
@@ -267,7 +268,8 @@ function DropZone({onAdd}: { onAdd: (files: LocalNoteAttachment[]) => void }) {
                         </span>
                     </span>
             </label>
-            <input onChange={handleFileChange} type="file" multiple={true} className="hidden" ref={inputRef}/>
+            <input onChange={handleFileChange} type="file" accept="image/*" multiple={true} className="hidden"
+                   ref={inputRef}/>
         </div>
     )
 }
@@ -307,6 +309,14 @@ function AddedFileRow({
                             className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
                             <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
                             Uploaded
+                        </span>
+                    )}
+
+                    {uploadInfo.progress === 0 && !uploadInfo.error && (
+                        <span
+                            className="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
+                            <span className="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
+                            Pending
                         </span>
                     )}
 

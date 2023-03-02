@@ -6,7 +6,7 @@ export function AddedFilesRow({files: files, onDelete: onDelete}: { files: Local
     const fileKey = (file: File) => `${file.name}-${file.size}`
 
     return (
-        <div className="flex flex-nowrap w-full max-w-full gap-2 mb-2 overflow-auto pb-2">
+        <div className="grid grid-cols-3 gap-2 mb-2 pb-2">
             {files.map(file => <AddedFileBadge key={fileKey(file.originalFile)} file={file} onDelete={onDelete}/>)}
         </div>
     )
@@ -14,7 +14,7 @@ export function AddedFilesRow({files: files, onDelete: onDelete}: { files: Local
 
 function AddedFileBadge({file, onDelete}: { file: LocalNoteAttachment, onDelete: (file: LocalNoteAttachment) => void }) {
     return (
-        <div className={"flex flex-col border p-2 rounded"}>
+        <div className={"flex flex-col flex-1 border p-2 rounded"}>
             <AttachedFilePreview file={file.originalFile}/>
 
             <div className={"flex items-center mt-1 w-full"}>
@@ -58,9 +58,9 @@ function AttachedFilePreview({file}: { file: File }) {
 
     return (
         <div className="flex flex-col items-center">
-            {isPreviewLoading && <div className="w-20 h-20 bg-gray-200 rounded animate-pulse"/>}
-            {isImage && !isPreviewLoading && preview && <img src={preview as string} alt={file.name} className="w-20 h-20 rounded"/>}
-            {!isImage && <div className="w-20 h-20 bg-gray-200">{file.type}</div>}
+            {isPreviewLoading && <div className="h-16 w-16 bg-gray-200 rounded animate-pulse"/>}
+            {isImage && !isPreviewLoading && preview && <img src={preview as string} alt={file.name} className="h-16 rounded"/>}
+            {!isImage && <div className="w-16 h-16 bg-gray-200">{file.type}</div>}
         </div>
     )
 }

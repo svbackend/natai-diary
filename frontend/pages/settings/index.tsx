@@ -30,7 +30,7 @@ export default function SettingsPage() {
 
     return (
         <MainLayout>
-            <div className="w-full max-w-xl mx-auto mt-4">
+            <div className="w-full max-w-xl mx-auto mt-4 mb-4">
                 <div
                     className="p-4 bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                     <div className="flex justify-between items-center mb-4">

@@ -18,7 +18,7 @@ export default function ViewNotesByDatePage() {
     return (
         <>
             <MainLayout>
-                <div className="w-full max-w-xl mx-auto mt-4">
+                <div className="w-full max-w-xl mx-auto mt-4 mb-4">
                     {isLoading && <AppSpinner/>}
                     {filteredNotes && typeof date === "string" &&
                         <DiaryNotesByDateList date={date} notes={filteredNotes}/>}
