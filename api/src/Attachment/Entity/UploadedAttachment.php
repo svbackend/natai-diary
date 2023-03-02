@@ -4,6 +4,7 @@ namespace App\Attachment\Entity;
 
 use App\Attachment\Repository\UploadedAttachmentRepository;
 use App\Auth\Entity\User;
+use App\Diary\DTO\CloudAttachmentMetadataDto;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 use Webmozart\Assert\Assert;
@@ -22,6 +23,9 @@ class UploadedAttachment
     #[ORM\Column(length: 255)]
     private string $key;
 
+    #[ORM\Column(type: 'json')]
+    private array $metadata = [];
+
     public function __construct(
         UuidV4 $id,
         User $user,
@@ -33,15 +37,6 @@ class UploadedAttachment
         $this->id = $id;
         $this->user = $user;
         $this->key = $key;
-    }
-
-    public static function createByPendingAttachment(PendingAttachment $pendingAttachment): self
-    {
-        return new self(
-            id: $pendingAttachment->getId(),
-            user: $pendingAttachment->getUser(),
-            key: $pendingAttachment->getKey(),
-        );
     }
 
     public function getId(): UuidV4
@@ -57,5 +52,25 @@ class UploadedAttachment
     public function getKey(): string
     {
         return $this->key;
+    }
+
+    public function getMetadata(): CloudAttachmentMetadataDto
+    {
+        return new CloudAttachmentMetadataDto(
+            mimeType: $this->metadata['mimeType'] ?? null,
+            size: $this->metadata['size'] ?? null,
+            width: $this->metadata['width'] ?? null,
+            height: $this->metadata['height'] ?? null,
+        );
+    }
+
+    public function setMetadata(CloudAttachmentMetadataDto $metadata): void
+    {
+        $this->metadata = [
+            'mimeType' => $metadata->mimeType,
+            'size' => $metadata->size,
+            'width' => $metadata->width,
+            'height' => $metadata->height,
+        ];
     }
 }

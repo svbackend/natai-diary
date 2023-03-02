@@ -9,6 +9,7 @@ use App\Common\Http\Response\AuthRequiredErrorResponse;
 use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\NotFoundErrorRef;
 use App\Diary\DTO\CloudAttachmentDto;
+use App\Diary\DTO\CloudAttachmentMetadataDto;
 use App\Diary\Http\Response\NoteAttachmentsResponse;
 use App\Diary\OpenApi\Ref\GetNoteAttachmentsErrorRef;
 use App\Diary\Repository\NoteAttachmentRepository;
@@ -90,6 +91,8 @@ class GetNoteAttachmentsAction extends BaseAction
             fn($attachment) => new CloudAttachmentDto(
                 attachmentId: $attachment->getId(),
                 signedUrl: $this->downloader->getSignedUrl($attachment->getKey()),
+                key: $attachment->getKey(),
+                metadata: $attachment->getMetadata(),
             ),
             $uploadedAttachments
         );

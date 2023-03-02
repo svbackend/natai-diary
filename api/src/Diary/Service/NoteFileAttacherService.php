@@ -3,6 +3,7 @@
 namespace App\Diary\Service;
 
 use App\Attachment\Entity\UploadedAttachment;
+use App\Attachment\Queue\AttachmentUploadedEvent;
 use App\Attachment\Repository\PendingAttachmentRepository;
 use App\Attachment\Repository\UploadedAttachmentRepository;
 use App\Auth\Entity\User;
@@ -11,6 +12,7 @@ use App\Diary\Entity\Note;
 use App\Diary\Entity\NoteAttachment;
 use App\Diary\Repository\NoteAttachmentRepository;
 use Aws\S3\S3Client;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class NoteFileAttacherService
 {
@@ -19,6 +21,7 @@ class NoteFileAttacherService
         private PendingAttachmentRepository $pendingAttachmentRepository,
         private UploadedAttachmentRepository $uploadedAttachmentRepository,
         private NoteAttachmentRepository $noteFileAttachmentRepository,
+        private MessageBusInterface $bus,
     )
     {
 
@@ -41,7 +44,11 @@ class NoteFileAttacherService
             );
 
             if ($isFileExists) {
-                $uploadedAttachment = UploadedAttachment::createByPendingAttachment($pendingAttachment);
+                $uploadedAttachment = new UploadedAttachment(
+                    id: $pendingAttachment->getId(), // very important to use the same id
+                    user: $user,
+                    key: $pendingAttachment->getKey()
+                );
                 $noteAttachment = new NoteAttachment(
                     id: $pendingAttachment->getId(), // very important to use the same id
                     note: $note,
@@ -50,6 +57,8 @@ class NoteFileAttacherService
 
                 $this->uploadedAttachmentRepository->save($uploadedAttachment);
                 $this->noteFileAttachmentRepository->save($noteAttachment);
+
+                $this->bus->dispatch(new AttachmentUploadedEvent($uploadedAttachment->getId()->toRfc4122()));
             }
         }
 

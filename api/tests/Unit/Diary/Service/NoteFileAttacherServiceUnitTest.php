@@ -15,6 +15,7 @@ use App\Diary\Service\NoteFileAttacherService;
 use App\Tests\AbstractUnitTest;
 use Aws\S3\S3Client;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Uid\UuidV4;
 
 class NoteFileAttacherServiceUnitTest extends AbstractUnitTest
@@ -106,11 +107,14 @@ class NoteFileAttacherServiceUnitTest extends AbstractUnitTest
             ->method('removeByIds')
             ->with([1 => $attachmentToDeleteId->toRfc4122()]);
 
+        $bus = $this->createMock(MessageBusInterface::class);
+
         $attacher = new NoteFileAttacherService(
             s3Client: $s3Client,
             pendingAttachmentRepository: $pendingAttachmentRepository,
             uploadedAttachmentRepository: $uploadedAttachmentRepository,
             noteFileAttachmentRepository: $noteAttachmentRepository,
+            bus: $bus,
         );
 
         $attachments = [

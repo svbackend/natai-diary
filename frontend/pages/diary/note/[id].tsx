@@ -8,11 +8,14 @@ import MainLayout from "../../../src/modules/common/components/mainLayout";
 import {AlertApiError} from "../../../src/modules/common/components/alert";
 import Link from "next/link";
 import {useTranslations} from "use-intl";
+import {Gallery, Item} from "react-photoswipe-gallery";
+import 'photoswipe/dist/photoswipe.css'
 
-export default function ViewNotesByDatePage() {
+export default function ViewNotePage() {
     const {data: notes, isLoading, isError, error} = useGetNotes({})
 
     const [attachments, setAttachments] = useState<CloudAttachmentDto[]>([])
+    const [isAttachmentsLoading, setIsAttachmentsLoading] = useState<boolean>(false)
 
     const router = useRouter()
     const t = useTranslations("ViewNotePage");
@@ -27,17 +30,25 @@ export default function ViewNotesByDatePage() {
             if (noteById) {
                 setNote(noteById)
 
-                fetchGetNotesByIdAttachments({
-                    pathParams: {
-                        id: id
-                    }, queryParams: {
-                        "attachments[]": noteById.attachments
-                    }
-                }).then((res) => {
-                    setAttachments(res.attachments)
-                }).catch((err) => {
-                    console.log(err)
-                })
+                if (noteById.attachments.length > 0) {
+                    setIsAttachmentsLoading(true)
+                    fetchGetNotesByIdAttachments({
+                        pathParams: {
+                            id: id
+                        }, queryParams: {
+                            "attachments[]": noteById.attachments
+                        }
+                    })
+                        .then((res) => {
+                            setAttachments(res.attachments)
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                        .finally(() => {
+                            setIsAttachmentsLoading(false)
+                        })
+                }
             }
         }
     }, [notes, id])
@@ -64,6 +75,8 @@ export default function ViewNotesByDatePage() {
 
                     {note && <DiaryNoteView note={note} isLast={true}/>}
 
+                    <DiaryNoteAttachments attachments={attachments} isLoading={isAttachmentsLoading}/>
+
                     {note && (
                         <div className="flex flex-row justify-between">
                             <Link
@@ -87,11 +100,62 @@ export default function ViewNotesByDatePage() {
     )
 }
 
-function NoteAttachments({attachments}: { attachments: CloudAttachmentDto[] }) {
-    // todo
+function DiaryNoteAttachments({attachments, isLoading}: { attachments: CloudAttachmentDto[], isLoading: boolean }) {
+    if (isLoading) {
+        return <AppSpinner/>
+    }
+
+    //const photos = attachments.filter(a => a.type === "photo")
+
     return (
         <div className="flex flex-col">
-
+            <PhotoAttachments attachments={attachments}/>
         </div>
+    )
+}
+
+function PhotoAttachments({attachments}: { attachments: CloudAttachmentDto[] }) {
+    const smallItemStyles: React.CSSProperties = {
+        cursor: 'pointer',
+        objectFit: 'cover',
+        height: '128px',
+        width: '128px',
+        borderRadius: '2%',
+    }
+
+    // todo add object key (filepath) to the CloudAttachmentDto
+    // todo add dimensions to the CloudAttachmentDto
+    // todo add size to the CloudAttachmentDto
+
+    return (
+        <Gallery>
+            <div className={"flex flex-wrap gap-4 mb-4"}>
+                {attachments.map((img, idx) => {
+                    const alt = `Attachment #${idx}`
+                    const w = img.metadata.width || 128
+                    const h = img.metadata.height || 128
+                    return (
+                        <Item key={img.attachmentId}
+                              original={img.signedUrl}
+                              thumbnail={img.signedUrl}
+                              width={w}
+                              height={h}
+                              alt={alt}
+                        >
+                            {({ref, open}) => (
+                                <img
+                                    style={smallItemStyles}
+                                    src={img.signedUrl}
+                                    ref={ref as React.MutableRefObject<HTMLImageElement>}
+                                    onClick={open}
+                                    alt={alt}
+                                />
+                            )}
+                        </Item>
+                    )
+                })}
+
+            </div>
+        </Gallery>
     )
 }

@@ -361,9 +361,18 @@ export type CloudNoteDto = {
 export type CloudAttachmentDto = {
   attachmentId: Uuid;
   signedUrl: string;
+  key: string;
+  metadata: CloudAttachmentMetadataDto;
 };
 
 /**
  * @format uuid
  */
 export type Uuid = string;
+
+export type CloudAttachmentMetadataDto = {
+  mimeType: string | null;
+  size: number | null;
+  width: number | null;
+  height: number | null;
+};

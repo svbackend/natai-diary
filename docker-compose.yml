@@ -47,6 +47,20 @@ services:
     networks:
       - default
 
+  api-queue:
+    restart: unless-stopped
+    build:
+      context: api
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./api:/app
+    command: sh -c "bin/console messenger:consume async --limit=10"
+    tty: true
+    depends_on:
+      - db
+    networks:
+      - default
+
   frontend:
     image: natai/frontend:latest
     build:
