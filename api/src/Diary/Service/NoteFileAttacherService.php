@@ -21,7 +21,6 @@ class NoteFileAttacherService
         private PendingAttachmentRepository $pendingAttachmentRepository,
         private UploadedAttachmentRepository $uploadedAttachmentRepository,
         private NoteAttachmentRepository $noteFileAttachmentRepository,
-        private MessageBusInterface $bus,
     )
     {
 
@@ -30,13 +29,14 @@ class NoteFileAttacherService
     /***
      * @param string[] $attachmentsIds - ids of "PendingAttachment|UploadedAttachment" entities
      * @param Note $note
-     * @return void
+     * @return UploadedAttachment[]
      */
-    public function attachFilesToNote(User $user, Note $note, array $attachmentsIds): void
+    public function attachFilesToNote(User $user, Note $note, array $attachmentsIds): array
     {
         $pendingAttachments = $this->pendingAttachmentRepository->findAllByIds($user, $attachmentsIds);
         $bucket = Env::getAwsUploadBucket();
 
+        $uploadedAttachments = [];
         foreach ($pendingAttachments as $pendingAttachment) {
             $isFileExists = $this->s3Client->doesObjectExist(
                 bucket: $bucket,
@@ -58,7 +58,7 @@ class NoteFileAttacherService
                 $this->uploadedAttachmentRepository->save($uploadedAttachment);
                 $this->noteFileAttachmentRepository->save($noteAttachment);
 
-                $this->bus->dispatch(new AttachmentUploadedEvent($uploadedAttachment->getId()->toRfc4122()));
+                $uploadedAttachments[] = $uploadedAttachment;
             }
         }
 
@@ -70,6 +70,8 @@ class NoteFileAttacherService
         if (!empty($oldFilesIds)) {
             $this->removeOldFiles($oldFilesIds, $attachmentsIds);
         }
+
+        return $uploadedAttachments;
     }
 
     private function removeOldFiles(array $oldFilesIds, array $newFilesIds): void

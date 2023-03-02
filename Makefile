@@ -11,7 +11,7 @@ api-up:
 	cd api && docker compose up -d && symfony serve
 
 api-queue-up:
-	cd api && bin/console messenger:consume async -vv
+	cd api && bin/console messenger:consume async
 
 frontend-up:
 	cd frontend && npm run dev

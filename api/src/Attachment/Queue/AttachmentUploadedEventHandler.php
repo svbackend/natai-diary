@@ -25,6 +25,9 @@ class AttachmentUploadedEventHandler
         $uploadedAttachment = $this->uploadedAttachments->find($event->uploadedAttachmentId);
 
         if (!$uploadedAttachment) {
+            $this->logger->debug("AttachmentUploadedEventHandler - Uploaded attachment with id {$event->uploadedAttachmentId} not found", [
+                'id' => $event->uploadedAttachmentId,
+            ]);
             return;
         }
 
@@ -37,11 +40,17 @@ class AttachmentUploadedEventHandler
         );
 
         if (!$isFileExists) {
-            $this->uploadedAttachments->remove($uploadedAttachment);
+            $this->logger->debug("AttachmentUploadedEventHandler - File {$key} not found in bucket {$bucket}", [
+                'bucket' => $bucket,
+                'key' => $key,
+            ]);
+            $this->uploadedAttachments->remove($uploadedAttachment, flush: true);
             return;
         }
 
         $metaData = $this->getAwsMetadata($bucket, $key);
+
+        $this->logger->debug("AttachmentUploadedEventHandler ${key} METADATA", $metaData);
 
         $ext = pathinfo($key, PATHINFO_EXTENSION);
 
@@ -50,7 +59,11 @@ class AttachmentUploadedEventHandler
             try {
                 [$width, $height] = $this->getImageDimensions($bucket, $key);
             } catch (\Throwable $e) {
-                $this->logger->error($e->getMessage());
+                $this->logger->error("AttachmentUploadedEventHandler - Cannot get image dimensions for file {$key}", [
+                    'bucket' => $bucket,
+                    'key' => $key,
+                    'exception' => $e->getMessage(),
+                ]);
             }
         }
 
@@ -63,6 +76,12 @@ class AttachmentUploadedEventHandler
 
         $uploadedAttachment->setMetadata($metaDataDto);
         $this->uploadedAttachments->save($uploadedAttachment, flush: true);
+
+        $this->logger->debug("AttachmentUploadedEventHandler - Metadata saved for file {$key}", [
+            'bucket' => $bucket,
+            'key' => $key,
+            'metadata' => $metaDataDto,
+        ]);
     }
 
     private function getAwsMetadata(string $bucket, string $key): array

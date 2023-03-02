@@ -123,10 +123,6 @@ function PhotoAttachments({attachments}: { attachments: CloudAttachmentDto[] }) 
         borderRadius: '2%',
     }
 
-    // todo add object key (filepath) to the CloudAttachmentDto
-    // todo add dimensions to the CloudAttachmentDto
-    // todo add size to the CloudAttachmentDto
-
     return (
         <Gallery>
             <div className={"flex flex-wrap gap-4 mb-4"}>
