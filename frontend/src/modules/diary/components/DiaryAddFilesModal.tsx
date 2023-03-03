@@ -289,12 +289,12 @@ function AddedFileRow({
 
     return (
         <div className="flex flex-row items-center justify-between w-full p-2 my-1 bg-gray-100 rounded-lg">
-            <div className="flex flex-row items-center">
+            <div className="flex flex-row items-center w-full">
                 <div
-                    className="flex flex-row items-center justify-center w-8 h-8 mr-2 text-white bg-gray-500 rounded-lg">
+                    className="flex flex-row items-center justify-center w-12 h-12 mr-2 text-white bg-blue-500 rounded-lg">
                     <span className="text-sm font-medium leading-none">{file.ext}</span>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col flex-1">
                     <span className="text-sm font-medium leading-none">{file.name}</span>
                     <span className="text-xs font-normal leading-none text-gray-500">
                         {bytesToReadableStr(file.size)}
