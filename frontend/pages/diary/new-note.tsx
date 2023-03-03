@@ -34,6 +34,7 @@ import {
     FilesUpdateCallback1,
     LocalNoteAttachment
 } from "../../src/modules/diary/services/attachmentService";
+import {AddAttachmentsButton} from "../../src/modules/diary/components/AddAttachmentsButton";
 
 export default function DiaryNewNote() {
 
@@ -70,6 +71,7 @@ function DiaryNewNotePageContent() {
     const {mutateAsync: addNoteRequest, isError, error, isLoading} = usePostNotesV2()
 
     const [tags, setTags] = useState<CloudTagDto[]>([])
+    const [files, setFiles] = useState<LocalNoteAttachment[]>([])
 
     const moodTag = tags.find(tag => tag.tag === "mood") || null
     const moodScore = moodTag ? moodTag.score : null
@@ -135,8 +137,6 @@ function DiaryNewNotePageContent() {
         await router.push("/diary")
     }
 
-    const [files, setFiles] = useState<LocalNoteAttachment[]>([])
-
     const onUpdateFiles: FilesUpdateCallback = (updateCallback: FilesUpdateCallback1) => {
         setFiles(oldFiles => updateCallback(oldFiles))
     }
@@ -177,12 +177,12 @@ function DiaryNewNotePageContent() {
                         errors={errors}
                     />
 
-                    {tags && tags.length > 0 && (
+                    {tags.length > 0 && (
                         <AddedTagsRow tags={tags} onDelete={deleteTag}/>
                     )}
 
-                    {files && files.length > 0 && (
-                        <AddedFilesRow files={files} onDelete={deleteFile}/>
+                    {files.length > 0 && (
+                        <AddedFilesRow localFiles={files} onDeleteLocal={deleteFile}/>
                     )}
 
                     <div className="flex flex-row justify-between mb-4">
@@ -202,28 +202,5 @@ function DiaryNewNotePageContent() {
             <DiaryAddFilesModal addedFiles={files} onUpdate={onUpdateFiles} onDelete={deleteFile}/>
 
         </NarrowWrapper>
-    )
-}
-
-function AddAttachmentsButton({count}: { count: number }) {
-    const [isOpen, setIsOpen] = useAtom(diaryAddAttachmentModalAtom)
-
-    return (
-        <button
-            onClick={() => setIsOpen(true)}
-            className="relative flex flex-col bg-gray-100 hover:bg-gray-200 rounded items-center"
-            type={"button"}
-        >
-            <div className="w-12 h-12 flex flex-row items-center">
-                <CloudArrowUpIcon className={"w-6 h-6 mx-auto"}/>
-            </div>
-            <span className={"text-xs text-gray-600"}>Add File</span>
-            {count > 0 && (
-                <div
-                    className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-green-800 bg-green-100 border-2 border-white rounded-full -top-2 -right-2">
-                    {count}
-                </div>
-            )}
-        </button>
     )
 }

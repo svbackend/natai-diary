@@ -1,13 +1,27 @@
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import {useEffect, useState} from "react";
-import {LocalNoteAttachment} from "../services/attachmentService";
+import {attachmentService, LocalNoteAttachment} from "../services/attachmentService";
+import {CloudAttachmentDto} from "../../../api/apiSchemas";
 
-export function AddedFilesRow({files: files, onDelete: onDelete}: { files: LocalNoteAttachment[], onDelete: (file: LocalNoteAttachment) => void }) {
+export function AddedFilesRow(
+    {
+        localFiles,
+        onDeleteLocal,
+        cloudFiles,
+        onDeleteCloud,
+    }: {
+        localFiles: LocalNoteAttachment[],
+        onDeleteLocal: (file: LocalNoteAttachment) => void,
+        cloudFiles?: CloudAttachmentDto[],
+        onDeleteCloud?: (file: CloudAttachmentDto) => void,
+    }
+) {
     const fileKey = (file: File) => `${file.name}-${file.size}`
 
     return (
         <div className="grid grid-cols-3 gap-2 mb-2 pb-2">
-            {files.map(file => <AddedFileBadge key={fileKey(file.originalFile)} file={file} onDelete={onDelete}/>)}
+            {localFiles.map(file => <AddedFileBadge key={fileKey(file.originalFile)} file={file} onDelete={onDeleteLocal}/>)}
+            {onDeleteCloud && cloudFiles?.map(file => <AddedCloudFileBadge key={file.attachmentId} file={file} onDelete={onDeleteCloud}/>)}
         </div>
     )
 }
@@ -26,10 +40,25 @@ function AddedFileBadge({file, onDelete}: { file: LocalNoteAttachment, onDelete:
     )
 }
 
+function AddedCloudFileBadge({file, onDelete}: { file: CloudAttachmentDto, onDelete: (file: CloudAttachmentDto) => void }) {
+    const fileName = file.key.split("/").pop() || ""
+    return (
+        <div className={"flex flex-col flex-1 border p-2 rounded"}>
+            <CloudFilePreview file={file}/>
+
+            <div className={"flex items-center mt-1 w-full"}>
+                <span className="text-xs text-gray-500 whitespace-nowrap">{getShortenedFileName(fileName)}</span>
+                <XMarkIcon className="w-4 h-4 inline ml-1 cursor-pointer" onClick={() => onDelete(file)}/>
+            </div>
+
+        </div>
+    )
+}
+
 function AttachedFilePreview({file}: { file: File }) {
     const [preview, setPreview] = useState<string | ArrayBuffer | null>(null)
 
-    const isImage = file.type.startsWith("image/")
+    const isImage = attachmentService.isImage(file.name, file.type)
     const [isPreviewLoading, setIsPreviewLoading] = useState(false)
 
     useEffect(() => {
@@ -60,7 +89,17 @@ function AttachedFilePreview({file}: { file: File }) {
         <div className="flex flex-col items-center">
             {isPreviewLoading && <div className="h-16 w-16 bg-gray-200 rounded animate-pulse"/>}
             {isImage && !isPreviewLoading && preview && <img src={preview as string} alt={file.name} className="h-16 rounded"/>}
-            {!isImage && <div className="w-16 h-16 bg-gray-200">{file.type}</div>}
+            {!isImage && <div className="w-16 h-16 bg-blue-200">{file.type}</div>}
+        </div>
+    )
+}
+
+function CloudFilePreview({file}: { file: CloudAttachmentDto }) {
+    const isImage = attachmentService.isImage(file.key, file.metadata?.mimeType || "")
+    return (
+        <div className="flex flex-col items-center">
+            {isImage && <img src={file.signedUrl} alt={file.key} className="h-16 rounded"/>}
+            {!isImage && <div className="w-16 h-16 bg-blue-200"></div>}
         </div>
     )
 }

@@ -11,11 +11,28 @@ export type AttachmentUploadInfo = {
 
 export type LocalNoteAttachment = {
     id: string
-
     cloudAttachmentId: null | string
     name: string
     size: number
     type: string
     ext: string
     originalFile: File
+}
+
+export const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'svg']
+
+export const attachmentService = {
+    isImage: (filename: string, mimeType?: string): boolean => {
+        const ext = filename.split('.').pop()?.toLowerCase()
+
+        if (ext && IMAGE_EXTENSIONS.includes(ext)) {
+            return true
+        }
+
+        if (mimeType && mimeType.startsWith('image/')) {
+            return true
+        }
+
+        return false
+    }
 }

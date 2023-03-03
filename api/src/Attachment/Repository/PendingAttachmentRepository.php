@@ -5,6 +5,7 @@ namespace App\Attachment\Repository;
 use App\Attachment\Entity\PendingAttachment;
 use App\Auth\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -46,9 +47,19 @@ class PendingAttachmentRepository extends ServiceEntityRepository
      */
     public function findAllByIds(User $user, array $attachments): array
     {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $uploadedAttachmentsIds = $conn->fetchAllAssociative(
+            'SELECT id FROM uploaded_attachment WHERE id IN (:ids) AND user_id = :user',
+            ['ids' => $attachments, 'user' => $user->getId()],
+            ['ids' => ArrayParameterType::STRING]
+        );
+
         return $this->createQueryBuilder('pa')
             ->andWhere('pa.id IN (:ids)')
             ->setParameter('ids', $attachments)
+            ->andWhere('pa.id NOT IN (:uploaded)')
+            ->setParameter('uploaded', $uploadedAttachmentsIds)
             ->andWhere('pa.user = :user')
             ->setParameter('user', $user->getId())
             ->getQuery()
