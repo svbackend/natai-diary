@@ -12,6 +12,7 @@ cd $REPO && docker system prune -af
 
 cd $DOCKER_IMAGES && docker load < frontend.tar
 cd $DOCKER_IMAGES && docker load < api-php-fpm.tar
+cd $DOCKER_IMAGES && docker load < api-queue.tar
 
 cd $REPO && docker compose exec api-php-fpm bin/console messenger:stop-workers > /dev/null 2>&1
 cd $REPO && docker compose exec api-php-fpm composer install --no-dev --optimize-autoloader > /dev/null 2>&1

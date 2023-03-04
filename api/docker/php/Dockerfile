@@ -7,7 +7,7 @@ RUN apk add --no-cache postgresql-dev \
 RUN apk add --no-cache \
     zip unzip libzip-dev php-zip freetype libpng openssl-dev openssl imap-dev \
     libjpeg-turbo freetype-dev libpng-dev libjpeg-turbo-dev && \
-  docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
+  docker-php-ext-configure gd --with-freetype --with-jpeg && \
   docker-php-ext-configure zip && \
   NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
   docker-php-ext-install -j${NPROC} gd && \
