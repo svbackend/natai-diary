@@ -52,6 +52,7 @@ class NoteFileAttacherServiceUnitTest extends AbstractUnitTest
             id: UuidV4::fromString('3136675e-809b-4f09-9ee5-33f48cd083ce'),
             user: $user,
             key: 'key1.jpg',
+            originalFilename: 'original1.jpg',
             expiresAt: new \DateTimeImmutable('+1 day')
         );
 
@@ -59,6 +60,7 @@ class NoteFileAttacherServiceUnitTest extends AbstractUnitTest
             id: UuidV4::fromString('946a185f-969f-4591-9371-0f072fb87782'),
             user: $user,
             key: 'key2.jpg',
+            originalFilename: 'original2.jpg',
             expiresAt: new \DateTimeImmutable('+1 day')
         );
 
@@ -66,6 +68,7 @@ class NoteFileAttacherServiceUnitTest extends AbstractUnitTest
             id: UuidV4::fromString('977fbe5c-87fb-4dde-8e29-710d5af8ab34'),
             user: $user,
             key: 'key3.jpg',
+            originalFilename: 'original3.jpg',
         );
 
 

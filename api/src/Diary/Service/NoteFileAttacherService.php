@@ -44,11 +44,7 @@ class NoteFileAttacherService
             );
 
             if ($isFileExists) {
-                $uploadedAttachment = new UploadedAttachment(
-                    id: $pendingAttachment->getId(), // very important to use the same id
-                    user: $user,
-                    key: $pendingAttachment->getKey()
-                );
+                $uploadedAttachment = UploadedAttachment::createFromPendingAttachment($pendingAttachment);
                 $noteAttachment = new NoteAttachment(
                     id: $pendingAttachment->getId(), // very important to use the same id
                     note: $note,

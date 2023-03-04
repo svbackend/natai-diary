@@ -24,14 +24,16 @@ class UploaderService
     {
     }
 
-    public function generateSignedUploadUrl(User $user, string $fileExtension): SignedUploadUrl
+    public function generateSignedUploadUrl(User $user, string $filename): SignedUploadUrl
     {
         $bucket = Env::getAwsUploadBucket();
 
-        $folder = Env::isProd() ? 'prod' : 'dev';
+        $env = Env::isProd() ? 'prod' : 'dev';
+        $folder = sprintf("%s/%s", $env, $user->getId()->toRfc4122());
 
         $attachmentId = Uuid::v4();
 
+        $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
         // key = folder/uuid.ext (it's the location of the file in S3)
         $key = sprintf("%s/%s.%s", $folder, $attachmentId->toRfc4122(), $fileExtension);
 
@@ -54,6 +56,7 @@ class UploaderService
             id: $attachmentId,
             user: $user,
             key: $key,
+            originalFilename: $filename,
             expiresAt: $expiresAt,
         );
 

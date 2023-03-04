@@ -26,10 +26,17 @@ class UploadedAttachment
     #[ORM\Column(type: 'json')]
     private array $metadata = [];
 
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeInterface $createdAt;
+
+    #[ORM\Column(length: 255)]
+    private string $originalFilename;
+
     public function __construct(
         UuidV4 $id,
         User $user,
         string $key,
+        string $originalFilename,
     )
     {
         Assert::maxLength($key, 255);
@@ -37,6 +44,18 @@ class UploadedAttachment
         $this->id = $id;
         $this->user = $user;
         $this->key = $key;
+        $this->originalFilename = $originalFilename;
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public static function createFromPendingAttachment(PendingAttachment $pendingAttachment): self
+    {
+        return new self(
+            id: $pendingAttachment->getId(),
+            user: $pendingAttachment->getUser(),
+            key: $pendingAttachment->getKey(),
+            originalFilename: $pendingAttachment->getOriginalFilename(),
+        );
     }
 
     public function getId(): UuidV4
@@ -72,5 +91,15 @@ class UploadedAttachment
             'width' => $metadata->width,
             'height' => $metadata->height,
         ];
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getOriginalFilename(): string
+    {
+        return $this->originalFilename;
     }
 }

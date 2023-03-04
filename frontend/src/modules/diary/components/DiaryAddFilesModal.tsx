@@ -127,7 +127,7 @@ function DiaryAddFilesModalContent({
 
         for (const file of files) {
             const signedUploadUrl = await generateUploadUrl({
-                body: {ext: file.ext}
+                body: {filename: file.originalFile.name}
             })
 
             updateFileUploadInfo({

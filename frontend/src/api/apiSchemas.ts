@@ -8,7 +8,7 @@ export type StaticContentResponse = {
 };
 
 export type UploadAttachmentRequest = {
-  ext: string;
+  filename: string;
 };
 
 export type SignedUploadUrl = {

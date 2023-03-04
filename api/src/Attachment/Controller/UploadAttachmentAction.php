@@ -42,6 +42,6 @@ class UploadAttachmentAction extends BaseAction
         #[CurrentUser] User $user,
     ): HttpOutputInterface
     {
-        return $this->uploaderService->generateSignedUploadUrl($user, $request->ext);
+        return $this->uploaderService->generateSignedUploadUrl($user, $request->filename);
     }
 }

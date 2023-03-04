@@ -30,10 +30,14 @@ class PendingAttachment
     #[ORM\Column(length: 255)]
     private string $key;
 
+    #[ORM\Column(length: 255)]
+    private string $originalFilename;
+
     public function __construct(
         UuidV4 $id,
         User $user,
         string $key,
+        string $originalFilename,
         \DateTimeImmutable $expiresAt,
     )
     {
@@ -42,6 +46,7 @@ class PendingAttachment
         $this->id = $id;
         $this->user = $user;
         $this->key = $key;
+        $this->originalFilename = $originalFilename;
         $this->expiresAt = $expiresAt;
     }
 
@@ -63,5 +68,10 @@ class PendingAttachment
     public function getKey(): string
     {
         return $this->key;
+    }
+
+    public function getOriginalFilename(): string
+    {
+        return $this->originalFilename;
     }
 }

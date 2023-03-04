@@ -28,6 +28,7 @@ class AttachmentFixture extends Fixture implements DependentFixtureInterface
             id: UuidV4::fromString(self::PENDING_ATTACHMENT_ID),
             user: $userRef,
             key: 'key1.png',
+            originalFilename: 'key1.png',
             expiresAt: $expiresAt,
         );
 
@@ -35,6 +36,7 @@ class AttachmentFixture extends Fixture implements DependentFixtureInterface
             id: UuidV4::fromString(self::PENDING_BUT_UPLOADED_ATTACHMENT_ID),
             user: $userRef,
             key: 'key2.png',
+            originalFilename: 'key2.png',
             expiresAt: $expiresAt,
         );
 
@@ -42,12 +44,14 @@ class AttachmentFixture extends Fixture implements DependentFixtureInterface
             id: UuidV4::fromString(self::PENDING_BUT_UPLOADED_ATTACHMENT_ID),
             user: $userRef,
             key: 'key3.png',
+            originalFilename: 'key3.png',
         );
 
         $uploaded2 = new UploadedAttachment(
             id: UuidV4::fromString(self::UPLOADED_ATTACHMENT_ID),
             user: $userRef,
             key: 'key4.png',
+            originalFilename: 'key4.png',
         );
 
         $manager->persist($pending1);
