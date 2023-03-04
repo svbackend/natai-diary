@@ -3,11 +3,8 @@
 namespace App\Tests\Functional\Diary\Controller;
 
 use App\Auth\DataFixtures\UserFixture;
-use App\Auth\Entity\User;
 use App\Diary\Controller\DeleteNoteAction;
-use App\Diary\Controller\NewNoteAction;
 use App\Diary\DataFixtures\NoteFixture;
-use App\Diary\Entity\Note;
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
 

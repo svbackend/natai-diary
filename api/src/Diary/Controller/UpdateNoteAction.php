@@ -2,6 +2,7 @@
 
 namespace App\Diary\Controller;
 
+use App\Attachment\Queue\AttachmentUploadedEvent;
 use App\Auth\Entity\User;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
@@ -20,6 +21,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -35,6 +37,7 @@ class UpdateNoteAction extends BaseAction
         private NoteRepository $notes,
         private NoteTagRepository $noteTags,
         private NoteFileAttacherService $fileAttacherService,
+        private MessageBusInterface $bus,
     )
     {
     }
@@ -75,9 +78,13 @@ class UpdateNoteAction extends BaseAction
 
         $this->noteTags->updateTags($note, $editNoteRequest->tags);
 
-        $this->fileAttacherService->attachFilesToNote($user, $note, $editNoteRequest->attachments);
+        $uploadedAttachments = $this->fileAttacherService->attachFilesToNote($user, $note, $editNoteRequest->attachments);
 
         $this->em->flush();
+
+        foreach ($uploadedAttachments as $uploadedAttachment) {
+            $this->bus->dispatch(new AttachmentUploadedEvent($uploadedAttachment->getId()->toRfc4122()));
+        }
 
         return $this->success(Response::HTTP_OK);
     }

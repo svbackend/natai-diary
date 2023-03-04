@@ -33,7 +33,7 @@ class NoteFileAttacherService
      */
     public function attachFilesToNote(User $user, Note $note, array $attachmentsIds): array
     {
-        $pendingAttachments = $this->pendingAttachmentRepository->findAllByIds($user, $attachmentsIds);
+        $pendingAttachments = $this->pendingAttachmentRepository->findAllByIds($user->getId(), $attachmentsIds);
         $bucket = Env::getAwsUploadBucket();
 
         $uploadedAttachments = [];

@@ -15,7 +15,7 @@ use Symfony\Component\Uid\UuidV4;
 class NoteFixture extends Fixture
 {
     public const NOTE_ID = 'c16f135c-3b45-4c1a-b97a-dff7a9a050f8';
-    public const DELETED_NOTE_ID = 'c16f135c-3b45-4c1a-b97a-dff7a9a050f7';
+    public const DELETED_NOTE_ID = '8ac28a88-ede0-4633-8f58-00dc1328c1ca';
 
     public function load(ObjectManager $manager): void
     {
