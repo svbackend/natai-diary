@@ -48,6 +48,7 @@ services:
       - default
 
   api-queue:
+    image: natai/api-php-fpm:latest
     restart: unless-stopped
     build:
       context: api
