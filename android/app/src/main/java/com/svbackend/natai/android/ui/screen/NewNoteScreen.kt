@@ -28,8 +28,9 @@ import com.svbackend.natai.android.ui.AppDateRow
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
-import com.svbackend.natai.android.ui.component.TagsField
+import com.svbackend.natai.android.ui.component.TagsAndFilesRow
 import com.svbackend.natai.android.utils.throttleLatest
+import com.svbackend.natai.android.viewmodel.AddFileViewModel
 import com.svbackend.natai.android.viewmodel.NewNoteViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -37,6 +38,7 @@ import java.time.LocalDate
 @Composable
 fun NewNoteScreen(
     vm: NewNoteViewModel = viewModel(),
+    addFileVm: AddFileViewModel = viewModel(),
     onSuccess: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -125,7 +127,7 @@ fun NewNoteScreen(
             val tags by vm.tags
             val tagsValue = vm.tagsFieldValue.value
 
-            TagsField(
+            TagsAndFilesRow(
                 tagsSuggestions = tagsSuggestions,
                 value = tagsValue,
                 tags = tags,
@@ -136,7 +138,9 @@ fun NewNoteScreen(
                 onDeleteTag = {
                     vm.deleteTag(it)
                 },
-            ) { vm.tagsFieldValue.value = it }
+                addFileVm = addFileVm,
+                onValueChange = { vm.tagsFieldValue.value = it },
+            )
 
             NPrimaryButton(
                 onClick = addNote(),

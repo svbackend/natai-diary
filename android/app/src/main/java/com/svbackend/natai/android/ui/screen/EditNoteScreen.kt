@@ -20,12 +20,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.ui.AppDateRow
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.ui.NTextarea
-import com.svbackend.natai.android.ui.component.TagsField
+import com.svbackend.natai.android.ui.component.TagsAndFilesRow
+import com.svbackend.natai.android.viewmodel.AddFileViewModel
 import com.svbackend.natai.android.viewmodel.EditNoteViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -33,6 +35,7 @@ import java.time.LocalDate
 @Composable
 fun EditNoteScreen(
     vm: EditNoteViewModel,
+    addFileVm: AddFileViewModel = viewModel(),
     onSuccess: () -> Unit
 ) {
     val note = vm.note.collectAsState(initial = null).value
@@ -101,7 +104,7 @@ fun EditNoteScreen(
                     vm.content.value = it
                 }
             )
-            TagsField(
+            TagsAndFilesRow(
                 tagsSuggestions = tagsSuggestions,
                 value = tagsValue,
                 tags = tags,
@@ -114,7 +117,9 @@ fun EditNoteScreen(
                     vm.deleteTag(it)
                     saveNote()
                 },
-            ) { vm.tagsFieldValue.value = it }
+                addFileVm = addFileVm,
+                onValueChange = { vm.tagsFieldValue.value = it }
+            )
 
             NPrimaryButton(
                 onClick = saveNote(),

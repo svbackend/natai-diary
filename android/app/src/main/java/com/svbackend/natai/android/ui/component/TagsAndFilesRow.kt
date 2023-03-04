@@ -25,16 +25,18 @@ import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.utils.gradientBackground
+import com.svbackend.natai.android.viewmodel.AddFileViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun TagsField(
+fun TagsAndFilesRow(
     tagsSuggestions: List<String>,
     value: TextFieldValue,
     tags: List<TagEntityDto>,
     onAddTag: (TagEntityDto) -> Unit,
     onDeleteTag: (TagEntityDto) -> Unit,
     onValueChange: (TextFieldValue) -> Unit,
+    addFileVm: AddFileViewModel,
 ) {
     var isAddCustomTagDialogOpen by remember { mutableStateOf(false) }
 
@@ -64,7 +66,8 @@ fun TagsField(
         .filter { suggestion ->
             !Tag.isSpecial(suggestion)
                     && tags.any { it.tag == suggestion }.not()
-                    && (value.text.isEmpty() || suggestion.lowercase().startsWith(value.text.lowercase()))
+                    && (value.text.isEmpty() || suggestion.lowercase()
+                .startsWith(value.text.lowercase()))
         }
         .take(5)
 
@@ -190,6 +193,20 @@ fun TagsField(
         )
     }
 
+    if (addFileVm.isAddFileDialogOpen.value) {
+        AddFileDialog(
+            selectedFiles = addFileVm.addedFiles.value,
+            onAdd = {
+                addFileVm.onAdd(it)
+            },
+            onClose = {
+                addFileVm.onClose()
+            },
+            onDelete = {
+                addFileVm.onDelete(it)
+            }
+        )
+    }
 
     Row(
         modifier = Modifier
@@ -222,24 +239,42 @@ fun TagsField(
                 style = MaterialTheme.typography.bodySmall,
             )
         }
-        Column(verticalArrangement = Arrangement.Center) {
-            IconButton(
-                onClick = {
-                    isAddCustomTagDialogOpen = true
-                    onValueChange(TextFieldValue(""))
-                },
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_new_label),
-                    contentDescription = "Add custom tag"
+        Row {
+            Column(verticalArrangement = Arrangement.Center) {
+                IconButton(
+                    onClick = {
+                        addFileVm.onOpen()
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.cloud_arrow_up),
+                        contentDescription = "Add file"
+                    )
+                }
+                Text(
+                    text = "Add File",
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
-            Text(
-                text = "Add Tag",
-                style = MaterialTheme.typography.bodySmall,
-            )
+            Spacer(Modifier.width(8.dp))
+            Column(verticalArrangement = Arrangement.Center) {
+                IconButton(
+                    onClick = {
+                        isAddCustomTagDialogOpen = true
+                        onValueChange(TextFieldValue(""))
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_new_label),
+                        contentDescription = "Add custom tag"
+                    )
+                }
+                Text(
+                    text = "Add Tag",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
         }
-
     }
 }
 

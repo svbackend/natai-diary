@@ -53,7 +53,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.6.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
@@ -77,7 +77,7 @@ dependencies {
     val composeVersion = "1.4.0-alpha05"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha06")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha07")
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.animation:animation-graphics:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
@@ -85,9 +85,11 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     implementation("com.google.android.material:compose-theme-adapter-3:1.1.1")
 
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.core:core-splashscreen:1.0.0")
 
-    implementation("androidx.work:work-runtime-ktx:2.7.1")
+    implementation("androidx.work:work-runtime-ktx:2.8.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
 }

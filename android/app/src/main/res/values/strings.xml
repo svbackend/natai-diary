@@ -50,4 +50,6 @@
     <string name="settingsReminderChangeTime">Change time</string>
     <string name="save">Save</string>
     <string name="settingsAppInfoTitle">App Information</string>
+    <string name="addFile">Add File</string>
+    <string name="deleteFile">Delete file</string>
 </resources>
