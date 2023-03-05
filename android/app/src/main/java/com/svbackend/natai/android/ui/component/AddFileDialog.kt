@@ -121,7 +121,7 @@ fun AddedFile(f: AddedFile, onDelete: (AddedFile) -> Unit) {
             AddedFileStatus(f)
 
             LinearProgressIndicator(
-                progress = .65f,
+                progress = f.progress.toFloat(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 2.dp)
