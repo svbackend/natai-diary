@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.viewmodel.AddedFile
 
 @Composable
@@ -28,12 +27,16 @@ fun AddFileDialog(
     onAdd: (List<Uri>) -> Unit,
     onDelete: (AddedFile) -> Unit,
 ) {
-
-
     val pickFilesLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia()
     ) { imageUris ->
         onAdd(imageUris)
+    }
+
+    val selectFiles = {
+        pickFilesLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
     }
 
     AlertDialog(
@@ -45,35 +48,35 @@ fun AddFileDialog(
                 Text(stringResource(R.string.done))
             }
         },
+        dismissButton = {
+            FilePickerArea {
+                selectFiles()
+            }
+        },
         text = {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize()) {
                 AddedFilesArea(selectedFiles, onDelete = onDelete)
-
-                FilePickerArea {
-                    pickFilesLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }
             }
         },
         title = {
             Text("Add File")
         },
-        modifier = Modifier
-            .padding(top = 32.dp, bottom = 32.dp)
+        modifier = Modifier.padding(
+            top = 32.dp,
+            bottom = 32.dp
+        ),
     )
 }
 
 @Composable
 fun FilePickerArea(onClick: () -> Unit) {
-    Column(
+    Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp)
             .clickable { onClick() }
     ) {
-        NPrimaryButton(
+        Button(
             onClick = onClick,
+            modifier = Modifier
         ) {
             Icon(
                 painterResource(id = R.drawable.cloud_arrow_up),
@@ -94,6 +97,7 @@ fun AddedFilesArea(files: List<AddedFile>, onDelete: (AddedFile) -> Unit) {
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
             Text("No files added")
         }

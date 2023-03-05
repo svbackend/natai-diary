@@ -48,6 +48,8 @@ fun TagsAndFilesRow(
     var selectedTag by remember { mutableStateOf<TagEntityDto?>(null) }
     var selectedTagScore by remember { mutableStateOf(10) }
 
+    val addedFiles by addFileVm.addedFiles
+
     val openTagScoreDialog = fun(tag: TagEntityDto) {
         selectedTag = tag
         isTagScoreDialogOpen = true
@@ -195,7 +197,7 @@ fun TagsAndFilesRow(
 
     if (addFileVm.isAddFileDialogOpen.value) {
         AddFileDialog(
-            selectedFiles = addFileVm.addedFiles.value,
+            selectedFiles = addedFiles,
             onAdd = {
                 addFileVm.onAdd(it)
             },
@@ -204,7 +206,7 @@ fun TagsAndFilesRow(
             },
             onDelete = {
                 addFileVm.onDelete(it)
-            }
+            },
         )
     }
 
