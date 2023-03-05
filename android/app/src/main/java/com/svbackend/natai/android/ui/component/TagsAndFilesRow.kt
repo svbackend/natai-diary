@@ -1,5 +1,8 @@
 package com.svbackend.natai.android.ui.component
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -49,6 +52,18 @@ fun TagsAndFilesRow(
     var selectedTagScore by remember { mutableStateOf(10) }
 
     val addedFiles by addFileVm.addedFiles
+
+    val pickFilesLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia()
+    ) { imageUris ->
+        addFileVm.onAdd(imageUris)
+    }
+
+    val onLaunchFilePicker = {
+        pickFilesLauncher.launch(
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        )
+    }
 
     val openTagScoreDialog = fun(tag: TagEntityDto) {
         selectedTag = tag
@@ -197,10 +212,10 @@ fun TagsAndFilesRow(
 
     if (addFileVm.isAddFileDialogOpen.value) {
         AddFileDialog(
-            selectedFiles = addedFiles,
-            onAdd = {
-                addFileVm.onAdd(it)
+            onLaunchFilePicker = {
+                onLaunchFilePicker()
             },
+            selectedFiles = addedFiles,
             onClose = {
                 addFileVm.onClose()
             },
@@ -245,7 +260,11 @@ fun TagsAndFilesRow(
             Column(verticalArrangement = Arrangement.Center) {
                 IconButton(
                     onClick = {
-                        addFileVm.onOpen()
+                        if (addedFiles.isEmpty()) {
+                            onLaunchFilePicker()
+                        } else {
+                            addFileVm.onOpen()
+                        }
                     },
                 ) {
                     Icon(

@@ -22,23 +22,11 @@ import com.svbackend.natai.android.viewmodel.AddedFile
 
 @Composable
 fun AddFileDialog(
+    onLaunchFilePicker: () -> Unit,
     onClose: () -> Unit,
     selectedFiles: List<AddedFile>,
-    onAdd: (List<Uri>) -> Unit,
     onDelete: (AddedFile) -> Unit,
 ) {
-    val pickFilesLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickMultipleVisualMedia()
-    ) { imageUris ->
-        onAdd(imageUris)
-    }
-
-    val selectFiles = {
-        pickFilesLauncher.launch(
-            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        )
-    }
-
     AlertDialog(
         onDismissRequest = onClose,
         confirmButton = {
@@ -48,23 +36,37 @@ fun AddFileDialog(
                 Text(stringResource(R.string.done))
             }
         },
-        dismissButton = {
-            FilePickerArea {
-                selectFiles()
-            }
-        },
         text = {
-            Column(Modifier.fillMaxSize()) {
-                AddedFilesArea(selectedFiles, onDelete = onDelete)
+            Column(
+                Modifier.fillMaxSize()
+            ) {
+                if (selectedFiles.isNotEmpty()) {
+                    AddedFilesArea(selectedFiles, onDelete = onDelete)
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                    ) {
+                        Text("No files added")
+                    }
+                }
+
             }
         },
         title = {
-            Text("Add File")
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                FilePickerArea {
+                    onLaunchFilePicker()
+                }
+            }
         },
-        modifier = Modifier.padding(
-            top = 32.dp,
-            bottom = 32.dp
-        ),
+        modifier = Modifier
+            .padding(vertical = 64.dp)
     )
 }
 
@@ -77,6 +79,7 @@ fun FilePickerArea(onClick: () -> Unit) {
         Button(
             onClick = onClick,
             modifier = Modifier
+                .fillMaxWidth()
         ) {
             Icon(
                 painterResource(id = R.drawable.cloud_arrow_up),
@@ -92,18 +95,6 @@ fun FilePickerArea(onClick: () -> Unit) {
 
 @Composable
 fun AddedFilesArea(files: List<AddedFile>, onDelete: (AddedFile) -> Unit) {
-    if (files.isEmpty()) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("No files added")
-        }
-        return
-    }
-
     LazyColumn {
         items(files.size) { index ->
             val f = files[index]

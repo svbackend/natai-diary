@@ -42,6 +42,7 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
 
     fun onAdd(uris: List<Uri>) {
         addedFiles.value = addedFiles.value + mapUrisToAddedFiles(uris)
+        onOpen()
     }
 
     fun onClose() {
