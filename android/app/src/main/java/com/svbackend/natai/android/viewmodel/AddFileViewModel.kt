@@ -22,7 +22,7 @@ data class AddedFile(
     val cloudAttachmentId: String? = null,
 ) {
     val isPending: Boolean
-        get() = !isUploading && error == null
+        get() = !isUploading && error == null && progress == .0
 
     val isUploaded: Boolean
         get() = progress == 1.0 && error == null
@@ -79,7 +79,6 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
                 val resolvedFileInput = contentResolver.openInputStream(file.uri)
 
                 if (resolvedFileInput == null) {
-                    println("------- resolvedFileInput == null")
                     updateFile(
                         // todo move to method
                         file.copy(

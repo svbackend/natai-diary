@@ -1,11 +1,8 @@
 package com.svbackend.natai.android.http
 
-import android.net.Uri
-import androidx.core.net.toFile
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
@@ -22,13 +19,8 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.http.content.*
 import io.ktor.serialization.jackson.*
-import io.ktor.util.*
-import io.ktor.util.cio.*
-import java.io.File
 import java.io.InputStream
 
 //const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
@@ -57,11 +49,7 @@ class ApiClient(
         }
     }
 
-    private val s3Client = HttpClient(Android) {
-        install(HttpTimeout) {
-            requestTimeoutMillis = 4350
-        }
-    }
+    private val s3Client = HttpClient(Android)
 
     suspend fun getNotesForSync(): NotesResponse {
         return client.get("notes").body()
@@ -156,26 +144,23 @@ class ApiClient(
         return response.body()
     }
 
-    @OptIn(InternalAPI::class)
     suspend fun uploadFile(
         inputStream: InputStream,
         uploadUrl: String,
         onProgress: (Double) -> Unit,
         onFinish: () -> Unit,
     ) {
-        val response = s3Client.put(uploadUrl) {
-            body = MultiPartFormDataContent(formData {
-                append("file", inputStream.readBytes())
-            })
+        s3Client.put(uploadUrl) {
+            setBody {
+                MultiPartFormDataContent(formData {
+                    append("file", inputStream.readBytes())
+                })
+            }
 
             onUpload { bytesSentTotal, contentLength ->
                 onProgress(bytesSentTotal / contentLength.toDouble())
             }
         }
-
-        println("=========== response status: ${response.status} ===========")
-        println("=========== response body: ==================")
-        println(response.bodyAsText())
 
         onFinish()
     }
@@ -190,10 +175,6 @@ class ApiClient(
                 )
             )
         }
-
-        println("=========== getAttachmentSignedUrl status: ${response.status} ===========")
-        println("=========== getAttachmentSignedUrl body: ==================")
-        println(response.bodyAsText())
 
         return response.body()
     }
