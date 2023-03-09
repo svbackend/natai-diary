@@ -14,6 +14,10 @@ android {
         versionName = "1.4"
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
         //buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
+
+        kapt {
+            arguments { arg("room.schemaLocation", "$projectDir/schemas") }
+        }
     }
     buildTypes {
         getByName("debug") {

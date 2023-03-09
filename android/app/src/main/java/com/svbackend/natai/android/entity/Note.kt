@@ -2,6 +2,7 @@ package com.svbackend.natai.android.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.svbackend.natai.android.entity.relation.NoteWithRelations
 import com.svbackend.natai.android.entity.relation.NoteWithTags
 import com.svbackend.natai.android.http.model.CloudNote
 import java.time.Instant
@@ -61,18 +62,21 @@ data class LocalNote(
     val updatedAt: Instant = Instant.now(),
     val deletedAt: Instant? = null,
     val tags: List<TagEntityDto>,
+    val attachments: List<AttachmentEntityDto>,
 ) {
     fun update(
         title: String,
         content: String,
         actualDate: LocalDate,
         tags: List<TagEntityDto>,
+        attachments: List<AttachmentEntityDto>,
     ): LocalNote {
         return this.copy(
             title = title,
             content = content,
             actualDate = actualDate,
             tags = tags,
+            attachments = attachments,
             updatedAt = Instant.now(),
         )
     }
@@ -100,9 +104,17 @@ data class LocalNote(
         )
     }
 
+    fun updateAttachments(attachments: List<AttachmentEntityDto>): LocalNote {
+        return this.copy(
+            attachments = attachments,
+            updatedAt = Instant.now(),
+        )
+    }
+
     companion object {
-        fun create(entity: NoteWithTags): LocalNote {
+        fun create(entity: NoteWithRelations): LocalNote {
             val tags = entity.tags.map { TagEntityDto.create(it) }
+            val attachments = entity.attachments.map { AttachmentEntityDto.create(it) }
             return LocalNote(
                 id = entity.note.id,
                 cloudId = entity.note.cloudId,
@@ -113,7 +125,8 @@ data class LocalNote(
                 createdAt = entity.note.createdAt,
                 updatedAt = entity.note.updatedAt,
                 deletedAt = entity.note.deletedAt,
-                tags = tags
+                tags = tags,
+                attachments = attachments,
             )
         }
 
@@ -132,7 +145,8 @@ data class LocalNote(
                 createdAt = cloudNote.createdAt,
                 updatedAt = cloudNote.updatedAt,
                 deletedAt = cloudNote.deletedAt,
-                tags = tags
+                tags = tags,
+                attachments = emptyList(),
             )
         }
     }

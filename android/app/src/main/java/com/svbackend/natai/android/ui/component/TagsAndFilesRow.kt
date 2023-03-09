@@ -31,6 +31,7 @@ import com.svbackend.natai.android.utils.gradientBackground
 import com.svbackend.natai.android.viewmodel.AddFileViewModel
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagsAndFilesRow(
     tagsSuggestions: List<String>,
@@ -258,24 +259,13 @@ fun TagsAndFilesRow(
         }
         Row {
             Column(verticalArrangement = Arrangement.Center) {
-                IconButton(
-                    onClick = {
-                        if (addedFiles.isEmpty()) {
-                            onLaunchFilePicker()
-                        } else {
-                            addFileVm.onOpen()
-                        }
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.cloud_arrow_up),
-                        contentDescription = "Add file"
-                    )
+                AddFileButton(addFileVm = addFileVm) {
+                    if (addedFiles.isEmpty()) {
+                        onLaunchFilePicker()
+                    } else {
+                        addFileVm.onOpen()
+                    }
                 }
-                Text(
-                    text = "Add File",
-                    style = MaterialTheme.typography.bodySmall,
-                )
             }
             Spacer(Modifier.width(8.dp))
             Column(verticalArrangement = Arrangement.Center) {
@@ -297,6 +287,47 @@ fun TagsAndFilesRow(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddFileButton(addFileVm: AddFileViewModel, onClick: () -> Unit) {
+    val addedFilesSize = addFileVm.addedFiles.value.count()
+
+    if (addedFilesSize == 0) {
+        AddFileButtonContent {
+            onClick()
+        }
+        return
+    }
+
+    BadgedBox(
+        badge = {
+            Badge {
+                Text(addedFilesSize.toString())
+            }
+        }
+    ) {
+        AddFileButtonContent {
+            onClick()
+        }
+    }
+}
+
+@Composable
+fun AddFileButtonContent(onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.cloud_arrow_up),
+            contentDescription = "Add file"
+        )
+    }
+    Text(
+        text = "Add File",
+        style = MaterialTheme.typography.bodySmall,
+    )
 }
 
 @Composable

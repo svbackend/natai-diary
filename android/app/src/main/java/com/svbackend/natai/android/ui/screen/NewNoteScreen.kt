@@ -68,8 +68,9 @@ fun NewNoteScreen(
         val title = vm.title.value.text
         val content = vm.content.value.text
         val tagsCount = vm.tags.value.count()
+        val filesCount = addFileVm.addedFiles.value.count()
 
-        if (title.isEmpty() && content.isEmpty() && tagsCount == 0) {
+        if (title.isEmpty() && content.isEmpty() && tagsCount == 0 && filesCount == 0) {
             return {
                 Toast
                     .makeText(context, emptyNoteError, Toast.LENGTH_SHORT)
@@ -79,7 +80,7 @@ fun NewNoteScreen(
 
         return {
             scope.launch {
-                vm.addNote()
+                vm.addNote(addFileVm.addedFiles.value)
                 onSuccess()
             }
         }

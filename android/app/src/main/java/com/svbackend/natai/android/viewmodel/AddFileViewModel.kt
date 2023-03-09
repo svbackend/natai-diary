@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.service.FileManagerService
+import com.svbackend.natai.android.utils.hasInternetConnection
 import kotlinx.coroutines.launch
 
 data class AddedFile(
@@ -32,6 +33,7 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
     val contentResolver: ContentResolver = application.contentResolver
     val apiClient: ApiClient = (application as DiaryApplication).appContainer.apiClient
     val fileManager: FileManagerService = (application as DiaryApplication).appContainer.fileManager
+    val connectivityManager = (application as DiaryApplication).appContainer.connectivityManager
 
     val isAddFileDialogOpen = mutableStateOf(false)
 
@@ -48,8 +50,18 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
         addedFiles.value = addedFiles.value + newlyAddedFiles
         onOpen()
 
-        viewModelScope.launch {
-            enqueueUpload(newlyAddedFiles)
+        if (!hasInternetConnection(connectivityManager)) {
+            newlyAddedFiles.forEach { file ->
+                updateFile(
+                    file.copy(
+                        error = "No internet",
+                    )
+                )
+            }
+        } else {
+            viewModelScope.launch {
+                enqueueUpload(newlyAddedFiles)
+            }
         }
     }
 

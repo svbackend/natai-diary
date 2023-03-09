@@ -1,21 +1,21 @@
 package com.svbackend.natai.android
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.room.Converters
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         Note::class,
         Tag::class,
         User::class,
+        Attachment::class,
     ],
-    exportSchema = false,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ]
 )
 @TypeConverters(Converters::class)
 abstract class DiaryDatabase : RoomDatabase() {
@@ -23,7 +23,8 @@ abstract class DiaryDatabase : RoomDatabase() {
     abstract fun userDAO(): UserDAO
 
     companion object {
-        @Volatile private var instance: DiaryDatabase? = null
+        @Volatile
+        private var instance: DiaryDatabase? = null
 
         fun getInstance(context: Context): DiaryDatabase {
             return instance ?: synchronized(this) {

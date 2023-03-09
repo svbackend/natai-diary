@@ -54,6 +54,7 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
             content = content.value.text,
             actualDate = actualDate.value,
             tags = tags.value,
+            attachments = emptyList()
         )
 
         repository.updateNoteAndSync(updatedNote)

@@ -1,9 +1,11 @@
 package com.svbackend.natai.android.repository
 
 import com.svbackend.natai.android.DiaryDatabase
+import com.svbackend.natai.android.entity.Attachment
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.entity.Tag
+import com.svbackend.natai.android.entity.relation.NoteWithRelations
 import com.svbackend.natai.android.entity.relation.NoteWithTags
 import com.svbackend.natai.android.http.ApiClient
 import kotlinx.coroutines.Dispatchers
@@ -31,13 +33,14 @@ class DiaryRepository(
             .map { LocalNote.create(it) }
     }
 
-    fun getNote(id: String): Flow<NoteWithTags> {
+    fun getNote(id: String): Flow<NoteWithRelations> {
         return db.diaryDAO().getNote(id)
     }
 
     suspend fun insertNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
         db.diaryDAO().insertNote(Note.create(note))
         addTags(note)
+        addAttachments(note)
         syncNoteWithCloud(note)
     }
 
@@ -47,8 +50,13 @@ class DiaryRepository(
 
     suspend fun updateNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
         updateNote(Note.create(note))
+
         deleteTagsByNote(note.id)
         addTags(note)
+
+        deleteAttachmentsByNote(note.id)
+        addAttachments(note)
+
         syncNoteWithCloud(note)
     }
 
@@ -63,8 +71,16 @@ class DiaryRepository(
         db.diaryDAO().insertTag(tag)
     }
 
+    suspend fun insertAttachment(attachment: Attachment) = withContext(Dispatchers.IO) {
+        db.diaryDAO().insertAttachment(attachment)
+    }
+
     private suspend fun deleteTagsByNote(noteId: String) = withContext(Dispatchers.IO) {
         db.diaryDAO().deleteTagsByNote(noteId)
+    }
+
+    private suspend fun deleteAttachmentsByNote(noteId: String) = withContext(Dispatchers.IO) {
+        db.diaryDAO().deleteAttachmentsByNote(noteId)
     }
 
     private suspend fun addTags(note: LocalNote) {
@@ -74,6 +90,19 @@ class DiaryRepository(
                     noteId = note.id,
                     tag = it.tag,
                     score = it.score,
+                )
+            )
+        }
+    }
+
+    private suspend fun addAttachments(note: LocalNote) {
+        note.attachments.forEach {
+            insertAttachment(
+                Attachment(
+                    noteId = note.id,
+                    cloudAttachmentId = it.cloudAttachmentId,
+                    uri = it.uri.toString(),
+                    filename = it.filename,
                 )
             )
         }
@@ -97,7 +126,7 @@ class DiaryRepository(
         db.diaryDAO().assignNotesToNewUser(cloudUserId = cloudUserId)
     }
 
-    suspend fun getLastNoteByActualDate(actualDate: LocalDate): NoteWithTags? = withContext(Dispatchers.IO) {
+    suspend fun getLastNoteByActualDate(actualDate: LocalDate): NoteWithRelations? = withContext(Dispatchers.IO) {
         db.diaryDAO().getLastNoteByActualDate(actualDate)
     }
 }

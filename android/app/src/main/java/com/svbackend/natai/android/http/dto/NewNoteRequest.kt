@@ -11,5 +11,6 @@ data class NewNoteRequest(
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     val deletedAt: Instant? = null,
     val actualDate: LocalDate,
-    val tags: List<TagEntityDto> = emptyList()
+    val tags: List<TagEntityDto> = emptyList(),
+    val attachments: List<String> = emptyList(),
 )

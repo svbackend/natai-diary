@@ -3,6 +3,7 @@ package com.svbackend.natai.android.http
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
@@ -21,11 +22,12 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.util.*
 import java.io.InputStream
 
-//const val BASE_URL = BuildConfig.API_BASE_URL + "/api/v1/"
-//const val BASE_URL = "https://natai.app/api/v1/"
-const val BASE_URL = "https://5e9e-24-203-8-51.ngrok.io/api/v1/"
+//const val BASE_URL = BuildConfig.API_BASE_URL
+const val BASE_URL = "https://natai.app"
+//const val BASE_URL = "https://5e9e-24-203-8-51.ngrok.io"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -52,7 +54,7 @@ class ApiClient(
     private val s3Client = HttpClient(Android)
 
     suspend fun getNotesForSync(): NotesResponse {
-        return client.get("notes").body()
+        return client.get("/api/v1/notes").body()
     }
 
     suspend fun addNote(note: LocalNote): NewNoteResponse {
@@ -62,9 +64,10 @@ class ApiClient(
             deletedAt = note.deletedAt,
             actualDate = note.actualDate,
             tags = note.tags,
+            attachments = note.attachments.mapNotNull { it.cloudAttachmentId },
         )
 
-        val response = client.post("notes") {
+        val response = client.post("/api/v2/notes") {
             setBody(body)
         }
 
@@ -87,9 +90,10 @@ class ApiClient(
             deletedAt = note.deletedAt,
             actualDate = note.actualDate,
             tags = note.tags,
+            attachments = note.attachments.mapNotNull { it.cloudAttachmentId },
         )
 
-        val response = client.put("notes/${note.cloudId}") {
+        val response = client.put("/api/v2/notes/${note.cloudId}") {
             setBody(body)
         }
 
@@ -99,7 +103,7 @@ class ApiClient(
     }
 
     suspend fun login(request: LoginRequest): LoginSuccessResponse {
-        val response = client.post("login") {
+        val response = client.post("/api/v1/login") {
             setBody(request)
         }
 
@@ -111,7 +115,7 @@ class ApiClient(
     }
 
     suspend fun register(request: RegisterRequest): RegisterSuccessResponse {
-        val response = client.post("registration") {
+        val response = client.post("/api/v1/registration") {
             setBody(request)
         }
 
@@ -123,7 +127,7 @@ class ApiClient(
     }
 
     suspend fun getCurrentUser(): UserSuccessResponse {
-        val response = client.get("me")
+        val response = client.get("/api/v1/me")
 
         if (response.status != HttpStatusCode.OK) {
             throw UserQueryException("You need to be authenticated to get user information")
@@ -133,7 +137,7 @@ class ApiClient(
     }
 
     suspend fun getStatic(): StaticSuccessResponse {
-        val response = client.get("static")
+        val response = client.get("/api/v1/static")
 
         if (response.status != HttpStatusCode.OK) {
             return StaticSuccessResponse(
@@ -144,6 +148,7 @@ class ApiClient(
         return response.body()
     }
 
+    @OptIn(InternalAPI::class)
     suspend fun uploadFile(
         inputStream: InputStream,
         uploadUrl: String,
@@ -151,11 +156,12 @@ class ApiClient(
         onFinish: () -> Unit,
     ) {
         s3Client.put(uploadUrl) {
-            setBody {
-                MultiPartFormDataContent(formData {
-                    append("file", inputStream.readBytes())
-                })
-            }
+            // todo when setBody() is used - error:
+            // No transformation found for type MultiPartFormDataContent
+            // so I'm using internalApi for now
+            body = MultiPartFormDataContent(formData {
+                append("file", inputStream.readBytes())
+            })
 
             onUpload { bytesSentTotal, contentLength ->
                 onProgress(bytesSentTotal / contentLength.toDouble())
@@ -168,7 +174,7 @@ class ApiClient(
     suspend fun getAttachmentSignedUrl(
         originalFilename: String
     ): AttachmentSignedUrlResponse {
-        val response = client.post("attachments") {
+        val response = client.post("/api/v1/attachments") {
             setBody(
                 AttachmentSignedUrlRequest(
                     filename = originalFilename,

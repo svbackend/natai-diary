@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.entity.*
+import com.svbackend.natai.android.entity.AttachmentEntityDto
+import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.entity.Tag
+import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.service.TitleGenerator
 import kotlinx.coroutines.flow.map
@@ -15,7 +18,8 @@ import java.time.LocalDate
 class NewNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
     val prefs: SharedPreferences = (application as DiaryApplication).appContainer.sharedPrefs
-    val titleGenerator: TitleGenerator = (application as DiaryApplication).appContainer.titleGenerator
+    val titleGenerator: TitleGenerator =
+        (application as DiaryApplication).appContainer.titleGenerator
 
     val title = mutableStateOf(
         TextFieldValue(prefs.getString("new_note_title", null) ?: "")
@@ -54,14 +58,23 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
 
     }
 
-    suspend fun addNote() {
+    suspend fun addNote(addedFiles: List<AddedFile>) {
         isLoading.value = true
 
         val cloudUserId = prefs.getString("cloud_id", null)
-        val appendIfPossible = title.value.text.isEmpty() && content.value.text.isEmpty()
+        val appendIfPossible =
+            title.value.text.isEmpty() && content.value.text.isEmpty() && addedFiles.isEmpty()
 
         val title = title.value.text.ifEmpty {
             titleGenerator.generateTitle()
+        }
+
+        val attachments = addedFiles.map { file ->
+            AttachmentEntityDto(
+                uri = file.uri,
+                filename = file.originalFilename,
+                cloudAttachmentId = file.cloudAttachmentId,
+            )
         }
 
         var appended = false
@@ -69,7 +82,10 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
             val lastNote = repository.getLastNoteByActualDate(actualDate.value!!)
 
             if (lastNote != null) {
-                val existingNote = LocalNote.create(lastNote).updateTags(tags.value)
+                val existingNote = LocalNote
+                    .create(lastNote)
+                    .updateTags(tags.value)
+                    .updateAttachments(attachments)
                 repository.updateNoteAndSync(existingNote)
                 appended = true
             }
@@ -81,6 +97,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
                 content = content.value.text,
                 actualDate = actualDate.value,
                 tags = tags.value,
+                attachments = attachments,
                 cloudUserId = cloudUserId,
             )
 
