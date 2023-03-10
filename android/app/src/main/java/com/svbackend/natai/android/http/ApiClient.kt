@@ -151,17 +151,14 @@ class ApiClient(
     @OptIn(InternalAPI::class)
     suspend fun uploadFile(
         inputStream: InputStream,
+        contentType: String,
         uploadUrl: String,
         onProgress: (Double) -> Unit,
         onFinish: () -> Unit,
     ) {
         s3Client.put(uploadUrl) {
-            // todo when setBody() is used - error:
-            // No transformation found for type MultiPartFormDataContent
-            // so I'm using internalApi for now
-            body = MultiPartFormDataContent(formData {
-                append("file", inputStream.readBytes())
-            })
+            header("Content-Type", contentType)
+            body = inputStream.readBytes()
 
             onUpload { bytesSentTotal, contentLength ->
                 onProgress(bytesSentTotal / contentLength.toDouble())

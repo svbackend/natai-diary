@@ -13,5 +13,5 @@ data class CloudNote(
     val updatedAt: Instant = Instant.now(),
     val deletedAt: Instant? = null,
     val tags: List<CloudTag> = emptyList(),
-    val attachments: List<CloudAttachment> = emptyList(),
+    val attachments: List<String> = emptyList(),
 )

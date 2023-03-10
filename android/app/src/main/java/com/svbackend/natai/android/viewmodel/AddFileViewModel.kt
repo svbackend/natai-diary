@@ -80,45 +80,43 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
             try {
                 val pendingAttachment = apiClient.getAttachmentSignedUrl(file.originalFilename)
 
-                updateFile(
-                    // todo move to method
-                    file.copy(
-                        isUploading = true,
-                        cloudAttachmentId = pendingAttachment.attachmentId,
-                    )
+                println("------- GOT ATTACHMENT ID: ${pendingAttachment.attachmentId}")
+                println(pendingAttachment)
+
+                // todo move to method
+                var updatedFile = file.copy(
+                    isUploading = true,
+                    cloudAttachmentId = pendingAttachment.attachmentId,
                 )
+
+                updateFile(updatedFile)
 
                 val resolvedFileInput = contentResolver.openInputStream(file.uri)
 
                 if (resolvedFileInput == null) {
-                    updateFile(
-                        // todo move to method
-                        file.copy(
-                            error = "File not found",
-                            isUploading = false,
-                        )
+                    updatedFile = updatedFile.copy(
+                        error = "File not found",
+                        isUploading = false,
                     )
+                    updateFile(updatedFile)
                 } else {
                     println("------- START UPLOADING")
                     resolvedFileInput.use { inputStream ->
                         apiClient.uploadFile(
                             inputStream = inputStream,
+                            contentType = file.contentType,
                             pendingAttachment.uploadUrl, onProgress = {
-                                updateFile(
-                                    // todo move to method
-                                    file.copy(
-                                        progress = it,
-                                    )
+                                updatedFile = updatedFile.copy(
+                                    progress = it,
                                 )
+                                updateFile(updatedFile)
                             }) {
-                            updateFile(
-                                // todo move to method
-                                file.copy(
-                                    isUploading = false,
-                                    progress = 1.0,
-                                    error = null,
-                                )
+                            updatedFile = updatedFile.copy(
+                                isUploading = false,
+                                progress = 1.0,
+                                error = null,
                             )
+                            updateFile(updatedFile)
                         }
                     }
                 }
