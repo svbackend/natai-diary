@@ -1,3 +1,20 @@
+### Mar 9, 2023
+
+Since the beginning of March I was working on notes attachments,
+so far I already implemented this feature for web version and this week I started to work on android part.
+
+I want to make sure it will work offline and sync properly with backend once internet will be available.
+At the moment android app already supports adding attachments when creating a new note, and they are sent to backend,
+but it's not working yet for editing existing notes. And I also need to copy selected files to app storage,
+because otherwise they will be deleted from the app if user decides to remove them from gallery.
+
+Next steps:
+
+- [ ] Android - add ability to attach files to existing notes
+- [ ] Android - add ability to view attached files
+- [ ] Android - add ability to delete attached files
+- [ ] API - add FileCleanup cron job to delete pending attachments that were never actually attached to notes
+
 ### Feb 20, 2023
 
 Today after work I wasn't feeling very motivated, but I still made at least some progress with landing page.
