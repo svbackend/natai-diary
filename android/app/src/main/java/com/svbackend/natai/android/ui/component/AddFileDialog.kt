@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.viewmodel.AddedFile
 
 @Composable
@@ -25,8 +26,11 @@ fun AddFileDialog(
     onLaunchFilePicker: () -> Unit,
     onClose: () -> Unit,
     selectedFiles: List<AddedFile>,
+    existingAttachments: List<ExistingAttachmentDto>,
     onDelete: (AddedFile) -> Unit,
 ) {
+    val totalFilesSize = selectedFiles.size + existingAttachments.size
+
     AlertDialog(
         onDismissRequest = onClose,
         confirmButton = {
@@ -40,8 +44,12 @@ fun AddFileDialog(
             Column(
                 Modifier.fillMaxSize()
             ) {
-                if (selectedFiles.isNotEmpty()) {
-                    AddedFilesArea(selectedFiles, onDelete = onDelete)
+                if (totalFilesSize > 0) {
+                    AddedFilesArea(
+                        files = selectedFiles,
+                        onDelete = onDelete,
+                        existingAttachments = existingAttachments
+                    )
                 } else {
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -94,8 +102,16 @@ fun FilePickerArea(onClick: () -> Unit) {
 }
 
 @Composable
-fun AddedFilesArea(files: List<AddedFile>, onDelete: (AddedFile) -> Unit) {
+fun AddedFilesArea(
+    files: List<AddedFile>,
+    onDelete: (AddedFile) -> Unit,
+    existingAttachments: List<ExistingAttachmentDto>,
+) {
     LazyColumn {
+        items(existingAttachments.size) { index ->
+            val f = existingAttachments[index]
+            ExistingAttachment(f, onDelete = { /** TODO */ })
+        }
         items(files.size) { index ->
             val f = files[index]
             AddedFile(f, onDelete = onDelete)
@@ -136,6 +152,30 @@ fun AddedFile(f: AddedFile, onDelete: (AddedFile) -> Unit) {
         }
     }
 }
+@Composable
+fun ExistingAttachment(f: ExistingAttachmentDto, onDelete: (ExistingAttachmentDto) -> Unit) {
+    // Image, name, remove button
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        AsyncImage(
+            model = f.uri,
+            contentDescription = null,
+            modifier = Modifier
+                .size(64.dp)
+                .padding(8.dp),
+            error = painterResource(id = R.drawable.placeholder)
+        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(f.filename, maxLines = 1)
+            Text(text = "Uploaded", style = MaterialTheme.typography.bodySmall)
+        }
+        IconButton(onClick = { onDelete(f) }, modifier = Modifier.fillMaxHeight()) {
+            Icon(
+                Icons.Filled.Delete,
+                stringResource(R.string.deleteFile)
+            )
+        }
+    }
+}
 
 @Composable
 fun AddedFileStatus(f: AddedFile) {
@@ -150,9 +190,7 @@ fun AddedFileStatus(f: AddedFile) {
 
     if (f.isUploading) {
         Text(text = "Uploading", style = size)
-    }
-
-    if (f.isUploaded) {
+    } else if (f.isUploaded) {
         Text(text = "Uploaded", style = size)
     }
 }

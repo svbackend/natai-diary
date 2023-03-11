@@ -1,27 +1,37 @@
 package com.svbackend.natai.android.service
 
 import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import java.io.File
 
 class FileManagerService(
     private val contentResolver: ContentResolver,
     private val filesDir: File
 ) {
-    fun copyFileToInternalStorage(uri: Uri): Uri {
+    fun copyFileToInternalStorage(uri: Uri, originalFilename: String): Uri {
         val inputStream = contentResolver.openInputStream(uri)
 
         if (inputStream == null) {
             throw IllegalArgumentException("$uri - not found")
         }
 
-        val fileName = uri.lastPathSegment ?: "file"
-        val file = File(filesDir, fileName)
+        val file = File(filesDir, originalFilename)
+        val internalUri = file.toUri()
+
         inputStream.use { input ->
-            file.outputStream().use { input.copyTo(it) }
+            contentResolver.openOutputStream(internalUri, "w").use { output ->
+                if (output == null) {
+                    throw IllegalArgumentException("$internalUri - not created")
+                }
+
+                input.copyTo(output)
+            }
         }
-        return Uri.fromFile(file)
+
+        return internalUri
     }
 
     fun deleteFile(uri: Uri) {

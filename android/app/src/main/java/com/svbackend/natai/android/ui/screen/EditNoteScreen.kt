@@ -59,9 +59,16 @@ fun EditNoteScreen(
             }
         }
 
+        val existingAttachments = vm.existingAttachments.value
+        val newAttachments = addFileVm.addedFiles.value
+
         return {
             scope.launch {
-                vm.saveNote(note = note)
+                vm.saveNote(
+                    note = note,
+                    existingAttachments = existingAttachments,
+                    newAttachments = newAttachments
+                )
                 onSuccess()
             }
         }
@@ -118,7 +125,8 @@ fun EditNoteScreen(
                     saveNote()
                 },
                 addFileVm = addFileVm,
-                onValueChange = { vm.tagsFieldValue.value = it }
+                onValueChange = { vm.tagsFieldValue.value = it },
+                existingAttachments = vm.existingAttachments.value
             )
 
             NPrimaryButton(

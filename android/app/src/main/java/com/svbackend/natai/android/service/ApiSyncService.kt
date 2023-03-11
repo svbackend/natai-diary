@@ -34,12 +34,20 @@ class ApiSyncService(
         val localNotes = repository
             .getAllNotesForSync()
 
+        println("[SYNC] STARTED")
+
         localNotes.forEach {
             val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
+
+            println("[SYNC] LOCAL NOTE / CLOUD NOTE")
+            println(it)
+            println(cloudNote)
 
             if (cloudNote == null) {
                 insertToCloud(it)
             } else if (it.updatedAt.isAfterSecs(cloudNote.updatedAt)) {
+                println("[SYNC] updateToCloud")
+                println("[SYNC] ${it.updatedAt} is after ${cloudNote.updatedAt}")
                 updateToCloud(it)
             }
         }
@@ -48,9 +56,16 @@ class ApiSyncService(
             val cloudNoteId = kv.key
             val cloudNote = kv.value
             val localNote = localNotes.find { it.cloudId == cloudNoteId }
+
+            println("[SYNC] LOCAL NOTE / CLOUD NOTE (2)")
+            println(localNote)
+            println(cloudNote)
+
             if (localNote == null) {
                 insertToLocal(cloudNote)
             } else if (cloudNote.updatedAt.isAfterSecs(localNote.updatedAt)) {
+                println("[SYNC] updateToLocal")
+                println("[SYNC] ${cloudNote.updatedAt} is after ${localNote.updatedAt}")
                 updateToLocal(localNote, cloudNote)
             }
         }
@@ -62,6 +77,8 @@ class ApiSyncService(
 
     private suspend fun insertToLocal(cloudNote: CloudNote) {
         val newLocalNote = LocalNote.create(cloudNote)
+        println("[SYNC] insertToLocal")
+        println(newLocalNote)
         try {
             repository.insertNoteAndSync(newLocalNote)
         } catch (e: Throwable) {
@@ -73,14 +90,26 @@ class ApiSyncService(
     private suspend fun updateToLocal(localNote: LocalNote, cloudNote: CloudNote) {
         val note = Note.create(localNote)
         note.sync(cloudNote)
+
+        println("[SYNC] updateToLocal")
+        println(note)
+
+        val attachments = cloudNote.attachments.map {
+            AttachmentEntityDto.create(it)
+        }
+
         try {
             repository.updateNote(note)
+            repository.updateAttachments(note.id, attachments)
         } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
 
     private suspend fun insertToCloud(localNote: LocalNote) {
+        println("[SYNC] insertToCloud")
+        println(localNote)
+
         try {
             val response = apiClient.addNote(localNote)
             val syncedNote = Note.create(localNote)
@@ -93,6 +122,9 @@ class ApiSyncService(
     }
 
     private suspend fun updateToCloud(localNote: LocalNote) {
+        println("[SYNC] updateToCloud")
+        println(localNote)
+
         try {
             apiClient.updateNote(localNote)
         } catch (e: Throwable) {

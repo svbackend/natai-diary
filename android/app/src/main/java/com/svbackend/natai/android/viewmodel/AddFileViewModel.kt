@@ -193,7 +193,7 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
         // we are copying files to internal storage to make sure that they are not deleted before cloud sync
         return addedFiles.value.mapNotNull { file ->
             try {
-                val newUri = fileManager.copyFileToInternalStorage(file.uri)
+                val newUri = fileManager.copyFileToInternalStorage(file.uri, file.originalFilename)
                 return@mapNotNull file.copy(
                     uri = newUri
                 )

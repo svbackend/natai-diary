@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NTextField
@@ -44,6 +45,7 @@ fun TagsAndFilesRow(
     onDeleteTag: (TagEntityDto) -> Unit,
     onValueChange: (TextFieldValue) -> Unit,
     addFileVm: AddFileViewModel,
+    existingAttachments: List<ExistingAttachmentDto> = emptyList(),
 ) {
     var isAddCustomTagDialogOpen by remember { mutableStateOf(false) }
 
@@ -56,6 +58,7 @@ fun TagsAndFilesRow(
     var selectedTagScore by remember { mutableStateOf(10) }
 
     val addedFiles by addFileVm.addedFiles
+    val addedFilesSize = addFileVm.addedFiles.value.count() + existingAttachments.count()
 
     val pickFilesLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia()
@@ -226,6 +229,7 @@ fun TagsAndFilesRow(
             onDelete = {
                 addFileVm.onDelete(it)
             },
+            existingAttachments = existingAttachments,
         )
     }
 
@@ -265,8 +269,8 @@ fun TagsAndFilesRow(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AddFileButton(addedFilesSize = addFileVm.addedFiles.value.count()) {
-                    if (addedFiles.isEmpty()) {
+                AddFileButton(addedFilesSize = addedFilesSize) {
+                    if (addedFilesSize == 0) {
                         onLaunchFilePicker()
                     } else {
                         addFileVm.onOpen()

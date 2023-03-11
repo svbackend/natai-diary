@@ -1,14 +1,17 @@
 package com.svbackend.natai.android.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
+import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
+import com.svbackend.natai.android.http.exception.DownloadAttachmentErrorException
 import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
@@ -17,6 +20,7 @@ import java.time.LocalDate
 
 class EditNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
+    val apiClient = (application as DiaryApplication).appContainer.apiClient
 
     val actualDate = mutableStateOf(LocalDate.now())
 
@@ -32,6 +36,10 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
 
     val tags = mutableStateOf(emptyList<TagEntityDto>())
 
+    val existingAttachments = mutableStateOf(
+        emptyList<ExistingAttachmentDto>()
+    )
+
     val note = MutableSharedFlow<LocalNote?>(replay = 1)
 
     val isLoading = mutableStateOf(false)
@@ -40,6 +48,8 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun saveNote(
         note: LocalNote,
+        existingAttachments: List<ExistingAttachmentDto>,
+        newAttachments: List<AddedFile>
     ) {
         isLoading.value = true
 
@@ -92,7 +102,65 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
                 TagEntityDto.create(tag)
             }
             note.emit(localNote)
+
+            loadAttachments(localNote)
         }
+    }
+
+    suspend fun loadAttachments(note: LocalNote) {
+        println("loadAttachments")
+
+        // res/raw/placeholder.png
+        val placeholderUri =
+            Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
+
+        val localAttachments = note.attachments.map { attachment ->
+            val uri = attachment.uri ?: placeholderUri
+            ExistingAttachmentDto.create(attachment, uri)
+        }
+
+        val attachmentsIdsWithoutUri = note.attachments
+            .filter { it.uri == null }
+            .mapNotNull { it.cloudAttachmentId }
+
+        if (note.cloudId == null || attachmentsIdsWithoutUri.isEmpty()) {
+            existingAttachments.value = localAttachments
+            println("EXISTING ATTACHMENTS 1: ${existingAttachments.value}")
+            return
+        }
+
+        try {
+            val cloudAttachments = apiClient
+                .getAttachmentsByNote(note.cloudId)
+                .attachments
+
+            val downloadedUrisMap = mutableMapOf<String, Uri>() // cloudAttachmentId to uri
+            val cacheDir = getApplication<DiaryApplication>().cacheDir
+
+            attachmentsIdsWithoutUri.forEach {
+                val cloudAttachment = cloudAttachments.find { cloudAttachment ->
+                    cloudAttachment.attachmentId == it
+                }
+
+                if (cloudAttachment != null) {
+                    val uri = apiClient.downloadAttachment(cacheDir, cloudAttachment.signedUrl)
+                    downloadedUrisMap[it] = uri
+                }
+            }
+
+            existingAttachments.value = localAttachments.map { localAttachment ->
+                val uri = downloadedUrisMap[localAttachment.cloudAttachmentId]
+                if (uri != null) {
+                    localAttachment.copy(uri = uri)
+                } else localAttachment
+            }
+
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            existingAttachments.value = localAttachments
+        }
+
+        println("EXISTING ATTACHMENTS 2: ${existingAttachments.value}")
     }
 
     private fun clearStoredData() {

@@ -36,7 +36,7 @@ class DiaryRepository(
     suspend fun insertNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
         db.diaryDAO().insertNote(Note.create(note))
         addTags(note)
-        addAttachments(note)
+        updateAttachments(note.id, note.attachments)
         syncNoteWithCloud(note)
     }
 
@@ -78,12 +78,12 @@ class DiaryRepository(
         db.diaryDAO().deleteAttachmentsByNote(noteId)
     }
 
-    suspend fun updateAttachments(noteId: String, attachments: List<AttachmentEntityDto>) =
+    suspend fun updateAttachments(localNoteId: String, attachments: List<AttachmentEntityDto>) =
         withContext(Dispatchers.IO) {
-            deleteAttachmentsByNote(noteId)
+            deleteAttachmentsByNote(localNoteId)
             attachments.forEach { dto ->
                 insertAttachment(
-                    Attachment.create(noteId = noteId, dto = dto)
+                    Attachment.create(noteId = localNoteId, dto = dto)
                 )
             }
         }

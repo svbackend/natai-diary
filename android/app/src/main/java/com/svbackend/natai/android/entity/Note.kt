@@ -3,7 +3,6 @@ package com.svbackend.natai.android.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.svbackend.natai.android.entity.relation.NoteWithRelations
-import com.svbackend.natai.android.entity.relation.NoteWithTags
 import com.svbackend.natai.android.http.model.CloudNote
 import java.time.Instant
 import java.time.LocalDate
@@ -137,6 +136,11 @@ data class LocalNote(
                     score = it.score,
                 )
             }
+
+            val attachments = cloudNote.attachments.map {
+                AttachmentEntityDto.create(it)
+            }
+
             return LocalNote(
                 cloudId = cloudNote.id,
                 cloudUserId = cloudNote.userId,
@@ -147,7 +151,7 @@ data class LocalNote(
                 updatedAt = cloudNote.updatedAt,
                 deletedAt = cloudNote.deletedAt,
                 tags = tags,
-                attachments = emptyList(),
+                attachments = attachments,
             )
         }
     }

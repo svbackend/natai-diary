@@ -1,9 +1,9 @@
 package com.svbackend.natai.android.http
 
+import android.net.Uri
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
@@ -20,9 +20,13 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.InputStream
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
@@ -180,6 +184,33 @@ class ApiClient(
         }
 
         return response.body()
+    }
+
+    suspend fun getAttachmentsByNote(noteId: String): AttachmentsResponse {
+        val response = client.get("/api/v1/notes/$noteId/attachments")
+
+        if (response.status != HttpStatusCode.OK) {
+            throw DownloadAttachmentErrorException(response.body())
+        }
+
+        return response.body()
+    }
+
+    // get file from s3, convert to temporary file and return its uri
+    suspend fun downloadAttachment(cacheDir: File, signedUrl: String): Uri {
+        val fileResponse = s3Client.get(signedUrl)
+
+        if (fileResponse.status != HttpStatusCode.OK) {
+            throw DownloadAttachmentErrorException(fileResponse.body())
+        }
+
+        val file = fileResponse.body<ByteArray>()
+        val tempFile = withContext(Dispatchers.IO) {
+            File.createTempFile("attachment", null, cacheDir)
+        }
+        tempFile.writeBytes(file)
+
+        return Uri.fromFile(tempFile)
     }
 
 
