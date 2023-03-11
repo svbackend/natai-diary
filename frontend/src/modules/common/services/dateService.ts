@@ -28,11 +28,15 @@ export const dateService = {
         return `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
     },
     toBackendFormat(date: Date): string {
-        // converts date object to string in format like "2023-01-01 11:59:59"
-        const ymd = dateService.toYMD(date);
-        const hms = dateService.toHMS(date);
+        // converts date object to string in format like "2023-01-01 11:59:59" but in UTC timezone
+        const day = date.getUTCDate();
+        const month = date.getUTCMonth() + 1;
+        const year = date.getUTCFullYear();
+        const hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes();
+        const seconds = date.getUTCSeconds();
 
-        return `${ymd} ${hms}`;
+        return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day} ${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
     },
     fromYmd(date: string): Date {
         // backend date format is "2023-01-01"
