@@ -139,6 +139,7 @@ data class LocalNote(
             }
             return LocalNote(
                 cloudId = cloudNote.id,
+                cloudUserId = cloudNote.userId,
                 title = cloudNote.title,
                 content = cloudNote.content,
                 actualDate = cloudNote.actualDate,

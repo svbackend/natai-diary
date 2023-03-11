@@ -46,4 +46,7 @@ abstract class DiaryDAO {
 
     @Query("UPDATE Note SET cloudUserId = :cloudUserId WHERE cloudUserId IS NULL")
     abstract fun assignNotesToNewUser(cloudUserId: String)
+
+    @Query("SELECT * FROM Note ORDER BY date(actualDate) DESC LIMIT -1 OFFSET 10")
+    abstract fun getOldNotes(): List<NoteWithRelations>
 }

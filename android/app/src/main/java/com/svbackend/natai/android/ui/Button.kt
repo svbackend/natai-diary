@@ -36,7 +36,6 @@ fun NPrimaryButton(
         Button(
             onClick = onClick, modifier = modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
         ) {
             content()
         }

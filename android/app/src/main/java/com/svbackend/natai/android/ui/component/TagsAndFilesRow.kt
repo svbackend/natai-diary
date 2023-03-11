@@ -16,12 +16,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.Tag
@@ -257,9 +260,12 @@ fun TagsAndFilesRow(
                 style = MaterialTheme.typography.bodySmall,
             )
         }
-        Row {
-            Column(verticalArrangement = Arrangement.Center) {
-                AddFileButton(addFileVm = addFileVm) {
+        Row(horizontalArrangement = Arrangement.End) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AddFileButton(addedFilesSize = addFileVm.addedFiles.value.count()) {
                     if (addedFiles.isEmpty()) {
                         onLaunchFilePicker()
                     } else {
@@ -267,65 +273,66 @@ fun TagsAndFilesRow(
                     }
                 }
             }
-            Spacer(Modifier.width(8.dp))
-            Column(verticalArrangement = Arrangement.Center) {
-                IconButton(
-                    onClick = {
-                        isAddCustomTagDialogOpen = true
-                        onValueChange(TextFieldValue(""))
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_new_label),
-                        contentDescription = "Add custom tag"
-                    )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AddCustomTagButton {
+                    isAddCustomTagDialogOpen = true
+                    onValueChange(TextFieldValue(""))
                 }
-                Text(
-                    text = "Add Tag",
-                    style = MaterialTheme.typography.bodySmall,
+            }
+        }
+    }
+}
+
+val BTN_NEGATIVE_OFFSET = (-12).dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddFileButton(addedFilesSize: Int, onClick: () -> Unit) {
+    val alpha = if (addedFilesSize > 0) { 1f } else { 0f }
+    IconButton(
+        modifier = Modifier.size(64.dp),
+        onClick = onClick,
+    ) {
+        Column(verticalArrangement = Arrangement.Center) {
+            BadgedBox(
+                badge = {
+                    Badge(modifier = Modifier.alpha(alpha)) {
+                        Text(addedFilesSize.toString())
+                    }
+                },
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.cloud_arrow_up),
+                    contentDescription = "Add file"
                 )
             }
         }
     }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddFileButton(addFileVm: AddFileViewModel, onClick: () -> Unit) {
-    val addedFilesSize = addFileVm.addedFiles.value.count()
-
-    if (addedFilesSize == 0) {
-        AddFileButtonContent {
-            onClick()
-        }
-        return
-    }
-
-    BadgedBox(
-        badge = {
-            Badge {
-                Text(addedFilesSize.toString())
-            }
-        }
-    ) {
-        AddFileButtonContent {
-            onClick()
-        }
-    }
+    Text(
+        modifier = Modifier.offset(y = BTN_NEGATIVE_OFFSET),
+        text = "Add File",
+        style = MaterialTheme.typography.bodySmall,
+    )
 }
 
 @Composable
-fun AddFileButtonContent(onClick: () -> Unit) {
+fun AddCustomTagButton(onClick: () -> Unit) {
     IconButton(
+        modifier = Modifier.size(64.dp),
         onClick = onClick,
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.cloud_arrow_up),
-            contentDescription = "Add file"
+            painter = painterResource(id = R.drawable.ic_new_label),
+            contentDescription = "Add custom tag"
         )
     }
     Text(
-        text = "Add File",
+        modifier = Modifier.offset(y = BTN_NEGATIVE_OFFSET),
+        text = "Add Tag",
         style = MaterialTheme.typography.bodySmall,
     )
 }

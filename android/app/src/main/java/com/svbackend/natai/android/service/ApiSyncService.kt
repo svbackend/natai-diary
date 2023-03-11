@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.service
 
+import com.svbackend.natai.android.entity.AttachmentEntityDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.ApiClient
@@ -10,6 +11,7 @@ import com.svbackend.natai.android.utils.isAfterSecs
 class ApiSyncService(
     private val apiClient: ApiClient,
     private val repository: DiaryRepository,
+    private val fileManagerService: FileManagerService
 ) {
     @Volatile
     private var isRunning = false
@@ -53,6 +55,8 @@ class ApiSyncService(
             }
         }
 
+        cleanOldAttachments()
+
         isRunning = false
     }
 
@@ -93,6 +97,32 @@ class ApiSyncService(
             apiClient.updateNote(localNote)
         } catch (e: Throwable) {
             e.printStackTrace()
+        }
+    }
+
+    private suspend fun cleanOldAttachments() {
+        // remove all attachments files for 10th+ note
+        val oldNotes = repository.getOldNotes()
+
+        println("-============ OLD NOTES SIZE: ")
+        println(oldNotes.size)
+
+        oldNotes.forEach {
+            val newAttachments = mutableListOf<AttachmentEntityDto>()
+            var isChanged = false
+            it.attachments.forEach { attachment ->
+                if (attachment.uri != null) {
+                    fileManagerService.deleteFile(attachment.uri)
+                    newAttachments.add(attachment.copy(uri = null))
+                    isChanged = true
+                } else {
+                    newAttachments.add(attachment)
+                }
+            }
+
+            if (isChanged) {
+                repository.updateAttachments(it.id, newAttachments)
+            }
         }
     }
 }

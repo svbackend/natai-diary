@@ -10,12 +10,23 @@ data class Attachment(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
     val noteId: String,
     val cloudAttachmentId: String? = null,
-    val uri: String,
+    val uri: String? = null,
     val filename: String,
-)
+) {
+    companion object {
+        fun create(noteId: String, dto: AttachmentEntityDto): Attachment {
+            return Attachment(
+                noteId = noteId,
+                cloudAttachmentId = dto.cloudAttachmentId,
+                uri = dto.uri.toString(),
+                filename = dto.filename,
+            )
+        }
+    }
+}
 
 data class AttachmentEntityDto(
-    val uri: Uri,
+    val uri: Uri? = null,
     val filename: String,
     val cloudAttachmentId: String? = null,
 ) {

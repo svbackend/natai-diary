@@ -1,3 +1,16 @@
+### Mar 10, 2023
+
+Requirements:
+
+* Attachments for last 5 notes must be accessible without internet.
+* If file is attached and then removed from gallery - it should still be available in note
+
+How it will work?
+
+New Note -> Copy files to internal storage -> cleanup old files (6th+ note from internal storage)
+Edit note -> copy newly attached files to internal storage -> delete unattached files if any
+When user opens note -> we first check whether we have local copy of files -> if no - download them as cache (so it will be automaticallly removed) 
+
 ### Mar 9, 2023
 
 Since the beginning of March I was working on notes attachments,

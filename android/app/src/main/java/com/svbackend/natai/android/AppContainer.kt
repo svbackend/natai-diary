@@ -37,15 +37,18 @@ class AppContainer(context: Context) {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val apiSyncService = ApiSyncService(
-        apiClient, diaryRepository
-    )
-
     val titleGenerator = TitleGenerator()
 
     val reminderDataStore = ReminderDataStore(prefs = sharedPrefs)
 
-    val fileManager = FileManagerService()
+    val fileManager = FileManagerService(
+        context.contentResolver,
+        context.filesDir
+    )
+
+    val apiSyncService = ApiSyncService(
+        apiClient, diaryRepository, fileManager
+    )
 
     companion object {
         @Volatile
