@@ -94,8 +94,14 @@ class ApiSyncService(
         println("[SYNC] updateToLocal")
         println(note)
 
-        val attachments = cloudNote.attachments.map {
-            AttachmentEntityDto.create(it)
+        val response = apiClient.getAttachmentsByNote(cloudNote.id)
+
+        val attachments = response.attachments.map {
+            AttachmentEntityDto(
+                uri = null,
+                filename = it.key, // todo where's original filename?
+                cloudAttachmentId = it.attachmentId,
+            )
         }
 
         try {
