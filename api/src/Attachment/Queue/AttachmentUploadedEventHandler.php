@@ -88,12 +88,13 @@ class AttachmentUploadedEventHandler
             unlink($tmpFile);
         }
 
+
+
         $metaDataDto = new CloudAttachmentMetadataDto(
             mimeType: $metaData['ContentType'] ?? null,
             size: $metaData['ContentLength'] ?? null,
             width: $width,
             height: $height,
-            exif: $exif,
         );
 
         $uploadedAttachment->setMetadata($metaDataDto);
