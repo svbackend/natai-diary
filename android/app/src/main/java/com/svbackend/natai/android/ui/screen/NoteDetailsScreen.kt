@@ -1,9 +1,9 @@
 package com.svbackend.natai.android.ui.screen
 
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -13,13 +13,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.coil.CropTransformation
+import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.ui.component.AllTagsBadges
-import com.svbackend.natai.android.ui.component.CustomTagsBadges
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
@@ -31,6 +36,7 @@ fun NoteDetailsScreen(
     onDeleteClick: (LocalNote) -> Unit,
 ) {
     val note = vm.selectedNote.collectAsState(initial = null).value
+    val attachments = vm.selectedNoteAttachments.value
 
     val context = LocalContext.current
 
@@ -81,6 +87,8 @@ fun NoteDetailsScreen(
                 )
             }
 
+            AttachmentsGrid(attachments)
+
             // Space between
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -120,6 +128,40 @@ fun NoteDetailsScreen(
                     Text(
                         text = stringResource(R.string.deleteNote),
                         modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AttachmentsGrid(attachments: List<ExistingAttachmentDto>) {
+    if (attachments.isEmpty()) {
+        return
+    }
+
+    val attachmentsRows = attachments.chunked(3)
+
+    attachmentsRows.forEach { row ->
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+        ) {
+            row.forEach { attachment ->
+                Column {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(attachment.uri)
+                            .transformations(CropTransformation())
+                            .size(256, 256)
+                            .build(),
+                        contentDescription = attachment.filename,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(percent = 10)),
+                        error = painterResource(id = R.drawable.placeholder)
                     )
                 }
             }

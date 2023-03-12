@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
+import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.query.UserQueryException
@@ -27,6 +28,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val apiSyncService: ApiSyncService =
         (application as DiaryApplication).appContainer.apiSyncService
 
+    val fileManager = (application as DiaryApplication).appContainer.fileManager
+
     val prefs = (application as DiaryApplication).appContainer.sharedPrefs
 
     val userCloudId = MutableSharedFlow<String?>(replay = 1)
@@ -42,12 +45,19 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     var allNotesState by mutableStateOf(emptyList<LocalNote>())
 
     val selectedNote = MutableSharedFlow<LocalNote?>(replay = 1)
+    val selectedNoteAttachments = mutableStateOf(emptyList<ExistingAttachmentDto>())
 
     fun selectNote(id: String) = viewModelScope.launch {
         diaryRepository.getNote(id)
             .collect {
-                selectedNote.emit(LocalNote.create(it))
+                val localNote = LocalNote.create(it)
+                selectedNote.emit(localNote)
+                loadAttachments(localNote)
             }
+    }
+
+    suspend fun loadAttachments(note: LocalNote) {
+        selectedNoteAttachments.value = fileManager.loadAttachments(note)
     }
 
     val isSyncing = MutableSharedFlow<Boolean>()

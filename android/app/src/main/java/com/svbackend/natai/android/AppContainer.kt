@@ -42,8 +42,10 @@ class AppContainer(context: Context) {
     val reminderDataStore = ReminderDataStore(prefs = sharedPrefs)
 
     val fileManager = FileManagerService(
+        apiClient,
         context.contentResolver,
-        context.filesDir
+        context.filesDir,
+        context.cacheDir
     )
 
     val apiSyncService = ApiSyncService(

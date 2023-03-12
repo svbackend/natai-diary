@@ -121,65 +121,8 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    suspend fun loadAttachments(note: LocalNote) {
-        println("loadAttachments")
-
-        // res/raw/placeholder.png
-        val placeholderUri =
-            Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
-
-        val localAttachments = note.attachments.map { attachment ->
-            val uri = attachment.uri ?: placeholderUri
-            ExistingAttachmentDto.create(attachment, uri)
-        }
-
-        val attachmentsIdsWithoutUri = note.attachments
-            .filter { it.uri == null || !fileManager.isFileExists(it.uri) }
-            .mapNotNull { it.cloudAttachmentId }
-
-        if (note.cloudId == null || attachmentsIdsWithoutUri.isEmpty()) {
-            existingAttachments.value = localAttachments
-            println("NOTEID / ATTACHMENTS WITHOUT URIS: ${note.cloudId} / $attachmentsIdsWithoutUri")
-            println("EXISTING ATTACHMENTS 1: ${existingAttachments.value}")
-            return
-        }
-
-        try {
-            val cloudAttachments = apiClient
-                .getAttachmentsByNote(note.cloudId, attachmentsIdsWithoutUri)
-                .attachments
-
-            println(cloudAttachments)
-
-            val downloadedUrisMap = mutableMapOf<String, Uri>() // cloudAttachmentId to uri
-            val cacheDir = getApplication<DiaryApplication>().cacheDir
-
-            attachmentsIdsWithoutUri.forEach {
-                val cloudAttachment = cloudAttachments.find { cloudAttachment ->
-                    cloudAttachment.attachmentId == it
-                }
-
-                if (cloudAttachment != null) {
-                    val uri = apiClient.downloadAttachment(cacheDir, cloudAttachment.signedUrl)
-                    downloadedUrisMap[it] = uri
-                }
-            }
-
-            println(downloadedUrisMap)
-
-            existingAttachments.value = localAttachments.map { localAttachment ->
-                val uri = downloadedUrisMap[localAttachment.cloudAttachmentId]
-                if (uri != null) {
-                    localAttachment.copy(uri = uri)
-                } else localAttachment
-            }
-
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            existingAttachments.value = localAttachments
-        }
-
-        println("EXISTING ATTACHMENTS 2: ${existingAttachments.value}")
+    private suspend fun loadAttachments(note: LocalNote) {
+        existingAttachments.value = fileManager.loadAttachments(note)
     }
 
     private fun clearStoredData() {
