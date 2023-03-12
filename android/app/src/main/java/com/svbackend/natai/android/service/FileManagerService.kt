@@ -42,4 +42,14 @@ class FileManagerService(
             e.printStackTrace()
         }
     }
+
+    fun isFileExists(uri: Uri): Boolean {
+        return try {
+            uri.toFile().exists()
+        } catch (e: Exception) {
+            println("------- FILE EXISTS ERROR $uri")
+            e.printStackTrace()
+            false
+        }
+    }
 }

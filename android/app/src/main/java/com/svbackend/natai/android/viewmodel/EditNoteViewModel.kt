@@ -7,10 +7,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.entity.ExistingAttachmentDto
-import com.svbackend.natai.android.entity.LocalNote
-import com.svbackend.natai.android.entity.Tag
-import com.svbackend.natai.android.entity.TagEntityDto
+import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.http.exception.DownloadAttachmentErrorException
 import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +18,7 @@ import java.time.LocalDate
 class EditNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
     val apiClient = (application as DiaryApplication).appContainer.apiClient
+    val fileManager = (application as DiaryApplication).appContainer.fileManager
 
     val actualDate = mutableStateOf(LocalDate.now())
 
@@ -49,7 +47,7 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
     suspend fun saveNote(
         note: LocalNote,
         existingAttachments: List<ExistingAttachmentDto>,
-        newAttachments: List<AddedFile>
+        addedFiles: List<AddedFile>
     ) {
         isLoading.value = true
 
@@ -59,12 +57,28 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
             tags.value = tags.value + notAddedTag
         }
 
+        val newAttachments = addedFiles.map { file ->
+            AttachmentEntityDto(
+                uri = file.uri,
+                filename = file.originalFilename,
+                cloudAttachmentId = file.cloudAttachmentId,
+            )
+        }
+
+        val combinedAttachments = newAttachments + existingAttachments.map {
+            AttachmentEntityDto(
+                uri = it.uri,
+                filename = it.filename,
+                cloudAttachmentId = it.cloudAttachmentId,
+            )
+        }
+
         val updatedNote = note.update(
             title = title.value.text,
             content = content.value.text,
             actualDate = actualDate.value,
             tags = tags.value,
-            attachments = emptyList()
+            attachments = combinedAttachments
         )
 
         repository.updateNoteAndSync(updatedNote)
@@ -120,19 +134,22 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
         }
 
         val attachmentsIdsWithoutUri = note.attachments
-            .filter { it.uri == null }
+            .filter { it.uri == null || !fileManager.isFileExists(it.uri) }
             .mapNotNull { it.cloudAttachmentId }
 
         if (note.cloudId == null || attachmentsIdsWithoutUri.isEmpty()) {
             existingAttachments.value = localAttachments
+            println("NOTEID / ATTACHMENTS WITHOUT URIS: ${note.cloudId} / $attachmentsIdsWithoutUri")
             println("EXISTING ATTACHMENTS 1: ${existingAttachments.value}")
             return
         }
 
         try {
             val cloudAttachments = apiClient
-                .getAttachmentsByNote(note.cloudId)
+                .getAttachmentsByNote(note.cloudId, attachmentsIdsWithoutUri)
                 .attachments
+
+            println(cloudAttachments)
 
             val downloadedUrisMap = mutableMapOf<String, Uri>() // cloudAttachmentId to uri
             val cacheDir = getApplication<DiaryApplication>().cacheDir
@@ -147,6 +164,8 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
                     downloadedUrisMap[it] = uri
                 }
             }
+
+            println(downloadedUrisMap)
 
             existingAttachments.value = localAttachments.map { localAttachment ->
                 val uri = downloadedUrisMap[localAttachment.cloudAttachmentId]

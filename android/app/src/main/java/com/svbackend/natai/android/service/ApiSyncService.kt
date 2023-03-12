@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.service
 
+import android.net.Uri
 import com.svbackend.natai.android.entity.AttachmentEntityDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
@@ -94,7 +95,7 @@ class ApiSyncService(
         println("[SYNC] updateToLocal")
         println(note)
 
-        val response = apiClient.getAttachmentsByNote(cloudNote.id)
+        val response = apiClient.getAttachmentsByNote(cloudNote.id, cloudNote.attachments)
 
         val attachments = response.attachments.map {
             AttachmentEntityDto(

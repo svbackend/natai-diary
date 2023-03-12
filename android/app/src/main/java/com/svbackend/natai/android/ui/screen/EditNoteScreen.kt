@@ -59,15 +59,15 @@ fun EditNoteScreen(
             }
         }
 
-        val existingAttachments = vm.existingAttachments.value
-        val newAttachments = addFileVm.addedFiles.value
-
         return {
             scope.launch {
+                val existingAttachments = vm.existingAttachments.value
+                val addedFiles = addFileVm.copyFilesToInternalStorage()
+
                 vm.saveNote(
                     note = note,
                     existingAttachments = existingAttachments,
-                    newAttachments = newAttachments
+                    addedFiles = addedFiles
                 )
                 onSuccess()
             }
