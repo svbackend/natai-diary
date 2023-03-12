@@ -80,6 +80,7 @@ class UploadedAttachment
             size: $this->metadata['size'] ?? null,
             width: $this->metadata['width'] ?? null,
             height: $this->metadata['height'] ?? null,
+            exif: $this->metadata['exif'] ?? [],
         );
     }
 
@@ -90,6 +91,7 @@ class UploadedAttachment
             'size' => $metadata->size,
             'width' => $metadata->width,
             'height' => $metadata->height,
+            'exif' => $metadata->exif,
         ];
     }
 
