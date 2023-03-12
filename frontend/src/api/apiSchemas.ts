@@ -375,4 +375,5 @@ export type CloudAttachmentMetadataDto = {
   size: number | null;
   width: number | null;
   height: number | null;
+  exif: Record<string, any>;
 };
