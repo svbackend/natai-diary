@@ -55,9 +55,26 @@ class AttachmentUploadedEventHandler
         $ext = pathinfo($key, PATHINFO_EXTENSION);
 
         $width = $height = null;
+        $exif = [];
         if ($this->isImage($ext)) {
+            $result = $this->s3->getObject([
+                'Bucket' => $bucket,
+                'Key' => $key,
+            ]);
+
+            /** @var \GuzzleHttp\Psr7\Stream $bodyStream */
+            $bodyStream = $result['Body'];
+            $fileContent = $bodyStream->getContents();
+
+            $tmpFile = tempnam(sys_get_temp_dir(), 'attachment');
+            file_put_contents($tmpFile, $fileContent);
+
+            if ($ext === 'jpg' || $ext === 'jpeg') {
+                $exif = exif_read_data($tmpFile) ?: [];
+            }
+
             try {
-                [$width, $height] = $this->getImageDimensions($bucket, $key);
+                [$width, $height] = $this->getImageDimensions($tmpFile, $exif);
             } catch (\Throwable $e) {
                 $this->logger->error("AttachmentUploadedEventHandler - Cannot get image dimensions for file {$key}", [
                     'bucket' => $bucket,
@@ -65,6 +82,10 @@ class AttachmentUploadedEventHandler
                     'exception' => $e->getMessage(),
                 ]);
             }
+
+            $this->fixImageDimensions($width, $height, $exif);
+
+            unlink($tmpFile);
         }
 
         $metaDataDto = new CloudAttachmentMetadataDto(
@@ -72,6 +93,7 @@ class AttachmentUploadedEventHandler
             size: $metaData['ContentLength'] ?? null,
             width: $width,
             height: $height,
+            exif: $exif,
         );
 
         $uploadedAttachment->setMetadata($metaDataDto);
@@ -96,47 +118,37 @@ class AttachmentUploadedEventHandler
 
     private function isImage(string $ext): bool
     {
-        return in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
-    }
-
-    private function getImageDimensions(string $bucket, string $key): array
-    {
-        $result = $this->s3->getObject([
-            'Bucket' => $bucket,
-            'Key' => $key,
+        return in_array($ext, [
+            'jpg', 'jpeg', 'jfif', 'png', 'gif', 'webp', 'tiff', 'tif'
         ]);
-
-        /** @var \GuzzleHttp\Psr7\Stream $body */
-        $body = $result['Body'];
-        $bodyAsString = $body->getContents();
-
-        $ext = pathinfo($key, PATHINFO_EXTENSION);
-
-        if ($ext === 'svg') {
-            return $this->getSvgDimensions($bodyAsString);
-        }
-
-        $image = imagecreatefromstring($bodyAsString);
-
-        if (!$image) {
-            $errorMessage = error_get_last()['message'];
-            throw new \Exception('Cannot create image from string: ' . $errorMessage);
-        }
-
-        return [imagesx($image), imagesy($image)];
     }
 
-    private function getSvgDimensions(string $svgImageContent): array
+    private function getImageDimensions(string $tmpFilePath, array $exif): array
     {
-        if (!class_exists('SimpleXMLElement')) {
-            throw new \Exception('SimpleXMLElement class not found');
+        $imageInfo = getimagesize($tmpFilePath);
+
+        if ($imageInfo === false) {
+            throw new \Exception('Cannot get image dimensions');
         }
 
-        $xml = simplexml_load_string($svgImageContent);
-        $attributes = $xml->attributes();
-        $width = (string)$attributes->width;
-        $height = (string)$attributes->height;
+        $orientation = $exif['Orientation'] ?? '1';
+        if (in_array($orientation, ['6', '8'], true)) {
+            return [$imageInfo[1], $imageInfo[0]];
+        }
 
-        return [$width, $height];
+        return [$imageInfo[0], $imageInfo[1]];
+    }
+
+    private function fixImageDimensions(mixed $width, mixed $height, array $exif): array
+    {
+        if ($width && $height) {
+            return [$width, $height];
+        }
+
+        if (isset($exif['COMPUTED']['Width']) && isset($exif['COMPUTED']['Height'])) {
+            return [$exif['COMPUTED']['Width'], $exif['COMPUTED']['Height']];
+        }
+
+        return [null, null];
     }
 }

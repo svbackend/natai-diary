@@ -9,6 +9,7 @@ class CloudAttachmentMetadataDto
         public ?int $size,
         public ?int $width,
         public ?int $height,
+        public array $exif = [],
     )
     {
     }
