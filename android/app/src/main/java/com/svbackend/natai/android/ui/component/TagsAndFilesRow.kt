@@ -46,6 +46,7 @@ fun TagsAndFilesRow(
     onValueChange: (TextFieldValue) -> Unit,
     addFileVm: AddFileViewModel,
     existingAttachments: List<ExistingAttachmentDto> = emptyList(),
+    onDeleteExistingAttachment: (ExistingAttachmentDto) -> Unit = {},
 ) {
     var isAddCustomTagDialogOpen by remember { mutableStateOf(false) }
 
@@ -230,6 +231,7 @@ fun TagsAndFilesRow(
                 addFileVm.onDelete(it)
             },
             existingAttachments = existingAttachments,
+            onDeleteExistingAttachment = onDeleteExistingAttachment,
         )
     }
 

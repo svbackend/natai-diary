@@ -126,7 +126,8 @@ fun EditNoteScreen(
                 },
                 addFileVm = addFileVm,
                 onValueChange = { vm.tagsFieldValue.value = it },
-                existingAttachments = vm.existingAttachments.value
+                existingAttachments = vm.existingAttachments.value,
+                onDeleteExistingAttachment = { vm.deleteExistingAttachment(it) },
             )
 
             NPrimaryButton(

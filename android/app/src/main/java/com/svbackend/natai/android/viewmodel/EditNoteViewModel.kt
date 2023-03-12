@@ -187,4 +187,10 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
         content.value = TextFieldValue("")
         tagsFieldValue.value = TextFieldValue("")
     }
+
+    fun deleteExistingAttachment(attachment: ExistingAttachmentDto) {
+        existingAttachments.value = existingAttachments.value.filter {
+            it.uri != attachment.uri
+        }
+    }
 }

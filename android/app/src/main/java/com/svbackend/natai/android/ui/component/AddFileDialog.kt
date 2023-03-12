@@ -28,6 +28,7 @@ fun AddFileDialog(
     selectedFiles: List<AddedFile>,
     existingAttachments: List<ExistingAttachmentDto>,
     onDelete: (AddedFile) -> Unit,
+    onDeleteExistingAttachment: (ExistingAttachmentDto) -> Unit,
 ) {
     val totalFilesSize = selectedFiles.size + existingAttachments.size
 
@@ -48,7 +49,8 @@ fun AddFileDialog(
                     AddedFilesArea(
                         files = selectedFiles,
                         onDelete = onDelete,
-                        existingAttachments = existingAttachments
+                        existingAttachments = existingAttachments,
+                        onDeleteExistingAttachment = onDeleteExistingAttachment,
                     )
                 } else {
                     Row(
@@ -106,11 +108,12 @@ fun AddedFilesArea(
     files: List<AddedFile>,
     onDelete: (AddedFile) -> Unit,
     existingAttachments: List<ExistingAttachmentDto>,
+    onDeleteExistingAttachment: (ExistingAttachmentDto) -> Unit,
 ) {
     LazyColumn {
         items(existingAttachments.size) { index ->
             val f = existingAttachments[index]
-            ExistingAttachment(f, onDelete = { /** TODO */ })
+            ExistingAttachment(f, onDelete = onDeleteExistingAttachment)
         }
         items(files.size) { index ->
             val f = files[index]

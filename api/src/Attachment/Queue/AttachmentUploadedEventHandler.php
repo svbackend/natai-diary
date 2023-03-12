@@ -83,7 +83,6 @@ class AttachmentUploadedEventHandler
                 ]);
             }
 
-            $this->fixImageDimensions($width, $height, $exif);
 
             unlink($tmpFile);
         }
@@ -128,28 +127,22 @@ class AttachmentUploadedEventHandler
     {
         $imageInfo = getimagesize($tmpFilePath);
 
-        if ($imageInfo === false) {
-            throw new \Exception('Cannot get image dimensions');
+        if ($imageInfo !== false) {
+            [$w, $h] = $imageInfo;
+        } else {
+            // try to get them from exif
+            if (isset($exif['COMPUTED']['Width'], $exif['COMPUTED']['Height'])) {
+                [$w, $h] = [(int)$exif['COMPUTED']['Width'], (int)$exif['COMPUTED']['Height']];
+            } else {
+                throw new \Exception('Cannot get image dimensions');
+            }
         }
 
-        $orientation = $exif['Orientation'] ?? '1';
-        if (in_array($orientation, ['6', '8'], true)) {
-            return [$imageInfo[1], $imageInfo[0]];
+        $orientation = isset($exif['Orientation']) ? (int)$exif['Orientation'] : 1;
+        if (in_array($orientation, [6, 8], true)) {
+            return [$h, $w];
         }
 
-        return [$imageInfo[0], $imageInfo[1]];
-    }
-
-    private function fixImageDimensions(mixed $width, mixed $height, array $exif): array
-    {
-        if ($width && $height) {
-            return [$width, $height];
-        }
-
-        if (isset($exif['COMPUTED']['Width']) && isset($exif['COMPUTED']['Height'])) {
-            return [$exif['COMPUTED']['Width'], $exif['COMPUTED']['Height']];
-        }
-
-        return [null, null];
+        return [$w, $h];
     }
 }
