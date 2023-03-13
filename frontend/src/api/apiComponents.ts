@@ -835,13 +835,6 @@ export type GetNotesByIdAttachmentsPathParams = {
   id: string;
 };
 
-export type GetNotesByIdAttachmentsQueryParams = {
-  /**
-   * Ids of attachments to get signed url to download them.
-   */
-  ["attachments[]"]: string[];
-};
-
 export type GetNotesByIdAttachmentsError = Fetcher.ErrorWrapper<
   | {
       status: 400;
@@ -863,7 +856,6 @@ export type GetNotesByIdAttachmentsError = Fetcher.ErrorWrapper<
 
 export type GetNotesByIdAttachmentsVariables = {
   pathParams: GetNotesByIdAttachmentsPathParams;
-  queryParams: GetNotesByIdAttachmentsQueryParams;
 } & ApiContext["fetcherOptions"];
 
 export const fetchGetNotesByIdAttachments = (
@@ -875,7 +867,7 @@ export const fetchGetNotesByIdAttachments = (
     GetNotesByIdAttachmentsError,
     undefined,
     {},
-    GetNotesByIdAttachmentsQueryParams,
+    {},
     GetNotesByIdAttachmentsPathParams
   >({
     url: "/api/v1/notes/{id}/attachments",

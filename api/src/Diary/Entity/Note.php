@@ -94,11 +94,13 @@ class Note
         $this->deletedAt = $deletedAt;
     }
 
+    /** @return Collection<NoteTag> */
     public function getTags(): Collection
     {
         return $this->tags;
     }
 
+    /** @return Collection<NoteAttachment> */
     public function getAttachments(): Collection
     {
         return $this->attachments;

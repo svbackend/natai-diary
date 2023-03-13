@@ -96,9 +96,11 @@ function AttachedFilePreview({file}: { file: File }) {
 
 function CloudFilePreview({file}: { file: CloudAttachmentDto }) {
     const isImage = attachmentService.isImage(file.key, file.metadata?.mimeType || "")
+    const preview = file.previews.find(p => p.type === "md")
+    const previewUrl = preview?.signedUrl || file.signedUrl
     return (
         <div className="flex flex-col items-center">
-            {isImage && <img src={file.signedUrl} alt={file.key} className="h-16 rounded"/>}
+            {isImage && <img src={previewUrl} alt={file.key} className="h-16 rounded"/>}
             {!isImage && <div className="w-16 h-16 bg-blue-200"></div>}
         </div>
     )

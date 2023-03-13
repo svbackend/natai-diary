@@ -3,6 +3,7 @@
 namespace App\Attachment\Queue;
 
 use App\Attachment\Repository\UploadedAttachmentRepository;
+use App\Attachment\Service\PreviewGeneratorService;
 use App\Common\Service\Env;
 use App\Diary\DTO\CloudAttachmentMetadataDto;
 use Aws\S3\S3Client;
@@ -15,6 +16,7 @@ class AttachmentUploadedEventHandler
     public function __construct(
         private S3Client $s3,
         private UploadedAttachmentRepository $uploadedAttachments,
+        private PreviewGeneratorService $previewGenerator,
         private LoggerInterface $logger
     )
     {
@@ -83,11 +85,10 @@ class AttachmentUploadedEventHandler
                 ]);
             }
 
+            $this->previewGenerator->generatePreviews($uploadedAttachment, $tmpFile);
 
             unlink($tmpFile);
         }
-
-
 
         $metaDataDto = new CloudAttachmentMetadataDto(
             mimeType: $metaData['ContentType'] ?? null,

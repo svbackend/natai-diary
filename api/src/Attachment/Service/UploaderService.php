@@ -8,7 +8,9 @@ use App\Attachment\Repository\PendingAttachmentRepository;
 use App\Auth\Entity\User;
 use App\Common\Service\Env;
 use Aws\S3\S3Client;
+use Psr\Http\Message\StreamInterface;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * This service is responsible for generating signed urls for uploading attachments to S3
@@ -67,5 +69,23 @@ class UploaderService
             attachmentId: $attachmentId,
             expiresAt: $expiresAt,
         );
+    }
+
+    public function uploadToUserFolder(UuidV4 $userId, StreamInterface $stream, string $filename): string
+    {
+        $bucket = Env::getAwsUploadBucket();
+
+        $env = Env::isProd() ? 'prod' : 'dev';
+        $folder = sprintf("%s/%s", $env, $userId->toRfc4122());
+
+        $key = sprintf("%s/%s", $folder, $filename);
+
+        $this->s3->putObject([
+            'Bucket' => $bucket,
+            'Key' => $key,
+            'Body' => $stream,
+        ]);
+
+        return $key;
     }
 }

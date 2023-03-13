@@ -35,8 +35,6 @@ export default function ViewNotePage() {
                     fetchGetNotesByIdAttachments({
                         pathParams: {
                             id: id
-                        }, queryParams: {
-                            "attachments[]": noteById.attachments
                         }
                     })
                         .then((res) => {
@@ -130,10 +128,12 @@ function PhotoAttachments({attachments}: { attachments: CloudAttachmentDto[] }) 
                     const alt = `Attachment #${idx}`
                     const w = img.metadata.width || 128
                     const h = img.metadata.height || 128
+                    const mdPreview = img.previews.find(p => p.type === "md")
+                    const previewUrl = mdPreview?.signedUrl || img.signedUrl
                     return (
                         <Item key={img.attachmentId}
                               original={img.signedUrl}
-                              thumbnail={img.signedUrl}
+                              thumbnail={previewUrl}
                               width={w}
                               height={h}
                               alt={alt}
@@ -141,7 +141,7 @@ function PhotoAttachments({attachments}: { attachments: CloudAttachmentDto[] }) 
                             {({ref, open}) => (
                                 <img
                                     style={smallItemStyles}
-                                    src={img.signedUrl}
+                                    src={previewUrl}
                                     ref={ref as React.MutableRefObject<HTMLImageElement>}
                                     onClick={open}
                                     alt={alt}

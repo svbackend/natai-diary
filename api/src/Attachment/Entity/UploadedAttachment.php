@@ -5,6 +5,8 @@ namespace App\Attachment\Entity;
 use App\Attachment\Repository\UploadedAttachmentRepository;
 use App\Auth\Entity\User;
 use App\Diary\DTO\CloudAttachmentMetadataDto;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 use Webmozart\Assert\Assert;
@@ -32,6 +34,9 @@ class UploadedAttachment
     #[ORM\Column(length: 255)]
     private string $originalFilename;
 
+    #[ORM\OneToMany(mappedBy: 'attachment', targetEntity: AttachmentPreview::class)]
+    private Collection $previews;
+
     public function __construct(
         UuidV4 $id,
         User $user,
@@ -46,6 +51,7 @@ class UploadedAttachment
         $this->key = $key;
         $this->originalFilename = $originalFilename;
         $this->createdAt = new \DateTimeImmutable();
+        $this->previews = new ArrayCollection();
     }
 
     public static function createFromPendingAttachment(PendingAttachment $pendingAttachment): self
@@ -101,5 +107,13 @@ class UploadedAttachment
     public function getOriginalFilename(): string
     {
         return $this->originalFilename;
+    }
+
+    /**
+     * @return Collection<int, AttachmentPreview>
+     */
+    public function getPreviews(): Collection
+    {
+        return $this->previews;
     }
 }

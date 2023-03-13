@@ -2,6 +2,10 @@
 
 namespace App\Diary\Repository;
 
+use App\Attachment\Service\DownloaderService;
+use App\Common\Service\Json;
+use App\Diary\DTO\CloudAttachmentDto;
+use App\Diary\DTO\CloudAttachmentMetadataDto;
 use App\Diary\Entity\Note;
 use App\Diary\Entity\NoteAttachment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -54,16 +58,12 @@ class NoteAttachmentRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @param UuidV4[] $attachmentsUuids
-     * @param Note $note
-     * @return NoteAttachment[]
-     */
-    public function findByIdsAndNote(array $attachmentsUuids, Note $note): array
+    /** @return NoteAttachment[] */
+    public function findAllByNote(Note $note): array
     {
         return $this->createQueryBuilder('na')
-            ->andWhere('na.attachment IN (:ids)')
-            ->setParameter('ids', $attachmentsUuids)
+            ->join('na.attachment', 'uploadedAttachment', 'WITH')
+            ->addSelect('uploadedAttachment')
             ->andWhere('na.note = :note')
             ->setParameter('note', $note)
             ->getQuery()

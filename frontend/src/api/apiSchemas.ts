@@ -364,6 +364,7 @@ export type CloudAttachmentDto = {
   key: string;
   originalFilename: string;
   metadata: CloudAttachmentMetadataDto;
+  previews: CloudAttachmentPreviewDto[];
 };
 
 /**
@@ -376,4 +377,12 @@ export type CloudAttachmentMetadataDto = {
   size: number | null;
   width: number | null;
   height: number | null;
+};
+
+export type CloudAttachmentPreviewDto = {
+  key: string;
+  signedUrl: string;
+  width: number;
+  height: number;
+  type: string;
 };

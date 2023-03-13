@@ -62,8 +62,6 @@ export default function DiaryEditNote() {
                     fetchGetNotesByIdAttachments({
                         pathParams: {
                             id: id
-                        }, queryParams: {
-                            "attachments[]": noteById.attachments
                         }
                     })
                         .then((res) => {
