@@ -362,6 +362,7 @@ export type CloudAttachmentDto = {
   attachmentId: Uuid;
   signedUrl: string;
   key: string;
+  originalFilename: string;
   metadata: CloudAttachmentMetadataDto;
 };
 
