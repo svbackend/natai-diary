@@ -92,6 +92,7 @@ class GetNoteAttachmentsAction extends BaseAction
                 attachmentId: $attachment->getId(),
                 signedUrl: $this->downloader->getSignedUrl($attachment->getKey()),
                 key: $attachment->getKey(),
+                originalFilename: $attachment->getOriginalFilename(),
                 metadata: $attachment->getMetadata(),
             ),
             $uploadedAttachments

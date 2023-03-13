@@ -48,6 +48,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val selectedNoteAttachments = mutableStateOf(emptyList<ExistingAttachmentDto>())
 
     fun selectNote(id: String) = viewModelScope.launch {
+        selectedNote.emit(null)
+        selectedNoteAttachments.value = emptyList()
+
         diaryRepository.getNote(id)
             .collect {
                 val localNote = LocalNote.create(it)
@@ -57,7 +60,10 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     suspend fun loadAttachments(note: LocalNote) {
-        selectedNoteAttachments.value = fileManager.loadAttachments(note)
+        println("==== LOADED ATTACHMENTS")
+        val loadedAttachments = fileManager.loadAttachments(note)
+        println(loadedAttachments)
+        selectedNoteAttachments.value = loadedAttachments
     }
 
     val isSyncing = MutableSharedFlow<Boolean>()

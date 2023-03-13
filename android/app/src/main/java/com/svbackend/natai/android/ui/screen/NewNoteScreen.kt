@@ -80,7 +80,7 @@ fun NewNoteScreen(
 
         return {
             scope.launch {
-                val addedFiles = addFileVm.copyFilesToInternalStorage()
+                val addedFiles = addFileVm.processAddedFiles()
                 vm.addNote(addedFiles)
                 onSuccess()
             }

@@ -153,14 +153,10 @@ fun AttachmentsGrid(attachments: List<ExistingAttachmentDto>) {
             row.forEach { attachment ->
                 Column {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(attachment.uri)
-                            .transformations(CropTransformation())
-                            .size(256, 256)
-                            .build(),
+                        model = attachment.previewUri ?: attachment.uri ?: painterResource(id = R.drawable.placeholder),
                         contentDescription = attachment.filename,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(percent = 10)),
+                            .clip(RoundedCornerShape(percent = 15)),
                         error = painterResource(id = R.drawable.placeholder)
                     )
                 }

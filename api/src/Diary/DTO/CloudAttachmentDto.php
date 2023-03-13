@@ -10,6 +10,7 @@ class CloudAttachmentDto
         public Uuid $attachmentId,
         public string $signedUrl,
         public string $key, // aka filename/path
+        public string $originalFilename,
         public CloudAttachmentMetadataDto $metadata,
     )
     {

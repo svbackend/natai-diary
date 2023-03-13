@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
+import com.svbackend.natai.android.entity.NewAttachmentDto
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.service.FileManagerService
 import com.svbackend.natai.android.utils.hasInternetConnection
@@ -189,13 +190,17 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
         return "$namePart1...$namePart2.$ext"
     }
 
-    fun copyFilesToInternalStorage(): List<AddedFile> {
+    // copy files to internal storage + generate previews
+    fun processAddedFiles(): List<NewAttachmentDto> {
         // we are copying files to internal storage to make sure that they are not deleted before cloud sync
         return addedFiles.value.mapNotNull { file ->
             try {
-                val newUri = fileManager.copyFileToInternalStorage(file.uri, file.originalFilename)
-                return@mapNotNull file.copy(
-                    uri = newUri
+                val processedAttachment = fileManager.processNewAttachment(file.uri, file.originalFilename)
+                return@mapNotNull NewAttachmentDto(
+                    cloudAttachmentId = file.cloudAttachmentId,
+                    filename = file.originalFilename,
+                    uri = processedAttachment.uri,
+                    previewUri = processedAttachment.previewUri,
                 )
             } catch (e: Exception) {
                 e.printStackTrace()

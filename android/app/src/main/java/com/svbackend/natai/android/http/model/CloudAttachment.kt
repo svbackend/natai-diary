@@ -17,6 +17,7 @@ data class CloudAttachment(
     val attachmentId: String,
     val signedUrl: String,
     val key: String,
+    val originalFilename: String,
     val metadata: CloudAttachmentMetadata,
 )
 

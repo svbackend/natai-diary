@@ -6,10 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.entity.AttachmentEntityDto
-import com.svbackend.natai.android.entity.LocalNote
-import com.svbackend.natai.android.entity.Tag
-import com.svbackend.natai.android.entity.TagEntityDto
+import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.service.TitleGenerator
 import kotlinx.coroutines.flow.map
@@ -58,7 +55,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
 
     }
 
-    suspend fun addNote(addedFiles: List<AddedFile>) {
+    suspend fun addNote(addedFiles: List<NewAttachmentDto>) {
         isLoading.value = true
 
         println("========== ADD NOTE ==========")
@@ -73,11 +70,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
         }
 
         val attachments = addedFiles.map { file ->
-            AttachmentEntityDto(
-                uri = file.uri,
-                filename = file.originalFilename,
-                cloudAttachmentId = file.cloudAttachmentId,
-            )
+            AttachmentEntityDto.create(file)
         }
 
         var appended = false

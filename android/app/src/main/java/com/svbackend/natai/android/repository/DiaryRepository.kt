@@ -100,14 +100,6 @@ class DiaryRepository(
         }
     }
 
-    private suspend fun addAttachments(note: LocalNote) {
-        note.attachments.forEach { dto ->
-            insertAttachment(
-                Attachment.create(noteId = note.id, dto = dto)
-            )
-        }
-    }
-
     private suspend fun syncNoteWithCloud(note: LocalNote) {
         try {
             if (note.cloudId != null) {

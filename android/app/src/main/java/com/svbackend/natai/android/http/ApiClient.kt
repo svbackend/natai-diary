@@ -199,22 +199,19 @@ class ApiClient(
         return response.body()
     }
 
-    // get file from s3, convert to temporary file and return its uri
-    suspend fun downloadAttachment(cacheDir: File, signedUrl: String): Uri {
+    // get file from s3, save it to filesDir and return Uri
+    suspend fun downloadAttachment(dir: File, signedUrl: String, filename: String): Uri {
         val fileResponse = s3Client.get(signedUrl)
 
         if (fileResponse.status != HttpStatusCode.OK) {
             throw DownloadAttachmentErrorException(fileResponse.body())
         }
 
-        val file = fileResponse.body<ByteArray>()
-        val tempFile = withContext(Dispatchers.IO) {
-            File.createTempFile("attachment", null, cacheDir)
-        }
-        tempFile.writeBytes(file)
+        val fileBytes = fileResponse.body<ByteArray>()
 
-        return Uri.fromFile(tempFile)
+        val file = File(dir, filename)
+        file.writeBytes(fileBytes)
+
+        return Uri.fromFile(file)
     }
-
-
 }

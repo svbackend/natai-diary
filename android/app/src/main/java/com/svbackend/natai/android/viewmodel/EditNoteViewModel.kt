@@ -47,7 +47,7 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
     suspend fun saveNote(
         note: LocalNote,
         existingAttachments: List<ExistingAttachmentDto>,
-        addedFiles: List<AddedFile>
+        addedFiles: List<NewAttachmentDto>
     ) {
         isLoading.value = true
 
@@ -58,19 +58,11 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
         }
 
         val newAttachments = addedFiles.map { file ->
-            AttachmentEntityDto(
-                uri = file.uri,
-                filename = file.originalFilename,
-                cloudAttachmentId = file.cloudAttachmentId,
-            )
+            AttachmentEntityDto.create(file)
         }
 
         val combinedAttachments = newAttachments + existingAttachments.map {
-            AttachmentEntityDto(
-                uri = it.uri,
-                filename = it.filename,
-                cloudAttachmentId = it.cloudAttachmentId,
-            )
+            AttachmentEntityDto.create(it)
         }
 
         val updatedNote = note.update(

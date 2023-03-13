@@ -62,7 +62,7 @@ fun EditNoteScreen(
         return {
             scope.launch {
                 val existingAttachments = vm.existingAttachments.value
-                val addedFiles = addFileVm.copyFilesToInternalStorage()
+                val addedFiles = addFileVm.processAddedFiles()
 
                 vm.saveNote(
                     note = note,

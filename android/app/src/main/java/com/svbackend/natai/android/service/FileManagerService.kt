@@ -1,23 +1,33 @@
 package com.svbackend.natai.android.service
 
 import android.content.ContentResolver
-import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import com.svbackend.natai.android.DiaryApplication
+import com.svbackend.natai.android.coil.CropTransformation
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.ApiClient
 import java.io.File
 
+data class AttachmentUris(
+    val uri: Uri,
+    val previewUri: Uri? = null,
+)
+
+const val PREVIEW_SIZE = 192
+
 class FileManagerService(
     private val apiClient: ApiClient,
     private val contentResolver: ContentResolver,
-    private val filesDir: File,
-    private val cacheDir: File,
+    val filesDir: File,
+    public val cacheDir: File,
+    private val cropTransformation: CropTransformation = CropTransformation(),
 ) {
-    fun copyFileToInternalStorage(uri: Uri, originalFilename: String): Uri {
+    // copy file from uri to internal storage, generate preview and return new uris
+    fun processNewAttachment(uri: Uri, originalFilename: String): AttachmentUris {
         val inputStream = contentResolver.openInputStream(uri)
 
         if (inputStream == null) {
@@ -26,6 +36,7 @@ class FileManagerService(
 
         val file = File(filesDir, originalFilename)
         val internalUri = file.toUri()
+        val isImage = contentResolver.getType(uri)?.startsWith("image") ?: false
 
         inputStream.use { input ->
             contentResolver.openOutputStream(internalUri, "w").use { output ->
@@ -37,7 +48,44 @@ class FileManagerService(
             }
         }
 
-        return internalUri
+        val previewUri = if (isImage) {
+            generatePreview(internalUri)
+        } else {
+            null
+        }
+
+        return AttachmentUris(internalUri, previewUri)
+    }
+
+    /**
+     * if image - generate small preview 128x128 cropped preview
+     */
+    private fun generatePreview(internalFileUri: Uri): Uri? {
+        try {
+            val inputStream = contentResolver.openInputStream(internalFileUri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val croppedBitmap = cropTransformation.transform(bitmap, PREVIEW_SIZE, PREVIEW_SIZE)
+
+            val previewFile = File(filesDir, "preview_${internalFileUri.lastPathSegment}")
+
+            // use webp only on android 11+
+            val format = if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
+                Bitmap.CompressFormat.WEBP_LOSSY
+            } else {
+                Bitmap.CompressFormat.JPEG
+            }
+
+            previewFile.outputStream().use { output ->
+                croppedBitmap.compress(format, 90, output)
+            }
+
+            return previewFile.toUri()
+        } catch (e: Exception) {
+            println("------- GENERATE PREVIEW ERROR $internalFileUri")
+            e.printStackTrace()
+        }
+
+        return null
     }
 
     fun deleteFile(uri: Uri) {
@@ -60,58 +108,6 @@ class FileManagerService(
     }
 
     suspend fun loadAttachments(note: LocalNote): List<ExistingAttachmentDto> {
-        println("loadAttachments")
 
-        // res/raw/placeholder.png
-        val placeholderUri =
-            Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
-
-        val localAttachments = note.attachments.map { attachment ->
-            val uri = attachment.uri ?: placeholderUri
-            ExistingAttachmentDto.create(attachment, uri)
-        }
-
-        val attachmentsIdsWithoutUri = note.attachments
-            .filter { it.uri == null || !isFileExists(it.uri) }
-            .mapNotNull { it.cloudAttachmentId }
-
-        if (note.cloudId == null || attachmentsIdsWithoutUri.isEmpty()) {
-            // nothing to load
-            return localAttachments
-        }
-
-        try {
-            val cloudAttachments = apiClient
-                .getAttachmentsByNote(note.cloudId, attachmentsIdsWithoutUri)
-                .attachments
-
-            println(cloudAttachments)
-
-            val downloadedUrisMap = mutableMapOf<String, Uri>() // cloudAttachmentId to uri
-
-            attachmentsIdsWithoutUri.forEach {
-                val cloudAttachment = cloudAttachments.find { cloudAttachment ->
-                    cloudAttachment.attachmentId == it
-                }
-
-                if (cloudAttachment != null) {
-                    val uri = apiClient.downloadAttachment(cacheDir, cloudAttachment.signedUrl)
-                    downloadedUrisMap[it] = uri
-                }
-            }
-
-            println(downloadedUrisMap)
-
-            return localAttachments.map { localAttachment ->
-                val uri = downloadedUrisMap[localAttachment.cloudAttachmentId]
-                if (uri != null) {
-                    localAttachment.copy(uri = uri)
-                } else localAttachment
-            }
-
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            return localAttachments
-        }
     }
 }
