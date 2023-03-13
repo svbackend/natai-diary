@@ -16,10 +16,6 @@ class AttachmentsLoader(
         Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
 
     suspend fun loadAttachments(note: LocalNote): List<ExistingAttachmentDto> {
-        println("loadAttachments")
-        println(note.cloudId)
-        println(note.attachments)
-
         val localAttachments = note.attachments.map { attachment ->
             val uri = attachment.uri ?: placeholderUri
             val previewUri = attachment.previewUri ?: placeholderUri
@@ -27,14 +23,10 @@ class AttachmentsLoader(
         }
 
         val attachmentsWithoutUri = note.attachments
-            .filter { it.uri == null || !fm.isFileExists(it.uri) }
+            .filter {it.uri == null || !fm.isFileExists(it.uri) }
             .mapNotNull { it.cloudAttachmentId }
 
-        val attachmentsWithoutPreview = note.attachments
-            .filter { it.previewUri == null || !fm.isFileExists(it.previewUri) }
-            .mapNotNull { it.cloudAttachmentId }
-
-        if (note.cloudId == null) {
+        if (note.cloudId == null || attachmentsWithoutUri.isEmpty()) {
             // nothing to load
             return localAttachments
         }
@@ -44,9 +36,8 @@ class AttachmentsLoader(
                 .getAttachmentsByNote(note.cloudId, attachmentsWithoutUri)
                 .attachments
 
-            println(cloudAttachments)
-
-            val downloadedUrisMap = mutableMapOf<String, Uri>() // cloudAttachmentId to uri
+            val downloadedUrisMap =
+                mutableMapOf<String, AttachmentUris>() // cloudAttachmentId to uris
 
             attachmentsWithoutUri.forEach {
                 val cloudAttachment = cloudAttachments.find { cloudAttachment ->
@@ -54,18 +45,23 @@ class AttachmentsLoader(
                 }
 
                 if (cloudAttachment != null) {
-                    val uri = api.downloadAttachment(fm.filesDir, cloudAttachment.signedUrl, cloudAttachment.filename)
-                    downloadedUrisMap[it] = uri
+                    val tmpUri = api.downloadAttachment(
+                        cacheDir = fm.cacheDir,
+                        signedUrl = cloudAttachment.signedUrl,
+                    )
+                    val uris = fm.processNewAttachment(tmpUri, cloudAttachment.originalFilename)
+                    downloadedUrisMap[it] = uris
                 }
             }
 
-            println(downloadedUrisMap)
+            // update local attachments
 
-            return localAttachments.map { localAttachment ->
-                val uri = downloadedUrisMap[localAttachment.cloudAttachmentId]
-                if (uri != null) {
-                    localAttachment.copy(uri = uri)
-                } else localAttachment
+            val updatedAttachments = repository.updateAttachmentsUris(note, downloadedUrisMap)
+
+            return updatedAttachments.map { attachment ->
+                val uri = attachment.uri ?: placeholderUri
+                val previewUri = attachment.previewUri ?: placeholderUri
+                ExistingAttachmentDto.create(attachment, uri, previewUri)
             }
 
         } catch (e: Throwable) {

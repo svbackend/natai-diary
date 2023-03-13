@@ -58,9 +58,6 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     suspend fun addNote(addedFiles: List<NewAttachmentDto>) {
         isLoading.value = true
 
-        println("========== ADD NOTE ==========")
-        println(addedFiles)
-
         val cloudUserId = prefs.getString("cloud_id", null)
         val appendIfPossible =
             title.value.text.isEmpty() && content.value.text.isEmpty() && addedFiles.isEmpty()

@@ -17,8 +17,7 @@ import java.time.LocalDate
 
 class EditNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
-    val apiClient = (application as DiaryApplication).appContainer.apiClient
-    val fileManager = (application as DiaryApplication).appContainer.fileManager
+    val attachmentsLoader = (application as DiaryApplication).appContainer.attachmentsLoader
 
     val actualDate = mutableStateOf(LocalDate.now())
 
@@ -114,7 +113,7 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
     }
 
     private suspend fun loadAttachments(note: LocalNote) {
-        existingAttachments.value = fileManager.loadAttachments(note)
+        existingAttachments.value = attachmentsLoader.loadAttachments(note)
     }
 
     private fun clearStoredData() {

@@ -81,7 +81,6 @@ class FileManagerService(
 
             return previewFile.toUri()
         } catch (e: Exception) {
-            println("------- GENERATE PREVIEW ERROR $internalFileUri")
             e.printStackTrace()
         }
 
@@ -92,7 +91,6 @@ class FileManagerService(
         try {
             uri.toFile().delete()
         } catch (e: Exception) {
-            println("------- DELETE FILE ERROR $uri")
             e.printStackTrace()
         }
     }
@@ -101,13 +99,8 @@ class FileManagerService(
         return try {
             uri.toFile().exists()
         } catch (e: Exception) {
-            println("------- FILE EXISTS ERROR $uri")
             e.printStackTrace()
             false
         }
-    }
-
-    suspend fun loadAttachments(note: LocalNote): List<ExistingAttachmentDto> {
-
     }
 }

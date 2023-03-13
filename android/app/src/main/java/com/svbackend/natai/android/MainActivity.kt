@@ -9,11 +9,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
 import com.svbackend.natai.android.service.ApiSyncService
+import com.svbackend.natai.android.service.ApiSyncWorker
 import com.svbackend.natai.android.service.ReminderWorker
 import com.svbackend.natai.android.ui.NataiTheme
 import com.svbackend.natai.android.ui.UserTheme
@@ -26,8 +24,6 @@ import kotlinx.coroutines.launch
 import java.time.Duration
 
 class MainActivity : ScopedActivity() {
-
-
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var apiSyncService: ApiSyncService
     private lateinit var prefs: SharedPreferences
@@ -93,7 +89,7 @@ class MainActivity : ScopedActivity() {
 
         workManager.enqueueUniquePeriodicWork(
             "reminder_work",
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.UPDATE,
             reminderWorkRequest
         )
 
@@ -106,13 +102,17 @@ class MainActivity : ScopedActivity() {
         splashViewModel.loaded()
     }
 
-    private fun syncWithApi() = launch {
+    private suspend fun syncWithApi() {
         val hasInternet = hasInternetConnection(connectivityManager)
 
         if (!hasInternet) {
-            return@launch
+            return
         }
 
-        viewModel.sync()
+        try {
+            viewModel.sync()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 }

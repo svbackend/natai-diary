@@ -5,6 +5,7 @@ package com.svbackend.natai.android.http.model
       "attachmentId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "signedUrl": "string",
       "key": "string",
+      "originalFilename": "string",
       "metadata": {
         "mimeType": "string",
         "size": 0,

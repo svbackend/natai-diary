@@ -28,7 +28,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     val apiSyncService: ApiSyncService =
         (application as DiaryApplication).appContainer.apiSyncService
 
-    val fileManager = (application as DiaryApplication).appContainer.fileManager
+    val attachmentsLoader = (application as DiaryApplication).appContainer.attachmentsLoader
 
     val prefs = (application as DiaryApplication).appContainer.sharedPrefs
 
@@ -60,9 +60,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     suspend fun loadAttachments(note: LocalNote) {
-        println("==== LOADED ATTACHMENTS")
-        val loadedAttachments = fileManager.loadAttachments(note)
-        println(loadedAttachments)
+        val loadedAttachments = attachmentsLoader.loadAttachments(note)
         selectedNoteAttachments.value = loadedAttachments
     }
 

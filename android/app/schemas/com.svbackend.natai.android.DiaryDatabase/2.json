@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "fd70a8e28d6093bf7d377f19a8ca8406",
+    "identityHash": "18428f4399ee50bd847c1e932557f9f1",
     "entities": [
       {
         "tableName": "Note",
@@ -172,7 +172,7 @@
       },
       {
         "tableName": "Attachment",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `noteId` TEXT NOT NULL, `cloudAttachmentId` TEXT, `uri` TEXT NOT NULL, `previewUri` TEXT, `filename` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `noteId` TEXT NOT NULL, `cloudAttachmentId` TEXT, `uri` TEXT, `previewUri` TEXT, `filename` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -196,7 +196,7 @@
             "fieldPath": "uri",
             "columnName": "uri",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "previewUri",
@@ -224,7 +224,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fd70a8e28d6093bf7d377f19a8ca8406')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '18428f4399ee50bd847c1e932557f9f1')"
     ]
   }
 }

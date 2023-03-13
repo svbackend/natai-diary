@@ -36,7 +36,7 @@ data class AttachmentEntityDto(
     companion object {
         fun create(attachment: Attachment): AttachmentEntityDto {
             return AttachmentEntityDto(
-                uri = Uri.parse(attachment.uri),
+                uri = attachment.uri?.let { Uri.parse(it) },
                 previewUri = attachment.previewUri?.let { Uri.parse(it) },
                 filename = attachment.filename,
                 cloudAttachmentId = attachment.cloudAttachmentId,

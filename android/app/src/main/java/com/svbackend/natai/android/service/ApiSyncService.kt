@@ -35,20 +35,12 @@ class ApiSyncService(
         val localNotes = repository
             .getAllNotesForSync()
 
-        println("[SYNC] STARTED")
-
         localNotes.forEach {
             val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
-
-            println("[SYNC] LOCAL NOTE / CLOUD NOTE")
-            println(it)
-            println(cloudNote)
 
             if (cloudNote == null) {
                 insertToCloud(it)
             } else if (it.updatedAt.isAfterSecs(cloudNote.updatedAt)) {
-                println("[SYNC] updateToCloud")
-                println("[SYNC] ${it.updatedAt} is after ${cloudNote.updatedAt}")
                 updateToCloud(it)
             }
         }
@@ -58,30 +50,22 @@ class ApiSyncService(
             val cloudNote = kv.value
             val localNote = localNotes.find { it.cloudId == cloudNoteId }
 
-            println("[SYNC] LOCAL NOTE / CLOUD NOTE (2)")
-            println(localNote)
-            println(cloudNote)
-
             if (localNote == null) {
                 insertToLocal(cloudNote)
             } else if (cloudNote.updatedAt.isAfterSecs(localNote.updatedAt)) {
-                println("[SYNC] updateToLocal")
-                println("[SYNC] ${cloudNote.updatedAt} is after ${localNote.updatedAt}")
                 updateToLocal(localNote, cloudNote)
             }
         }
 
-        cleanOldAttachments()
+        //cleanOldAttachments()
 
         isRunning = false
     }
 
     private suspend fun insertToLocal(cloudNote: CloudNote) {
         val newLocalNote = LocalNote.create(cloudNote)
-        println("[SYNC] insertToLocal")
-        println(newLocalNote)
         try {
-            repository.insertNoteAndSync(newLocalNote)
+            repository.insertNote(newLocalNote)
         } catch (e: Throwable) {
             e.printStackTrace()
         }
@@ -91,9 +75,6 @@ class ApiSyncService(
     private suspend fun updateToLocal(localNote: LocalNote, cloudNote: CloudNote) {
         val note = Note.create(localNote)
         note.sync(cloudNote)
-
-        println("[SYNC] updateToLocal")
-        println(note)
 
         val response = apiClient.getAttachmentsByNote(cloudNote.id, cloudNote.attachments)
 
@@ -114,9 +95,6 @@ class ApiSyncService(
     }
 
     private suspend fun insertToCloud(localNote: LocalNote) {
-        println("[SYNC] insertToCloud")
-        println(localNote)
-
         try {
             val response = apiClient.addNote(localNote)
             val syncedNote = Note.create(localNote)
@@ -129,9 +107,6 @@ class ApiSyncService(
     }
 
     private suspend fun updateToCloud(localNote: LocalNote) {
-        println("[SYNC] updateToCloud")
-        println(localNote)
-
         try {
             apiClient.updateNote(localNote)
         } catch (e: Throwable) {
@@ -142,9 +117,6 @@ class ApiSyncService(
     private suspend fun cleanOldAttachments() {
         // remove all attachments files for 10th+ note
         val oldNotes = repository.getOldNotes()
-
-        println("-============ OLD NOTES SIZE: ")
-        println(oldNotes.size)
 
         oldNotes.forEach {
             val newAttachments = mutableListOf<AttachmentEntityDto>()

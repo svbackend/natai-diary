@@ -10,10 +10,7 @@ import androidx.activity.ComponentActivity
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
-import com.svbackend.natai.android.service.ApiSyncService
-import com.svbackend.natai.android.service.FileManagerService
-import com.svbackend.natai.android.service.ReminderDataStore
-import com.svbackend.natai.android.service.TitleGenerator
+import com.svbackend.natai.android.service.*
 
 class AppContainer(context: Context) {
     private val db = DiaryDatabase.getInstance(context)
@@ -50,6 +47,12 @@ class AppContainer(context: Context) {
 
     val apiSyncService = ApiSyncService(
         apiClient, diaryRepository, fileManager
+    )
+
+    val attachmentsLoader = AttachmentsLoader(
+        apiClient,
+        fileManager,
+        diaryRepository
     )
 
     companion object {

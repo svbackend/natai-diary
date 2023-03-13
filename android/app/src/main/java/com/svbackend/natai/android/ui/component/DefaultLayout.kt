@@ -11,9 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.viewmodel.NoteViewModel
-import kotlinx.coroutines.CoroutineScope
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun DefaultLayout(
     vm: NoteViewModel,

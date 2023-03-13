@@ -4,6 +4,7 @@ import com.svbackend.natai.android.DiaryDatabase
 import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.entity.relation.NoteWithRelations
 import com.svbackend.natai.android.http.ApiClient
+import com.svbackend.natai.android.service.AttachmentUris
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -33,10 +34,14 @@ class DiaryRepository(
         return db.diaryDAO().getNote(id)
     }
 
-    suspend fun insertNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
+    suspend fun insertNote(note: LocalNote) = withContext(Dispatchers.IO) {
         db.diaryDAO().insertNote(Note.create(note))
         addTags(note)
         updateAttachments(note.id, note.attachments)
+    }
+
+    suspend fun insertNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
+        insertNote(note)
         syncNoteWithCloud(note)
     }
 
@@ -66,7 +71,7 @@ class DiaryRepository(
         db.diaryDAO().insertTag(tag)
     }
 
-    suspend fun insertAttachment(attachment: Attachment) = withContext(Dispatchers.IO) {
+    private fun insertAttachment(attachment: Attachment) {
         db.diaryDAO().insertAttachment(attachment)
     }
 
@@ -74,7 +79,7 @@ class DiaryRepository(
         db.diaryDAO().deleteTagsByNote(noteId)
     }
 
-    private suspend fun deleteAttachmentsByNote(noteId: String) = withContext(Dispatchers.IO) {
+    private fun deleteAttachmentsByNote(noteId: String) {
         db.diaryDAO().deleteAttachmentsByNote(noteId)
     }
 
@@ -125,5 +130,25 @@ class DiaryRepository(
 
     suspend fun getOldNotes(): List<LocalNote> = withContext(Dispatchers.IO) {
         db.diaryDAO().getOldNotes().map { LocalNote.create(it) }
+    }
+
+    suspend fun updateAttachmentsUris(
+        note: LocalNote,
+        downloadedUrisMap: MutableMap<String, AttachmentUris>
+    ) = withContext(Dispatchers.IO) {
+        val updatedAttachments = note.attachments.map { attachment ->
+            val uris = downloadedUrisMap[attachment.cloudAttachmentId]
+            if (uris != null) {
+                attachment.copy(
+                    uri = uris.uri,
+                    previewUri = uris.previewUri
+                )
+            } else {
+                attachment
+            }
+        }
+        updateAttachments(note.id, updatedAttachments)
+
+        return@withContext updatedAttachments
     }
 }

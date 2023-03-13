@@ -81,9 +81,6 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
             try {
                 val pendingAttachment = apiClient.getAttachmentSignedUrl(file.originalFilename)
 
-                println("------- GOT ATTACHMENT ID: ${pendingAttachment.attachmentId}")
-                println(pendingAttachment)
-
                 // todo move to method
                 var updatedFile = file.copy(
                     isUploading = true,
@@ -101,7 +98,6 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
                     )
                     updateFile(updatedFile)
                 } else {
-                    println("------- START UPLOADING")
                     resolvedFileInput.use { inputStream ->
                         apiClient.uploadFile(
                             inputStream = inputStream,
@@ -122,7 +118,6 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
                     }
                 }
             } catch (e: Exception) {
-                println("------- UPLOADING ERROR")
                 e.printStackTrace()
                 updateFile(
                     // todo move to method

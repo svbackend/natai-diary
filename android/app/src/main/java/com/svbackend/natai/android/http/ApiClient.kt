@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.http
 
 import android.net.Uri
+import android.util.Log
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -32,6 +33,8 @@ import java.io.InputStream
 //const val BASE_URL = BuildConfig.API_BASE_URL
 const val BASE_URL = "https://natai.app"
 //const val BASE_URL = "https://5e9e-24-203-8-51.ngrok.io"
+
+const val TAG = "ApiClient"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -193,25 +196,29 @@ class ApiClient(
         val response = client.get("/api/v1/notes/${noteId}/attachments${queryStr}")
 
         if (response.status != HttpStatusCode.OK) {
-            throw DownloadAttachmentErrorException(response.body())
+            Log.v(TAG, queryStr)
+            Log.v(TAG, response.body())
+            throw DownloadAttachmentErrorException()
         }
 
         return response.body()
     }
 
-    // get file from s3, save it to filesDir and return Uri
-    suspend fun downloadAttachment(dir: File, signedUrl: String, filename: String): Uri {
+    // get file from s3, convert to temporary file and return its uri
+    suspend fun downloadAttachment(cacheDir: File, signedUrl: String): Uri {
         val fileResponse = s3Client.get(signedUrl)
 
         if (fileResponse.status != HttpStatusCode.OK) {
-            throw DownloadAttachmentErrorException(fileResponse.body())
+            Log.v(TAG, fileResponse.bodyAsText())
+            throw DownloadAttachmentErrorException()
         }
 
-        val fileBytes = fileResponse.body<ByteArray>()
+        val file = fileResponse.body<ByteArray>()
+        val tempFile = withContext(Dispatchers.IO) {
+            File.createTempFile("attachment", null, cacheDir)
+        }
+        tempFile.writeBytes(file)
 
-        val file = File(dir, filename)
-        file.writeBytes(fileBytes)
-
-        return Uri.fromFile(file)
+        return Uri.fromFile(tempFile)
     }
 }
