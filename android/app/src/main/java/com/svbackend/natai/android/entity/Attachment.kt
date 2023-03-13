@@ -3,6 +3,8 @@ package com.svbackend.natai.android.entity
 import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.svbackend.natai.android.http.model.CloudAttachment
+import com.svbackend.natai.android.http.model.PREVIEW_TYPE_MD
 import java.util.*
 
 @Entity

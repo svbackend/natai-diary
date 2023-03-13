@@ -1,11 +1,12 @@
 package com.svbackend.natai.android.service
 
-import android.net.Uri
 import com.svbackend.natai.android.entity.AttachmentEntityDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
 import com.svbackend.natai.android.http.ApiClient
+import com.svbackend.natai.android.http.model.CloudAttachment
 import com.svbackend.natai.android.http.model.CloudNote
+import com.svbackend.natai.android.http.model.PREVIEW_TYPE_MD
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.utils.isAfterSecs
 
@@ -63,7 +64,18 @@ class ApiSyncService(
     }
 
     private suspend fun insertToLocal(cloudNote: CloudNote) {
-        val newLocalNote = LocalNote.create(cloudNote)
+        var newLocalNote = LocalNote.create(cloudNote)
+
+        if (newLocalNote.attachments.isNotEmpty()) {
+            try {
+                val response = apiClient.getAttachmentsByNote(cloudNote.id)
+                val attachments = processAttachments(response.attachments)
+                newLocalNote = newLocalNote.updateAttachments(attachments)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+        }
+
         try {
             repository.insertNote(newLocalNote)
         } catch (e: Throwable) {
@@ -76,15 +88,8 @@ class ApiSyncService(
         val note = Note.create(localNote)
         note.sync(cloudNote)
 
-        val response = apiClient.getAttachmentsByNote(cloudNote.id, cloudNote.attachments)
-
-        val attachments = response.attachments.map {
-            AttachmentEntityDto(
-                uri = null,
-                filename = it.key, // todo where's original filename?
-                cloudAttachmentId = it.attachmentId,
-            )
-        }
+        val response = apiClient.getAttachmentsByNote(cloudNote.id)
+        val attachments = processAttachments(response.attachments)
 
         try {
             repository.updateNote(note)
@@ -111,6 +116,44 @@ class ApiSyncService(
             apiClient.updateNote(localNote)
         } catch (e: Throwable) {
             e.printStackTrace()
+        }
+    }
+
+    // download previews + update original filenames
+    private suspend fun processAttachments(cloudAttachments: List<CloudAttachment>): List<AttachmentEntityDto> {
+        val cacheDir = fileManagerService.cacheDir
+
+        return cloudAttachments.map { cloudAttachment ->
+            val mediumPreview = cloudAttachment.previews.find { it.type == PREVIEW_TYPE_MD }
+
+            val dtoWithoutPreview = AttachmentEntityDto(
+                uri = null,
+                previewUri = null,
+                filename = cloudAttachment.originalFilename,
+                cloudAttachmentId = cloudAttachment.attachmentId
+            )
+
+            if (mediumPreview == null) {
+                return@map dtoWithoutPreview
+            }
+
+            try {
+                val tmpUri = apiClient.downloadAttachment(cacheDir, mediumPreview.signedUrl)
+                val localStorageUri = fileManagerService.savePreview(
+                    uri = tmpUri,
+                    originalFilename = cloudAttachment.originalFilename
+                )
+
+                return@map AttachmentEntityDto(
+                    uri = null,
+                    previewUri = localStorageUri,
+                    filename = cloudAttachment.originalFilename,
+                    cloudAttachmentId = cloudAttachment.attachmentId,
+                )
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                return@map dtoWithoutPreview
+            }
         }
     }
 

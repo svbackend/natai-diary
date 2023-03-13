@@ -7,8 +7,6 @@ import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.svbackend.natai.android.coil.CropTransformation
-import com.svbackend.natai.android.entity.ExistingAttachmentDto
-import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.ApiClient
 import java.io.File
 
@@ -102,5 +100,20 @@ class FileManagerService(
             e.printStackTrace()
             false
         }
+    }
+
+    fun savePreview(uri: Uri, originalFilename: String): Uri {
+        val originalFile = uri.toFile()
+        val ext = originalFilename.substringAfterLast(".")
+        val previewFilename = originalFilename.replace(".$ext", "_preview.$ext")
+        val previewFile = File(filesDir, previewFilename)
+        val previewUri = previewFile.toUri()
+
+        originalFile.copyTo(previewFile, overwrite = true)
+
+        // delete original file
+        originalFile.delete()
+
+        return previewUri
     }
 }

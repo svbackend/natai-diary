@@ -33,7 +33,7 @@ class AttachmentsLoader(
 
         try {
             val cloudAttachments = api
-                .getAttachmentsByNote(note.cloudId, attachmentsWithoutUri)
+                .getAttachmentsByNote(note.cloudId)
                 .attachments
 
             val downloadedUrisMap =

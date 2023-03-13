@@ -11,15 +11,28 @@ package com.svbackend.natai.android.http.model
         "size": 0,
         "width": 0,
         "height": 0
-      }
+      },
+      "previews": [
+        {
+          "key": "string",
+          "signedUrl": "string",
+          "width": 0,
+          "height": 0,
+          "type": "string"
+        }
+      ]
     }
  */
+
+const val PREVIEW_TYPE_MD = "md"
+
 data class CloudAttachment(
     val attachmentId: String,
     val signedUrl: String,
     val key: String,
     val originalFilename: String,
     val metadata: CloudAttachmentMetadata,
+    val previews: List<CloudAttachmentPreview>,
 )
 
 data class CloudAttachmentMetadata(
@@ -27,4 +40,12 @@ data class CloudAttachmentMetadata(
     val size: Int?,
     val width: Int?,
     val height: Int?,
+)
+
+data class CloudAttachmentPreview(
+    val key: String,
+    val signedUrl: String,
+    val width: Int,
+    val height: Int,
+    val type: String,
 )

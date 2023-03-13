@@ -189,14 +189,10 @@ class ApiClient(
         return response.body()
     }
 
-    suspend fun getAttachmentsByNote(noteId: String, attachments: List<String>): AttachmentsResponse {
-        // ?attachments[]=id1,id2
-        val queryStr = "?attachments[]=${attachments.joinToString(",")}"
-
-        val response = client.get("/api/v1/notes/${noteId}/attachments${queryStr}")
+    suspend fun getAttachmentsByNote(noteId: String): AttachmentsResponse {
+        val response = client.get("/api/v1/notes/${noteId}/attachments")
 
         if (response.status != HttpStatusCode.OK) {
-            Log.v(TAG, queryStr)
             Log.v(TAG, response.body())
             throw DownloadAttachmentErrorException()
         }
