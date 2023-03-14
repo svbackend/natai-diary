@@ -8,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -38,10 +37,9 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
             val uri = attachment.previewUri ?: attachment.uri ?: placeholder
             val isLast = idx == lastIdx
             Column(
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 64.dp, minHeight = 64.dp)
-                    .weight(1f),
                 horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .padding(end = 12.dp)
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -50,6 +48,7 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
                         painter = rememberAsyncImagePainter(uri),
                         contentDescription = attachment.filename,
                         modifier = Modifier
+                            .size(64.dp, 64.dp)
                             .clip(RoundedCornerShape(percent = 10))
                     )
 
