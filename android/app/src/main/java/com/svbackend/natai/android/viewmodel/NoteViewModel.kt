@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,7 +20,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
+
+
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
+    val TAG = "NoteViewModel"
+
     val diaryRepository: DiaryRepository =
         (application as DiaryApplication).appContainer.diaryRepository
     val userRepository: UserRepository =
@@ -69,8 +74,13 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     suspend fun loadAttachments(note: LocalNote) {
-        val loadedAttachments = attachmentsLoader.loadAttachments(note)
-        selectedNoteAttachments.value = loadedAttachments
+        try {
+            val loadedAttachments = attachmentsLoader.loadAttachments(note)
+            selectedNoteAttachments.value = loadedAttachments
+        } catch (e: Exception) {
+            selectedNoteAttachments.value = emptyList()
+            Log.v(TAG, "Failed to load attachments", e)
+        }
     }
 
     val isSyncing = MutableSharedFlow<Boolean>()

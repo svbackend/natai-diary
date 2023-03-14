@@ -87,13 +87,14 @@ data class ExistingAttachmentDto(
 ) {
     companion object {
         fun create(
-            attachment: AttachmentEntityDto,
+            cloudAttachmentId: String,
+            filename: String,
             uri: Uri,
             previewUri: Uri
         ): ExistingAttachmentDto {
             return ExistingAttachmentDto(
-                cloudAttachmentId = attachment.cloudAttachmentId!!,
-                filename = attachment.filename,
+                cloudAttachmentId = cloudAttachmentId,
+                filename = filename,
                 uri = uri,
                 previewUri = previewUri,
             )

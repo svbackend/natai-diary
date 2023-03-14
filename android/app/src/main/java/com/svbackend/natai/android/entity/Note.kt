@@ -106,7 +106,6 @@ data class LocalNote(
     fun updateAttachments(attachments: List<AttachmentEntityDto>): LocalNote {
         return this.copy(
             attachments = attachments,
-            updatedAt = Instant.now(),
         )
     }
 

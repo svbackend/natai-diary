@@ -52,7 +52,8 @@ class AppContainer(context: Context) {
     val attachmentsLoader = AttachmentsLoader(
         apiClient,
         fileManager,
-        diaryRepository
+        diaryRepository,
+        connectivityManager
     )
 
     companion object {

@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -38,6 +39,7 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
             val isLast = idx == lastIdx
             Column(
                 modifier = Modifier
+                    .defaultMinSize(minWidth = 64.dp, minHeight = 64.dp)
                     .weight(1f),
                 horizontalAlignment = Alignment.Start,
             ) {
@@ -63,5 +65,23 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
                 }
             }
         }
+
+        // not sure if it helps, but when scrolling fast some images are are jumping
+        /*
+        val transparentPlaceholders = 4 - visibleAttachments.count()
+        repeat(transparentPlaceholders) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .alpha(0f)
+                )
+            }
+        }
+        */
     }
 }

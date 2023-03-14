@@ -175,6 +175,18 @@ class ApiClient(
         onFinish()
     }
 
+    @OptIn(InternalAPI::class)
+    suspend fun uploadFileSync(
+        inputStream: InputStream,
+        contentType: String,
+        uploadUrl: String,
+    ) = withContext(Dispatchers.IO) {
+        s3Client.put(uploadUrl) {
+            header("Content-Type", contentType)
+            body = inputStream.readBytes()
+        }
+    }
+
     suspend fun getAttachmentSignedUrl(
         originalFilename: String
     ): AttachmentSignedUrlResponse {

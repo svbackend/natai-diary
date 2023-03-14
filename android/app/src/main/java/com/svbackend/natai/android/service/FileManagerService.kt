@@ -12,6 +12,7 @@ import com.svbackend.natai.android.coil.CropTransformation
 import com.svbackend.natai.android.http.ApiClient
 import java.io.File
 import androidx.exifinterface.media.ExifInterface
+import com.svbackend.natai.android.entity.AttachmentEntityDto
 
 data class AttachmentUris(
     val uri: Uri,
@@ -97,8 +98,7 @@ class FileManagerService(
         return null
     }
 
-    private fun orientate(internalFileUri: Uri, croppedBitmap: Bitmap): Bitmap
-    {
+    private fun orientate(internalFileUri: Uri, croppedBitmap: Bitmap): Bitmap {
         // fix orientation if needed (based on exif data)
         val exif = ExifInterface(internalFileUri.toFile())
         val orientation = exif.getAttributeInt(
@@ -108,13 +108,37 @@ class FileManagerService(
 
         val finalBitmap = when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> {
-                Bitmap.createBitmap(croppedBitmap, 0, 0, croppedBitmap.width, croppedBitmap.height, Matrix().apply { postRotate(90f) }, true)
+                Bitmap.createBitmap(
+                    croppedBitmap,
+                    0,
+                    0,
+                    croppedBitmap.width,
+                    croppedBitmap.height,
+                    Matrix().apply { postRotate(90f) },
+                    true
+                )
             }
             ExifInterface.ORIENTATION_ROTATE_180 -> {
-                Bitmap.createBitmap(croppedBitmap, 0, 0, croppedBitmap.width, croppedBitmap.height, Matrix().apply { postRotate(180f) }, true)
+                Bitmap.createBitmap(
+                    croppedBitmap,
+                    0,
+                    0,
+                    croppedBitmap.width,
+                    croppedBitmap.height,
+                    Matrix().apply { postRotate(180f) },
+                    true
+                )
             }
             ExifInterface.ORIENTATION_ROTATE_270 -> {
-                Bitmap.createBitmap(croppedBitmap, 0, 0, croppedBitmap.width, croppedBitmap.height, Matrix().apply { postRotate(270f) }, true)
+                Bitmap.createBitmap(
+                    croppedBitmap,
+                    0,
+                    0,
+                    croppedBitmap.width,
+                    croppedBitmap.height,
+                    Matrix().apply { postRotate(270f) },
+                    true
+                )
             }
             else -> {
                 croppedBitmap
@@ -154,5 +178,44 @@ class FileManagerService(
         originalFile.delete()
 
         return previewUri
+    }
+
+    suspend fun uploadAttachments(
+        attachments: List<AttachmentEntityDto>
+    ): List<AttachmentEntityDto> {
+        val uploadedAttachments = attachments.map { attachment ->
+            if (attachment.uri == null || attachment.cloudAttachmentId != null) {
+                return@map attachment
+            }
+
+            val resolvedFileInput = contentResolver.openInputStream(attachment.uri)
+
+            if (resolvedFileInput == null) {
+                Log.v(TAG, "uploadAttachments - not found ${attachment.uri}")
+                return@map attachment
+            }
+
+            val pendingAttachment = apiClient.getAttachmentSignedUrl(attachment.filename)
+            val contentType = contentResolver.getType(attachment.uri) ?: "application/octet-stream"
+
+            try {
+                resolvedFileInput.use { inputStream ->
+                    apiClient.uploadFileSync(
+                        inputStream = inputStream,
+                        contentType = contentType,
+                        pendingAttachment.uploadUrl
+                    )
+                }
+            } catch (e: Exception) {
+                Log.v(TAG, "uploadAttachments - upload failed ${attachment.uri}", e)
+                return@map attachment
+            }
+
+            attachment.copy(
+                cloudAttachmentId = pendingAttachment.attachmentId,
+            )
+        }
+
+        return uploadedAttachments
     }
 }

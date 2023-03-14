@@ -101,8 +101,10 @@ class ApiSyncService(
 
     private suspend fun insertToCloud(localNote: LocalNote) {
         try {
-            val response = apiClient.addNote(localNote)
-            val syncedNote = Note.create(localNote)
+            val attachments = fileManagerService.uploadAttachments(localNote.attachments)
+            val noteWithAttachments = localNote.updateAttachments(attachments)
+            val response = apiClient.addNote(noteWithAttachments)
+            val syncedNote = Note.create(noteWithAttachments)
             syncedNote.cloudId = response.noteId
 
             repository.updateNote(syncedNote)
@@ -113,7 +115,9 @@ class ApiSyncService(
 
     private suspend fun updateToCloud(localNote: LocalNote) {
         try {
-            apiClient.updateNote(localNote)
+            val attachments = fileManagerService.uploadAttachments(localNote.attachments)
+            val noteWithAttachments = localNote.updateAttachments(attachments)
+            apiClient.updateNote(noteWithAttachments)
         } catch (e: Throwable) {
             e.printStackTrace()
         }

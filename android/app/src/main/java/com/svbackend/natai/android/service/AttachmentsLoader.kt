@@ -1,29 +1,46 @@
 package com.svbackend.natai.android.service
 
+import android.net.ConnectivityManager
 import android.net.Uri
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.utils.hasInternetConnection
 
 class AttachmentsLoader(
     private val api: ApiClient,
     private val fm: FileManagerService,
     private val repository: DiaryRepository,
+    private val connectivityManager: ConnectivityManager,
 ) {
     // res/raw/placeholder.png
     private val placeholderUri: Uri =
         Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
 
     suspend fun loadAttachments(note: LocalNote): List<ExistingAttachmentDto> {
-        val localAttachments = note.attachments.map { attachment ->
+        val localAttachments = note.attachments.mapNotNull { attachment ->
             val uri = attachment.uri ?: placeholderUri
             val previewUri = attachment.previewUri ?: placeholderUri
-            ExistingAttachmentDto.create(attachment, uri, previewUri)
+
+            if (attachment.cloudAttachmentId == null) {
+                return@mapNotNull null
+            }
+
+            ExistingAttachmentDto.create(
+                attachment.cloudAttachmentId,
+                attachment.filename,
+                uri,
+                previewUri
+            )
+        }
+
+        if (!hasInternetConnection(connectivityManager)) {
+            return localAttachments
         }
 
         val attachmentsWithoutUri = note.attachments
-            .filter {it.uri == null || !fm.isFileExists(it.uri) }
+            .filter { it.uri == null || !fm.isFileExists(it.uri) }
             .mapNotNull { it.cloudAttachmentId }
 
         if (note.cloudId == null || attachmentsWithoutUri.isEmpty()) {
@@ -58,10 +75,20 @@ class AttachmentsLoader(
 
             val updatedAttachments = repository.updateAttachmentsUris(note, downloadedUrisMap)
 
-            return updatedAttachments.map { attachment ->
+            return updatedAttachments.mapNotNull { attachment ->
                 val uri = attachment.uri ?: placeholderUri
                 val previewUri = attachment.previewUri ?: placeholderUri
-                ExistingAttachmentDto.create(attachment, uri, previewUri)
+
+                if (attachment.cloudAttachmentId == null) {
+                    return@mapNotNull null
+                }
+
+                ExistingAttachmentDto.create(
+                    attachment.cloudAttachmentId,
+                    attachment.filename,
+                    uri,
+                    previewUri
+                )
             }
 
         } catch (e: Throwable) {

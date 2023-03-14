@@ -3,6 +3,7 @@ package com.svbackend.natai.android.viewmodel
 import android.app.Application
 import android.content.ContentResolver
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,8 @@ data class AddedFile(
 }
 
 class AddFileViewModel(application: Application) : AndroidViewModel(application) {
+    val TAG = "AddFileViewModel"
+
     val contentResolver: ContentResolver = application.contentResolver
     val apiClient: ApiClient = (application as DiaryApplication).appContainer.apiClient
     val fileManager: FileManagerService = (application as DiaryApplication).appContainer.fileManager
@@ -191,6 +194,7 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
         return addedFiles.value.mapNotNull { file ->
             try {
                 val processedAttachment = fileManager.processNewAttachment(file.uri, file.originalFilename)
+                Log.v(TAG, "Processed attachment: $processedAttachment")
                 return@mapNotNull NewAttachmentDto(
                     cloudAttachmentId = file.cloudAttachmentId,
                     filename = file.originalFilename,
