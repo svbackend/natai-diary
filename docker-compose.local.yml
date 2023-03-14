@@ -1,0 +1,101 @@
+# Use this only for local testing
+version: '3.9'
+services:
+  gateway:
+    build:
+      context: gateway
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+      - frontend
+    expose:
+      - 80
+    networks:
+      - vps-traefik
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gateway-natai.rule=Host(`natai.docker.localhost`)"
+      - "traefik.http.services.gateway-natai.loadbalancer.server.port=80"
+
+  api-gateway:
+    build:
+      context: api
+      dockerfile: docker/nginx/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./api:/app
+    depends_on:
+      - db
+      - api-php-fpm
+    networks:
+      - default
+    labels:
+      - "traefik.enable=false"
+
+  api-php-fpm:
+    image: natai/api-php-fpm:latest
+    build:
+      context: api
+      dockerfile: docker/php/Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./api:/app
+    networks:
+      - default
+    labels:
+      - "traefik.enable=false"
+
+  api-queue:
+    image: natai/api-php-fpm:latest
+    restart: unless-stopped
+    build:
+      context: api
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./api:/app
+    command: sh -c "bin/console messenger:consume async --limit=10"
+    tty: true
+    depends_on:
+      - db
+    networks:
+      - default
+    labels:
+      - "traefik.enable=false"
+
+  frontend:
+    image: natai/frontend:latest
+    build:
+      context: frontend
+      dockerfile: docker/Dockerfile
+    env_file:
+      - frontend/.env.prod.local
+    restart: always
+    networks:
+      - default
+    labels:
+      - "traefik.enable=false"
+
+  db:
+    image: postgres:14-alpine
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - /tmp/backup:/tmp/backup
+    ports:
+      - "35432:5432"
+    networks:
+      - default
+    labels:
+      - "traefik.enable=false"
+
+volumes:
+  db-data:
+
+networks:
+  default:
+  vps-traefik:
+    external: true

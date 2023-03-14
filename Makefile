@@ -39,3 +39,12 @@ dev-db:
 
 prod-build:
 	./build.sh
+
+prod-up:
+	docker compose -f docker-compose.local.yml up db api-php-fpm -d
+	docker compose -f docker-compose.local.yml exec api-php-fpm php bin/console doctrine:migrations:migrate -n
+	docker compose -f docker-compose.local.yml up
+
+prod-up-build:
+	docker compose -f docker-compose.local.yml stop
+	docker compose -f docker-compose.local.yml up --build --force-recreate
