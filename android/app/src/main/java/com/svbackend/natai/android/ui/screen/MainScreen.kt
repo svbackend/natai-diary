@@ -28,6 +28,7 @@ import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.ui.HorizontalDivider
 import com.svbackend.natai.android.ui.VerticalDivider
+import com.svbackend.natai.android.ui.component.AttachmentsPreview
 import com.svbackend.natai.android.ui.component.RegularTagsRow
 import com.svbackend.natai.android.ui.component.SpecialTagsRow
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
@@ -272,6 +273,7 @@ fun NoteCard(note: LocalNote, onNoteClick: (LocalNote) -> Unit) {
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
+                AttachmentsPreview(attachments = note.attachments)
             }
         }
     }

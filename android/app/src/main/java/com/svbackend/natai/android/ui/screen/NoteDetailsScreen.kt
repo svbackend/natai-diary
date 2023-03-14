@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.ui.screen
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,19 +13,20 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.coil.CropTransformation
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.ui.component.AllTagsBadges
+import com.svbackend.natai.android.ui.component.PhotoViewDialog
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 
@@ -37,6 +39,7 @@ fun NoteDetailsScreen(
 ) {
     val note = vm.selectedNote.collectAsState(initial = null).value
     val attachments = vm.selectedNoteAttachments.value
+    val selectedAttachment = vm.selectedAttachment.value
 
     val context = LocalContext.current
 
@@ -87,7 +90,7 @@ fun NoteDetailsScreen(
                 )
             }
 
-            AttachmentsGrid(attachments)
+            AttachmentsGrid(attachments, onOpen = { vm.selectAttachment(it) })
 
             // Space between
             Row(
@@ -98,8 +101,6 @@ fun NoteDetailsScreen(
             ) {
                 Button(
                     onClick = { onEditClick(noteId) },
-                    modifier = Modifier
-                        .padding(top = 16.dp)
                 ) {
                     Icon(
                         Icons.Filled.Edit,
@@ -118,8 +119,6 @@ fun NoteDetailsScreen(
                             .show()
                         onDeleteClick(note)
                     },
-                    modifier = Modifier
-                        .padding(top = 16.dp)
                 ) {
                     Icon(
                         Icons.Filled.Delete,
@@ -133,31 +132,58 @@ fun NoteDetailsScreen(
             }
         }
     }
+
+    if (selectedAttachment != null) {
+        PhotoViewDialog(
+            attachment = selectedAttachment,
+            onClose = { vm.clearSelectedAttachment() },
+            onNext = { vm.selectNextAttachment() },
+            onPrev = { vm.selectPrevAttachment() }
+        )
+    }
 }
 
 @Composable
-fun AttachmentsGrid(attachments: List<ExistingAttachmentDto>) {
+fun AttachmentsGrid(attachments: List<ExistingAttachmentDto>, onOpen: (ExistingAttachmentDto) -> Unit) {
     if (attachments.isEmpty()) {
         return
     }
 
-    val attachmentsRows = attachments.chunked(3)
+    val attachmentsRows = attachments.chunked(4)
 
     attachmentsRows.forEach { row ->
         Row(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(bottom = 16.dp),
         ) {
             row.forEach { attachment ->
-                Column {
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    horizontalAlignment = Alignment.Start,
+                ) {
                     AsyncImage(
-                        model = attachment.previewUri ?: attachment.uri ?: painterResource(id = R.drawable.placeholder),
+                        model = attachment.previewUri ?: attachment.uri
+                        ?: painterResource(id = R.drawable.placeholder),
                         contentDescription = attachment.filename,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(percent = 15)),
+                            .clip(RoundedCornerShape(percent = 10))
+                            .clickable { onOpen(attachment) },
                         error = painterResource(id = R.drawable.placeholder)
+                    )
+                }
+            }
+
+            val transparentPlaceholders = 4 - row.size
+            repeat(transparentPlaceholders) {
+                Column(modifier = Modifier
+                    .weight(1f)) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .alpha(0f)
                     )
                 }
             }

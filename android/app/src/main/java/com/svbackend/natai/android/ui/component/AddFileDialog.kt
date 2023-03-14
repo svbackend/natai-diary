@@ -1,9 +1,5 @@
 package com.svbackend.natai.android.ui.component
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -155,17 +151,18 @@ fun AddedFile(f: AddedFile, onDelete: (AddedFile) -> Unit) {
         }
     }
 }
+
 @Composable
 fun ExistingAttachment(f: ExistingAttachmentDto, onDelete: (ExistingAttachmentDto) -> Unit) {
-    // Image, name, remove button
+    val placeholder = painterResource(id = R.drawable.placeholder)
     Row(verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(
-            model = f.uri,
+            model = f.previewUri ?: f.uri ?: placeholder,
             contentDescription = null,
             modifier = Modifier
                 .size(64.dp)
                 .padding(8.dp),
-            error = painterResource(id = R.drawable.placeholder)
+            error = placeholder
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(f.filename, maxLines = 1)

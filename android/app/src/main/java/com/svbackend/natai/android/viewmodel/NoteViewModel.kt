@@ -46,6 +46,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     val selectedNote = MutableSharedFlow<LocalNote?>(replay = 1)
     val selectedNoteAttachments = mutableStateOf(emptyList<ExistingAttachmentDto>())
+    val selectedAttachment = mutableStateOf<ExistingAttachmentDto?>(null)
 
     fun selectNote(id: String) = viewModelScope.launch {
         selectedNote.emit(null)
@@ -57,6 +58,14 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
                 selectedNote.emit(localNote)
                 loadAttachments(localNote)
             }
+    }
+
+    fun selectAttachment(attachment: ExistingAttachmentDto) {
+        selectedAttachment.value = attachment
+    }
+
+    fun clearSelectedAttachment() {
+        selectedAttachment.value = null
     }
 
     suspend fun loadAttachments(note: LocalNote) {
@@ -168,5 +177,43 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         setUserCloudId(null)
 
         onLogout()
+    }
+
+    fun selectNextAttachment() {
+        val attachments = selectedNoteAttachments.value
+        val currentAttachment = selectedAttachment.value
+
+        if (attachments.isEmpty()) {
+            return
+        }
+
+        if (currentAttachment == null) {
+            selectAttachment(attachments.first())
+            return
+        }
+
+        val currentIndex = attachments.indexOf(currentAttachment)
+        val nextIndex = if (currentIndex == attachments.lastIndex) 0 else currentIndex + 1
+
+        selectAttachment(attachments[nextIndex])
+    }
+
+    fun selectPrevAttachment() {
+        val attachments = selectedNoteAttachments.value
+        val currentAttachment = selectedAttachment.value
+
+        if (attachments.isEmpty()) {
+            return
+        }
+
+        if (currentAttachment == null) {
+            selectAttachment(attachments.first())
+            return
+        }
+
+        val currentIndex = attachments.indexOf(currentAttachment)
+        val nextIndex = if (currentIndex == 0) attachments.lastIndex else currentIndex - 1
+
+        selectAttachment(attachments[nextIndex])
     }
 }

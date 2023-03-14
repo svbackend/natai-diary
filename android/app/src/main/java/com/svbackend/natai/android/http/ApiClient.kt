@@ -54,7 +54,7 @@ class ApiClient(
             }
         }
         install(HttpTimeout) {
-            requestTimeoutMillis = 4350
+            requestTimeoutMillis = 5000
         }
     }
 
