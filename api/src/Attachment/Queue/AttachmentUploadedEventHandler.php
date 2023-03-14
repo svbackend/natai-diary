@@ -79,13 +79,24 @@ class AttachmentUploadedEventHandler
                 [$width, $height] = $this->getImageDimensions($tmpFile, $exif);
             } catch (\Throwable $e) {
                 $this->logger->error("AttachmentUploadedEventHandler - Cannot get image dimensions for file {$key}", [
-                    'bucket' => $bucket,
                     'key' => $key,
                     'exception' => $e->getMessage(),
                 ]);
             }
 
-            $this->previewGenerator->generatePreviews($uploadedAttachment, $tmpFile);
+            $currentMemoryLimit = ini_get('memory_limit');
+            ini_set('memory_limit', '256M');
+
+            try {
+                $this->previewGenerator->generatePreviews($uploadedAttachment, $tmpFile);
+            } catch (\Throwable $e) {
+                $this->logger->error("AttachmentUploadedEventHandler - Cannot generate previews for file {$key}", [
+                    'key' => $key,
+                    'exception' => $e->getMessage(),
+                ]);
+            }
+
+            ini_set('memory_limit', $currentMemoryLimit);
 
             unlink($tmpFile);
         }
