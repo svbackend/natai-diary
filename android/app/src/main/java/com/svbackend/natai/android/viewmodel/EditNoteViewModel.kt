@@ -1,14 +1,12 @@
 package com.svbackend.natai.android.viewmodel
 
 import android.app.Application
-import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.*
-import com.svbackend.natai.android.http.exception.DownloadAttachmentErrorException
 import com.svbackend.natai.android.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
@@ -37,6 +35,10 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
         emptyList<ExistingAttachmentDto>()
     )
 
+    val existingLocalAttachments = mutableStateOf(
+        emptyList<ExistingLocalAttachmentDto>()
+    )
+
     val note = MutableSharedFlow<LocalNote?>(replay = 1)
 
     val isLoading = mutableStateOf(false)
@@ -60,7 +62,16 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
             AttachmentEntityDto.create(file)
         }
 
-        val combinedAttachments = newAttachments + existingAttachments.map {
+        val existingLocalAttachments = existingLocalAttachments.value.map {
+            AttachmentEntityDto(
+                uri = it.uri,
+                previewUri = it.previewUri,
+                filename = it.filename,
+                cloudAttachmentId = null
+            )
+        }
+
+        val combinedAttachments = newAttachments + existingLocalAttachments + existingAttachments.map {
             AttachmentEntityDto.create(it)
         }
 
@@ -114,6 +125,19 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
 
     private suspend fun loadAttachments(note: LocalNote) {
         existingAttachments.value = attachmentsLoader.loadAttachments(note)
+
+        existingLocalAttachments.value = note.attachments
+            .filter { it.cloudAttachmentId == null }
+            .mapNotNull { attachment ->
+                if (attachment.uri == null) {
+                    return@mapNotNull null
+                }
+                ExistingLocalAttachmentDto(
+                    filename = attachment.filename,
+                    uri = attachment.uri,
+                    previewUri = attachment.previewUri
+                )
+            }
     }
 
     private fun clearStoredData() {

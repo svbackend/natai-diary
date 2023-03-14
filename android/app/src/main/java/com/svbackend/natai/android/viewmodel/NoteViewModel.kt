@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
+import com.svbackend.natai.android.entity.ExistingLocalAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.query.UserQueryException
@@ -19,7 +20,6 @@ import com.svbackend.natai.android.ui.UserTheme
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-
 
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -50,8 +50,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     var allNotesState by mutableStateOf(emptyList<LocalNote>())
 
     val selectedNote = MutableSharedFlow<LocalNote?>(replay = 1)
-    val selectedNoteAttachments = mutableStateOf(emptyList<ExistingAttachmentDto>())
-    val selectedAttachment = mutableStateOf<ExistingAttachmentDto?>(null)
+    val selectedNoteAttachments = mutableStateOf(emptyList<ExistingLocalAttachmentDto>())
+    val selectedAttachment = mutableStateOf<ExistingLocalAttachmentDto?>(null)
 
     fun selectNote(id: String) = viewModelScope.launch {
         selectedNote.emit(null)
@@ -65,7 +65,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             }
     }
 
-    fun selectAttachment(attachment: ExistingAttachmentDto) {
+    fun selectAttachment(attachment: ExistingLocalAttachmentDto) {
         selectedAttachment.value = attachment
     }
 
@@ -73,9 +73,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         selectedAttachment.value = null
     }
 
-    suspend fun loadAttachments(note: LocalNote) {
+    fun loadAttachments(note: LocalNote) {
         try {
-            val loadedAttachments = attachmentsLoader.loadAttachments(note)
+            val loadedAttachments = attachmentsLoader.loadLocalAttachments(note)
             selectedNoteAttachments.value = loadedAttachments
         } catch (e: Exception) {
             selectedNoteAttachments.value = emptyList()

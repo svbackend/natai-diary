@@ -3,6 +3,7 @@ package com.svbackend.natai.android.service
 import android.net.ConnectivityManager
 import android.net.Uri
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
+import com.svbackend.natai.android.entity.ExistingLocalAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
@@ -94,6 +95,16 @@ class AttachmentsLoader(
         } catch (e: Throwable) {
             e.printStackTrace()
             return localAttachments
+        }
+    }
+
+    fun loadLocalAttachments(note: LocalNote): List<ExistingLocalAttachmentDto> {
+        return note.attachments.map {
+            ExistingLocalAttachmentDto(
+                filename = it.filename,
+                uri = it.uri ?: it.previewUri ?: placeholderUri,
+                previewUri = it.previewUri,
+            )
         }
     }
 }

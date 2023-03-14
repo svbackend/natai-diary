@@ -28,20 +28,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.zIndex
 import coil.compose.rememberAsyncImagePainter
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.entity.ExistingAttachmentDto
+import com.svbackend.natai.android.entity.ExistingLocalAttachmentDto
 
 // Zoomable image, you can swipe left/right to change current attachment
 @Composable
 fun PhotoViewDialog(
-    attachment: ExistingAttachmentDto,
+    attachment: ExistingLocalAttachmentDto,
     onClose: () -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit
 ) {
     BackHandler(onBack = onClose)
 
-    val placeholder = painterResource(id = R.drawable.placeholder)
-    val currentPhoto = attachment.uri ?: attachment.previewUri ?: placeholder
+    val currentPhoto = attachment.uri
     var scale by remember { mutableStateOf(1f) }
     var offsetState by remember { mutableStateOf(Offset.Zero) }
     val scaleState = rememberTransformableState { zoomChange, panChange, _ ->

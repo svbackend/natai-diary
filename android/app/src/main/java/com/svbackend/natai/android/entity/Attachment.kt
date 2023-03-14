@@ -101,3 +101,9 @@ data class ExistingAttachmentDto(
         }
     }
 }
+
+data class ExistingLocalAttachmentDto(
+    val filename: String,
+    val uri: Uri,
+    val previewUri: Uri? = null,
+)

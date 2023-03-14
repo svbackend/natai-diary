@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
+import com.svbackend.natai.android.entity.ExistingLocalAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.ui.component.AllTagsBadges
 import com.svbackend.natai.android.ui.component.PhotoViewDialog
@@ -144,7 +145,7 @@ fun NoteDetailsScreen(
 }
 
 @Composable
-fun AttachmentsGrid(attachments: List<ExistingAttachmentDto>, onOpen: (ExistingAttachmentDto) -> Unit) {
+fun AttachmentsGrid(attachments: List<ExistingLocalAttachmentDto>, onOpen: (ExistingLocalAttachmentDto) -> Unit) {
     if (attachments.isEmpty()) {
         return
     }
