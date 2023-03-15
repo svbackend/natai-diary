@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.service
 
+import android.util.Log
 import com.svbackend.natai.android.entity.AttachmentEntityDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
@@ -15,6 +16,8 @@ class ApiSyncService(
     private val repository: DiaryRepository,
     private val fileManagerService: FileManagerService
 ) {
+    private val TAG = "ApiSyncService"
+
     @Volatile
     private var isRunning = false
 
@@ -36,8 +39,16 @@ class ApiSyncService(
         val localNotes = repository
             .getAllNotesForSync()
 
+        Log.v(TAG, "=== SYNC STARTED ===")
+
         localNotes.forEach {
             val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
+
+            Log.v(TAG, "=== LOCAL NOTE ===")
+            Log.v(TAG, it.toString())
+
+            Log.v(TAG, "=== CLOUD NOTE ===")
+            Log.v(TAG, cloudNote.toString())
 
             if (cloudNote == null) {
                 insertToCloud(it)
@@ -50,6 +61,12 @@ class ApiSyncService(
             val cloudNoteId = kv.key
             val cloudNote = kv.value
             val localNote = localNotes.find { it.cloudId == cloudNoteId }
+
+            Log.v(TAG, "=== STAGE2 LOCAL NOTE ===")
+            Log.v(TAG, localNote.toString())
+
+            Log.v(TAG, "=== STAGE2 CLOUD NOTE ===")
+            Log.v(TAG, cloudNote.toString())
 
             if (localNote == null) {
                 insertToLocal(cloudNote)
@@ -64,6 +81,7 @@ class ApiSyncService(
     }
 
     private suspend fun insertToLocal(cloudNote: CloudNote) {
+        Log.v(TAG, "=== INSERT TO LOCAL ===")
         var newLocalNote = LocalNote.create(cloudNote)
 
         if (newLocalNote.attachments.isNotEmpty()) {
@@ -85,11 +103,16 @@ class ApiSyncService(
 
 
     private suspend fun updateToLocal(localNote: LocalNote, cloudNote: CloudNote) {
+        Log.v(TAG, "=== UPDATE TO LOCAL ===")
+
         val note = Note.create(localNote)
         note.sync(cloudNote)
 
         val response = apiClient.getAttachmentsByNote(cloudNote.id)
-        val attachments = processAttachments(response.attachments)
+        val attachments = processAttachments(response.attachments, localNote.attachments)
+
+        Log.v(TAG, "=== processAttachments ===")
+        Log.v(TAG, attachments.toString())
 
         try {
             repository.updateNote(note)
@@ -100,6 +123,7 @@ class ApiSyncService(
     }
 
     private suspend fun insertToCloud(localNote: LocalNote) {
+        Log.v(TAG, "=== INSERT TO CLOUD ===")
         try {
             val attachments = fileManagerService.uploadAttachments(localNote.attachments)
             val noteWithAttachments = localNote.updateAttachments(attachments)
@@ -114,6 +138,7 @@ class ApiSyncService(
     }
 
     private suspend fun updateToCloud(localNote: LocalNote) {
+        Log.v(TAG, "=== UPDATE TO CLOUD ===")
         try {
             val attachments = fileManagerService.uploadAttachments(localNote.attachments)
             val noteWithAttachments = localNote.updateAttachments(attachments)
@@ -124,15 +149,22 @@ class ApiSyncService(
     }
 
     // download previews + update original filenames
-    private suspend fun processAttachments(cloudAttachments: List<CloudAttachment>): List<AttachmentEntityDto> {
+    private suspend fun processAttachments(
+        cloudAttachments: List<CloudAttachment>,
+        localAttachments: List<AttachmentEntityDto> = emptyList()
+    ): List<AttachmentEntityDto> {
         val cacheDir = fileManagerService.cacheDir
 
         return cloudAttachments.map { cloudAttachment ->
             val mediumPreview = cloudAttachment.previews.find { it.type == PREVIEW_TYPE_MD }
 
+            val localAttachment = localAttachments.find { it.cloudAttachmentId == cloudAttachment.attachmentId }
+            val localUri = localAttachment?.uri
+            val localPreviewUri = localAttachment?.previewUri
+
             val dtoWithoutPreview = AttachmentEntityDto(
-                uri = null,
-                previewUri = null,
+                uri = localUri,
+                previewUri = localPreviewUri,
                 filename = cloudAttachment.originalFilename,
                 cloudAttachmentId = cloudAttachment.attachmentId
             )

@@ -106,4 +106,5 @@ data class ExistingLocalAttachmentDto(
     val filename: String,
     val uri: Uri,
     val previewUri: Uri? = null,
+    val cloudAttachmentId: String? = null,
 )

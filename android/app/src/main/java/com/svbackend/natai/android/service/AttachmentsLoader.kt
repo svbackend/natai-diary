@@ -2,6 +2,7 @@ package com.svbackend.natai.android.service
 
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.util.Log
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.ExistingLocalAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
@@ -15,11 +16,14 @@ class AttachmentsLoader(
     private val repository: DiaryRepository,
     private val connectivityManager: ConnectivityManager,
 ) {
+    val TAG = "AttachmentsLoader"
     // res/raw/placeholder.png
     private val placeholderUri: Uri =
         Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
 
     suspend fun loadAttachments(note: LocalNote): List<ExistingAttachmentDto> {
+        Log.v(TAG, "=== LOAD ATTACHMENTS STARTED ===")
+
         val localAttachments = note.attachments.mapNotNull { attachment ->
             val uri = attachment.uri ?: placeholderUri
             val previewUri = attachment.previewUri ?: placeholderUri
@@ -36,7 +40,11 @@ class AttachmentsLoader(
             )
         }
 
+        Log.v(TAG, "=== LOCAL ATTACHMENTS ===")
+        Log.v(TAG, localAttachments.toString())
+
         if (!hasInternetConnection(connectivityManager)) {
+            Log.v(TAG, "=== NO INTERNET, RETURNING ===")
             return localAttachments
         }
 
@@ -101,6 +109,7 @@ class AttachmentsLoader(
     fun loadLocalAttachments(note: LocalNote): List<ExistingLocalAttachmentDto> {
         return note.attachments.map {
             ExistingLocalAttachmentDto(
+                cloudAttachmentId = it.cloudAttachmentId,
                 filename = it.filename,
                 uri = it.uri ?: it.previewUri ?: placeholderUri,
                 previewUri = it.previewUri,

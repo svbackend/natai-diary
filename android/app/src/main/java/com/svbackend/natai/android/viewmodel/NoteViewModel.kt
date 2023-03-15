@@ -73,13 +73,41 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         selectedAttachment.value = null
     }
 
-    fun loadAttachments(note: LocalNote) {
+    private suspend fun loadAttachments(note: LocalNote) {
+        var existingAttachments: List<ExistingAttachmentDto> = emptyList();
+        try {
+            existingAttachments = attachmentsLoader.loadAttachments(note)
+            Log.v(TAG, "=== existingAttachments: $existingAttachments")
+        } catch (e: Exception) {
+            Log.v(TAG, "Failed to load attachments", e)
+        }
+
         try {
             val loadedAttachments = attachmentsLoader.loadLocalAttachments(note)
-            selectedNoteAttachments.value = loadedAttachments
+            Log.v(TAG, "=== loadedAttachments: $loadedAttachments")
+            val mergedAttachments = mergeLoadedAttachments(existingAttachments, loadedAttachments)
+            Log.v(TAG, "=== MERGED ATTACHMENTS: $mergedAttachments")
+            selectedNoteAttachments.value = mergedAttachments
         } catch (e: Exception) {
             selectedNoteAttachments.value = emptyList()
-            Log.v(TAG, "Failed to load attachments", e)
+            Log.v(TAG, "Failed to load local attachments", e)
+        }
+    }
+
+    private fun mergeLoadedAttachments(
+        att1: List<ExistingAttachmentDto>,
+        att2: List<ExistingLocalAttachmentDto>
+    ): List<ExistingLocalAttachmentDto> {
+        return att2.map {
+            val existing = att1.find { att -> att.cloudAttachmentId == it.cloudAttachmentId }
+            if (existing != null) {
+                it.copy(
+                    uri = existing.uri ?: it.uri,
+                    previewUri = existing.previewUri ?: it.previewUri,
+                )
+            } else {
+                it
+            }
         }
     }
 
