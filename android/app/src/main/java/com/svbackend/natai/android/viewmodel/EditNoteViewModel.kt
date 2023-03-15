@@ -1,6 +1,7 @@
 package com.svbackend.natai.android.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class EditNoteViewModel(application: Application) : AndroidViewModel(application) {
+    private val TAG = "EditNoteViewModel"
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
     val attachmentsLoader = (application as DiaryApplication).appContainer.attachmentsLoader
 
@@ -71,9 +73,10 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
             )
         }
 
-        val combinedAttachments = newAttachments + existingLocalAttachments + existingAttachments.map {
-            AttachmentEntityDto.create(it)
-        }
+        val combinedAttachments =
+            newAttachments + existingLocalAttachments + existingAttachments.map {
+                AttachmentEntityDto.create(it)
+            }
 
         val updatedNote = note.update(
             title = title.value.text,
@@ -109,6 +112,7 @@ class EditNoteViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun loadNote(noteId: String) = viewModelScope.launch {
+        Log.v(TAG, "=== EDIT NOTE - loadNote $noteId ===")
         repository.getNote(noteId).collect {
             val localNote = LocalNote.create(it)
             title.value = TextFieldValue(localNote.title)

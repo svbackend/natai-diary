@@ -8,11 +8,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.exifinterface.media.ExifInterface
 import com.svbackend.natai.android.coil.CropTransformation
+import com.svbackend.natai.android.entity.AttachmentEntityDto
 import com.svbackend.natai.android.http.ApiClient
 import java.io.File
-import androidx.exifinterface.media.ExifInterface
-import com.svbackend.natai.android.entity.AttachmentEntityDto
 
 data class AttachmentUris(
     val uri: Uri,
@@ -21,8 +21,6 @@ data class AttachmentUris(
 
 const val PREVIEW_SIZE = 192
 
-const val TAG = "FileManagerService"
-
 class FileManagerService(
     private val apiClient: ApiClient,
     private val contentResolver: ContentResolver,
@@ -30,35 +28,49 @@ class FileManagerService(
     public val cacheDir: File,
     private val cropTransformation: CropTransformation = CropTransformation(),
 ) {
+    private val TAG = "FileManagerService"
+
     // copy file from uri to internal storage, generate preview and return new uris
     fun processNewAttachment(uri: Uri, originalFilename: String): AttachmentUris {
-        val inputStream = contentResolver.openInputStream(uri)
+        return AttachmentUris(
+            uri,
+            generatePreview(uri), // todo preview only if image
+        )
 
-        if (inputStream == null) {
-            throw IllegalArgumentException("$uri - not found")
-        }
-
-        val file = File(filesDir, originalFilename)
-        val internalUri = file.toUri()
-        val isImage = contentResolver.getType(uri)?.startsWith("image") ?: false
-
-        inputStream.use { input ->
-            contentResolver.openOutputStream(internalUri, "w").use { output ->
-                if (output == null) {
-                    throw IllegalArgumentException("$internalUri - not created")
-                }
-
-                input.copyTo(output)
-            }
-        }
-
-        val previewUri = if (isImage) {
-            generatePreview(internalUri)
-        } else {
-            null
-        }
-
-        return AttachmentUris(internalUri, previewUri)
+//        val file = File(cacheDir, originalFilename)
+//        val internalUri = file.toUri()
+//
+//        val inputStream = contentResolver.openInputStream(uri)
+//
+//        if (inputStream == null) {
+//            throw IllegalArgumentException("$uri - not found")
+//        }
+//
+//        inputStream.use { input ->
+//            contentResolver.openOutputStream(internalUri, "w").use { output ->
+//                if (output == null) {
+//                    throw IllegalArgumentException("$internalUri - not created")
+//                }
+//
+//                input.copyTo(output)
+//            }
+//        }
+//
+//        val contentType = contentResolver.getType(internalUri)
+//        val isImage = contentType?.startsWith("image") ?: false
+//
+//        Log.v(TAG, "CONTENT TYPE: $contentType")
+//
+//        val previewUri = if (isImage) {
+//            Log.v(TAG, "generating preview for $internalUri")
+//            generatePreview(internalUri)
+//        } else {
+//            null
+//        }
+//
+//        val newUris = AttachmentUris(internalUri, previewUri)
+//        Log.v(TAG, "new uris: $newUris")
+//        return newUris
     }
 
     /**
@@ -77,7 +89,7 @@ class FileManagerService(
                 croppedBitmap
             }
 
-            val previewFile = File(filesDir, "preview_${internalFileUri.lastPathSegment}")
+            val previewFile = File(cacheDir, "preview_${internalFileUri.lastPathSegment}")
 
             // use webp only on android 11+
             val format = if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
@@ -158,7 +170,9 @@ class FileManagerService(
 
     fun isFileExists(uri: Uri): Boolean {
         return try {
-            uri.toFile().exists()
+            val f = uri.toFile()
+            Log.v(TAG, "isFileExists $uri ${f.exists()} ${f.isFile} ${f.length()}")
+            f.exists() && f.isFile && f.length() > 0
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -169,7 +183,7 @@ class FileManagerService(
         val originalFile = uri.toFile()
         val ext = originalFilename.substringAfterLast(".")
         val previewFilename = originalFilename.replace(".$ext", "_preview.$ext")
-        val previewFile = File(filesDir, previewFilename)
+        val previewFile = File(cacheDir, previewFilename) // todo cacheDir vs filesDir, what to use?
         val previewUri = previewFile.toUri()
 
         originalFile.copyTo(previewFile, overwrite = true)

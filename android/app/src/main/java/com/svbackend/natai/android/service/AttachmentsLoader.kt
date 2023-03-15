@@ -17,6 +17,7 @@ class AttachmentsLoader(
     private val connectivityManager: ConnectivityManager,
 ) {
     val TAG = "AttachmentsLoader"
+
     // res/raw/placeholder.png
     private val placeholderUri: Uri =
         Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
@@ -25,8 +26,8 @@ class AttachmentsLoader(
         Log.v(TAG, "=== LOAD ATTACHMENTS STARTED ===")
 
         val localAttachments = note.attachments.mapNotNull { attachment ->
-            val uri = attachment.uri ?: placeholderUri
             val previewUri = attachment.previewUri ?: placeholderUri
+            val uri = attachment.uri ?: previewUri
 
             if (attachment.cloudAttachmentId == null) {
                 return@mapNotNull null
@@ -48,9 +49,16 @@ class AttachmentsLoader(
             return localAttachments
         }
 
+        val isUriExists = { uri: Uri? ->
+            uri != null && fm.isFileExists(uri)
+        }
+
         val attachmentsWithoutUri = note.attachments
-            .filter { it.uri == null || !fm.isFileExists(it.uri) }
+            .filter { !isUriExists(it.uri) || (it.previewUri != null && !isUriExists(it.previewUri)) }
             .mapNotNull { it.cloudAttachmentId }
+
+        Log.v(TAG, "=== ATTACHMENTS WITHOUT URI ===")
+        Log.v(TAG, attachmentsWithoutUri.toString())
 
         if (note.cloudId == null || attachmentsWithoutUri.isEmpty()) {
             // nothing to load
@@ -70,13 +78,27 @@ class AttachmentsLoader(
                     cloudAttachment.attachmentId == it
                 }
 
-                if (cloudAttachment != null) {
-                    val tmpUri = api.downloadAttachment(
+                val localAttachment = note.attachments.find { localAttachment ->
+                    localAttachment.cloudAttachmentId == it
+                }
+
+                if (cloudAttachment != null && localAttachment != null) {
+                    val originalFileUri = if (localAttachment.uri != null && isUriExists(localAttachment.uri)) {
+                        Log.v(TAG, "=== USING LOCAL ATTACHMENT URI ===")
+                        localAttachment.uri
+                    } else api.downloadAttachment(
                         cacheDir = fm.cacheDir,
                         signedUrl = cloudAttachment.signedUrl,
                     )
-                    val uris = fm.processNewAttachment(tmpUri, cloudAttachment.originalFilename)
-                    downloadedUrisMap[it] = uris
+                    Log.v(TAG, "=== URI = $originalFileUri ===")
+
+                    try {
+                        val uris = fm.processNewAttachment(originalFileUri, cloudAttachment.originalFilename)
+                        downloadedUrisMap[it] = uris
+                    } catch (e: Throwable) {
+                        Log.v(TAG, "=== ERROR PROCESSING ATTACHMENT (fm.processNewAttachment) ===")
+                        e.printStackTrace()
+                    }
                 }
             }
 

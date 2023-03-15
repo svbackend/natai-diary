@@ -1,7 +1,10 @@
 package com.svbackend.natai.android.repository
 
 import com.svbackend.natai.android.DiaryDatabase
-import com.svbackend.natai.android.entity.*
+import com.svbackend.natai.android.entity.AttachmentEntityDto
+import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.entity.Note
+import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.relation.NoteWithRelations
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.service.AttachmentUris
@@ -71,26 +74,13 @@ class DiaryRepository(
         db.diaryDAO().insertTag(tag)
     }
 
-    private fun insertAttachment(attachment: Attachment) {
-        db.diaryDAO().insertAttachment(attachment)
-    }
-
     private suspend fun deleteTagsByNote(noteId: String) = withContext(Dispatchers.IO) {
         db.diaryDAO().deleteTagsByNote(noteId)
     }
 
-    private fun deleteAttachmentsByNote(noteId: String) {
-        db.diaryDAO().deleteAttachmentsByNote(noteId)
-    }
-
     suspend fun updateAttachments(localNoteId: String, attachments: List<AttachmentEntityDto>) =
         withContext(Dispatchers.IO) {
-            deleteAttachmentsByNote(localNoteId)
-            attachments.forEach { dto ->
-                insertAttachment(
-                    Attachment.create(noteId = localNoteId, dto = dto)
-                )
-            }
+            db.diaryDAO().updateAttachments(localNoteId, attachments)
         }
 
     private suspend fun addTags(note: LocalNote) {
@@ -135,13 +125,16 @@ class DiaryRepository(
     suspend fun updateAttachmentsUris(
         note: LocalNote,
         downloadedUrisMap: MutableMap<String, AttachmentUris>
-    ) = withContext(Dispatchers.IO) {
+    ): List<AttachmentEntityDto> {
         val updatedAttachments = note.attachments.map { attachment ->
             val uris = downloadedUrisMap[attachment.cloudAttachmentId]
+
+            val currentPreviewUri = attachment.previewUri
+
             if (uris != null) {
                 attachment.copy(
                     uri = uris.uri,
-                    previewUri = uris.previewUri
+                    previewUri = uris.previewUri ?: currentPreviewUri,
                 )
             } else {
                 attachment
@@ -149,6 +142,6 @@ class DiaryRepository(
         }
         updateAttachments(note.id, updatedAttachments)
 
-        return@withContext updatedAttachments
+        return updatedAttachments
     }
 }

@@ -91,6 +91,17 @@ fun NoteDetailsScreen(
                 )
             }
 
+            if (vm.isLoadingAttachments.value) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
             AttachmentsGrid(attachments, onOpen = { vm.selectAttachment(it) })
 
             // Space between
@@ -166,10 +177,10 @@ fun AttachmentsGrid(attachments: List<ExistingLocalAttachmentDto>, onOpen: (Exis
                     horizontalAlignment = Alignment.Start,
                 ) {
                     AsyncImage(
-                        model = attachment.previewUri ?: attachment.uri
-                        ?: painterResource(id = R.drawable.placeholder),
+                        model = attachment.previewUri ?: attachment.uri,
                         contentDescription = attachment.filename,
                         modifier = Modifier
+                            .size(64.dp, 64.dp)
                             .clip(RoundedCornerShape(percent = 10))
                             .clickable { onOpen(attachment) },
                         error = painterResource(id = R.drawable.placeholder)

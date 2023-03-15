@@ -49,4 +49,14 @@ abstract class DiaryDAO {
 
     @Query("SELECT * FROM Note ORDER BY date(actualDate) DESC LIMIT -1 OFFSET 10")
     abstract fun getOldNotes(): List<NoteWithRelations>
+
+    @Transaction
+    open fun updateAttachments(localNoteId: String, attachments: List<AttachmentEntityDto>) {
+        deleteAttachmentsByNote(localNoteId)
+        attachments.forEach { dto ->
+            insertAttachment(
+                Attachment.create(noteId = localNoteId, dto = dto)
+            )
+        }
+    }
 }

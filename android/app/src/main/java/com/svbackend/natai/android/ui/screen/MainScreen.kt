@@ -142,7 +142,7 @@ fun MainScreen(
                                 .clip(CircleShape),
                         )
                         Column {
-                            group.notes.forEachIndexed { i, note ->
+                            group.notes.reversed().forEachIndexed { i, note ->
                                 NoteCard(note, onNoteClick)
                                 if (i != group.notes.lastIndex) {
                                     HorizontalDivider(
