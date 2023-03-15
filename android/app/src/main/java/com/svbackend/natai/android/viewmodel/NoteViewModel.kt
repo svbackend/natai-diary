@@ -168,7 +168,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
         diaryRepository.assignNotesToUser(user.cloudId)
 
-        sync()
+        viewModelScope.launch {
+            sync()
+        }
     }
 
     private val jobs = mutableListOf<Job>()

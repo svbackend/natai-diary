@@ -55,4 +55,6 @@
     <string name="deleteFile">Delete file</string>
     <string name="accountBenefits">What are the benefits of having an account?</string>
     <string name="accountBenefitsTitle">Account Benefits</string>
+    <string name="deleteNoteConfirmation">Are you sure you want to delete this note?</string>
+    <string name="cancel">Cancel</string>
 </resources>

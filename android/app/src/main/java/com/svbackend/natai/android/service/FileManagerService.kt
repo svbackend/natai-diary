@@ -30,47 +30,49 @@ class FileManagerService(
 ) {
     private val TAG = "FileManagerService"
 
-    // copy file from uri to internal storage, generate preview and return new uris
-    fun processNewAttachment(uri: Uri, originalFilename: String): AttachmentUris {
+    fun processExistingAttachment(uri: Uri): AttachmentUris {
         return AttachmentUris(
             uri,
             generatePreview(uri), // todo preview only if image
         )
+    }
 
-//        val file = File(cacheDir, originalFilename)
-//        val internalUri = file.toUri()
-//
-//        val inputStream = contentResolver.openInputStream(uri)
-//
-//        if (inputStream == null) {
-//            throw IllegalArgumentException("$uri - not found")
-//        }
-//
-//        inputStream.use { input ->
-//            contentResolver.openOutputStream(internalUri, "w").use { output ->
-//                if (output == null) {
-//                    throw IllegalArgumentException("$internalUri - not created")
-//                }
-//
-//                input.copyTo(output)
-//            }
-//        }
-//
-//        val contentType = contentResolver.getType(internalUri)
-//        val isImage = contentType?.startsWith("image") ?: false
-//
-//        Log.v(TAG, "CONTENT TYPE: $contentType")
-//
-//        val previewUri = if (isImage) {
-//            Log.v(TAG, "generating preview for $internalUri")
-//            generatePreview(internalUri)
-//        } else {
-//            null
-//        }
-//
-//        val newUris = AttachmentUris(internalUri, previewUri)
-//        Log.v(TAG, "new uris: $newUris")
-//        return newUris
+    // copy file from uri to internal storage, generate preview and return new uris
+    fun processNewAttachment(uri: Uri, originalFilename: String): AttachmentUris {
+        val file = File(cacheDir, originalFilename)
+        val internalUri = file.toUri()
+
+        val inputStream = contentResolver.openInputStream(uri)
+
+        if (inputStream == null) {
+            throw IllegalArgumentException("$uri - not found")
+        }
+
+        inputStream.use { input ->
+            contentResolver.openOutputStream(internalUri, "w").use { output ->
+                if (output == null) {
+                    throw IllegalArgumentException("$internalUri - not created")
+                }
+
+                input.copyTo(output)
+            }
+        }
+
+        val contentType = contentResolver.getType(internalUri) ?: contentResolver.getType(uri)
+        val isImage = contentType?.startsWith("image") ?: false
+
+        Log.v(TAG, "CONTENT TYPE: $contentType")
+
+        val previewUri = if (isImage) {
+            Log.v(TAG, "generating preview for $internalUri")
+            generatePreview(internalUri)
+        } else {
+            null
+        }
+
+        val newUris = AttachmentUris(internalUri, previewUri)
+        Log.v(TAG, "new uris: $newUris")
+        return newUris
     }
 
     /**

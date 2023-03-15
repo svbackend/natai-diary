@@ -23,7 +23,7 @@ class ManageAccountViewModel(application: Application) : AndroidViewModel(applic
     suspend fun checkEmailVerification() {
         val user = userQuery.getUser()
         if (user != null) {
-            repository.updateUser(user)
+            repository.updateUserEmailVerificationStatus(user)
 
             if (!user.isEmailVerified) {
                 showStillNotVerifiedError.value = true

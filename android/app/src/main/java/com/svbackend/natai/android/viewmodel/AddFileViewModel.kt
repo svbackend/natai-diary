@@ -12,6 +12,7 @@ import com.svbackend.natai.android.entity.NewAttachmentDto
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.service.FileManagerService
 import com.svbackend.natai.android.utils.hasInternetConnection
+import com.svbackend.natai.android.utils.isGuest
 import kotlinx.coroutines.launch
 
 data class AddedFile(
@@ -55,7 +56,7 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
         addedFiles.value = addedFiles.value + newlyAddedFiles
         onOpen()
 
-        if (!hasInternetConnection(connectivityManager) || isGuest()) {
+        if (!hasInternetConnection(connectivityManager) || prefs.isGuest()) {
             newlyAddedFiles.forEach { file ->
                 updateFile(
                     file.copy(
@@ -208,10 +209,5 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
                 return@mapNotNull null
             }
         }
-    }
-
-    private fun isGuest(): Boolean {
-        val cloudId = prefs.getString("cloud_id", null)
-        return cloudId == null || cloudId.isEmpty()
     }
 }

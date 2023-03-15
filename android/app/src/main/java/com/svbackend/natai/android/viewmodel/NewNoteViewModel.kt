@@ -9,6 +9,7 @@ import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.entity.*
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.service.TitleGenerator
+import com.svbackend.natai.android.utils.getUserCloudId
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
@@ -58,7 +59,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     suspend fun addNote(addedFiles: List<NewAttachmentDto>) {
         isLoading.value = true
 
-        val cloudUserId = prefs.getString("cloud_id", null)
+        val cloudUserId = prefs.getUserCloudId()
         val appendIfPossible =
             title.value.text.isEmpty() && content.value.text.isEmpty() && addedFiles.isEmpty()
 

@@ -38,25 +38,29 @@ class UserRepository(
             )
         )
 
-        val userId = response.user.id
+        val cloudUser = response.user
+        val userId = cloudUser.id
         val newApiToken = response.apiToken
 
         val existingUser = db.userDAO().getUserByCloudIdSync(userId.toString())
 
         if (existingUser == null) {
-            val cloudUser = response.user
             val newLocalUser = User(
                 cloudId = userId.toString(),
-                email = email,
+                email = cloudUser.email,
                 apiToken = newApiToken,
                 name = cloudUser.name,
+                isEmailVerified = cloudUser.isEmailVerified
             )
 
             db.userDAO().insertUser(newLocalUser)
             return@withContext newLocalUser
         } else {
             val updatedUser = existingUser.copy(
-                apiToken = newApiToken
+                apiToken = newApiToken,
+                isEmailVerified = cloudUser.isEmailVerified,
+                name = cloudUser.name,
+                email = cloudUser.email
             )
 
             db.userDAO().updateUser(updatedUser)
@@ -77,7 +81,7 @@ class UserRepository(
         return login(email, password)
     }
 
-    suspend fun updateUser(user: CloudUserDto) = withContext(Dispatchers.IO) {
+    suspend fun updateUserEmailVerificationStatus(user: CloudUserDto) = withContext(Dispatchers.IO) {
         val entity = getUserByCloudIdSync(user.id.toString()) ?: return@withContext
 
         if (entity.isEmailVerified == user.isEmailVerified) {

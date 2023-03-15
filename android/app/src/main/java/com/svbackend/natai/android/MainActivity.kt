@@ -16,6 +16,7 @@ import com.svbackend.natai.android.service.ReminderWorker
 import com.svbackend.natai.android.ui.NataiTheme
 import com.svbackend.natai.android.ui.UserTheme
 import com.svbackend.natai.android.ui.component.DefaultLayout
+import com.svbackend.natai.android.utils.getUserCloudId
 import com.svbackend.natai.android.utils.go
 import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.viewmodel.NoteViewModel
@@ -93,7 +94,7 @@ class MainActivity : ScopedActivity() {
             reminderWorkRequest
         )
 
-        prefs.getString("cloud_id", null)?.let { cloudId ->
+        prefs.getUserCloudId()?.let { cloudId ->
             viewModel.setUserCloudId(cloudId)
 
             syncWithApi()

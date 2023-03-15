@@ -28,7 +28,7 @@ class AppContainer(context: Context) {
     }
     val apiClient = ApiClient(getApiToken)
 
-    val diaryRepository = DiaryRepository(db, apiClient)
+    val diaryRepository = DiaryRepository(db, apiClient, sharedPrefs)
     val userRepository = UserRepository(db, apiClient)
 
     val connectivityManager =

@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.repository
 
+import android.content.SharedPreferences
 import com.svbackend.natai.android.DiaryDatabase
 import com.svbackend.natai.android.entity.AttachmentEntityDto
 import com.svbackend.natai.android.entity.LocalNote
@@ -8,6 +9,7 @@ import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.relation.NoteWithRelations
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.service.AttachmentUris
+import com.svbackend.natai.android.utils.isGuest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -17,7 +19,8 @@ import java.time.LocalDate
 
 class DiaryRepository(
     private val db: DiaryDatabase,
-    private val api: ApiClient
+    private val api: ApiClient,
+    private val prefs: SharedPreferences
 ) {
     val notes: Flow<List<LocalNote>> = db
         .diaryDAO()
@@ -65,7 +68,7 @@ class DiaryRepository(
 
     suspend fun deleteNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
         val deletedNote = Note.create(note)
-        deletedNote.deletedAt = Instant.now()
+        deletedNote.delete()
         updateNote(deletedNote)
         syncNoteWithCloud(note)
     }
@@ -96,6 +99,10 @@ class DiaryRepository(
     }
 
     private suspend fun syncNoteWithCloud(note: LocalNote) {
+        if (prefs.isGuest()) {
+            return
+        }
+
         try {
             if (note.cloudId != null) {
                 api.updateNote(note)

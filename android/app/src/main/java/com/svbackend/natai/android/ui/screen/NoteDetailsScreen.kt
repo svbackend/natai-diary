@@ -1,6 +1,5 @@
 package com.svbackend.natai.android.ui.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,8 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -23,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.svbackend.natai.android.R
-import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.ExistingLocalAttachmentDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.ui.component.AllTagsBadges
@@ -43,6 +40,8 @@ fun NoteDetailsScreen(
     val selectedAttachment = vm.selectedAttachment.value
 
     val context = LocalContext.current
+
+    var isDeletingNote by remember { mutableStateOf(false) }
 
     if (note == null) {
         LoadingScreen()
@@ -126,10 +125,7 @@ fun NoteDetailsScreen(
 
                 Button(
                     onClick = {
-                        Toast
-                            .makeText(context, "Note deleted!", Toast.LENGTH_SHORT)
-                            .show()
-                        onDeleteClick(note)
+                        isDeletingNote = true
                     },
                 ) {
                     Icon(
@@ -153,10 +149,21 @@ fun NoteDetailsScreen(
             onPrev = { vm.selectPrevAttachment() }
         )
     }
+
+    if (isDeletingNote) {
+        DeleteNoteDialog(
+            note = note,
+            onDelete = onDeleteClick,
+            onClose = { isDeletingNote = false }
+        )
+    }
 }
 
 @Composable
-fun AttachmentsGrid(attachments: List<ExistingLocalAttachmentDto>, onOpen: (ExistingLocalAttachmentDto) -> Unit) {
+fun AttachmentsGrid(
+    attachments: List<ExistingLocalAttachmentDto>,
+    onOpen: (ExistingLocalAttachmentDto) -> Unit
+) {
     if (attachments.isEmpty()) {
         return
     }
@@ -190,8 +197,10 @@ fun AttachmentsGrid(attachments: List<ExistingLocalAttachmentDto>, onOpen: (Exis
 
             val transparentPlaceholders = 4 - row.size
             repeat(transparentPlaceholders) {
-                Column(modifier = Modifier
-                    .weight(1f)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -201,4 +210,37 @@ fun AttachmentsGrid(attachments: List<ExistingLocalAttachmentDto>, onOpen: (Exis
             }
         }
     }
+}
+
+@Composable
+fun DeleteNoteDialog(
+    note: LocalNote,
+    onDelete: (LocalNote) -> Unit,
+    onClose: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onClose,
+        title = {
+            Text(text = stringResource(R.string.deleteNote))
+        },
+        text = {
+            Text(text = stringResource(R.string.deleteNoteConfirmation))
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onDelete(note)
+                },
+            ) {
+                Text(text = stringResource(R.string.deleteNote))
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = onClose,
+            ) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
 }

@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.service
 
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.util.Log
@@ -9,6 +10,7 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.utils.hasInternetConnection
+import com.svbackend.natai.android.utils.isGuest
 
 class AttachmentsLoader(
     private val api: ApiClient,
@@ -93,7 +95,7 @@ class AttachmentsLoader(
                     Log.v(TAG, "=== URI = $originalFileUri ===")
 
                     try {
-                        val uris = fm.processNewAttachment(originalFileUri, cloudAttachment.originalFilename)
+                        val uris = fm.processExistingAttachment(originalFileUri)
                         downloadedUrisMap[it] = uris
                     } catch (e: Throwable) {
                         Log.v(TAG, "=== ERROR PROCESSING ATTACHMENT (fm.processNewAttachment) ===")
@@ -130,11 +132,26 @@ class AttachmentsLoader(
 
     fun loadLocalAttachments(note: LocalNote): List<ExistingLocalAttachmentDto> {
         return note.attachments.map {
+            val uri: Uri? = it.uri
+            var previewUri: Uri? = it.previewUri
+
+            val needToGeneratePreview = previewUri == null && uri != null && fm.isFileExists(uri)
+
+            if (needToGeneratePreview) {
+                try {
+                    val uris = fm.processExistingAttachment(uri!!)
+                    previewUri = uris.previewUri
+                } catch (e: Throwable) {
+                    Log.v(TAG, "=== ERROR processExistingAttachment ===")
+                    e.printStackTrace()
+                }
+            }
+
             ExistingLocalAttachmentDto(
                 cloudAttachmentId = it.cloudAttachmentId,
                 filename = it.filename,
-                uri = it.uri ?: it.previewUri ?: placeholderUri,
-                previewUri = it.previewUri,
+                uri = it.uri ?: previewUri ?: placeholderUri,
+                previewUri = previewUri,
             )
         }
     }

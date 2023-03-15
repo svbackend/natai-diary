@@ -34,6 +34,11 @@ data class Note(
         updatedAt = cloudNote.updatedAt
     }
 
+    fun delete() {
+        deletedAt = Instant.now()
+        updatedAt = Instant.now()
+    }
+
     companion object {
         fun create(dto: LocalNote) = Note(
             id = dto.id,
