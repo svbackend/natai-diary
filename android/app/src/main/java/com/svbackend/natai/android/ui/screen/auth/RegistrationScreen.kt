@@ -3,6 +3,7 @@ package com.svbackend.natai.android.ui.screen.auth
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -14,6 +15,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -96,7 +99,10 @@ fun RegistrationScreen(
                 label = stringResource(R.string.email),
                 onChange = {
                     vm.email.value = it
-                }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                )
             )
 
             NTextField(
@@ -104,7 +110,10 @@ fun RegistrationScreen(
                 label = stringResource(R.string.name),
                 onChange = {
                     vm.name.value = it
-                }
+                },
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                )
             )
 
             NPasswordField(
@@ -142,6 +151,8 @@ fun RegistrationScreen(
             NPrimaryButton(
                 onClick = onRegister(),
                 isLoading = vm.isLoading.value,
+                modifier = Modifier
+                    .padding(top = 16.dp)
             ) {
                 Icon(
                     Icons.Filled.Person,

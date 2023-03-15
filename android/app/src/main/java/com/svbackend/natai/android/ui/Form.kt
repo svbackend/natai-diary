@@ -6,6 +6,7 @@ import android.widget.DatePicker
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -38,6 +40,7 @@ fun NTextField(
     maxLines: Int = 1,
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     OutlinedTextField(
         value = value,
@@ -52,6 +55,7 @@ fun NTextField(
         maxLines = maxLines,
         trailingIcon = trailingIcon,
         visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
     )
 }
 
@@ -67,7 +71,11 @@ fun NTextarea(
         onChange = onChange,
         singleLine = false,
         maxLines = 6,
-        modifier = Modifier.height(200.dp)
+        modifier = Modifier.height(200.dp),
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
+            autoCorrect = true
+        )
     )
 }
 

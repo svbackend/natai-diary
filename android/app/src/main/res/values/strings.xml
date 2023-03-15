@@ -39,6 +39,7 @@
     <string name="alreadyHaveAccount">Already have an account?</string>
     <string name="accept">Accept</string>
     <string name="termsAndConditions">terms and conditions</string>
+    <string name="termsAndConditionsCapitalized">Terms and Conditions</string>
     <string name="termsAndConditionsText">How to add really long legal text here?</string>
     <string name="registration">Registration</string>
     <string name="emailNotVerified">Your email is not verified yet, please check your inbox and click on the link from Natai</string>
@@ -52,4 +53,6 @@
     <string name="settingsAppInfoTitle">App Information</string>
     <string name="addFile">Add File</string>
     <string name="deleteFile">Delete file</string>
+    <string name="accountBenefits">What are the benefits of having an account?</string>
+    <string name="accountBenefitsTitle">Account Benefits</string>
 </resources>

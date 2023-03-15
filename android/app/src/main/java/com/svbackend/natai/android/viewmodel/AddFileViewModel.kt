@@ -38,6 +38,7 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
     val apiClient: ApiClient = (application as DiaryApplication).appContainer.apiClient
     val fileManager: FileManagerService = (application as DiaryApplication).appContainer.fileManager
     val connectivityManager = (application as DiaryApplication).appContainer.connectivityManager
+    val prefs = (application as DiaryApplication).appContainer.sharedPrefs
 
     val isAddFileDialogOpen = mutableStateOf(false)
 
@@ -54,11 +55,11 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
         addedFiles.value = addedFiles.value + newlyAddedFiles
         onOpen()
 
-        if (!hasInternetConnection(connectivityManager)) {
+        if (!hasInternetConnection(connectivityManager) || isGuest()) {
             newlyAddedFiles.forEach { file ->
                 updateFile(
                     file.copy(
-                        error = "No internet",
+                        error = "Attached, but not uploaded",
                     )
                 )
             }
@@ -193,7 +194,8 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
         // we are copying files to internal storage to make sure that they are not deleted before cloud sync
         return addedFiles.value.mapNotNull { file ->
             try {
-                val processedAttachment = fileManager.processNewAttachment(file.uri, file.originalFilename)
+                val processedAttachment =
+                    fileManager.processNewAttachment(file.uri, file.originalFilename)
                 Log.v(TAG, "Processed attachment: $processedAttachment")
                 return@mapNotNull NewAttachmentDto(
                     cloudAttachmentId = file.cloudAttachmentId,
@@ -206,5 +208,10 @@ class AddFileViewModel(application: Application) : AndroidViewModel(application)
                 return@mapNotNull null
             }
         }
+    }
+
+    private fun isGuest(): Boolean {
+        val cloudId = prefs.getString("cloud_id", null)
+        return cloudId == null || cloudId.isEmpty()
     }
 }

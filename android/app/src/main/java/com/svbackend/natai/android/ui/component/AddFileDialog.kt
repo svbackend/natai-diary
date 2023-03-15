@@ -185,7 +185,7 @@ fun AddedFileStatus(f: AddedFile) {
     }
 
     if (f.error != null) {
-        Text(text = "Error: ${f.error}", maxLines = 1, style = size)
+        Text(text = f.error, maxLines = 1, style = size)
     }
 
     if (f.isUploading) {

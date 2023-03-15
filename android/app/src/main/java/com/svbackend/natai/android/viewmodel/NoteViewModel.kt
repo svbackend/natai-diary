@@ -128,9 +128,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             .putString("cloud_id", user.cloudId)
             .apply()
 
-        diaryRepository.assignNotesToUser(user.cloudId)
-
         setUserCloudId(user.cloudId)
+
+        diaryRepository.assignNotesToUser(user.cloudId)
 
         sync()
     }

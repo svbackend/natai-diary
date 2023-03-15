@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,6 +20,8 @@ import com.svbackend.natai.android.viewmodel.StaticViewModel
 
 @Composable
 fun TermsScreen(vm: StaticViewModel = viewModel()) {
+    val verticalScrollState = rememberScrollState()
+
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -26,9 +30,10 @@ fun TermsScreen(vm: StaticViewModel = viewModel()) {
         Column(
             Modifier
                 .padding(16.dp)
+                .verticalScroll(verticalScrollState)
         ) {
             Text(
-                text = stringResource(R.string.termsAndConditions),
+                text = stringResource(R.string.termsAndConditionsCapitalized),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
