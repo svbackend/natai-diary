@@ -831,6 +831,57 @@ export const usePostNotes = (
   );
 };
 
+export type GetSuggestionsError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.AuthRequiredErrorResponse;
+}>;
+
+export type GetSuggestionsVariables = ApiContext["fetcherOptions"];
+
+export const fetchGetSuggestions = (
+  variables: GetSuggestionsVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.FindAllSuggestionsResponse,
+    GetSuggestionsError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/suggestions", method: "get", ...variables, signal });
+
+export const useGetSuggestions = <TData = Schemas.FindAllSuggestionsResponse>(
+  variables: GetSuggestionsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.FindAllSuggestionsResponse,
+      GetSuggestionsError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.FindAllSuggestionsResponse,
+    GetSuggestionsError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/suggestions",
+      operationId: "getSuggestions",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetSuggestions({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type GetNotesByIdAttachmentsPathParams = {
   id: string;
 };
@@ -1042,6 +1093,11 @@ export type QueryOperation =
       path: "/api/v1/notes";
       operationId: "getNotes";
       variables: GetNotesVariables;
+    }
+  | {
+      path: "/api/v1/suggestions";
+      operationId: "getSuggestions";
+      variables: GetSuggestionsVariables;
     }
   | {
       path: "/api/v1/notes/{id}/attachments";

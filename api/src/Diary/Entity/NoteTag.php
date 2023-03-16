@@ -9,6 +9,11 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: NoteTagRepository::class)]
 class NoteTag
 {
+    public const SPECIAL_TAGS = [
+        'mood',
+        'weather',
+    ];
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     private Uuid $id;
@@ -32,7 +37,32 @@ class NoteTag
     {
         $this->id = $id;
         $this->note = $note;
-        $this->tag = $tag;
+        $this->tag = trim(strtr($tag, [' ' => '']));
         $this->score = $score;
+    }
+
+    public function getId(): Uuid
+    {
+        return $this->id;
+    }
+
+    public function getNote(): Note
+    {
+        return $this->note;
+    }
+
+    public function getTag(): string
+    {
+        return $this->tag;
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function isSpecial(): bool
+    {
+        return in_array($this->tag, self::SPECIAL_TAGS);
     }
 }

@@ -252,6 +252,10 @@ export type NewNoteResponse = {
   noteId: UuidV4;
 };
 
+export type FindAllSuggestionsResponse = {
+  suggestions: CloudSuggestionDto[];
+};
+
 export type NoteAttachmentsResponse = {
   attachments: CloudAttachmentDto[];
 };
@@ -356,6 +360,17 @@ export type CloudNoteDto = {
   deletedAt: string | null;
   tags: CloudTagDto[];
   attachments: string[];
+};
+
+export type CloudSuggestionDto = {
+  id: UuidV4;
+  notes: string[];
+  suggestion: string;
+  feedbackRating: number;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
 };
 
 export type CloudAttachmentDto = {

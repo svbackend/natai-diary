@@ -64,6 +64,11 @@ class Note
         $this->attachments = new ArrayCollection();
     }
 
+    public function getId(): UuidV4
+    {
+        return $this->id;
+    }
+
     public function delete(): void
     {
         $this->deletedAt = new \DateTimeImmutable();
@@ -104,5 +109,25 @@ class Note
     public function getAttachments(): Collection
     {
         return $this->attachments;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function getActualDate(): \DateTimeImmutable
+    {
+        return $this->actualDate;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 }

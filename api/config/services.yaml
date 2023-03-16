@@ -43,3 +43,7 @@ services:
         credentials:
           key: '%env(AWS_S3_KEY)%'
           secret: '%env(AWS_S3_SECRET)%'
+
+  App\Common\Service\OpenAiClient:
+    arguments:
+      - '%env(OPENAI_API_KEY)%'

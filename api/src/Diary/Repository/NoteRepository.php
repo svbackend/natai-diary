@@ -87,4 +87,23 @@ class NoteRepository extends ServiceEntityRepository
             'user' => $user,
         ]);
     }
+
+    /**
+     * @return array|Note[]
+     */
+    public function findNotesByUserSinceDate(string $userId, ?\DateTimeImmutable $lastSuggestionDate): array
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->where('n.user = :userId')
+            ->setParameter('userId', $userId)
+            ->andWhere('n.deletedAt IS NULL')
+            ->orderBy('n.createdAt', 'ASC');
+
+        if ($lastSuggestionDate) {
+            $qb->andWhere('n.createdAt > :lastSuggestionDate')
+                ->setParameter('lastSuggestionDate', $lastSuggestionDate);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

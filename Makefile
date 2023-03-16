@@ -5,7 +5,7 @@ install:
 	cd api && docker compose up -d && composer install && bin/console doctrine:schema:update -f && cd ../frontend && npm install
 
 up:
-	make db-up && (make api-up & make frontend-up & make api-queue-up) > /dev/null 2>&1
+	make db-up && (make api-up & make frontend-up & make api-queue-up)
 
 db-up:
 	cd api && docker compose up -d
