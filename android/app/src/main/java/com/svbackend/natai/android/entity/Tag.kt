@@ -7,6 +7,7 @@ import java.util.*
 
 val SPECIAL_TAGS = listOf(
     "mood",
+    "weather",
 )
 
 @Entity

@@ -3,14 +3,11 @@ package com.svbackend.natai.android.ui.component
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -19,19 +16,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
 import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NTextField
-import com.svbackend.natai.android.utils.gradientBackground
 import com.svbackend.natai.android.viewmodel.AddFileViewModel
 import kotlin.math.roundToInt
 
@@ -86,6 +79,7 @@ fun TagsAndFilesRow(
     }
 
     val moodTag = tags.find { it.tag == "mood" }
+    val weatherTag = tags.find { it.tag == "weather" }
 
     val suggestions = tagsSuggestions
         .filter { suggestion ->
@@ -241,31 +235,23 @@ fun TagsAndFilesRow(
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column(verticalArrangement = Arrangement.Center) {
-            IconButton(
+        Row {
+            MoodTagButton(
+                moodTag = moodTag,
                 onClick = {
                     openSpecialTagDialog("mood")
                 },
-            ) {
-                if (moodTag != null) {
-                    SpecialTagIcon(
-                        modifier = Modifier.size(64.dp),
-                        tag = moodTag.tag,
-                        score = moodTag.score
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_care),
-                        modifier = Modifier.size(64.dp),
-                        contentDescription = "Add mood tag"
-                    )
+                modifier = Modifier.padding(end = 8.dp),
+            )
+
+            WeatherTagButton(
+                weatherTag = weatherTag,
+                onClick = {
+                    openSpecialTagDialog("weather")
                 }
-            }
-            Text(
-                text = "#mood",
-                style = MaterialTheme.typography.bodySmall,
             )
         }
+
         Row(horizontalArrangement = Arrangement.End) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -297,7 +283,11 @@ val BTN_NEGATIVE_OFFSET = (-12).dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFileButton(addedFilesSize: Int, onClick: () -> Unit) {
-    val alpha = if (addedFilesSize > 0) { 1f } else { 0f }
+    val alpha = if (addedFilesSize > 0) {
+        1f
+    } else {
+        0f
+    }
     IconButton(
         modifier = Modifier.size(64.dp),
         onClick = onClick,
@@ -364,44 +354,15 @@ fun SpecialTagDialog(tag: String, score: Int?, onSelect: (Int) -> Unit, onConfir
                 "mood" -> {
                     MoodTagDialog(score, onChange)
                 }
+                "weather" -> {
+                    WeatherTagDialog(score, onChange)
+                }
             }
         },
         title = {
             Text("#$tag")
         }
     )
-}
-
-@Composable
-fun MoodTagDialog(selectedScore: Int?, onChange: (Int) -> Unit) {
-
-    @Composable
-    fun MoodTagEl(m: Modifier, score: Int) {
-        MoodTagIcon(
-            modifier = m
-                .clickable { onChange(score) }, score = score, isSelected = (selectedScore == score)
-        )
-    }
-
-    Column {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            MoodTagEl(Modifier.weight(1f), 10)
-            MoodTagEl(Modifier.weight(1f), 9)
-            MoodTagEl(Modifier.weight(1f), 8)
-        }
-
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            MoodTagEl(Modifier.weight(1f), 7)
-            MoodTagEl(Modifier.weight(1f), 6)
-            MoodTagEl(Modifier.weight(1f), 5)
-        }
-
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            MoodTagEl(Modifier.weight(1f), 4)
-            MoodTagEl(Modifier.weight(1f), 3)
-            MoodTagEl(Modifier.weight(1f), 2)
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -566,7 +527,13 @@ fun TagPreviewBadge(
 ) {
     when (tag.tag) {
         "mood" -> {
-            MoodTagPreviewBadge(
+            SpecialTagPreviewBadge(
+                modifier = modifier,
+                tag = tag,
+            )
+        }
+        "weather" -> {
+            SpecialTagPreviewBadge(
                 modifier = modifier,
                 tag = tag,
             )
@@ -587,7 +554,7 @@ fun TagPreviewBadge(
 }
 
 @Composable
-fun MoodTagPreviewBadge(
+fun SpecialTagPreviewBadge(
     modifier: Modifier = Modifier,
     tag: TagEntityDto,
 ) {
@@ -602,46 +569,6 @@ fun sanitizeTag(tag: String): String {
 fun SpecialTagIcon(modifier: Modifier, tag: String, score: Int?) {
     when (tag) {
         "mood" -> MoodTagIcon(modifier, score)
+        "weather" -> WeatherTagIcon(modifier, score)
     }
-}
-
-@Composable
-fun MoodTagIcon(modifier: Modifier, score: Int?, isSelected: Boolean = false) {
-    val iconsMap = remember {
-        mapOf(
-            10 to R.drawable.ic__10,
-            9 to R.drawable.ic__9,
-            8 to R.drawable.ic__8,
-            7 to R.drawable.ic__7,
-            6 to R.drawable.ic__6,
-            5 to R.drawable.ic__5,
-            4 to R.drawable.ic__4,
-            3 to R.drawable.ic__3,
-            2 to R.drawable.ic__2,
-            1 to R.drawable.ic__2,
-            0 to R.drawable.ic__2,
-        )
-    }
-
-    val id = iconsMap[score] ?: R.drawable.ic_care
-
-
-    val m = if (isSelected) {
-        modifier
-            .clip(CircleShape)
-            .gradientBackground(
-                listOf(
-                    MaterialTheme.colorScheme.primaryContainer,
-                    MaterialTheme.colorScheme.secondary,
-                ), angle = 45f
-            )
-    } else {
-        modifier
-    }
-
-    Image(
-        painter = painterResource(id = id),
-        modifier = m.size(96.dp),
-        contentDescription = null,
-    )
 }

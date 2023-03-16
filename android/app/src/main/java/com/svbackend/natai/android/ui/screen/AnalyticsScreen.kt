@@ -25,6 +25,7 @@ import com.svbackend.natai.android.entity.Tag
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.ui.NataiCustomColors
 import com.svbackend.natai.android.ui.component.SpecialTagIcon
+import com.svbackend.natai.android.ui.component.WeatherSquare
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import java.time.DayOfWeek
@@ -203,6 +204,18 @@ fun Contributions(
                         when (tag) {
                             "mood" -> {
                                 MoodSquare(
+                                    day = day,
+                                    tag = tag,
+                                    notes = notesMap[day] ?: emptyList(),
+                                    onClick = {
+                                        Toast
+                                            .makeText(context, it, Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                )
+                            }
+                            "weather" -> {
+                                WeatherSquare(
                                     day = day,
                                     tag = tag,
                                     notes = notesMap[day] ?: emptyList(),
