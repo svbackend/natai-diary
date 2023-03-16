@@ -24,7 +24,6 @@ fun NPrimaryButton(
         Button(
             onClick = {}, modifier = loadingModifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
         ) {
             NProgressBtn()
             Text(
