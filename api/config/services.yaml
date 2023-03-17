@@ -47,3 +47,12 @@ services:
   App\Common\Service\OpenAiClient:
     arguments:
       - '%env(OPENAI_API_KEY)%'
+
+
+
+  # optionally, configure the handler using the constructor arguments (shown values are default)
+  Symfony\Bridge\Monolog\Handler\ElasticsearchLogstashHandler:
+    arguments:
+      $endpoint: "http://127.0.0.1:9200"
+      $level: !php/const Monolog\Logger::DEBUG
+      $elasticsearchVersion: '1.0.0'
