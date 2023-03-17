@@ -126,4 +126,11 @@ class Suggestion
     {
         return new SuggestionPeriodDto($this->dateFrom, $this->dateTo);
     }
+
+    public function setFeedbackRating(int $rating): void
+    {
+        Assert::range($rating, 1, 5);
+        $this->feedbackRating = $rating;
+        $this->isReceived = true;
+    }
 }

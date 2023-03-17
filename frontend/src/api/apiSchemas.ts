@@ -284,6 +284,10 @@ export type NewNoteRequest = {
   attachments: string[];
 };
 
+export type SuggestionFeedbackRequest = {
+  rating: number;
+};
+
 export type UpdateNoteRequest = {
   title: string;
   content: string;
@@ -366,6 +370,8 @@ export type CloudSuggestionDto = {
   id: UuidV4;
   notes: string[];
   suggestion: string;
+  period: SuggestionPeriodDto;
+  isReceived: boolean;
   feedbackRating: number;
   /**
    * @format date-time
@@ -386,6 +392,17 @@ export type CloudAttachmentDto = {
  * @format uuid
  */
 export type Uuid = string;
+
+export type SuggestionPeriodDto = {
+  /**
+   * @format date-time
+   */
+  from: string;
+  /**
+   * @format date-time
+   */
+  to: string;
+};
 
 export type CloudAttachmentMetadataDto = {
   mimeType: string | null;

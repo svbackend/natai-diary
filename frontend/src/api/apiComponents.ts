@@ -1010,6 +1010,66 @@ export const usePostNotesV2 = (
   );
 };
 
+export type PutSuggestionsByIdFeedbackPathParams = {
+  id: string;
+};
+
+export type PutSuggestionsByIdFeedbackError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 404;
+      payload: Schemas.NotFoundErrorRef;
+    }
+>;
+
+export type PutSuggestionsByIdFeedbackVariables = {
+  body: Schemas.SuggestionFeedbackRequest;
+  pathParams: PutSuggestionsByIdFeedbackPathParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPutSuggestionsByIdFeedback = (
+  variables: PutSuggestionsByIdFeedbackVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    undefined,
+    PutSuggestionsByIdFeedbackError,
+    Schemas.SuggestionFeedbackRequest,
+    {},
+    {},
+    PutSuggestionsByIdFeedbackPathParams
+  >({
+    url: "/api/v1/suggestions/{id}/feedback",
+    method: "put",
+    ...variables,
+    signal,
+  });
+
+export const usePutSuggestionsByIdFeedback = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PutSuggestionsByIdFeedbackError,
+      PutSuggestionsByIdFeedbackVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    undefined,
+    PutSuggestionsByIdFeedbackError,
+    PutSuggestionsByIdFeedbackVariables
+  >(
+    (variables: PutSuggestionsByIdFeedbackVariables) =>
+      fetchPutSuggestionsByIdFeedback({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type PutNotesByIdV2PathParams = {
   id: string;
 };

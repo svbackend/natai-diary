@@ -49,11 +49,12 @@ export const dateService = {
         );
     },
     fromBackendFormat(datetime: string): Date {
-        // backend datetime format is "2023-01-01 11:59:59"
+        // backend datetime format is "2023-03-16T20:28:51+00:00"
+        const [date, time] = datetime.split('T');
+        const [year, month, day] = date.split('-');
+        const [hours, minutes, seconds] = time.split(':');
 
-        const [ymd, hms] = datetime.split(' ');
-        const [year, month, day] = ymd.split('-');
-        const [hours, minutes, seconds] = hms.split(':');
+        const secondsWithOffset = seconds.split('+')[0];
 
         return new Date(
             parseInt(year),
@@ -61,7 +62,14 @@ export const dateService = {
             parseInt(day),
             parseInt(hours),
             parseInt(minutes),
-            parseInt(seconds)
-        );
+            parseInt(secondsWithOffset),
+        )
+    },
+    toLocalShortDate(from: Date) {
+        // converts date object to string in format like 01 Jan
+        return from.toLocaleDateString(undefined, {
+            day: '2-digit',
+            month: 'short',
+        });
     }
 }

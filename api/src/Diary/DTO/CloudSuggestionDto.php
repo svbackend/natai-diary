@@ -11,7 +11,9 @@ class CloudSuggestionDto
         /** @var string[] $notes */
         public array $notes,
         public string $suggestion,
-        public int $feedbackRating,
+        public SuggestionPeriodDto $period,
+        public bool $isReceived,
+        public ?int $feedbackRating,
         public \DateTimeInterface $createdAt,
     )
     {
