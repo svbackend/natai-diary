@@ -3,6 +3,7 @@
 namespace App\Common\Service;
 
 use App\Diary\DTO\ChatGptResponse;
+use App\Diary\Entity\SuggestionPrompt;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

@@ -11,6 +11,7 @@ use App\Diary\Entity\Suggestion;
 use App\Diary\Exception\NoNotesToAnalyzeException;
 use App\Diary\Exception\NotEnoughTextToAnalyzeException;
 use App\Diary\Repository\NoteRepository;
+use App\Diary\Repository\SuggestionPromptRepository;
 use App\Diary\Repository\SuggestionRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Uid\Uuid;
@@ -31,6 +32,7 @@ class NoteAnalyzer
         private OpenAiClient $openAiClient,
         private NoteRepository $notes,
         private SuggestionRepository $suggestions,
+        private SuggestionPromptRepository $prompts,
         private UserRepository $users,
         private LoggerInterface $logger
     )
@@ -73,12 +75,16 @@ class NoteAnalyzer
             throw $e;
         }
 
-        $systemPrompt = "Act as psychologist, give recommendations based on diary notes, treat every message from user as a diary note that you need to analyze, look for issues that person can solve with your guidance";
+        $systemPrompt = $this->prompts->findLeastUsedPrompt($userId);
         $userPrompt = $preparedInput->text;
         $notesIds = array_map(fn(Note $note) => $note->getId(), $preparedInput->notes);
 
         try {
-            $response = $this->openAiClient->getRecommendationsBasedOnNotes($userId, $systemPrompt, $userPrompt);
+            $response = $this->openAiClient->getRecommendationsBasedOnNotes(
+                $userId,
+                $systemPrompt->getSystemPrompt(),
+                $userPrompt
+            );
         } catch (\Throwable $e) {
             $this->logger->error("Failed to get recommendations: " . $e->getMessage(), [
                 'systemPrompt' => $systemPrompt,

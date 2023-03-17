@@ -20,6 +20,9 @@ class Suggestion
     #[ORM\ManyToOne(targetEntity: User::class)]
     private User $user;
 
+    #[ORM\ManyToOne(targetEntity: SuggestionPrompt::class)]
+    private string $prompt;
+
     /** @var array<string>|string[] */
     #[ORM\Column]
     private array $notesIds;
@@ -29,9 +32,6 @@ class Suggestion
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeInterface $dateTo;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private string $prompt;
 
     #[ORM\Column(type: Types::TEXT)]
     private string $input;
@@ -57,7 +57,7 @@ class Suggestion
         User $user,
         array $notesIds,
         SuggestionPeriodDto $period,
-        string $prompt,
+        SuggestionPrompt $prompt,
         string $input,
         string $output,
         array $usage
