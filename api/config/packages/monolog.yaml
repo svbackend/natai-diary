@@ -60,6 +60,7 @@ when@prod:
                 type: stream
                 channels: [deprecation]
                 path: php://stderr
+            # registered in services, https://github.com/deviantony/docker-elk
             es:
                 type: service
                 id: Symfony\Bridge\Monolog\Handler\ElasticsearchLogstashHandler
