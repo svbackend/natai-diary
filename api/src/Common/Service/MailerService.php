@@ -2,6 +2,7 @@
 
 namespace App\Common\Service;
 
+use App\Common\Entity\Feedback;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -50,5 +51,13 @@ class MailerService
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
         }
+    }
+
+    public function sendFeedback(Feedback $feedback): void
+    {
+        $to = Env::getAdminEmail();
+        $this->sendEmail(new Address($to), 'Feedback', 'common/feedback.html.twig', [
+            'feedback' => $feedback,
+        ]);
     }
 }

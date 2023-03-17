@@ -34,4 +34,13 @@ class Env
     {
         return self::get('APP_ENV') === 'test';
     }
+
+    public static function getAdminEmail(): string
+    {
+        try {
+            return self::get('ADMIN_EMAIL');
+        } catch (\Throwable $e) {
+            return "svbackend22@gmail.com";
+        }
+    }
 }
