@@ -158,5 +158,8 @@
   "ViewNotePage": {
     "editButton": "Edit",
     "deleteButton": "Delete"
+  },
+  "SuggestionsPage": {
+
   }
 }

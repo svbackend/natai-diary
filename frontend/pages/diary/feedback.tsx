@@ -46,7 +46,7 @@ export default function FeedbackPage() {
                 <div className="bg-section"></div>
             </div>
             <div className="container max-w-lg mx-auto px-4 py-8">
-                <h1 className="text-4xl font-bold mb-4">Feedback/Support</h1>
+                <h1 className="text-4xl font-bold mb-4">Feedback / Support</h1>
                 <p className="mb-6">Please feel free to contact us in any of the following ways:</p>
                 <ul className="mb-6">
                     <li>
@@ -56,19 +56,29 @@ export default function FeedbackPage() {
                             @natai.app
                         </Link>
                     </li>
-                    {/*<li>*/}
-                    {/*    <strong>Twitter:</strong>*/}
-                    {/*    <Link href="https://twitter.com/svbackend" className="text-blue-500" target="_blank" rel="noopener noreferrer">@svbackend</Link>*/}
-                    {/*</li>*/}
+                    <li>
+                        <strong>Twitter: </strong>
+                        <Link href="https://twitter.com/natai_app" className="text-blue-500" target="_blank" rel="noopener noreferrer">@natai_app</Link>
+                    </li>
                 </ul>
                 <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
                 <ul className="mb-6">
                     <li className="mb-2">
                         <h3 className="text-lg font-bold mb-2">
-                            Q
+                            How to get personalized recommendations based on my diary notes?
                         </h3>
-                        <p className="mb-2">
-                            A
+                        <p className="mb-1">
+                            After you have written a few notes (each note should be at least 1 paragraph long, ~100
+                            words),
+                            you can go to the <Link className={"text-blue-400"} href={"/diary/suggestions"}>AI
+                            Psychologist</Link> page,
+                            and your personalized recommendations should be available.
+                        </p>
+                        <p className={"mb-2"}>
+                            If you don't see any recommendations,
+                            try to write another diary entry and check again after couple of minutes.
+                            If you're sure that you have written enough notes but recommendations still not there,
+                            please contact us.
                         </p>
                     </li>
                 </ul>
@@ -104,7 +114,10 @@ export default function FeedbackPage() {
                         <label htmlFor="feedback"
                                className="block text-sm font-medium dark:text-gray-300">Feedback</label>
                         <div className="mt-1">
-                            <textarea id="feedback" name="feedback" rows={3}
+                            <textarea required={true}
+                                      minLength={10}
+                                      placeholder={"Please provide your feedback here"}
+                                      id="feedback" name="feedback" rows={3}
                                       className="text-dark shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"/>
                         </div>
                     </div>
