@@ -47,7 +47,7 @@
 .bg-section {
     position: absolute;
     background: #ECEAFF;
-    z-index: -2;
+    z-index: 0;
     width: 100%;
     height: 100%;
 }
@@ -60,7 +60,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 0;
 
     /*
     background: -moz-radial-gradient(circle at 5% 20%, rgba(210, 235, 253, 1) 0%, rgba(236, 234, 255, 1) 21%), -moz-radial-gradient(circle at 9% 33%, rgba(149, 113, 248, 1) 0%, rgba(236, 234, 255, 1) 21%);
@@ -231,7 +231,7 @@ SWIPER END
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: -3;
+    z-index: 0;
     background: #fafaff;
 }
 
@@ -243,7 +243,7 @@ SWIPER END
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: -2;
+    z-index: 0;
     background: #ECEAFF;
 }
 
@@ -255,7 +255,7 @@ SWIPER END
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 0;
     overflow: hidden;
 
     /*
@@ -291,7 +291,7 @@ SWIPER END
 .feature-lines-right {
     top: -34rem;
     right: 5%;
-    z-index: -1;
+    z-index: 0;
 }
 
 .features-mood-1 {
@@ -325,7 +325,7 @@ SWIPER END
 .feature-lines-left {
     top: -34rem;
     left: 5%;
-    z-index: -1;
+    z-index: 0;
 }
 
 .features-mood-1.left {

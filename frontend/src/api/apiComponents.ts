@@ -9,6 +9,45 @@ import type * as Fetcher from "./apiFetcher";
 import { apiFetch } from "./apiFetcher";
 import type * as Schemas from "./apiSchemas";
 
+export type PostFeedbackError = Fetcher.ErrorWrapper<undefined>;
+
+export type PostFeedbackVariables = {
+  body: Schemas.FeedbackRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostFeedback = (
+  variables: PostFeedbackVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<undefined, PostFeedbackError, Schemas.FeedbackRequest, {}, {}, {}>({
+    url: "/api/v1/feedback",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const usePostFeedback = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PostFeedbackError,
+      PostFeedbackVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    undefined,
+    PostFeedbackError,
+    PostFeedbackVariables
+  >(
+    (variables: PostFeedbackVariables) =>
+      fetchPostFeedback({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type GetStaticError = Fetcher.ErrorWrapper<undefined>;
 
 export type GetStaticVariables = ApiContext["fetcherOptions"];

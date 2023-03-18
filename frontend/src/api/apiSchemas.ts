@@ -3,6 +3,11 @@
  *
  * @version 1.0.0
  */
+export type FeedbackRequest = {
+  content: string;
+  stars: number | null;
+};
+
 export type StaticContentResponse = {
   terms: string;
 };
@@ -372,7 +377,7 @@ export type CloudSuggestionDto = {
   suggestion: string;
   period: SuggestionPeriodDto;
   isReceived: boolean;
-  feedbackRating: number;
+  feedbackRating: number | null;
   /**
    * @format date-time
    */

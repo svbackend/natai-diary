@@ -21,7 +21,8 @@ class Suggestion
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: SuggestionPrompt::class)]
-    private string $prompt;
+    #[ORM\JoinColumn(nullable: false)]
+    private SuggestionPrompt $prompt;
 
     /** @var array<string>|string[] */
     #[ORM\Column]

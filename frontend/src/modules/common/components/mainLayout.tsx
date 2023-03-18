@@ -297,10 +297,8 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
 function MainLayout({children, containerClass}: { children: ReactNode, containerClass?: string }) {
     const router = useRouter()
 
-    const [darkMode, setDarkMode] = useAtom(darkModeAtom)
-
     return (
-        <div className={classNames("main-layout min-h-screen flex flex-col", darkMode && "dark")}>
+        <div className={classNames("main-layout min-h-screen flex flex-col dark:bg-nav-bg dark:text-white")}>
             <Header router={router}/>
             <div className={classNames(containerClass || "flex-1 container mx-auto p-3 sm:p-0")}>
                 {children}

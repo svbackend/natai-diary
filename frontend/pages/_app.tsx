@@ -7,6 +7,7 @@ import {getTranslations} from "../i18n/i18n";
 import {useRouter} from "next/router";
 import {AppContext, useGlobalState} from "../src/modules/common/state";
 import { Provider } from 'jotai'
+import Body from "../src/modules/common/components/Body";
 
 const queryClient = new QueryClient()
 
@@ -21,7 +22,9 @@ export default function App({Component, pageProps}: AppProps) {
             <QueryClientProvider client={queryClient}>
                 <AppContext.Provider value={globalAppState}>
                     <Provider>
-                        <Component {...pageProps} />
+                        <Body>
+                            <Component {...pageProps} />
+                        </Body>
                     </Provider>
                 </AppContext.Provider>
             </QueryClientProvider>
