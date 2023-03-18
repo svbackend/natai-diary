@@ -116,7 +116,7 @@ const DesktopNavBar = ({
     const {user} = useAppStateManager()
 
     const isActive = (path: string) => {
-        return router.pathname === path
+        return router.pathname === path || path !== "/" && router.pathname.startsWith(path)
     }
 
     const activeClass = "font-semibold text-brand dark:text-brand border-brand dark:border-brand"

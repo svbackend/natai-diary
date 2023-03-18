@@ -22,6 +22,7 @@ module.exports = {
         'sep-alt': '#4D4770',
         'copyright': '#232037',
         'why': '#2D2B53',
+        'delimiter': '#2D2A53'
       }
     },
   },
