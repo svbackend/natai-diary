@@ -98,12 +98,12 @@ function DiaryMenuModalContent({onClose}: { onClose: () => void }) {
                     <li>
                         <Link href="/diary/suggestions" onClick={onClose}
                            className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow">
-                            <Image src={bulbImg} className={"inline-flex w-8 h-8"} alt={""}/>
+                            <Image src={bulbImg} className={"inline-flex w-8 h-8 animate-pulse"} alt={""}/>
                             <span className="ml-3 flex-1 whitespace-nowrap align-middle">
                                 AI Psychologist
                             </span>
                             <span
-                                className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
+                                className="animate-pulse inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
                                 +1
                             </span>
                         </Link>
