@@ -33,6 +33,9 @@ import {DiaryAddFilesModal} from "../../../../src/modules/diary/components/Diary
 import DiaryLayout from "../../../../src/modules/diary/components/DiaryLayout";
 import {useAtom} from "jotai";
 import {diaryStateAtom} from "../../../../src/modules/diary/atoms/diaryStateAtom";
+import SelectWeatherButton from "../../../../src/modules/diary/components/SelectWeatherButton";
+import DiarySelectWeatherModal from "../../../../src/modules/diary/components/DiarySelectWeatherModal";
+import {useDiaryStateManager} from "../../../../src/modules/diary/diaryStateManager";
 
 export default function DiaryEditNote() {
     const {user, isLoading} = useAppStateManager()
@@ -103,6 +106,7 @@ function DiaryEditNotePageContent(
 ) {
     const t = useTranslations("DiaryEditNote");
     const router = useRouter()
+    const {updateNote} = useDiaryStateManager()
 
     const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>({
         defaultValues: {
@@ -117,6 +121,9 @@ function DiaryEditNotePageContent(
 
     const moodTag = tags.find(tag => tag.tag === "mood") || null
     const moodScore = moodTag ? moodTag.score : null
+
+    const weatherTag = tags.find(tag => tag.tag === "weather") || null
+    const weatherScore = weatherTag ? weatherTag.score : null
 
     const [actualDate, setActualDate] = useState<Date>(
         dateService.fromYmd(note.actualDate)
@@ -148,6 +155,7 @@ function DiaryEditNotePageContent(
         ]
 
         try {
+            const updatedAt = new Date()
             await editNoteRequest({
                 pathParams: {
                     id: note.id,
@@ -158,9 +166,19 @@ function DiaryEditNotePageContent(
                     tags: tags,
                     attachments: allAttachments,
                     actualDate: dateService.toYMD(actualDate),
-                    updatedAt: dateService.toBackendFormat(new Date()),
+                    updatedAt: dateService.toBackendFormat(updatedAt),
                     deletedAt: null,
                 }
+            })
+            updateNote({
+                ...note,
+                title: title,
+                content: content,
+                tags: tags,
+                attachments: allAttachments,
+                actualDate: dateService.imitateBackendFormat(actualDate),
+                updatedAt: dateService.imitateBackendFormat(updatedAt),
+                deletedAt: null,
             })
         } catch (e) {
             // todo scroll into view AlertApiError
@@ -230,8 +248,11 @@ function DiaryEditNotePageContent(
                     )}
 
                     <div className="flex flex-row justify-between mb-4">
-                        {/* Select mood (left) and "Add tags" button (right) */}
-                        <SelectMoodButton moodScore={moodScore}/>
+                        <div className="flex justify-around gap-2">
+                            <SelectMoodButton moodScore={moodScore}/>
+                            <SelectWeatherButton score={weatherScore}/>
+                        </div>
+
                         <div className="flex justify-around gap-2">
                             <AddAttachmentsButton count={filesCombinedLength}/>
                             <AddTagsButton/>
@@ -243,6 +264,7 @@ function DiaryEditNotePageContent(
             </div>
 
             <DiarySelectMoodModal onSelect={(tag: CloudTagDto) => addTag(tag)} moodScore={moodScore}/>
+            <DiarySelectWeatherModal onSelect={(tag: CloudTagDto) => addTag(tag)} weatherScore={weatherScore}/>
             <DiaryAddTagsModal addedTags={tags} onAdd={addTag} onDelete={deleteTag}/>
             <DiaryAddFilesModal addedFiles={files} onUpdate={onUpdateFiles} onDelete={deleteFile}/>
         </>
