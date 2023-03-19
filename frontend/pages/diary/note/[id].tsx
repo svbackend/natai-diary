@@ -10,10 +10,12 @@ import Link from "next/link";
 import {useTranslations} from "use-intl";
 import {Gallery, Item} from "react-photoswipe-gallery";
 import 'photoswipe/dist/photoswipe.css'
+import {diaryStateAtom} from "../../../src/modules/diary/atoms/diaryStateAtom";
+import {useAtom} from "jotai";
+import DiaryLayout from "../../../src/modules/diary/components/DiaryLayout";
 
 export default function ViewNotePage() {
-    const {data: notes, isLoading, isError, error} = useGetNotes({})
-
+    const [diaryState] = useAtom(diaryStateAtom)
     const [attachments, setAttachments] = useState<CloudAttachmentDto[]>([])
     const [isAttachmentsLoading, setIsAttachmentsLoading] = useState<boolean>(false)
 
@@ -21,39 +23,31 @@ export default function ViewNotePage() {
     const t = useTranslations("ViewNotePage");
 
     const {id} = router.query
-
-    const [note, setNote] = useState<CloudNoteDto | null>(null)
+    const note = diaryState.notes.find(n => n.id === id)
 
     useEffect(() => {
-        if (notes?.notes && typeof id === "string") {
-            let noteById = notes.notes.find(n => n.id === id)
-            if (noteById) {
-                setNote(noteById)
-
-                if (noteById.attachments.length > 0) {
-                    setIsAttachmentsLoading(true)
-                    fetchGetNotesByIdAttachments({
-                        pathParams: {
-                            id: id
-                        }
-                    })
-                        .then((res) => {
-                            setAttachments(res.attachments)
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                        })
-                        .finally(() => {
-                            setIsAttachmentsLoading(false)
-                        })
+        if (note && note.attachments.length > 0) {
+            setIsAttachmentsLoading(true)
+            fetchGetNotesByIdAttachments({
+                pathParams: {
+                    id: note.id
                 }
-            }
+            })
+                .then((res) => {
+                    setAttachments(res.attachments)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    setIsAttachmentsLoading(false)
+                })
         }
-    }, [notes, id])
+    }, [note])
 
     const {mutate: deleteNoteRequest, isLoading: isDeleteLoading, error: deleteError} = useDeleteNotesById()
     const onDeleteNote = () => {
-        if (note) {
+        if (note && confirm("Are you sure you want to delete this note?")) {
             deleteNoteRequest({
                 pathParams: {
                     id: note.id
@@ -65,35 +59,29 @@ export default function ViewNotePage() {
 
     return (
         <>
-            <MainLayout>
-                <div className="w-full max-w-xl mx-auto mt-4 mb-4">
-                    {isLoading && <AppSpinner/>}
+            <DiaryLayout>
+                {note && <DiaryNoteView note={note} isLast={true}/>}
 
-                    {!isLoading && isError && <AlertApiError error={error}/>}
+                <DiaryNoteAttachments attachments={attachments} isLoading={isAttachmentsLoading}/>
 
-                    {note && <DiaryNoteView note={note} isLast={true}/>}
+                {note && (
+                    <div className="flex flex-row justify-between">
+                        <Link
+                            className="font-bold justify-center py-2 px-4 border border-transparent shadow-sm rounded-full text-light bg-brand hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            href={`/diary/note/${note.id}/edit`}
+                        >
+                            {t("editButton")}
+                        </Link>
 
-                    <DiaryNoteAttachments attachments={attachments} isLoading={isAttachmentsLoading}/>
-
-                    {note && (
-                        <div className="flex flex-row justify-between">
-                            <Link
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                href={`/diary/note/${note.id}/edit`}
-                            >
-                                {t("editButton")}
-                            </Link>
-
-                            <button
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                onClick={onDeleteNote}
-                            >
-                                {isDeleteLoading ? "..." : t("deleteButton")}
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </MainLayout>
+                        <button
+                            className="font-bold justify-center py-2 px-4 border border-transparent shadow-sm rounded-full text-light bg-red-500 hover:bg-red-600/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            onClick={onDeleteNote}
+                        >
+                            {isDeleteLoading ? "..." : t("deleteButton")}
+                        </button>
+                    </div>
+                )}
+            </DiaryLayout>
         </>
     )
 }

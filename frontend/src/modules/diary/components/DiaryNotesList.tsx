@@ -190,7 +190,7 @@ function AttachmentPreview(
             )}
             {props.isLast && props.hiddenAttachmentsLength > 0 && (
                 <div className={cls + " absolute flex justify-center"}>
-                    <span className={"p-2 text-xs rounded-full bg-black/70 text-light self-center"}>+{props.hiddenAttachmentsLength}</span>
+                    <span className={"p-2 text-xs font-bold rounded-full bg-black/70 text-light self-center"}>+{props.hiddenAttachmentsLength}</span>
                 </div>
             )}
         </div>
