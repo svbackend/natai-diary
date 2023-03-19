@@ -20,6 +20,18 @@ const weatherMap = {
     10: weatherImg10,
 }
 
+const weatherTextMap = {
+    10: "Sunny",
+    9: "Mostly Sunny",
+    8: "Mostly Cloudy",
+    7: "Cloudy",
+    6: "Sunny & Rainy",
+    5: "Rain",
+    4: "Thunderstorm",
+    3: "Snow",
+    2: "Rainbow",
+}
+
 export const weatherMapService = {
     mapWeatherScoreToImage: (score: number | null): any => {
         if (score) {
@@ -38,5 +50,23 @@ export const weatherMapService = {
         }
 
         return weatherImg10
+    },
+    mapWeatherScoreToText: (score: number | null): string => {
+        if (score) {
+            let weatherScore = score
+
+            if (score < 2) {
+                weatherScore = 2
+            }
+
+            if (score && score > 10) {
+                weatherScore = 10
+            }
+
+            // @ts-ignore
+            return weatherTextMap[weatherScore]
+        }
+
+        return ""
     },
 }

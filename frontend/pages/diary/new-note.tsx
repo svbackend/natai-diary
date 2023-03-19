@@ -3,7 +3,7 @@ import {TextField} from "../../src/modules/common/components/textField";
 import {useTranslations} from "use-intl";
 import {useForm} from "react-hook-form";
 import {usePostNotesV2} from "../../src/api/apiComponents";
-import {CloudTagDto, NewNoteResponse} from "../../src/api/apiSchemas";
+import {CloudNoteDto, CloudTagDto, NewNoteResponse} from "../../src/api/apiSchemas";
 import {EaseOutTransition} from "../../src/modules/common/components/EaseOutTransition";
 import {AlertApiError} from "../../src/modules/common/components/alert";
 import {useRouter} from "next/router";
@@ -31,6 +31,9 @@ import DiaryLayout from "../../src/modules/diary/components/DiaryLayout";
 import SelectWeatherButton from "../../src/modules/diary/components/SelectWeatherButton";
 import {tagService} from "../../src/modules/diary/services/tagService";
 import DiarySelectWeatherModal from "../../src/modules/diary/components/DiarySelectWeatherModal";
+import {useAtom} from "jotai";
+import {diaryStateAtom} from "../../src/modules/diary/atoms/diaryStateAtom";
+import {useDiaryStateManager} from "../../src/modules/diary/diaryStateManager";
 
 export default function DiaryNewNote() {
     return (
@@ -50,6 +53,8 @@ function DiaryNewNotePageContent() {
     const router = useRouter()
 
     const persistedFormData = storageService.getNewNoteFormData()
+    const [diaryState] = useAtom(diaryStateAtom)
+    const {addNote} = useDiaryStateManager()
 
     const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>({
         defaultValues: {
@@ -122,6 +127,20 @@ function DiaryNewNotePageContent() {
                 }
             })
             storageService.deleteNewNoteFormData()
+            const now = new Date()
+            const newCloudNote: CloudNoteDto = {
+                id: response.noteId,
+                userId: diaryState.user?.id || "0",
+                title: title,
+                content: content,
+                tags: tags,
+                actualDate: dateService.imitateBackendFormat(actualDate),
+                createdAt: dateService.imitateBackendFormat(now),
+                updatedAt: dateService.imitateBackendFormat(now),
+                deletedAt: null,
+                attachments: attachments,
+            }
+            addNote(newCloudNote)
         } catch (e) {
             // todo scroll into view AlertApiError
             return;

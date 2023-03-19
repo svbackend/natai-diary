@@ -61,7 +61,7 @@ function DiaryMenuModal() {
 }
 
 function DiaryMenuModalContent({onClose}: { onClose: () => void }) {
-    const [diaryState, setDiaryState] = useAtom(diaryStateAtom)
+    const [diaryState] = useAtom(diaryStateAtom)
 
     const unSeenSuggestionsCount = diaryState.suggestions.filter(s => !s.isReceived).length
 

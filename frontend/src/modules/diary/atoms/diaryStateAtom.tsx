@@ -6,5 +6,6 @@ export const diaryStateAtom = atom<DiaryStateDto>({
     isLoaded: false,
     notes: [],
     suggestions: [],
+    previews: new Map(),
     user: null,
 })

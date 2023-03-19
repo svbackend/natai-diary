@@ -9,11 +9,13 @@ import DiaryLayout from "../../src/modules/diary/components/DiaryLayout";
 import {diaryStateAtom} from "../../src/modules/diary/atoms/diaryStateAtom";
 import Image from "next/image";
 import noNotesIcon from "../../public/assets/diary/no-notes.svg";
+import PrimaryButton from "../../src/modules/common/components/PrimaryButton";
+import {useRouter} from "next/router";
 
 export default function DiaryPageContent() {
     const t = useTranslations("DiaryPage");
 
-    const [diaryState, setDiaryState] = useAtom(diaryStateAtom)
+    const [diaryState] = useAtom(diaryStateAtom)
 
     const filteredNotes = diaryState.notes?.filter(note => note.deletedAt === null)
 
@@ -41,6 +43,7 @@ export default function DiaryPageContent() {
 }
 
 function EmptyState() {
+    const router = useRouter()
     return (
         <div className={"flex flex-col items-center"}>
             <div className="w-32 h-32 bg-light3 dark:bg-brand/20 flex items-center justify-center rounded-full">
@@ -54,6 +57,9 @@ function EmptyState() {
                 <p className={"text-nav-item dark:text-nav-item-alt mt-2"}>
                     Stay more grounded, self-aware, mindful of what you do and how you feel.
                 </p>
+                <PrimaryButton className={"mt-4"} onClick={() => router.push("/diary/new-note")}>
+                    Add Note
+                </PrimaryButton>
             </div>
         </div>
     )

@@ -3,12 +3,13 @@ import {useAppStateManager} from "../../common/state";
 import MainLayout from "../../common/components/mainLayout";
 import {useAtom} from "jotai";
 import {diaryStateAtom} from "../atoms/diaryStateAtom";
-import {fetchGetNotes, fetchGetSuggestions} from "../../../api/apiComponents";
+import {fetchGetNotes, fetchGetNotesByIdAttachments, fetchGetSuggestions} from "../../../api/apiComponents";
 import {NotLoggedIn} from "../../common/components/NotLoggedIn";
 import {AlertApiError} from "../../common/components/alert";
 import {DiaryHeader} from "./DiaryHeader";
 import NarrowWrapper from "../../common/components/NarrowWrapper";
 import {DiaryStateDto} from "../dto/DiaryStateDto";
+import {CloudNoteDto} from "../../../api/apiSchemas";
 
 export default function DiaryLayout(props: { children: React.ReactNode }) {
     const {user, isLoading: isUserLoading} = useAppStateManager()
@@ -32,8 +33,11 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
                         isLoaded: true,
                         notes: notesResponse.notes,
                         suggestions: suggestionsResponse.suggestions,
+                        previews: new Map(),
                         user: user
                     })
+
+                    loadPreviews(notesResponse.notes)
                 })
                 .catch(error => {
                     setDiaryState({
@@ -41,6 +45,7 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
                         isLoaded: true,
                         notes: [],
                         suggestions: [],
+                        previews: new Map(),
                         user: user
                     })
                     setError(error)
@@ -51,6 +56,45 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
                 })
         }
     }, [user?.id])
+
+    const loadPreviews = (notes: CloudNoteDto[]) => {
+        const notesWithAttachments = notes.filter(note => note.attachments.length > 0)
+
+        if (notesWithAttachments.length === 0) {
+            return;
+        }
+
+
+        const requests = notesWithAttachments.map(note => {
+            return fetchGetNotesByIdAttachments({
+                pathParams: {
+                    id: note.id
+                }
+            })
+        })
+
+        const previews = new Map<string, string>()
+
+        Promise
+            .all(requests)
+            .then(responses => {
+                responses.forEach(res => {
+                    res.attachments
+                        .filter(a => a.previews.length > 0)
+                        .forEach(attachment => {
+                            previews.set(attachment.attachmentId, attachment.previews[0].signedUrl)
+                        })
+                })
+
+                setDiaryState(prevState => ({
+                    ...prevState,
+                    previews: previews
+                }))
+            })
+            .catch(e => {
+                console.error(e)
+            })
+    }
 
     const combinedIsLoading = isUserLoading || notesLoading || suggestionsLoading
 
