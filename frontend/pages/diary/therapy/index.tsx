@@ -1,35 +1,21 @@
-import MainLayout from "../../src/modules/common/components/mainLayout";
-import {useAppStateManager} from "../../src/modules/common/state";
-import AppSpinner from "../../src/modules/common/components/AppSpinner";
+import MainLayout from "../../../src/modules/common/components/mainLayout";
+import {useAppStateManager} from "../../../src/modules/common/state";
+import AppSpinner from "../../../src/modules/common/components/AppSpinner";
 import {useTranslations} from "use-intl";
-import {CloudSuggestionDto, UserDto} from "../../src/api/apiSchemas";
-import {useGetSuggestions} from "../../src/api/apiComponents";
+import {CloudSuggestionDto, UserDto} from "../../../src/api/apiSchemas";
+import {useGetSuggestions} from "../../../src/api/apiComponents";
 import React from "react";
-import {DiaryHeader} from "../../src/modules/diary/components/DiaryHeader";
-import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
-import {NotLoggedIn} from "../../src/modules/common/components/NotLoggedIn";
-import {SuggestionModal} from "../../src/modules/diary/components/SuggestionModal";
-import {dateService} from "../../src/modules/common/services/dateService";
+import {DiaryHeader} from "../../../src/modules/diary/components/DiaryHeader";
+import NarrowWrapper from "../../../src/modules/common/components/NarrowWrapper";
+import {NotLoggedIn} from "../../../src/modules/common/components/NotLoggedIn";
+import {SuggestionModal} from "../../../src/modules/diary/components/SuggestionModal";
+import {dateService} from "../../../src/modules/common/services/dateService";
 import {useAtom} from "jotai";
-import {diarySuggestionModalAtom} from "../../src/modules/diary/atoms/diarySuggestionModalAtom";
+import {diarySuggestionModalAtom} from "../../../src/modules/diary/atoms/diarySuggestionModalAtom";
+import DiaryLayout from "../../../src/modules/diary/components/DiaryLayout";
 
-export default function SuggestionsPage() {
-
-    const {user, isLoading} = useAppStateManager()
-
-    return (
-        <MainLayout>
-            {isLoading && <AppSpinner/>}
-
-            {!isLoading && !user && <NotLoggedIn/>}
-
-            {!isLoading && user && <SuggestionsPageContent user={user}/>}
-        </MainLayout>
-    )
-}
-
-function SuggestionsPageContent({user}: { user: UserDto }) {
-    const t = useTranslations("SuggestionsPage");
+export default function TherapyIndexPage({user}: { user: UserDto }) {
+    const t = useTranslations("TherapyIndexPage");
     const {data: suggestions, isLoading, isError, error} = useGetSuggestions({})
     const [isSuggestionModalOpen, setIsSuggestionModalOpen] = useAtom(diarySuggestionModalAtom)
     const [selectedSuggestion, setSelectedSuggestion] = React.useState<CloudSuggestionDto | null>(null)
@@ -43,16 +29,13 @@ function SuggestionsPageContent({user}: { user: UserDto }) {
 
     return (
         <>
-            <NarrowWrapper>
-                <DiaryHeader user={user}/>
-                {isLoading && <AppSpinner/>}
-
+            <DiaryLayout>
                 {!isLoading && items.length > 0 && (
                     <SuggestionsRows suggestions={items} onClick={onClick}/>
                 )}
 
                 {selectedSuggestion && <SuggestionModal suggestion={selectedSuggestion}/>}
-            </NarrowWrapper>
+            </DiaryLayout>
         </>
     )
 }

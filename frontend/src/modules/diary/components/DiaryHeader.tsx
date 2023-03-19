@@ -92,11 +92,11 @@ function DiaryMenuModalContent({onClose}: { onClose: () => void }) {
                 </p>
                 <ul className="my-4 space-y-3">
                     <li>
-                        <Link href="/diary/suggestions" onClick={onClose}
+                        <Link href="/diary/therapy" onClick={onClose}
                               className="flex items-center p-3 text-base font-bold text-dark dark:text-nav-item-alt rounded-3xl border dark:border-sep-alt group hover:shadow">
                             <LightBulbIcon className={"inline-flex w-8 h-8"}/>
                             <span className="ml-3 flex-1 whitespace-nowrap align-middle">
-                                AI Psychologist
+                                AI Therapy
                             </span>
                             {unSeenSuggestionsCount > 0 && (
                                 <span

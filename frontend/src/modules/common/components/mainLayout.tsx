@@ -158,7 +158,7 @@ const DesktopNavBar = ({
                     <>
                         <Link
                             href={"/login" + from}
-                            className="self-center px-8 py-3 font-semibold color-brand">
+                            className="self-center px-8 py-3 font-semibold text-brand">
                             Sign in
                         </Link>
                         <Link

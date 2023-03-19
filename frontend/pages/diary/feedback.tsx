@@ -67,8 +67,7 @@ export default function FeedbackPage() {
                     <p className="mb-1">
                         After you have written a few notes (each note should be at least 1 paragraph long, ~100
                         words),
-                        you can go to the <Link className={"text-blue-400"} href={"/diary/suggestions"}>AI
-                        Psychologist</Link> page,
+                        you can go to the <Link className={"text-blue-400"} href={"/diary/therapy"}>AI Therapy</Link> page,
                         and your personalized recommendations should be available.
                     </p>
                     <p className={"mb-2"}>
