@@ -1,3 +1,9 @@
+### Mar 19, 2023
+
+Design update progress going well.
+
+"View Note" Page left to be updated.
+
 ### Mar 10, 2023
 
 Requirements:
