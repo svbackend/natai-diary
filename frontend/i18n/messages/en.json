@@ -139,11 +139,13 @@
   },
   "DiaryNewNote": {
     "titleLabel": "Title",
+    "titlePlaceholder": "Short summary (optional)",
     "contentLabel": "Content",
-    "addNewNoteButton": "Add note"
+    "addNewNoteButton": "Add Note"
   },
   "DiaryEditNote": {
     "titleLabel": "Title",
+    "titlePlaceholder": "Short summary (optional)",
     "contentLabel": "Content",
     "saveNoteButton": "Save"
   },

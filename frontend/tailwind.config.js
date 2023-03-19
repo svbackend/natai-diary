@@ -13,6 +13,7 @@ module.exports = {
         'dark': '#29293E',
         'light': '#E8E8FF',
         'light2': '#ECEAFF',
+        'light3': '#E8DFFF',
         'nav-item': '#6D6D9C',
         'nav-item-alt': '#A0A0D4',
         'nav-bg': '#1C1B20',
@@ -22,7 +23,11 @@ module.exports = {
         'sep-alt': '#4D4770',
         'copyright': '#232037',
         'why': '#2D2B53',
-        'delimiter': '#2D2A53'
+        'delimiter': '#2D2A53',
+        'menu': '#313146',
+        'menu-b': '#5a5a71',
+        'field': '#201F24',
+        'tag': '#342C4B',
       }
     },
   },

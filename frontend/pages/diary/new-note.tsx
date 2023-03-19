@@ -1,9 +1,4 @@
-import MainLayout from "../../src/modules/common/components/mainLayout";
-import {useAppStateManager} from "../../src/modules/common/state";
-import AppSpinner from "../../src/modules/common/components/AppSpinner";
 import React, {useState} from "react";
-import {NotLoggedIn} from "../../src/modules/common/components/NotLoggedIn";
-import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {TextField} from "../../src/modules/common/components/textField";
 import {useTranslations} from "use-intl";
 import {useForm} from "react-hook-form";
@@ -24,30 +19,24 @@ import ActualDateRow from "../../src/modules/diary/components/ActualDateRow";
 import SelectMoodButton from "../../src/modules/diary/components/SelectMoodButton";
 import AddTagsButton from "../../src/modules/diary/components/AddTagsButton";
 import DiarySelectMoodModal from "../../src/modules/diary/components/DiarySelectMoodModal";
-import {CloudArrowUpIcon} from "@heroicons/react/24/outline";
 import {AddedFilesRow} from "../../src/modules/diary/components/AddedFilesRow";
 import {DiaryAddFilesModal} from "../../src/modules/diary/components/DiaryAddFilesModal";
-import {useAtom} from "jotai";
-import {diaryAddAttachmentModalAtom} from "../../src/modules/diary/atoms/diaryAddAttachmentModalAtom";
 import {
     FilesUpdateCallback,
     FilesUpdateCallback1,
     LocalNoteAttachment
 } from "../../src/modules/diary/services/attachmentService";
 import {AddAttachmentsButton} from "../../src/modules/diary/components/AddAttachmentsButton";
+import DiaryLayout from "../../src/modules/diary/components/DiaryLayout";
+import SelectWeatherButton from "../../src/modules/diary/components/SelectWeatherButton";
+import {tagService} from "../../src/modules/diary/services/tagService";
+import DiarySelectWeatherModal from "../../src/modules/diary/components/DiarySelectWeatherModal";
 
 export default function DiaryNewNote() {
-
-    const {user, isLoading} = useAppStateManager()
-
     return (
-        <MainLayout>
-            {isLoading && <AppSpinner/>}
-
-            {!isLoading && !user && <NotLoggedIn/>}
-
-            {!isLoading && user && <DiaryNewNotePageContent/>}
-        </MainLayout>
+        <DiaryLayout>
+            <DiaryNewNotePageContent/>
+        </DiaryLayout>
     )
 }
 
@@ -73,8 +62,12 @@ function DiaryNewNotePageContent() {
     const [tags, setTags] = useState<CloudTagDto[]>([])
     const [files, setFiles] = useState<LocalNoteAttachment[]>([])
 
+    const regularTags = tags.filter(tag => !tagService.isSpecial(tag.tag))
+
     const moodTag = tags.find(tag => tag.tag === "mood") || null
     const moodScore = moodTag ? moodTag.score : null
+    const weatherTag = tags.find(tag => tag.tag === "weather") || null
+    const weatherScore = weatherTag ? weatherTag.score : null
 
     const [actualDate, setActualDate] = useState<Date>(new Date)
 
@@ -146,61 +139,63 @@ function DiaryNewNotePageContent() {
     }
 
     return (
-        <NarrowWrapper>
-            <div className="p-4">
-                <h1 className={"text-2xl"}>
-                    New note
-                </h1>
+        <div className={"px-4"}>
+            <h1 className={"text-2xl font-bold text-dark dark:text-light"}>
+                New note
+            </h1>
 
-                {isError && error && (
-                    <EaseOutTransition>
-                        <AlertApiError error={error}/>
-                    </EaseOutTransition>
+            {isError && error && (
+                <EaseOutTransition>
+                    <AlertApiError error={error}/>
+                </EaseOutTransition>
+            )}
+
+            <form onSubmit={handleSubmit(onSubmit)} className={"mt-4"}>
+                <ActualDateRow actualDate={actualDate} onChange={(date: Date) => setActualDate(date)}/>
+
+                <TextField
+                    label={t("titleLabel")}
+                    placeholder={t("titlePlaceholder")}
+                    name={"title"}
+                    type={"text"}
+                    errors={errors}
+                    register={register("title")}
+                    required={false}
+                />
+
+                <NoteEditorField
+                    label={t("contentLabel")}
+                    name={"content"}
+                    register={register("content")}
+                    errors={errors}
+                />
+
+                {regularTags.length > 0 && (
+                    <AddedTagsRow tags={tags} onDelete={deleteTag}/>
                 )}
 
-                <form onSubmit={handleSubmit(onSubmit)} className={"mt-4"}>
-                    <ActualDateRow actualDate={actualDate} onChange={(date: Date) => setActualDate(date)}/>
+                {files.length > 0 && (
+                    <AddedFilesRow localFiles={files} onDeleteLocal={deleteFile}/>
+                )}
 
-                    <TextField
-                        label={t("titleLabel")}
-                        name={"title"}
-                        type={"text"}
-                        errors={errors}
-                        register={register("title")}
-                        required={false}
-                    />
-
-                    <NoteEditorField
-                        label={t("contentLabel")}
-                        name={"content"}
-                        register={register("content")}
-                        errors={errors}
-                    />
-
-                    {tags.length > 0 && (
-                        <AddedTagsRow tags={tags} onDelete={deleteTag}/>
-                    )}
-
-                    {files.length > 0 && (
-                        <AddedFilesRow localFiles={files} onDeleteLocal={deleteFile}/>
-                    )}
-
-                    <div className="flex flex-row justify-between mb-4">
+                <div className="flex flex-row justify-between mb-4">
+                    <div className="flex justify-around gap-2">
                         <SelectMoodButton moodScore={moodScore}/>
-                        <div className="flex justify-around gap-2">
-                            <AddAttachmentsButton count={files.length}/>
-                            <AddTagsButton/>
-                        </div>
+                        <SelectWeatherButton score={weatherScore}/>
                     </div>
+                    <div className="flex justify-around gap-2">
+                        <AddAttachmentsButton count={files.length}/>
+                        <AddTagsButton/>
+                    </div>
+                </div>
 
-                    <FormSubmitButton label={t("addNewNoteButton")} loading={isLoading}/>
-                </form>
-            </div>
+                <FormSubmitButton label={t("addNewNoteButton")} loading={isLoading}/>
+            </form>
 
             <DiarySelectMoodModal onSelect={(tag: CloudTagDto) => addTag(tag)} moodScore={moodScore}/>
+            <DiarySelectWeatherModal onSelect={(tag: CloudTagDto) => addTag(tag)} weatherScore={weatherScore}/>
             <DiaryAddTagsModal addedTags={tags} onAdd={addTag} onDelete={deleteTag}/>
             <DiaryAddFilesModal addedFiles={files} onUpdate={onUpdateFiles} onDelete={deleteFile}/>
-
-        </NarrowWrapper>
+        </div>
     )
 }

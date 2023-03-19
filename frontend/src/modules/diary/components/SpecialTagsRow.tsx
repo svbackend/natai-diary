@@ -14,7 +14,7 @@ import moodImg10 from '../../../../public/assets/mood/10.svg';
 import Image from "next/image";
 import {moodMapService} from "../services/moodMapService";
 
-export const specialTags = ["mood"]
+export const specialTags = ["mood", "weather"]
 
 export default function SpecialTagsRow({note}: { note: CloudNoteDto }) {
     const tags = note.tags.filter(tag => specialTags.includes(tag.tag.trim().toLowerCase()))

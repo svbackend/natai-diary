@@ -11,11 +11,11 @@ export default function SelectMoodButton({moodScore}: { moodScore: number | null
     return (
         <button
             onClick={() => setIsMenuOpen(true)}
-            className="flex flex-col bg-gray-100 hover:bg-gray-200 rounded items-center"
+            className="flex flex-col text-nav-item dark:text-nav-item-alt rounded items-center"
             type={"button"}
         >
-            <Image src={moodImg} alt={"Select mood"} className={"w-12 h-12"}/>
-            <span className={"text-xs text-gray-600"}>#mood</span>
+            <Image src={moodImg} alt={"Select mood"} className={"h-12 w-12 drop-shadow-2xl"}/>
+            <span className={"text-xs font-semibold"}>#mood</span>
         </button>
     )
 }

@@ -1,37 +1,37 @@
 import {CloudTagDto} from "../../../api/apiSchemas";
 import {useAtom} from "jotai";
-import {diarySelectMoodModalAtom} from "../atoms/diarySelectMoodModalAtom";
+import {diarySelectWeatherModalAtom} from "../atoms/diarySelectWeatherModalAtom";
 import {Dialog} from "@headlessui/react";
 import React from "react";
-import MoodImage from "./MoodImage";
+import WeatherImage from "./WeatherImage";
 import DialogWrapper from "./DialogWrapper";
 
-export default function DiarySelectMoodModal(
-    {moodScore, onSelect}: { onSelect: (tag: CloudTagDto) => void, moodScore: number | null }
+export default function DiarySelectWeatherModal(
+    {weatherScore, onSelect}: { onSelect: (tag: CloudTagDto) => void, weatherScore: number | null }
 ) {
-    const [isMenuOpen, setIsMenuOpen] = useAtom(diarySelectMoodModalAtom)
+    const [isMenuOpen, setIsMenuOpen] = useAtom(diarySelectWeatherModalAtom)
 
-    const onMoodTagClick = (tag: CloudTagDto) => {
+    const onWeatherTagClick = (tag: CloudTagDto) => {
         onSelect(tag)
         setIsMenuOpen(false)
     }
 
     return (
-        <DialogWrapper modalAtom={diarySelectMoodModalAtom}>
-            <DiarySelectMoodModalContent
-                moodScore={moodScore}
-                onSelect={onMoodTagClick}
+        <DialogWrapper modalAtom={diarySelectWeatherModalAtom}>
+            <DiarySelectWeatherModalContent
+                weatherScore={weatherScore}
+                onSelect={onWeatherTagClick}
                 onClose={() => setIsMenuOpen(false)}
             />
         </DialogWrapper>
     )
 }
 
-function DiarySelectMoodModalContent({
-                                         moodScore,
+function DiarySelectWeatherModalContent({
+                                         weatherScore,
                                          onClose,
                                          onSelect
-                                     }: { moodScore: number | null, onClose: () => void, onSelect: (tag: CloudTagDto) => void }) {
+                                     }: { weatherScore: number | null, onClose: () => void, onSelect: (tag: CloudTagDto) => void }) {
     const scores = [10, 9, 8, 7, 6, 5, 4, 3, 2]
 
     return (
@@ -51,15 +51,15 @@ function DiarySelectMoodModalContent({
 
             <div className="px-6 py-4 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
-                    Mood
+                    Weather
                 </h3>
             </div>
 
             <div className="p-6">
-                <p className="text-sm font-normal text-nav-item dark:text-nav-item-alt">What was your mood today?</p>
+                <p className="text-sm font-normal text-nav-item dark:text-nav-item-alt">What was the weather today?</p>
 
                 <div className="grid grid-cols-3 gap-4 mt-4">
-                    {scores.map((i) => <MoodImage currentValue={moodScore} key={i} moodScore={i} onSelect={onSelect}/>)}
+                    {scores.map((i) => <WeatherImage currentValue={weatherScore} key={i} weatherScore={i} onSelect={onSelect}/>)}
                 </div>
             </div>
         </div>

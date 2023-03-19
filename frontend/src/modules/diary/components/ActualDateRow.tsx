@@ -1,5 +1,8 @@
 import {dateService} from "../../common/services/dateService";
 import React from "react";
+import Image from "next/image";
+import arrowLeftIcon from "../../../../public/assets/diary/arr-left.svg";
+import arrowRightIcon from "../../../../public/assets/diary/arr-right.svg";
 
 export default function ActualDateRow({actualDate, onChange}: { actualDate: Date, onChange: (date: Date) => void }) {
     const currentDate = new Date()
@@ -24,25 +27,17 @@ export default function ActualDateRow({actualDate, onChange}: { actualDate: Date
 
     return (
         <div className="flex flex-row justify-between mb-4">
-            <button onClick={onPrev} className="flex flex-row items-center" type={"button"}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                     stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M15 19l-7-7 7-7"/>
-                </svg>
+            <button onClick={onPrev} className="flex flex-row items-center pl-2" type={"button"}>
+                <Image src={arrowLeftIcon} alt={"Previous date"}/>
             </button>
 
-            <div className="flex flex-row items-center">
+            <div className="flex flex-row items-center font-semibold">
                 {dateService.toReadableDMY(actualDate)}
             </div>
 
-            <button onClick={onNext} className={"flex flex-row items-center"} type={"button"}
+            <button onClick={onNext} className={"flex flex-row items-center pr-2"} type={"button"}
                     disabled={!isNextDateAvailable}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                     stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M9 5l7 7-7 7"/>
-                </svg>
+                <Image src={arrowRightIcon} alt={"Next date"}/>
             </button>
         </div>
     )
