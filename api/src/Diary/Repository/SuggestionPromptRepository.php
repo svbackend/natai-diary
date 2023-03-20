@@ -47,13 +47,13 @@ class SuggestionPromptRepository extends ServiceEntityRepository
 
         $promptUsageSql = <<<SQL
             SELECT
-                sp.id as prompt_id 
+                sp.id as prompt_id,
                 COUNT(sp.id) AS occurences
             FROM suggestion_prompt sp
             LEFT JOIN suggestion s ON s.prompt_id = sp.id
             WHERE s.user_id = :userId
             GROUP BY sp.id
-            ORDER BY occurences ASC
+            ORDER BY occurences
             LIMIT 1
         SQL;
 
@@ -74,7 +74,7 @@ class SuggestionPromptRepository extends ServiceEntityRepository
         $txt = "Act as psychologist, give recommendations based on diary notes, treat every message from user as a diary note that you need to analyze, look for issues that person can solve with your guidance";
         $prompt = new SuggestionPrompt(UuidV4::v4(), $txt, null, null);
 
-        $this->save($prompt, true);
+        $this->save($prompt);
 
         return $prompt;
     }

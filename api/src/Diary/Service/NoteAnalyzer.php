@@ -34,6 +34,7 @@ class NoteAnalyzer
         private SuggestionRepository $suggestions,
         private SuggestionPromptRepository $prompts,
         private UserRepository $users,
+        private DiaryMailer $diaryMailer,
         private LoggerInterface $logger
     )
     {
@@ -109,6 +110,8 @@ class NoteAnalyzer
         );
 
         $this->suggestions->save($suggestion, flush: true);
+
+        $this->diaryMailer->sendNotificationAboutNewSuggestion($user, $suggestion);
     }
 
     /**

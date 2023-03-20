@@ -4,6 +4,7 @@ namespace App\Auth\Entity;
 
 use App\Auth\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\UuidV4;
@@ -53,6 +54,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getEmail(): ?string
     {
         return $this->email;
+    }
+
+    public function getEmailAddress(): Address
+    {
+        return new Address(
+            address: $this->getEmail(),
+            name: $this->getName()
+        );
     }
 
     /** @see UserInterface */

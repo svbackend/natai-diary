@@ -9,13 +9,13 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
 /**
- * Use module specific mailer instead, e.g App\Auth\Service\UserMailer
+ * Use module specific mailer instead whenever possible, e.g App\Auth\Service\UserMailer
  * @internal
  */
 class MailerService
 {
     const FROM_EMAIL = 'noreply@natai.app';
-    const FROM_NAME = 'Valentyn from Natai Diary App';
+    const FROM_NAME = 'Natai Diary App';
 
     public function __construct(
         private MailerInterface $mailer,

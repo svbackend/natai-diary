@@ -89,7 +89,7 @@ export function DiaryNotePreview({note, isLast}: { note: CloudNoteDto, isLast: b
 
     return (
         <>
-            <Link href={`/diary/note/${note.id}`} className={classNames("flex flex-col py-2 cursor-pointer max-w-full", !isLast && "border-b")}>
+            <Link href={`/diary/note/${note.id}`} className={classNames("flex flex-col py-2 cursor-pointer max-w-full", !isLast && "border-b border-sep dark:border-sep-alt")}>
                 <div className={"text-nav-item dark:text-nav-item-alt"}>
                     <span>{hm}</span>
                     {weatherTag && (

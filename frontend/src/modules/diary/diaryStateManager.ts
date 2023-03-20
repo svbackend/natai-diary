@@ -11,9 +11,10 @@ export const useDiaryStateManager = (): DiaryStateManager => {
     const [diaryState, setDiaryState] = useAtom(diaryStateAtom)
 
     const addNote = (note: CloudNoteDto) => {
+        // add to the beginning of the list
         setDiaryState({
             ...diaryState,
-            notes: [...diaryState.notes, note]
+            notes: [note, ...diaryState.notes]
         })
     }
 
