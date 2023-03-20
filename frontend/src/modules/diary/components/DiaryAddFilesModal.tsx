@@ -7,6 +7,9 @@ import {usePostAttachments} from "../../../api/apiComponents";
 import {AttachmentUploadInfo, FilesUpdateCallback, LocalNoteAttachment} from "../services/attachmentService";
 import {diaryUploadedAttachmentsInfoAtom} from "../atoms/diaryUploadedAttachmentsInfoAtom";
 import DialogWrapper, {CloseModalTopButton} from "./DialogWrapper";
+import uploadedIcon from "../../../../public/assets/diary/uploaded.svg";
+import Image from "next/image";
+import AppSpinner from "../../common/components/AppSpinner";
 
 const uploadFileRequest = (url: string, file: File, onProgress: (progress: number) => void) => {
     return new Promise((resolve, reject) => {
@@ -262,37 +265,20 @@ function AddedFileRow({
     }
 
     return (
-        <div className="flex flex-row items-center justify-between w-full p-2 my-1 dark:bg-brand/20 text-dark dark:text-light rounded-lg">
+        <div
+            className="flex flex-row items-center justify-between w-full p-2 my-1 dark:bg-brand/20 text-dark dark:text-light rounded-lg">
             <div className="flex flex-row items-center w-full">
                 <div
-                    className="flex flex-row items-center justify-center w-12 h-12 mr-2 text-white bg-brand rounded-lg">
+                    className="flex flex-row items-center justify-center w-14 h-14 mr-2 text-white bg-brand rounded-lg">
                     <span className="text-sm font-medium leading-none">{file.ext}</span>
                 </div>
                 <div className="flex flex-col flex-1">
-                    <span className="text-sm font-medium leading-none">{getShortenedFilename(file.name)}</span>
-                    <span className="text-xs font-normal leading-none text-light3">
+                    <span className="text-sm font-medium leading-none mb-1 text-light">{getShortenedFilename(file.name)}</span>
+                    <span className="text-xs font-normal leading-none text-nav-item-alt mb-1">
                         {bytesToReadableStr(file.size)}
                     </span>
 
-                    {uploadInfo.isLoading && (
-                        <ProgressBar progress={uploadInfo.progress}/>
-                    )}
-
-                    {uploadInfo.progress === 100 && !uploadInfo.isLoading && (
-                        <span
-                            className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-                            <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
-                            Uploaded
-                        </span>
-                    )}
-
-                    {uploadInfo.progress === 0 && !uploadInfo.error && (
-                        <span
-                            className="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-                            <span className="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
-                            Pending
-                        </span>
-                    )}
+                    <ProgressBar progress={uploadInfo.progress} error={uploadInfo.error}/>
 
                     {uploadInfo.error && (
                         <span className="text-xs font-normal leading-none text-red-500">
@@ -314,14 +300,38 @@ function AddedFileRow({
     )
 }
 
-function ProgressBar({progress}: { progress: number }) {
+function ProgressBar({progress, error}: { progress: number, error: string | null }) {
     const percentage = `${progress}%`
 
-    return (
-        <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-            <div className="bg-brand text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-                 style={{width: percentage}}> {percentage}
+    if (error) {
+        return (
+            <div className="w-full bg-menu rounded-full h-1.5 relative mb-1">
+                <div className="bg-brand h-full rounded-full" style={{width: percentage}}></div>
             </div>
+        )
+    }
+
+    if (progress === 100) {
+        return (
+            <div className="w-full flex flex-row mb-1">
+                <div className="flex-1 bg-field rounded-full h-1.5 relative">
+                    <div className="bg-brand h-full rounded-full" style={{width: percentage}}></div>
+                </div>
+                <span className={"px-1"}>
+                    <Image src={uploadedIcon} alt={"Uploaded"}/>
+                </span>
+            </div>
+        )
+    }
+
+    return (
+        <div className="w-full flex flex-row mb-1">
+            <div className="flex-1 bg-field rounded-full h-1.5 relative">
+                <div className="bg-brand h-full rounded-full" style={{width: percentage}}></div>
+            </div>
+            <span className={"px-1 opacity-0"}>
+                <Image src={uploadedIcon} alt={"Uploaded"}/>
+            </span>
         </div>
     )
 }
