@@ -29,6 +29,10 @@ export default function TherapyIndexPage({user}: { user: UserDto }) {
     return (
         <>
             <DiaryLayout>
+                <h2 className="text-2xl font-bold text-dark dark:text-light mb-4">
+                    {t("therapy")}
+                </h2>
+
                 {items.length > 0 && (
                     <SuggestionsRows suggestions={items} onClick={onClick}/>
                 )}
@@ -77,14 +81,14 @@ function SuggestionRow(
     return (
         <div className="flex flex-row space-x-4">
             <div className="flex flex-col">
-                <div className="text-lg font-bold">{period}</div>
+                <div className="text-lg font-bold">{period} {to.getFullYear()}</div>
                 <div className="text-sm">{preview}</div>
 
                 <button
-                    className="text-left text-sm text-blue-500 hover:text-blue-600"
+                    className="text-left font-bold text-sm text-brand hover:text-brand/80"
                     onClick={() => props.onClick(suggestion)}
                 >
-                    Show
+                    Read more
                 </button>
             </div>
         </div>
