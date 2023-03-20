@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.ui.component
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -10,6 +11,8 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.svbackend.natai.android.R
 import com.svbackend.natai.android.Route
 
 @Composable
@@ -27,6 +30,16 @@ fun BottomBar(
                     imageVector = Icons.Rounded.Home,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     contentDescription = "Home (All notes screen)",
+                )
+            }
+            IconButton(
+                onClick = { onNavigateTo(Route.TherapyRoute.withArgs()) },
+                modifier = Modifier.fillMaxHeight(),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_assistant_24),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = "AI Therapy",
                 )
             }
             IconButton(

@@ -103,6 +103,10 @@ fun Navigation(
             )
         }
 
+        composable(route = Route.TherapyRoute.route) {
+            TherapyScreen()
+        }
+
         composable(route = Route.AnalyticsRoute.route) {
             AnalyticsScreen(vm = vm)
         }
