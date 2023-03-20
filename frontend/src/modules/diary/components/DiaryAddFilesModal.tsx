@@ -199,7 +199,7 @@ function DiaryAddFilesModalContent({
             <div className="flex items-center justify-end p-6 border-t border-sep dark:border-sep-alt rounded-b">
                 <button
                     onClick={onClose}
-                    className="inline-flex justify-center py-2 px-4 font-semibold border border-transparent shadow-sm text-sm font-medium rounded-md text-light bg-brand hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    className="inline-flex justify-center py-2 px-4 font-semibold border border-transparent shadow-sm text-sm font-semibold rounded-md text-light bg-brand hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Done
                 </button>
             </div>
@@ -273,7 +273,7 @@ function AddedFileRow({
                     <span className="text-sm font-medium leading-none">{file.ext}</span>
                 </div>
                 <div className="flex flex-col flex-1">
-                    <span className="text-sm font-medium leading-none mb-1 text-light">{getShortenedFilename(file.name)}</span>
+                    <span className="text-sm font-medium leading-none mb-1 text-dark dark:text-light">{getShortenedFilename(file.name)}</span>
                     <span className="text-xs font-normal leading-none text-nav-item-alt mb-1">
                         {bytesToReadableStr(file.size)}
                     </span>
