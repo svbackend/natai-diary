@@ -3,18 +3,18 @@ import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {fetchGetStatic} from "../../src/api/apiComponents";
 
 export async function getServerSideProps() {
-    let terms: string
+    let privacy: string
 
     try {
         const response = await fetchGetStatic({})
-        terms = response.terms
+        privacy = response.privacy
     } catch (e) {
-        terms = "We are updating our terms and conditions. Please check back later."
+        privacy = "We are updating our privacy policy. Please check back later."
     }
 
     return {
         props: {
-            content: terms,
+            content: privacy,
         }
     }
 }
@@ -25,7 +25,7 @@ export default function TermsPage({content}: { content: string }) {
     return (
         <MainLayout>
             <NarrowWrapper>
-                <article className={"prose"} dangerouslySetInnerHTML={markup}/>
+                <article className={"prose dark:prose-invert"} dangerouslySetInnerHTML={markup}/>
             </NarrowWrapper>
         </MainLayout>
     )

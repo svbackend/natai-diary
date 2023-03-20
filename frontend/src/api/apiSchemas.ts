@@ -10,6 +10,7 @@ export type FeedbackRequest = {
 
 export type StaticContentResponse = {
   terms: string;
+  privacy: string;
 };
 
 export type UploadAttachmentRequest = {

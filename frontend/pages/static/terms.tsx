@@ -25,7 +25,7 @@ export default function TermsPage({content}: { content: string }) {
     return (
         <MainLayout>
             <NarrowWrapper>
-                <article className={"prose"} dangerouslySetInnerHTML={markup}/>
+                <article className={"prose dark:prose-invert"} dangerouslySetInnerHTML={markup}/>
             </NarrowWrapper>
         </MainLayout>
     )

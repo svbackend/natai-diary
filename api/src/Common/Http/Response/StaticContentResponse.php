@@ -8,6 +8,7 @@ class StaticContentResponse implements HttpOutputInterface
 {
     public function __construct(
         public string $terms,
+        public string $privacy,
     ) {
     }
 

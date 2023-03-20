@@ -1,10 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import {fetchPostFeedback} from "../../src/api/apiComponents";
-import DiaryLayout from "../../src/modules/diary/components/DiaryLayout";
 import MainLayout from "../../src/modules/common/components/mainLayout";
 
-export default function FeedbackPage() {
+export default function ContactsPage() {
     const [isLoading, setIsLoading] = React.useState(false);
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,7 +68,8 @@ export default function FeedbackPage() {
                         <p className="mb-1">
                             After you have written a few notes (each note should be at least 1 paragraph long, ~100
                             words),
-                            you can go to the <Link className={"text-blue-400"} href={"/diary/therapy"}>AI Therapy</Link> page,
+                            you can go to the <Link className={"text-blue-400"} href={"/diary/therapy"}>AI
+                            Therapy</Link> page,
                             and your personalized recommendations should be available.
                         </p>
                         <p className={"mb-2"}>
