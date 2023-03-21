@@ -158,7 +158,7 @@ class NoteAnalyzer
                 break;
             }
 
-            $text .= $this->sanitizeCompiledNoteText($newText);
+            $text .= $this->sanitizeCompiledNoteText($newText) . self::NEWLINE;
             $takenNotes[] = $note;
         }
 

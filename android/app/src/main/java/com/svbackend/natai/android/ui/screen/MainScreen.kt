@@ -68,9 +68,8 @@ fun MainScreen(
                 Toast
                     .makeText(context, "Synchronization started..", Toast.LENGTH_SHORT)
                     .show()
-                scope.launch {
-                    vm.sync()
-                }
+
+                vm.sync()
             }
         }
     )

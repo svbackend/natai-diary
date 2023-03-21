@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.http.dto.CloudSuggestionDto
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
 import com.svbackend.natai.android.http.exception.*
 import com.svbackend.natai.android.http.request.AttachmentSignedUrlRequest
 import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
+import com.svbackend.natai.android.http.request.SuggestionFeedbackRequest
 import com.svbackend.natai.android.http.response.*
 import com.svbackend.natai.android.query.UserQueryException
 import io.ktor.client.*
@@ -31,8 +33,8 @@ import java.io.File
 import java.io.InputStream
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
-const val BASE_URL = "https://natai.app"
-//const val BASE_URL = "https://5e9e-24-203-8-51.ngrok.io"
+//const val BASE_URL = "https://natai.app"
+const val BASE_URL = "https://f226-24-203-8-51.ngrok.io"
 
 const val TAG = "ApiClient"
 
@@ -228,5 +230,26 @@ class ApiClient(
         tempFile.writeBytes(file)
 
         return Uri.fromFile(tempFile)
+    }
+
+    suspend fun getSuggestions(): SuggestionsResponse {
+        try {
+            val response = client.get("/api/v1/suggestions")
+            return response.body()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            Log.e(TAG, e.message ?: "Error while getting suggestions")
+            return SuggestionsResponse(emptyList())
+        }
+    }
+
+    suspend fun sendSuggestionFeedback(suggestionId: String, req: SuggestionFeedbackRequest) {
+        try {
+            client.put("/api/v1/suggestions/$suggestionId/feedback") {
+                setBody(req)
+            }
+        } catch (e: Throwable) {
+            Log.e(TAG, e.message ?: "Error while sending suggestion feedback")
+        }
     }
 }
