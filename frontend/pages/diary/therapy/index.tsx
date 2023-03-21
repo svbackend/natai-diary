@@ -56,7 +56,7 @@ function SuggestionsRows(
     return (
         <div className="flex flex-col space-y-4">
             {props.suggestions.map(suggestion => (
-                <SuggestionRow suggestion={suggestion} onClick={props.onClick}/>
+                <SuggestionRow key={suggestion.id} suggestion={suggestion} onClick={props.onClick}/>
             ))}
         </div>
     )
