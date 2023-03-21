@@ -33,14 +33,14 @@ import java.io.File
 import java.io.InputStream
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
-//const val BASE_URL = "https://natai.app"
-const val BASE_URL = "https://f226-24-203-8-51.ngrok.io"
-
-const val TAG = "ApiClient"
+const val BASE_URL = "https://natai.app"
+//const val BASE_URL = "https://f226-24-203-8-51.ngrok.io"
 
 class ApiClient(
     private val getApiToken: () -> String?
 ) {
+    val TAG = "ApiClient"
+
     private val client = HttpClient(Android) {
         defaultRequest {
             val apiKey = getApiToken()
