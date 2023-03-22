@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
@@ -37,7 +38,7 @@ fun BottomBar(
                 modifier = Modifier.fillMaxHeight(),
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.baseline_assistant_24),
+                    painter = painterResource(id = R.drawable.outlined_assistant_24),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     contentDescription = "AI Therapy",
                 )

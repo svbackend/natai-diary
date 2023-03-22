@@ -59,4 +59,5 @@
     <string name="cancel">Cancel</string>
     <string name="therapyTitle">AI Therapy</string>
     <string name="therapySessionImage">Therapy Session</string>
+    <string name="settingsFeedbackTitle">Feedback</string>
 </resources>

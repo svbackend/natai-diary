@@ -35,6 +35,7 @@ fun SettingsScreen(
     onThemeClick: () -> Unit,
     onReminderClick: () -> Unit,
     onAppInfoClick: () -> Unit,
+    onFeedbackClick: () -> Unit,
 ) {
     Surface(
         modifier = Modifier
@@ -65,6 +66,10 @@ fun SettingsScreen(
 
             SettingAppInfoItem(
                 onClick = onAppInfoClick,
+            )
+
+            SettingFeedbackItem(
+                onClick = onFeedbackClick,
             )
         }
     }
@@ -150,6 +155,29 @@ fun SettingAppInfoItem(onClick: () -> Unit) {
                 .align(Alignment.CenterVertically)
                 .padding(start = 8.dp),
             text = stringResource(R.string.settingsAppInfoTitle),
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Start
+        )
+    }
+}
+
+// Feedback Item
+@Composable
+fun SettingFeedbackItem(onClick: () -> Unit) {
+    Row(modifier = Modifier.clickable { onClick() }) {
+        Icon(
+            painter = painterResource(id = R.drawable.round_feedback_24),
+            contentDescription = stringResource(R.string.settingsFeedbackTitle),
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+                .padding(start = 8.dp),
+            text = stringResource(R.string.settingsFeedbackTitle),
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,

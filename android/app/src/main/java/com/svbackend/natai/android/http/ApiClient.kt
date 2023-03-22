@@ -6,14 +6,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.svbackend.natai.android.entity.LocalNote
-import com.svbackend.natai.android.http.dto.CloudSuggestionDto
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
 import com.svbackend.natai.android.http.exception.*
-import com.svbackend.natai.android.http.request.AttachmentSignedUrlRequest
-import com.svbackend.natai.android.http.request.LoginRequest
-import com.svbackend.natai.android.http.request.RegisterRequest
-import com.svbackend.natai.android.http.request.SuggestionFeedbackRequest
+import com.svbackend.natai.android.http.request.*
 import com.svbackend.natai.android.http.response.*
 import com.svbackend.natai.android.query.UserQueryException
 import io.ktor.client.*
@@ -250,6 +246,21 @@ class ApiClient(
             }
         } catch (e: Throwable) {
             Log.e(TAG, e.message ?: "Error while sending suggestion feedback")
+        }
+    }
+
+    suspend fun sendGeneralFeedback(req: GeneralFeedbackRequest) {
+        try {
+            val response = client.post("/api/v1/feedback") {
+                setBody(req)
+            }
+
+            if (!response.status.isSuccess()) {
+                throw GeneralFeedbackErrorException()
+            }
+        } catch (e: Throwable) {
+            Log.e(TAG, e.message ?: "Error while sending suggestion feedback")
+            throw e
         }
     }
 }

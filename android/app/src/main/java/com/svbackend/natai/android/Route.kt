@@ -15,6 +15,8 @@ sealed class Route(val route: String) {
 
     object SettingsAppInfoRoute : Route("settings_app_info")
 
+    object SettingsFeedbackRoute : Route("settings_feedback")
+
     object AnalyticsRoute : Route("analytics")
     object TherapyRoute : Route("therapy")
 

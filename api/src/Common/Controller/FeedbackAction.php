@@ -23,7 +23,7 @@ class FeedbackAction extends BaseAction
 
     /**
      * @OA\RequestBody(@Model(type=FeedbackRequest::class))
-     * @OA\Response(response=200, description="success")
+     * @OA\Response(response=204, description="success")
      */
     #[Route('/api/v1/feedback', name: 'feedback', methods: ['POST'])]
     public function __invoke(FeedbackRequest $request): HttpOutputInterface

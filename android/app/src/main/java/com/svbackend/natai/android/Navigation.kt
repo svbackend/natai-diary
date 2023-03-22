@@ -13,6 +13,7 @@ import com.svbackend.natai.android.ui.screen.auth.ManageAccountScreen
 import com.svbackend.natai.android.ui.screen.auth.RegistrationScreen
 import com.svbackend.natai.android.ui.screen.auth.TermsScreen
 import com.svbackend.natai.android.ui.screen.settings.AppInfoScreen
+import com.svbackend.natai.android.ui.screen.settings.FeedbackScreen
 import com.svbackend.natai.android.ui.screen.settings.ReminderScreen
 import com.svbackend.natai.android.ui.screen.settings.ThemesScreen
 import com.svbackend.natai.android.utils.go
@@ -100,6 +101,9 @@ fun Navigation(
                 onAppInfoClick = {
                     controller.go(Route.SettingsAppInfoRoute.withArgs())
                 },
+                onFeedbackClick = {
+                    controller.go(Route.SettingsFeedbackRoute.withArgs())
+                },
             )
         }
 
@@ -176,6 +180,10 @@ fun Navigation(
 
         composable(route = Route.SettingsAppInfoRoute.route) {
             AppInfoScreen()
+        }
+
+        composable(route = Route.SettingsFeedbackRoute.route) {
+            FeedbackScreen()
         }
 
         composable(route = Route.TermsRoute.route) {
