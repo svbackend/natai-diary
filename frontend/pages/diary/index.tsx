@@ -19,14 +19,14 @@ export default function DiaryPageContent() {
 
     const filteredNotes = diaryState.notes?.filter(note => note.deletedAt === null)
 
+    const tm = (a: CloudSuggestionDto) => dateService.fromBackendFormat(a.createdAt).getTime()
+
     const unSeenSuggestion = diaryState.suggestions
         .filter(suggestion => !suggestion.isReceived)
         .sort((a, b) => tm(a) - tm(b))
         .at(0) || null
 
     const [newSuggestion, setNewSuggestion] = React.useState<CloudSuggestionDto | null>(unSeenSuggestion)
-
-    const tm = (a: CloudSuggestionDto) => dateService.fromBackendFormat(a.createdAt).getTime()
 
     return (
         <DiaryLayout>
