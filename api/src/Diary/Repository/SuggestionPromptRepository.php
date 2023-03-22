@@ -46,15 +46,12 @@ class SuggestionPromptRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $promptUsageSql = <<<SQL
-            SELECT
-                sp.id as prompt_id,
-                COUNT(sp.id) AS occurences
+            SELECT sp.id, COUNT(s.id) AS suggestion_count
             FROM suggestion_prompt sp
-            LEFT JOIN suggestion s ON s.prompt_id = sp.id
-            WHERE s.user_id = :userId
+                     LEFT JOIN suggestion s ON s.prompt_id = sp.id AND s.user_id = :userId
             GROUP BY sp.id
-            ORDER BY occurences
-            LIMIT 1
+            ORDER BY suggestion_count
+            LIMIT 1;
         SQL;
 
         $stmt = $conn->prepare($promptUsageSql);
