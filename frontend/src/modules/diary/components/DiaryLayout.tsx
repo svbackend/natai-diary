@@ -10,6 +10,7 @@ import {DiaryHeader} from "./DiaryHeader";
 import NarrowWrapper from "../../common/components/NarrowWrapper";
 import {DiaryStateDto} from "../dto/DiaryStateDto";
 import {CloudNoteDto} from "../../../api/apiSchemas";
+import {attachmentService} from "../services/attachmentService";
 
 export default function DiaryLayout(props: { children: React.ReactNode }) {
     const {user, isLoading: isUserLoading} = useAppStateManager()
@@ -80,9 +81,16 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
             .then(responses => {
                 responses.forEach(res => {
                     res.attachments
-                        .filter(a => a.previews.length > 0)
                         .forEach(attachment => {
-                            previews.set(attachment.attachmentId, attachment.previews[0].signedUrl)
+                            const isImage = attachmentService.isImage(attachment.originalFilename)
+                            if (isImage) {
+                                const preview = (attachment.previews.length > 0)
+                                    ? attachment.previews[0].signedUrl
+                                    : attachment.signedUrl
+                                previews.set(attachment.attachmentId, preview)
+                            } else {
+                                previews.set(attachment.attachmentId, "https://via.placeholder.com/96x96/e0e0e0/969696?text=FILE")
+                            }
                         })
                 })
 
