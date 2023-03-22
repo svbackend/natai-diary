@@ -46,7 +46,7 @@ class SuggestionPromptRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $promptUsageSql = <<<SQL
-            SELECT sp.id, COUNT(s.id) AS suggestion_count
+            SELECT sp.id AS prompt_id, COUNT(s.id) AS suggestion_count
             FROM suggestion_prompt sp
                      LEFT JOIN suggestion s ON s.prompt_id = sp.id AND s.user_id = :userId
             GROUP BY sp.id
@@ -58,13 +58,13 @@ class SuggestionPromptRepository extends ServiceEntityRepository
             ->prepare($promptUsageSql)
             ->executeQuery(['userId' => $userId]);
 
-        $promptId = $result->fetchOne();
+        $promptRow = $result->fetchOne();
 
-        if (!$promptId) {
+        if (!$promptRow) {
             return $this->createDummyPrompt();
         }
 
-        return $this->find($promptId);
+        return $this->find($promptRow['prompt_id']);
     }
 
     private function createDummyPrompt(): SuggestionPrompt
