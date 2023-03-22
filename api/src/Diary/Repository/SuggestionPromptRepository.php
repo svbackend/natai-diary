@@ -54,8 +54,9 @@ class SuggestionPromptRepository extends ServiceEntityRepository
             LIMIT 1;
         SQL;
 
-        $stmt = $conn->prepare($promptUsageSql);
-        $result = $stmt->executeQuery(['userId' => $userId]);
+        $result = $conn
+            ->prepare($promptUsageSql)
+            ->executeQuery(['userId' => $userId]);
 
         $promptId = $result->fetchOne();
 
