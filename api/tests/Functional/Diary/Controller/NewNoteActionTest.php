@@ -25,8 +25,8 @@ class NewNoteActionTest extends AbstractFunctionalTest
                 'title' => 'Title',
                 'content' => 'Content',
                 'tags' => [
-                    ['tag' => 'Tag 1', 'score' => 6],
-                    ['tag' => 'Tag 2', 'score' => null],
+                    ['tag' => 'Tag1', 'score' => 6],
+                    ['tag' => 'Tag2', 'score' => null],
                 ],
                 'attachments' => [],
             ],
@@ -56,9 +56,9 @@ class NewNoteActionTest extends AbstractFunctionalTest
             ]);
 
         self::assertCount(2, $tagsInDb);
-        self::assertSame('Tag 1', $tagsInDb[0]['tag']);
+        self::assertSame('Tag1', $tagsInDb[0]['tag']);
         self::assertSame(6, $tagsInDb[0]['score']);
-        self::assertSame('Tag 2', $tagsInDb[1]['tag']);
+        self::assertSame('Tag2', $tagsInDb[1]['tag']);
         self::assertSame(null, $tagsInDb[1]['score']);
     }
 }

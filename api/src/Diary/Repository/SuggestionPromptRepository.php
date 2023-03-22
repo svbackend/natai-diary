@@ -2,7 +2,6 @@
 
 namespace App\Diary\Repository;
 
-use App\Diary\Entity\Suggestion;
 use App\Diary\Entity\SuggestionPrompt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,7 +19,7 @@ class SuggestionPromptRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Suggestion::class);
+        parent::__construct($registry, SuggestionPrompt::class);
     }
 
     public function save(SuggestionPrompt $entity, bool $flush = false): void
@@ -64,7 +63,7 @@ class SuggestionPromptRepository extends ServiceEntityRepository
             return $this->createDummyPrompt();
         }
 
-        return $this->find($promptRow['prompt_id']);
+        return $this->find($promptRow);
     }
 
     private function createDummyPrompt(): SuggestionPrompt

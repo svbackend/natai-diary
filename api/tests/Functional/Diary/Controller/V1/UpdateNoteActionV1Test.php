@@ -61,9 +61,9 @@ class UpdateNoteActionV1Test extends AbstractFunctionalTest
         self::assertEquals($noteInDb['updated_at'], "2022-11-19 14:00:00");
         self::assertEquals($noteInDb['deleted_at'], null);
 
-        self::assertEquals($tagsInDb[0]['tag'], "Some New Tag");
+        self::assertEquals($tagsInDb[0]['tag'], "SomeNewTag");
         self::assertEquals($tagsInDb[0]['score'], 1);
-        self::assertEquals($tagsInDb[1]['tag'], "Some New Tag 2");
+        self::assertEquals($tagsInDb[1]['tag'], "SomeNewTag2");
         self::assertEquals($tagsInDb[1]['score'], null);
     }
 
