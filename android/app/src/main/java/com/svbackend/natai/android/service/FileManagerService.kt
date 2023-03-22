@@ -234,4 +234,11 @@ class FileManagerService(
 
         return uploadedAttachments
     }
+
+    companion object {
+        fun isImageBasedOnFilename(filename: String): Boolean {
+            val ext = filename.substringAfterLast(".")
+            return ext in listOf("jpg", "jpeg", "png", "gif", "webp")
+        }
+    }
 }

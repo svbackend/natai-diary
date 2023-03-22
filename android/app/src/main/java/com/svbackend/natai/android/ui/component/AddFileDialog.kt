@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.ExistingAttachmentDto
+import com.svbackend.natai.android.utils.placeholderUri
 import com.svbackend.natai.android.viewmodel.AddedFile
 
 @Composable
@@ -154,15 +155,14 @@ fun AddedFile(f: AddedFile, onDelete: (AddedFile) -> Unit) {
 
 @Composable
 fun ExistingAttachment(f: ExistingAttachmentDto, onDelete: (ExistingAttachmentDto) -> Unit) {
-    val placeholder = painterResource(id = R.drawable.placeholder)
     Row(verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(
-            model = f.previewUri ?: f.uri ?: placeholder,
+            model = f.getPreview() ?: placeholderUri,
             contentDescription = null,
             modifier = Modifier
                 .size(64.dp)
                 .padding(8.dp),
-            error = placeholder
+            error = painterResource(id = R.drawable.placeholder)
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(f.filename, maxLines = 1)
