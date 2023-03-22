@@ -4,11 +4,7 @@ namespace App\Tests\Functional\Diary\Repository;
 
 use App\Auth\DataFixtures\UserFixture;
 use App\Diary\DataFixtures\SuggestionPromptFixture;
-use App\Diary\DTO\CloudNoteDto;
-use App\Diary\DTO\CloudTagDto;
-use App\Diary\Entity\Note;
 use App\Diary\Entity\SuggestionPrompt;
-use App\Diary\Repository\NoteRepository;
 use App\Diary\Repository\SuggestionPromptRepository;
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\Uid\UuidV4;
