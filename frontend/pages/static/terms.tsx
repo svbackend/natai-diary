@@ -10,6 +10,7 @@ export async function getServerSideProps() {
         terms = response.terms
     } catch (e) {
         terms = "We are updating our terms and conditions. Please check back later."
+        console.error(e)
     }
 
     return {

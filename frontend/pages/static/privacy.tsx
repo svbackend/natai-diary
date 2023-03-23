@@ -10,6 +10,7 @@ export async function getServerSideProps() {
         privacy = response.privacy
     } catch (e) {
         privacy = "We are updating our privacy policy. Please check back later."
+        console.error(e)
     }
 
     return {
@@ -19,7 +20,7 @@ export async function getServerSideProps() {
     }
 }
 
-export default function TermsPage({content}: { content: string }) {
+export default function PrivacyPage({content}: { content: string }) {
     const markup = {__html: content};
 
     return (
