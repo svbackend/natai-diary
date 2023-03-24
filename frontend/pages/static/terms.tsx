@@ -2,7 +2,7 @@ import MainLayout from "../../src/modules/common/components/mainLayout";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {fetchGetStatic} from "../../src/api/apiComponents";
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
     let terms: string
 
     try {
