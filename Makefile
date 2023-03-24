@@ -40,6 +40,8 @@ dev-db:
 prod-build:
 	./build.sh
 
+# requires to change ./api/.env.local (DATABASE_URL) and ./frontend/.env.local (NEXT_PUBLIC_API_URL)
+# Site will be available on http://172.22.0.7:80 (This ip can be found http://localhost:8080/dashboard/#/http/services/gateway-natai@docker)
 prod-up:
 	docker compose -f docker-compose.local.yml up db api-php-fpm -d
 	docker compose -f docker-compose.local.yml exec api-php-fpm php bin/console doctrine:migrations:migrate -n
