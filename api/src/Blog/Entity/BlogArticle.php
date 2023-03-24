@@ -46,4 +46,23 @@ class BlogArticle
         $this->images = $images;
         $this->createdAt = $this->updatedAt = new \DateTimeImmutable();
     }
+
+    /** @returns Collection<BlogArticleTranslation> */
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    /** @returns Collection<BlogArticleImage> */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function update(Collection $translations, Collection $images): void
+    {
+        $this->translations = $translations;
+        $this->images = $images;
+        $this->updatedAt = new \DateTimeImmutable();
+    }
 }
