@@ -2,30 +2,31 @@ import MainLayout from "../../src/modules/common/components/mainLayout";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {fetchGetStatic} from "../../src/api/apiComponents";
 
-export async function getServerSideProps() {
-    let terms: string
+export async function getStaticProps() {
+    let privacy: string
 
     try {
         const response = await fetchGetStatic({})
-        terms = response.terms
+        privacy = response.privacy
     } catch (e) {
-        terms = "We are updating our terms and conditions. Please check back later."
+        privacy = "We are updating our privacy policy. Please check back later."
+        console.error(e)
     }
 
     return {
         props: {
-            content: terms,
+            content: privacy,
         }
     }
 }
 
-export default function TermsPage({content}: { content: string }) {
+export default function PrivacyPage({content}: { content: string }) {
     const markup = {__html: content};
 
     return (
         <MainLayout>
             <NarrowWrapper>
-                <article className={"prose"} dangerouslySetInnerHTML={markup}/>
+                <article className={"prose dark:prose-invert"} dangerouslySetInnerHTML={markup}/>
             </NarrowWrapper>
         </MainLayout>
     )

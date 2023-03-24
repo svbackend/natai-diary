@@ -28,7 +28,7 @@ class SuggestionFeedbackAction extends BaseAction
 
     /**
      * @OA\RequestBody(@Model(type=SuggestionFeedbackRequest::class))
-     * @OA\Response(response=200, description="success")
+     * @OA\Response(response=204, description="success")
      * @OA\Response(response=401, description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
      * @OA\Response(response=404, description="suggestion not found", @Model(type=NotFoundErrorRef::class))
      * @Security(name="ApiToken")

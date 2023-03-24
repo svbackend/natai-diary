@@ -129,7 +129,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         isSyncing.emit(false)
     }
 
-    suspend fun sync() {
+    fun sync() = viewModelScope.launch {
         startSync()
         try {
             apiSyncService.syncNotes()

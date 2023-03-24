@@ -5,7 +5,16 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.svbackend.natai.android.http.model.CloudAttachment
 import com.svbackend.natai.android.http.model.PREVIEW_TYPE_MD
+import com.svbackend.natai.android.service.FileManagerService
 import java.util.*
+
+private fun getPreviewUri(filename: String, preview: Uri?, uri: Uri?): Uri? {
+    if (FileManagerService.isImageBasedOnFilename(filename)) {
+        return preview ?: uri
+    }
+
+    return null
+}
 
 @Entity
 data class Attachment(
@@ -35,6 +44,8 @@ data class AttachmentEntityDto(
     val filename: String,
     val cloudAttachmentId: String? = null,
 ) {
+    fun getPreview(): Uri? = getPreviewUri(filename, previewUri, uri)
+
     companion object {
         fun create(attachment: Attachment): AttachmentEntityDto {
             return AttachmentEntityDto(
@@ -77,7 +88,9 @@ data class NewAttachmentDto(
     val filename: String,
     val uri: Uri,
     val previewUri: Uri? = null,
-)
+) {
+    fun getPreview(): Uri? = getPreviewUri(filename, previewUri, uri)
+}
 
 data class ExistingAttachmentDto(
     val cloudAttachmentId: String,
@@ -85,6 +98,8 @@ data class ExistingAttachmentDto(
     val uri: Uri? = null,
     val previewUri: Uri? = null,
 ) {
+    fun getPreview(): Uri? = getPreviewUri(filename, previewUri, uri)
+
     companion object {
         fun create(
             cloudAttachmentId: String,
@@ -107,4 +122,6 @@ data class ExistingLocalAttachmentDto(
     val uri: Uri,
     val previewUri: Uri? = null,
     val cloudAttachmentId: String? = null,
-)
+) {
+    fun getPreview(): Uri? = getPreviewUri(filename, previewUri, uri)
+}

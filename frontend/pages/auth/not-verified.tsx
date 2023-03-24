@@ -5,6 +5,7 @@ import {useTranslations} from "use-intl";
 import MainLayout from "../../src/modules/common/components/mainLayout";
 import {fetchGetMe} from "../../src/api/apiComponents";
 import {useAppStateManager} from "../../src/modules/common/state";
+import PrimaryButton from "../../src/modules/common/components/PrimaryButton";
 
 function EmailNotYetVerifiedError() {
     const t = useTranslations("NotVerifiedPage");
@@ -33,7 +34,7 @@ function NotVerifiedEmptyState() {
         setShowError(true);
         setTimeout(() => {
             setShowError(false);
-        }, 3000);
+        }, 3750);
     }
 
     const checkVerification = () => {
@@ -42,7 +43,7 @@ function NotVerifiedEmptyState() {
         fetchGetMe({})
             .then(res => {
                 if (res.user.isEmailVerified) {
-                    router.push("/");
+                    router.push("/diary");
                 } else {
                     showErrorFor3Seconds()
                 }
@@ -73,11 +74,11 @@ function NotVerifiedEmptyState() {
 
                 {showError && <EmailNotYetVerifiedError/>}
 
-                <button onClick={checkVerification}
-                        className={"mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"}>
+                <PrimaryButton onClick={checkVerification}
+                        className={"mt-4"}>
                     {t("done")}
                     {isLoading && <AppSpinner/>}
-                </button>
+                </PrimaryButton>
             </div>
         </div>
     )

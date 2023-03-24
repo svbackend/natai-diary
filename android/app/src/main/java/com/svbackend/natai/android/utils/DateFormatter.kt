@@ -27,4 +27,8 @@ object LocalDateTimeFormatter {
     val time: DateTimeFormatter = DateTimeFormatter
         .ofPattern("HH:mm")
         .withZone(ZoneId.systemDefault())
+
+    val fullDateAmerica = DateTimeFormatter
+        .ofPattern("MMM d yyyy")
+        .withZone(ZoneId.systemDefault())
 }

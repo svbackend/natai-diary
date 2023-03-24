@@ -10,8 +10,8 @@ android {
         applicationId = "com.svbackend.natai"
         minSdk = 29
         targetSdk = 33
-        versionCode = 8
-        versionName = "1.5.2"
+        versionCode = 10
+        versionName = "1.5.4"
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
         //buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
 
@@ -61,7 +61,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
-    implementation("androidx.exifinterface:exifinterface:1.3.3")
+    implementation("androidx.exifinterface:exifinterface:1.3.6")
 
     val roomVersion = "2.5.0"
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -79,14 +79,14 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
-    val composeVersion = "1.4.0-alpha05"
+    val composeVersion = "1.4.0-rc01"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha07")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha08")
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.animation:animation-graphics:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     implementation("com.google.android.material:compose-theme-adapter-3:1.1.1")
 

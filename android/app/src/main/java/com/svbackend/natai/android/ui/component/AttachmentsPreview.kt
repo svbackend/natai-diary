@@ -10,11 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.AttachmentEntityDto
+import com.svbackend.natai.android.utils.placeholderUri
 
 @Composable
 fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
@@ -22,7 +21,6 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
         return
     }
 
-    val placeholder = painterResource(id = R.drawable.placeholder)
     val visibleAttachments = attachments.take(4)
     val numberOfHiddenAttachments = attachments.count() - visibleAttachments.count()
     val lastIdx = visibleAttachments.count() - 1
@@ -34,7 +32,7 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
             .padding(bottom = 4.dp),
     ) {
         visibleAttachments.forEachIndexed { idx, attachment ->
-            val uri = attachment.previewUri ?: attachment.uri ?: placeholder
+            val uri = attachment.getPreview() ?: placeholderUri
             val isLast = idx == lastIdx
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -64,23 +62,5 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
                 }
             }
         }
-
-        // not sure if it helps, but when scrolling fast some images are are jumping
-        /*
-        val transparentPlaceholders = 4 - visibleAttachments.count()
-        repeat(transparentPlaceholders) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .alpha(0f)
-                )
-            }
-        }
-        */
     }
 }

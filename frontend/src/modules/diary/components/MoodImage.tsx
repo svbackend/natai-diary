@@ -14,7 +14,7 @@ export default function MoodImage({
     return (
         <button
             onClick={() => onSelect({tag: "mood", score: moodScore})}
-            className={classNames("flex flex-row bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded items-center", currentValue === moodScore ? "border-2 border-gray-400" : "")}
+            className={classNames("flex flex-row items-center", currentValue === moodScore ? "rounded-full border-2 bg-light3 border-brand dark:bg-brand dark:border-darkish" : "")}
         >
             <Image src={moodImg} alt={"Select mood"} className={"w-16 h-16"}/>
         </button>

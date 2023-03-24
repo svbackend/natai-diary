@@ -2,7 +2,7 @@ import MainLayout from "../../src/modules/common/components/mainLayout";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {fetchGetStatic} from "../../src/api/apiComponents";
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
     let terms: string
 
     try {
@@ -10,6 +10,7 @@ export async function getServerSideProps() {
         terms = response.terms
     } catch (e) {
         terms = "We are updating our terms and conditions. Please check back later."
+        console.error(e)
     }
 
     return {
@@ -25,7 +26,7 @@ export default function TermsPage({content}: { content: string }) {
     return (
         <MainLayout>
             <NarrowWrapper>
-                <article className={"prose"} dangerouslySetInnerHTML={markup}/>
+                <article className={"prose dark:prose-invert"} dangerouslySetInnerHTML={markup}/>
             </NarrowWrapper>
         </MainLayout>
     )

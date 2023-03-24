@@ -27,6 +27,8 @@ const Header = ({router}: { router: NextRouter }) => {
         setDarkMode(!darkMode)
     }
 
+    const logoHref = user && router.pathname.startsWith("/diary") ? "/diary" : "/"
+
     return (
         <Disclosure as="nav">
             {({open}) => (
@@ -43,7 +45,7 @@ const Header = ({router}: { router: NextRouter }) => {
                                               d="M4 6h16M4 12h16M4 18h16"></path>
                                     </svg>
                                 </Disclosure.Button>
-                                <Link href="/" aria-label="Back to homepage"
+                                <Link href={logoHref} aria-label="Back to homepage"
                                       className="flex items-center p-2">
 
                                     <ProjectLogo/>
@@ -81,7 +83,7 @@ const Header = ({router}: { router: NextRouter }) => {
                         </div>
                         {/* desktop navbar */}
                         <div className="hidden xl:container mx-auto justify-between h-10 lg:flex">
-                            <Link href="/" aria-label="Back to homepage"
+                            <Link href={logoHref} aria-label="Back to homepage"
                                   className="flex items-center p-2">
                                 <ProjectLogo/>
 
@@ -116,7 +118,7 @@ const DesktopNavBar = ({
     const {user} = useAppStateManager()
 
     const isActive = (path: string) => {
-        return router.pathname === path
+        return router.pathname === path || path !== "/" && router.pathname.startsWith(path)
     }
 
     const activeClass = "font-semibold text-brand dark:text-brand border-brand dark:border-brand"
@@ -156,7 +158,7 @@ const DesktopNavBar = ({
                     <>
                         <Link
                             href={"/login" + from}
-                            className="self-center px-8 py-3 font-semibold color-brand">
+                            className="self-center px-8 py-3 font-semibold text-brand">
                             Sign in
                         </Link>
                         <Link
@@ -297,10 +299,8 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
 function MainLayout({children, containerClass}: { children: ReactNode, containerClass?: string }) {
     const router = useRouter()
 
-    const [darkMode, setDarkMode] = useAtom(darkModeAtom)
-
     return (
-        <div className={classNames("main-layout min-h-screen flex flex-col", darkMode && "dark")}>
+        <div className={classNames("main-layout min-h-screen flex flex-col dark:bg-nav-bg dark:text-white")}>
             <Header router={router}/>
             <div className={classNames(containerClass || "flex-1 container mx-auto p-3 sm:p-0")}>
                 {children}

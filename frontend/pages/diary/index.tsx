@@ -1,67 +1,67 @@
-import MainLayout from "../../src/modules/common/components/mainLayout";
-import {useAppStateManager} from "../../src/modules/common/state";
-import AppSpinner from "../../src/modules/common/components/AppSpinner";
 import {useTranslations} from "use-intl";
-import {CloudSuggestionDto, UserDto} from "../../src/api/apiSchemas";
-import {useGetNotes, useGetSuggestions} from "../../src/api/apiComponents";
-import React, {useEffect} from "react";
+import {CloudSuggestionDto} from "../../src/api/apiSchemas";
+import React from "react";
 import {DiaryNotesPreviewList} from "../../src/modules/diary/components/DiaryNotesList";
-import {DiaryHeader} from "../../src/modules/diary/components/DiaryHeader";
-import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
-import {NotLoggedIn} from "../../src/modules/common/components/NotLoggedIn";
 import {dateService} from "../../src/modules/common/services/dateService";
 import {SuggestionModal} from "../../src/modules/diary/components/SuggestionModal";
 import {useAtom} from "jotai/index";
-import {diarySuggestionModalAtom} from "../../src/modules/diary/atoms/diarySuggestionModalAtom";
+import DiaryLayout from "../../src/modules/diary/components/DiaryLayout";
+import {diaryStateAtom} from "../../src/modules/diary/atoms/diaryStateAtom";
+import Image from "next/image";
+import noNotesIcon from "../../public/assets/diary/no-notes.svg";
+import PrimaryButton from "../../src/modules/common/components/PrimaryButton";
+import {useRouter} from "next/router";
 
-export default function DiaryPage() {
-
-    const {user, isLoading} = useAppStateManager()
-
-    return (
-        <MainLayout>
-            {isLoading && <AppSpinner/>}
-
-            {!isLoading && !user && <NotLoggedIn/>}
-
-            {!isLoading && user && <DiaryPageContent user={user}/>}
-        </MainLayout>
-    )
-}
-
-function DiaryPageContent({user}: { user: UserDto }) {
+export default function DiaryPageContent() {
     const t = useTranslations("DiaryPage");
-    const {data: notes, isLoading, isError, error} = useGetNotes({})
-    const getSuggestions = useGetSuggestions({})
-    const [isSuggestionModalOpen, setIsSuggestionModalOpen] = useAtom(diarySuggestionModalAtom)
 
-    const filteredNotes = notes?.notes?.filter(note => note.deletedAt === null)
-    const [newSuggestion, setNewSuggestion] = React.useState<CloudSuggestionDto|null>(null)
+    const [diaryState] = useAtom(diaryStateAtom)
+
+    const filteredNotes = diaryState.notes?.filter(note => note.deletedAt === null)
 
     const tm = (a: CloudSuggestionDto) => dateService.fromBackendFormat(a.createdAt).getTime()
 
-    useEffect(() => {
-        if (getSuggestions.data) {
-            const newSuggestion = getSuggestions.data.suggestions
-                .filter(suggestion => !suggestion.isReceived)
-                .sort((a, b) => tm(a) - tm(b))
-                .at(0) || null
-            setNewSuggestion(newSuggestion)
-            setIsSuggestionModalOpen(!!newSuggestion)
-        }
-    }, [
-        user, getSuggestions.data
-    ]);
+    const unSeenSuggestion = diaryState.suggestions
+        .filter(suggestion => !suggestion.isReceived)
+        .sort((a, b) => tm(a) - tm(b))
+        .at(0) || null
+
+    const [newSuggestion, setNewSuggestion] = React.useState<CloudSuggestionDto | null>(unSeenSuggestion)
 
     return (
-        <>
-            <NarrowWrapper>
-                <DiaryHeader user={user}/>
-                {isLoading && <AppSpinner/>}
-                {filteredNotes && <DiaryNotesPreviewList notes={filteredNotes}/>}
-                {newSuggestion && <SuggestionModal suggestion={newSuggestion}/>}
-            </NarrowWrapper>
-        </>
+        <DiaryLayout>
+            {filteredNotes && !filteredNotes.length && (
+                <EmptyState/>
+            )}
+
+            {filteredNotes && filteredNotes.length > 0 && (
+                <DiaryNotesPreviewList notes={filteredNotes}/>
+            )}
+            {newSuggestion && <SuggestionModal suggestion={newSuggestion}/>}
+        </DiaryLayout>
+    )
+}
+
+function EmptyState() {
+    const router = useRouter()
+    return (
+        <div className={"flex flex-col items-center"}>
+            <div className="w-32 h-32 bg-light3 dark:bg-brand/20 flex items-center justify-center rounded-full">
+                <Image src={noNotesIcon} alt={"No notes"} className={"w-16 h-16"}/>
+            </div>
+
+            <div className={"text-center mt-4"}>
+                <h3 className={"text-2xl font-bold text-dark dark:text-light"}>
+                    Start Writing Diary
+                </h3>
+                <p className={"text-nav-item dark:text-nav-item-alt mt-2"}>
+                    Stay more grounded, self-aware, mindful of what you do and how you feel.
+                </p>
+                <PrimaryButton className={"mt-4"} onClick={() => router.push("/diary/new-note")}>
+                    Add Note
+                </PrimaryButton>
+            </div>
+        </div>
     )
 }
 

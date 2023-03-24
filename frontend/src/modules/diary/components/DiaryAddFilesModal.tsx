@@ -6,6 +6,10 @@ import {CloudArrowUpIcon} from "@heroicons/react/24/outline";
 import {usePostAttachments} from "../../../api/apiComponents";
 import {AttachmentUploadInfo, FilesUpdateCallback, LocalNoteAttachment} from "../services/attachmentService";
 import {diaryUploadedAttachmentsInfoAtom} from "../atoms/diaryUploadedAttachmentsInfoAtom";
+import DialogWrapper, {CloseModalTopButton} from "./DialogWrapper";
+import uploadedIcon from "../../../../public/assets/diary/uploaded.svg";
+import Image from "next/image";
+import AppSpinner from "../../common/components/AppSpinner";
 
 const uploadFileRequest = (url: string, file: File, onProgress: (progress: number) => void) => {
     return new Promise((resolve, reject) => {
@@ -37,30 +41,14 @@ export function DiaryAddFilesModal(
     const [isMenuOpen, setIsMenuOpen] = useAtom(diaryAddAttachmentModalAtom)
 
     return (
-        <Dialog
-            open={isMenuOpen}
-            onClose={() => setIsMenuOpen(false)}
-            className="relative z-50"
-        >
-            {/* The backdrop, rendered as a fixed sibling to the panel container */}
-            <div className="fixed inset-0 bg-black/30" aria-hidden="true"/>
-
-            {/* Full-screen scrollable container */}
-            <div className="fixed inset-0 overflow-y-auto">
-                {/* Container to center the panel */}
-                <div className="flex min-h-full items-center justify-center p-4">
-                    {/* The actual dialog panel  */}
-                    <Dialog.Panel className="mx-auto max-w-lg rounded bg-white">
-                        <DiaryAddFilesModalContent
-                            addedFiles={addedFiles}
-                            onUpdate={onUpdate}
-                            onDelete={onDelete}
-                            onClose={() => setIsMenuOpen(false)}
-                        />
-                    </Dialog.Panel>
-                </div>
-            </div>
-        </Dialog>
+        <DialogWrapper modalAtom={diaryAddAttachmentModalAtom}>
+            <DiaryAddFilesModalContent
+                addedFiles={addedFiles}
+                onUpdate={onUpdate}
+                onDelete={onDelete}
+                onClose={() => setIsMenuOpen(false)}
+            />
+        </DialogWrapper>
     )
 }
 
@@ -187,22 +175,11 @@ function DiaryAddFilesModalContent({
     }
 
     return (
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <button type="button"
-                    onClick={onClose}
-                    className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-            >
-                <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"></path>
-                </svg>
-                <span className="sr-only">Close modal</span>
-            </button>
+        <div className="relative shadow">
+            <CloseModalTopButton onClose={onClose}/>
 
-            <div className="px-6 py-4 border-b rounded-t dark:border-gray-600">
-                <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
+            <div className="px-6 py-4 border-b rounded-t border-sep dark:border-sep-alt">
+                <h3 className="text-base font-semibold text-dark dark:text-light lg:text-xl">
                     Attach Files
                 </h3>
             </div>
@@ -219,10 +196,10 @@ function DiaryAddFilesModalContent({
             </div>
 
             {/* "Done" button */}
-            <div className="flex items-center justify-end p-6 border-t border-gray-300 rounded-b dark:border-gray-600">
+            <div className="flex items-center justify-end p-6 border-t border-sep dark:border-sep-alt rounded-b">
                 <button
                     onClick={onClose}
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    className="inline-flex justify-center py-2 px-4 font-semibold border border-transparent shadow-sm text-sm font-semibold rounded-md text-light bg-brand hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Done
                 </button>
             </div>
@@ -259,12 +236,12 @@ function DropZone({onAdd}: { onAdd: (files: LocalNoteAttachment[]) => void }) {
         <div className="w-full">
             <label
                 onClick={onClick}
-                className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
-                    <span className="flex items-center space-x-2">
-                        <CloudArrowUpIcon className="w-6 h-6 text-gray-600"/>
-                        <span className="font-medium text-gray-600">
+                className="flex justify-center w-full h-32 px-4 transition border-2 border-sep dark:border-sep-alt border-dashed rounded-md appearance-none cursor-pointer hover:border-sep-alt focus:outline-none">
+                    <span className="flex items-center space-x-2 text-nav-item dark:text-nav-item-alt">
+                        <CloudArrowUpIcon className="w-6 h-6"/>
+                        <span className="font-medium">
                             Drop files to Attach, or&nbsp;
-                            <span className="text-blue-600 underline">browse</span>
+                            <span className="font-semibold underline">browse</span>
                         </span>
                     </span>
             </label>
@@ -288,37 +265,20 @@ function AddedFileRow({
     }
 
     return (
-        <div className="flex flex-row items-center justify-between w-full p-2 my-1 bg-gray-100 rounded-lg">
+        <div
+            className="flex flex-row items-center justify-between w-full p-2 my-1 dark:bg-brand/20 text-dark dark:text-light rounded-lg">
             <div className="flex flex-row items-center w-full">
                 <div
-                    className="flex flex-row items-center justify-center w-12 h-12 mr-2 text-white bg-blue-500 rounded-lg">
+                    className="flex flex-row items-center justify-center w-14 h-14 mr-2 text-white bg-brand rounded-lg">
                     <span className="text-sm font-medium leading-none">{file.ext}</span>
                 </div>
                 <div className="flex flex-col flex-1">
-                    <span className="text-sm font-medium leading-none">{file.name}</span>
-                    <span className="text-xs font-normal leading-none text-gray-500">
+                    <span className="text-sm font-medium leading-none mb-1 text-dark dark:text-light">{getShortenedFilename(file.name)}</span>
+                    <span className="text-xs font-normal leading-none text-nav-item-alt mb-1">
                         {bytesToReadableStr(file.size)}
                     </span>
 
-                    {uploadInfo.isLoading && (
-                        <ProgressBar progress={uploadInfo.progress}/>
-                    )}
-
-                    {uploadInfo.progress === 100 && !uploadInfo.isLoading && (
-                        <span
-                            className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-                            <span className="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
-                            Uploaded
-                        </span>
-                    )}
-
-                    {uploadInfo.progress === 0 && !uploadInfo.error && (
-                        <span
-                            className="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-                            <span className="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
-                            Pending
-                        </span>
-                    )}
+                    <ProgressBar progress={uploadInfo.progress} error={uploadInfo.error}/>
 
                     {uploadInfo.error && (
                         <span className="text-xs font-normal leading-none text-red-500">
@@ -340,14 +300,55 @@ function AddedFileRow({
     )
 }
 
-function ProgressBar({progress}: { progress: number }) {
+function ProgressBar({progress, error}: { progress: number, error: string | null }) {
     const percentage = `${progress}%`
 
-    return (
-        <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-            <div className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-                 style={{width: percentage}}> {percentage}
+    if (error) {
+        return (
+            <div className="w-full bg-menu rounded-full h-1.5 relative mb-1">
+                <div className="bg-brand h-full rounded-full" style={{width: percentage}}></div>
             </div>
+        )
+    }
+
+    if (progress === 100) {
+        return (
+            <div className="w-full flex flex-row mb-1">
+                <div className="flex-1 bg-field rounded-full h-1.5 relative">
+                    <div className="bg-brand h-full rounded-full" style={{width: percentage}}></div>
+                </div>
+                <span className={"px-1"}>
+                    <Image src={uploadedIcon} alt={"Uploaded"}/>
+                </span>
+            </div>
+        )
+    }
+
+    return (
+        <div className="w-full flex flex-row mb-1">
+            <div className="flex-1 bg-field rounded-full h-1.5 relative">
+                <div className="bg-brand h-full rounded-full" style={{width: percentage}}></div>
+            </div>
+            <span className={"px-1 opacity-0"}>
+                <Image src={uploadedIcon} alt={"Uploaded"}/>
+            </span>
         </div>
     )
+}
+
+function getShortenedFilename(originalFilename: string) {
+    const maxLength = 14;
+
+    if (originalFilename.length <= maxLength) {
+        return originalFilename;
+    }
+
+    const ext = originalFilename.substring(originalFilename.lastIndexOf('.') + 1);
+    const filename = originalFilename.substring(0, originalFilename.lastIndexOf('.'));
+
+    const namePartLength = Math.floor(maxLength / 2);
+    const namePart1 = filename.substring(0, namePartLength);
+    const namePart2 = filename.substring(filename.length - namePartLength);
+
+    return `${namePart1}...${namePart2}.${ext}`;
 }

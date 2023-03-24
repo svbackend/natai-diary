@@ -17,9 +17,11 @@ class StaticAction extends BaseAction
     public function __invoke(): HttpOutputInterface
     {
         $terms = $this->renderView('static/terms.html.twig');
+        $privacy = $this->renderView('static/privacy.html.twig');
 
         return new StaticContentResponse(
             terms: $terms,
+            privacy: $privacy,
         );
     }
 }

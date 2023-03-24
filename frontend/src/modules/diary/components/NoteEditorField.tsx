@@ -26,10 +26,10 @@ export function NoteEditorField(
 
     return (
         <div className="flex flex-col mb-4">
-            <label htmlFor={name} className="text-sm font-medium text-gray-700">
+            <label htmlFor={name} className="text-sm font-medium text-nav-item dark:text-nav-item-alt">
                 {label}
             </label>
-            <div className="mt-1">
+            <div className="mt-2">
                 <textarea
                     id={name}
                     name={name}
@@ -37,7 +37,7 @@ export function NoteEditorField(
                     autoComplete={name}
                     required={true}
                     className={classNames(
-                        "block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ",
+                        "block bg:white dark:bg-field w-full px-3 py-2 border border-sep dark:border-sep-alt text-nav-item dark:text-nav-item-alt rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm",
                         errors && errors.hasOwnProperty(name) && "border-red-500",
                     )}
                     {...register}

@@ -43,15 +43,15 @@ when@prod:
             main:
                 type: fingers_crossed
                 action_level: error
-                handler: es
+                handler: nested
                 excluded_http_codes: [404, 405]
                 buffer_size: 50 # How many messages should be saved? Prevent memory leaks
-# replaced with es handler
-#            nested:
-#                type: stream
-#                path: php://stderr
-#                level: debug
-#                formatter: monolog.formatter.json
+            nested:
+                type: rotating_file
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: debug
+                formatter: monolog.formatter.json
+                max_files: 14
             console:
                 type: console
                 process_psr_3_messages: false
@@ -60,7 +60,3 @@ when@prod:
                 type: stream
                 channels: [deprecation]
                 path: php://stderr
-            # registered in services, https://github.com/deviantony/docker-elk
-            es:
-                type: service
-                id: Symfony\Bridge\Monolog\Handler\ElasticsearchLogstashHandler

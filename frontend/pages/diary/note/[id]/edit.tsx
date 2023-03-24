@@ -7,12 +7,7 @@ import MainLayout from "../../../../src/modules/common/components/mainLayout";
 import {useAppStateManager} from "../../../../src/modules/common/state";
 import AppSpinner from "../../../../src/modules/common/components/AppSpinner";
 import {NotLoggedIn} from "../../../../src/modules/common/components/NotLoggedIn";
-import {
-    fetchGetNotesByIdAttachments,
-    useGetNotes,
-    usePutNotesById,
-    usePutNotesByIdV2
-} from "../../../../src/api/apiComponents";
+import {fetchGetNotesByIdAttachments, useGetNotes, usePutNotesByIdV2} from "../../../../src/api/apiComponents";
 import {NotFound} from "../../../../src/modules/common/components/NotFound";
 import {AlertApiError} from "../../../../src/modules/common/components/alert";
 import {dateService} from "../../../../src/modules/common/services/dateService";
@@ -35,48 +30,42 @@ import {
 import {AddedFilesRow} from "../../../../src/modules/diary/components/AddedFilesRow";
 import {AddAttachmentsButton} from "../../../../src/modules/diary/components/AddAttachmentsButton";
 import {DiaryAddFilesModal} from "../../../../src/modules/diary/components/DiaryAddFilesModal";
+import DiaryLayout from "../../../../src/modules/diary/components/DiaryLayout";
+import {useAtom} from "jotai";
+import {diaryStateAtom} from "../../../../src/modules/diary/atoms/diaryStateAtom";
+import SelectWeatherButton from "../../../../src/modules/diary/components/SelectWeatherButton";
+import DiarySelectWeatherModal from "../../../../src/modules/diary/components/DiarySelectWeatherModal";
+import {useDiaryStateManager} from "../../../../src/modules/diary/diaryStateManager";
 
 export default function DiaryEditNote() {
     const {user, isLoading} = useAppStateManager()
-    const {data: notes, isLoading: isNotesLoading, isError, error} = useGetNotes({})
+    const [diaryState] = useAtom(diaryStateAtom)
 
     const [attachments, setAttachments] = useState<CloudAttachmentDto[]>([])
     const [isAttachmentsLoading, setIsAttachmentsLoading] = useState<boolean>(false)
 
-    const isLoadingCombined = isLoading || isNotesLoading || isAttachmentsLoading
+    const isLoadingCombined = isLoading || isAttachmentsLoading
 
     const router = useRouter()
 
     const {id} = router.query
-
-    const [note, setNote] = useState<CloudNoteDto | null>(null)
+    const note = diaryState.notes.find(n => n.id === id)
 
     useEffect(() => {
-        if (notes?.notes && typeof id === "string") {
-            let noteById = notes.notes.find(n => n.id === id)
-            if (noteById) {
-                setNote(noteById)
-
-                if (noteById.attachments.length > 0) {
-                    setIsAttachmentsLoading(true)
-                    fetchGetNotesByIdAttachments({
-                        pathParams: {
-                            id: id
-                        }
-                    })
-                        .then((res) => {
-                            setAttachments(res.attachments)
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                        })
-                        .finally(() => {
-                            setIsAttachmentsLoading(false)
-                        })
-                }
-            }
+        if (note && note.attachments.length > 0) {
+            setIsAttachmentsLoading(true)
+            fetchGetNotesByIdAttachments({pathParams: {id: note.id}})
+                .then((res) => {
+                    setAttachments(res.attachments)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    setIsAttachmentsLoading(false)
+                })
         }
-    }, [notes, id])
+    }, [note])
 
     const onDeleteAttachment = (id: string) => {
         setAttachments(a => {
@@ -85,11 +74,7 @@ export default function DiaryEditNote() {
     }
 
     return (
-        <MainLayout>
-            {isLoadingCombined && <AppSpinner/>}
-
-            {!isLoadingCombined && !user && <NotLoggedIn/>}
-
+        <DiaryLayout>
             {!isLoadingCombined && user && !note && <NotFound/>}
 
             {!isLoadingCombined && user && note && (
@@ -99,9 +84,7 @@ export default function DiaryEditNote() {
                     onDeleteAttachment={onDeleteAttachment}
                 />
             )}
-
-            {!isLoadingCombined && isError && error && <AlertApiError error={error}/>}
-        </MainLayout>
+        </DiaryLayout>
     )
 }
 
@@ -123,6 +106,7 @@ function DiaryEditNotePageContent(
 ) {
     const t = useTranslations("DiaryEditNote");
     const router = useRouter()
+    const {updateNote} = useDiaryStateManager()
 
     const {register, handleSubmit, watch, formState: {errors}} = useForm<FormValues>({
         defaultValues: {
@@ -137,6 +121,9 @@ function DiaryEditNotePageContent(
 
     const moodTag = tags.find(tag => tag.tag === "mood") || null
     const moodScore = moodTag ? moodTag.score : null
+
+    const weatherTag = tags.find(tag => tag.tag === "weather") || null
+    const weatherScore = weatherTag ? weatherTag.score : null
 
     const [actualDate, setActualDate] = useState<Date>(
         dateService.fromYmd(note.actualDate)
@@ -168,6 +155,7 @@ function DiaryEditNotePageContent(
         ]
 
         try {
+            const updatedAt = new Date()
             await editNoteRequest({
                 pathParams: {
                     id: note.id,
@@ -178,9 +166,19 @@ function DiaryEditNotePageContent(
                     tags: tags,
                     attachments: allAttachments,
                     actualDate: dateService.toYMD(actualDate),
-                    updatedAt: dateService.toBackendFormat(new Date()),
+                    updatedAt: dateService.toBackendFormat(updatedAt),
                     deletedAt: null,
                 }
+            })
+            updateNote({
+                ...note,
+                title: title,
+                content: content,
+                tags: tags,
+                attachments: allAttachments,
+                actualDate: dateService.imitateBackendFormat(actualDate),
+                updatedAt: dateService.imitateBackendFormat(updatedAt),
+                deletedAt: null,
             })
         } catch (e) {
             // todo scroll into view AlertApiError
@@ -205,9 +203,9 @@ function DiaryEditNotePageContent(
     const filesCombinedLength = files.length + attachments.length
 
     return (
-        <NarrowWrapper>
+        <>
             <div className="p-4">
-                <h1 className={"text-2xl"}>
+                <h1 className={"text-2xl font-bold text-dark dark:text-light"}>
                     Edit note
                 </h1>
 
@@ -250,8 +248,11 @@ function DiaryEditNotePageContent(
                     )}
 
                     <div className="flex flex-row justify-between mb-4">
-                        {/* Select mood (left) and "Add tags" button (right) */}
-                        <SelectMoodButton moodScore={moodScore}/>
+                        <div className="flex justify-around gap-2">
+                            <SelectMoodButton moodScore={moodScore}/>
+                            <SelectWeatherButton score={weatherScore}/>
+                        </div>
+
                         <div className="flex justify-around gap-2">
                             <AddAttachmentsButton count={filesCombinedLength}/>
                             <AddTagsButton/>
@@ -263,8 +264,9 @@ function DiaryEditNotePageContent(
             </div>
 
             <DiarySelectMoodModal onSelect={(tag: CloudTagDto) => addTag(tag)} moodScore={moodScore}/>
+            <DiarySelectWeatherModal onSelect={(tag: CloudTagDto) => addTag(tag)} weatherScore={weatherScore}/>
             <DiaryAddTagsModal addedTags={tags} onAdd={addTag} onDelete={deleteTag}/>
             <DiaryAddFilesModal addedFiles={files} onUpdate={onUpdateFiles} onDelete={deleteFile}/>
-        </NarrowWrapper>
+        </>
     )
 }

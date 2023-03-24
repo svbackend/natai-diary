@@ -103,7 +103,7 @@ class MainActivity : ScopedActivity() {
         splashViewModel.loaded()
     }
 
-    private suspend fun syncWithApi() {
+    private fun syncWithApi() {
         val hasInternet = hasInternetConnection(connectivityManager)
 
         if (!hasInternet) {

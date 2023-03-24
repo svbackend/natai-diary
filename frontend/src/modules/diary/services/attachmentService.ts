@@ -19,7 +19,7 @@ export type LocalNoteAttachment = {
     originalFile: File
 }
 
-export const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'svg']
+export const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'jfif', 'webp']
 
 export const attachmentService = {
     isImage: (filename: string, mimeType?: string): boolean => {

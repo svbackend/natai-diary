@@ -241,7 +241,7 @@ fun AccountBenefits() {
 
         BenefitCard(
             R.drawable.baseline_assistant_24,
-            "AI Psychologist",
+            "AI Therapy",
             "Receive personalized recommendations based on your notes"
         )
         BenefitCard(
@@ -252,7 +252,7 @@ fun AccountBenefits() {
         BenefitCard(
             R.drawable.baseline_computer_24,
             "Web Version",
-            "Access your notes on the web from your desktop"
+            "Access your notes on the web at https://natai.app from your desktop"
         )
         BenefitCard(
             R.drawable.twotone_wb_sunny_24,

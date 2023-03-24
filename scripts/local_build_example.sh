@@ -4,7 +4,7 @@ mkdir "/tmp/natai" -p
 
 rf -rf "/tmp/natai/*"
 
-docker compose build api-php-fpm api-queue frontend
+docker compose build api-php-fpm frontend
 
 docker save natai/api-php-fpm > /tmp/natai/api-php-fpm.tar
 docker save natai/frontend > /tmp/natai/frontend.tar

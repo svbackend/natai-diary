@@ -28,12 +28,11 @@ export function AddedFilesRow(
 
 function AddedFileBadge({file, onDelete}: { file: LocalNoteAttachment, onDelete: (file: LocalNoteAttachment) => void }) {
     return (
-        <div className={"flex flex-col flex-1 border p-2 rounded"}>
-            <AttachedFilePreview file={file.originalFile}/>
+        <div className={"flex flex-col flex-1 border border-transparent p-2 rounded"}>
+            <AttachedFilePreview file={file} onDelete={onDelete} />
 
-            <div className={"flex items-center mt-1 w-full"}>
+            <div className={"flex justify-center mt-1 w-full"}>
                 <span className="text-xs text-gray-500 whitespace-nowrap">{getShortenedFileName(file.name)}</span>
-                <XMarkIcon className="w-4 h-4 inline ml-1 cursor-pointer" onClick={() => onDelete(file)}/>
             </div>
 
         </div>
@@ -43,19 +42,18 @@ function AddedFileBadge({file, onDelete}: { file: LocalNoteAttachment, onDelete:
 function AddedCloudFileBadge({file, onDelete}: { file: CloudAttachmentDto, onDelete: (file: CloudAttachmentDto) => void }) {
     const fileName = file.key.split("/").pop() || ""
     return (
-        <div className={"flex flex-col flex-1 border p-2 rounded"}>
-            <CloudFilePreview file={file}/>
+        <div className={"flex flex-col flex-1 border border-transparent p-2 rounded"}>
+            <CloudFilePreview file={file} onDelete={onDelete} />
 
-            <div className={"flex items-center mt-1 w-full"}>
+            <div className={"flex justify-center mt-1 w-full"}>
                 <span className="text-xs text-gray-500 whitespace-nowrap">{getShortenedFileName(fileName)}</span>
-                <XMarkIcon className="w-4 h-4 inline ml-1 cursor-pointer" onClick={() => onDelete(file)}/>
             </div>
 
         </div>
     )
 }
 
-function AttachedFilePreview({file}: { file: File }) {
+function AttachedFilePreview({file, onDelete}: { file: LocalNoteAttachment, onDelete: (file: LocalNoteAttachment) => void }) {
     const [preview, setPreview] = useState<string | ArrayBuffer | null>(null)
 
     const isImage = attachmentService.isImage(file.name, file.type)
@@ -74,7 +72,7 @@ function AttachedFilePreview({file}: { file: File }) {
                     setPreview(result)
                 }
             }
-            fileReader.readAsDataURL(file);
+            fileReader.readAsDataURL(file.originalFile);
         }
         return () => {
             isCancel = true;
@@ -86,22 +84,38 @@ function AttachedFilePreview({file}: { file: File }) {
     }, [file]);
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center relative">
             {isPreviewLoading && <div className="h-16 w-16 bg-gray-200 rounded animate-pulse"/>}
-            {isImage && !isPreviewLoading && preview && <img src={preview as string} alt={file.name} className="h-16 rounded"/>}
+            {isImage && !isPreviewLoading && preview && <div className="h-16 w-16 rounded" style={{
+                backgroundImage: `url(${preview as string})`,
+                backgroundSize: "cover",
+            }}/>}
             {!isImage && <div className="w-16 h-16 bg-blue-200">{file.type}</div>}
+            <div
+                onClick={() => onDelete(file)}
+                className="absolute cursor-pointer inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-light bg-copyright border-2 border-menu rounded-full -top-3 right-1">
+                <XMarkIcon className="w-3 h-3 inline"/>
+            </div>
         </div>
     )
 }
 
-function CloudFilePreview({file}: { file: CloudAttachmentDto }) {
+function CloudFilePreview({file, onDelete}: { file: CloudAttachmentDto, onDelete: (file: CloudAttachmentDto) => void }) {
     const isImage = attachmentService.isImage(file.key, file.metadata?.mimeType || "")
     const preview = file.previews.find(p => p.type === "md")
     const previewUrl = preview?.signedUrl || file.signedUrl
     return (
-        <div className="flex flex-col items-center">
-            {isImage && <img src={previewUrl} alt={file.key} className="h-16 rounded"/>}
-            {!isImage && <div className="w-16 h-16 bg-blue-200"></div>}
+        <div className="flex flex-col items-center relative">
+            {isImage && preview && <div className="h-16 w-16 rounded" style={{
+                backgroundImage: `url(${previewUrl as string})`,
+                backgroundSize: "cover",
+            }}/>}
+            {!isImage && <div className="w-16 h-16 bg-blue-200">File</div>}
+            <div
+                onClick={() => onDelete(file)}
+                className="absolute cursor-pointer inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-light bg-copyright border-2 border-menu rounded-full -top-3 right-1">
+                <XMarkIcon className="w-3 h-3 inline"/>
+            </div>
         </div>
     )
 }

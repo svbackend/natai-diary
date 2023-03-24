@@ -34,6 +34,7 @@ class NoteAnalyzer
         private SuggestionRepository $suggestions,
         private SuggestionPromptRepository $prompts,
         private UserRepository $users,
+        private DiaryMailer $diaryMailer,
         private LoggerInterface $logger
     )
     {
@@ -87,7 +88,7 @@ class NoteAnalyzer
             );
         } catch (\Throwable $e) {
             $this->logger->error("Failed to get recommendations: " . $e->getMessage(), [
-                'systemPrompt' => $systemPrompt,
+                'systemPrompt' => $systemPrompt->getSystemPrompt(),
                 'userPrompt' => $userPrompt,
                 'notesIds' => $notesIds,
             ]);
@@ -109,6 +110,8 @@ class NoteAnalyzer
         );
 
         $this->suggestions->save($suggestion, flush: true);
+
+        $this->diaryMailer->sendNotificationAboutNewSuggestion($user, $suggestion);
     }
 
     /**
@@ -118,7 +121,7 @@ class NoteAnalyzer
      */
     private function prepareInputByNotes(array $notes): NoteInputForSuggestionDto
     {
-        $text = '';
+        $finalText = '';
         $takenNotes = [];
 
         foreach ($notes as $note) {
@@ -149,13 +152,13 @@ class NoteAnalyzer
                 $noteText .= $tagsStr . self::NEWLINE;
             }
 
-            $newText = $noteText . self::NEWLINE;
+            $newText = $finalText . $this->sanitizeCompiledNoteText($noteText) . self::NEWLINE;
 
             if (strlen($newText) > self::TEXT_LIMIT) {
                 break;
             }
 
-            $text .= $this->sanitizeCompiledNoteText($newText);
+            $finalText = $newText;
             $takenNotes[] = $note;
         }
 
@@ -163,11 +166,11 @@ class NoteAnalyzer
             throw new NoNotesToAnalyzeException();
         }
 
-        if (strlen($text) < self::MIN_CHARS) {
+        if (strlen($finalText) < self::MIN_CHARS) {
             throw new NotEnoughTextToAnalyzeException();
         }
 
-        return new NoteInputForSuggestionDto($takenNotes, $text);
+        return new NoteInputForSuggestionDto($takenNotes, $finalText);
     }
 
     private function summarizeText(string $content): string

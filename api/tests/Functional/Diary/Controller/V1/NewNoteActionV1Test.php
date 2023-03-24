@@ -55,9 +55,9 @@ class NewNoteActionV1Test extends AbstractFunctionalTest
             ]);
 
         self::assertCount(2, $tagsInDb);
-        self::assertSame('Tag 1', $tagsInDb[0]['tag']);
+        self::assertSame('Tag1', $tagsInDb[0]['tag']);
         self::assertSame(6, $tagsInDb[0]['score']);
-        self::assertSame('Tag 2', $tagsInDb[1]['tag']);
+        self::assertSame('Tag2', $tagsInDb[1]['tag']);
         self::assertSame(null, $tagsInDb[1]['score']);
     }
 }

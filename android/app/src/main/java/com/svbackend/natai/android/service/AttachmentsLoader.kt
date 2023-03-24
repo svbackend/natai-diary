@@ -11,6 +11,7 @@ import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.utils.hasInternetConnection
 import com.svbackend.natai.android.utils.isGuest
+import com.svbackend.natai.android.utils.placeholderUri
 
 class AttachmentsLoader(
     private val api: ApiClient,
@@ -19,10 +20,6 @@ class AttachmentsLoader(
     private val connectivityManager: ConnectivityManager,
 ) {
     val TAG = "AttachmentsLoader"
-
-    // res/raw/placeholder.png
-    private val placeholderUri: Uri =
-        Uri.parse("android.resource://com.svbackend.natai.android/raw/placeholder")
 
     suspend fun loadAttachments(note: LocalNote): List<ExistingAttachmentDto> {
         Log.v(TAG, "=== LOAD ATTACHMENTS STARTED ===")

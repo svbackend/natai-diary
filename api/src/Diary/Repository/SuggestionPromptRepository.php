@@ -2,7 +2,6 @@
 
 namespace App\Diary\Repository;
 
-use App\Diary\Entity\Suggestion;
 use App\Diary\Entity\SuggestionPrompt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,7 +19,7 @@ class SuggestionPromptRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Suggestion::class);
+        parent::__construct($registry, SuggestionPrompt::class);
     }
 
     public function save(SuggestionPrompt $entity, bool $flush = false): void
@@ -46,27 +45,25 @@ class SuggestionPromptRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $promptUsageSql = <<<SQL
-            SELECT
-                sp.id as prompt_id 
-                COUNT(sp.id) AS occurences
+            SELECT sp.id AS prompt_id, COUNT(s.id) AS suggestion_count
             FROM suggestion_prompt sp
-            LEFT JOIN suggestion s ON s.prompt_id = sp.id
-            WHERE s.user_id = :userId
+                     LEFT JOIN suggestion s ON s.prompt_id = sp.id AND s.user_id = :userId
             GROUP BY sp.id
-            ORDER BY occurences ASC
-            LIMIT 1
+            ORDER BY suggestion_count
+            LIMIT 1;
         SQL;
 
-        $stmt = $conn->prepare($promptUsageSql);
-        $result = $stmt->executeQuery(['userId' => $userId]);
+        $result = $conn
+            ->prepare($promptUsageSql)
+            ->executeQuery(['userId' => $userId]);
 
-        $promptId = $result->fetchOne();
+        $promptRow = $result->fetchOne();
 
-        if (!$promptId) {
+        if (!$promptRow) {
             return $this->createDummyPrompt();
         }
 
-        return $this->find($promptId);
+        return $this->find($promptRow);
     }
 
     private function createDummyPrompt(): SuggestionPrompt
@@ -74,7 +71,7 @@ class SuggestionPromptRepository extends ServiceEntityRepository
         $txt = "Act as psychologist, give recommendations based on diary notes, treat every message from user as a diary note that you need to analyze, look for issues that person can solve with your guidance";
         $prompt = new SuggestionPrompt(UuidV4::v4(), $txt, null, null);
 
-        $this->save($prompt, true);
+        $this->save($prompt);
 
         return $prompt;
     }

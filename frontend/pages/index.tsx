@@ -80,7 +80,7 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
             <div
                 className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-44">
 
-                <div className="flex flex-col">
+                <div className="flex flex-col z-[2]">
                     <h1 className="text-3xl lg:text-4xl font-bold text-dark dark:text-light leading-10 text-center lg:text-left">
                         <span className="whitespace-nowrap">Mental-health focused</span><br/>
                         <span className="whitespace-nowrap">journaling & diary app</span>
@@ -294,7 +294,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                     <div className="bg-feature-card rounded-3xl overflow-hidden"></div>
                     <div className="bg-feature-card-circles rounded-3xl overflow-hidden"></div>
 
-                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:ml-28">
+                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:ml-28 z-[2]">
                         <h3 className={"font-bold text-lg lg:text-2xl text-dark dark:text-light"}>{title}</h3>
 
                         <p className="mt-6 text-nav-item dark:text-nav-item-alt">
@@ -305,14 +305,14 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
 
                 <div className="flex relative items-end container mx-auto rounded-3xl">
                     <Image
-                        className={"absolute feature-screenshot-right"}
-                        src={img}
-                        alt={`Feature '${title}' screenshot`}
-                    />
-                    <Image
                         className={"absolute feature-lines-right"}
                         src={require("../public/assets/features/lines.svg")}
                         alt={`Lines decoration`}
+                    />
+                    <Image
+                        className={"absolute feature-screenshot-right"}
+                        src={img}
+                        alt={`Feature '${title}' screenshot`}
                     />
 
                     {/** features-mood-1 features-mood-2 features-mood-3 */}
@@ -343,7 +343,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                     <div className="bg-feature-card rounded-3xl overflow-hidden"></div>
                     <div className="bg-feature-card-circles rounded-3xl overflow-hidden"></div>
 
-                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:mr-28">
+                    <div className="flex flex-col lg:max-w-md mt-36 mb-8 px-4 lg:px-0 lg:my-20 lg:mr-28 z-[2]">
                         <h3 className={"font-bold text-lg lg:text-2xl text-dark dark:text-light"}>{title}</h3>
 
                         <p className="mt-6 text-nav-item dark:text-nav-item-alt">
@@ -354,14 +354,14 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
 
                 <div className="flex relative items-end container mx-auto rounded-3xl">
                     <Image
-                        className={"absolute feature-screenshot-left"}
-                        src={img}
-                        alt={`Feature '${title}' screenshot`}
-                    />
-                    <Image
                         className={"absolute feature-lines-left"}
                         src={require("../public/assets/features/lines.svg")}
                         alt={`Lines decoration`}
+                    />
+                    <Image
+                        className={"absolute feature-screenshot-left"}
+                        src={img}
+                        alt={`Feature '${title}' screenshot`}
                     />
 
                     {/** features-mood-1 features-mood-2 features-mood-3 */}
@@ -386,7 +386,9 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                     Natai Diary
                     <span className="brand-highlight w-[184px]"></span>
                 </span>
-                &nbsp;as your friend!
+                <span className={"relative z-[2]"}>
+                    &nbsp;as your friend!
+                </span>
             </h2>
 
             <div className="flex flex-col">
@@ -458,12 +460,12 @@ function UseAnywhereSection({isDarkMode}: { isDarkMode: boolean }) {
     return (
         <section className={"why-section bg-whitish dark:bg-nav-bg py-12 lg:py-20 px-4 lg:px-0"}>
             <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
-                Use&nbsp;
+                <span>Use&nbsp;</span>
                 <span className={"text-brand whitespace-nowrap relative z-10"}>
                     Natai Diary
                     <span className="brand-highlight w-[184px]"></span>
                 </span>
-                &nbsp;anytime & anywhere!
+                <span className={"break-normal"}>&nbsp;anytime & anywhere!</span>
             </h2>
 
             <div className="container mx-auto flex justify-between mt-12 lg:mt-28 ">

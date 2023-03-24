@@ -14,17 +14,17 @@ import moodImg10 from '../../../../public/assets/mood/10.svg';
 import Image from "next/image";
 import {moodMapService} from "../services/moodMapService";
 
-export const specialTags = ["mood"]
+export const specialTags = ["mood", "weather"]
 
 export default function SpecialTagsRow({note}: { note: CloudNoteDto }) {
-    const tags = note.tags.filter(tag => specialTags.includes(tag.tag.trim().toLowerCase()))
+    const tags = note.tags
 
     if (!tags) return null
 
     const moodTag = tags.find(tag => tag.tag === "mood")
 
     return (
-        <div className="flex flex-row my-2 overflow-auto">
+        <div className="flex flex-row overflow-auto">
             {moodTag && <TagMood score={moodTag.score}/>}
         </div>
     )
@@ -33,5 +33,5 @@ export default function SpecialTagsRow({note}: { note: CloudNoteDto }) {
 export function TagMood({score}: {score: number|null}) {
     const moodImg = moodMapService.mapMoodScoreToImage(score)
 
-    return <Image src={moodImg} alt={`Mood icon`} className={"w-20 h-20"}/>
+    return <Image src={moodImg} alt={`Mood icon`} className={"w-16 h-16"}/>
 }

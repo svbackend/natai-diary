@@ -7,6 +7,8 @@ import {getTranslations} from "../i18n/i18n";
 import {useRouter} from "next/router";
 import {AppContext, useGlobalState} from "../src/modules/common/state";
 import { Provider } from 'jotai'
+import Body from "../src/modules/common/components/Body";
+import Script from "next/script";
 
 const queryClient = new QueryClient()
 
@@ -18,10 +20,14 @@ export default function App({Component, pageProps}: AppProps) {
 
     return (
         <NextIntlProvider messages={messages} locale={locale}>
+            <Script data-domain={"natai.app"} src="https://plausible.ukraidian.com/js/plausible.js" />
+
             <QueryClientProvider client={queryClient}>
                 <AppContext.Provider value={globalAppState}>
                     <Provider>
-                        <Component {...pageProps} />
+                        <Body>
+                            <Component {...pageProps} />
+                        </Body>
                     </Provider>
                 </AppContext.Provider>
             </QueryClientProvider>

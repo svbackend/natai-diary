@@ -2,12 +2,12 @@
 
 namespace App\Diary\Entity;
 
-use App\Diary\Repository\SuggestionRepository;
+use App\Diary\Repository\SuggestionPromptRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 
-#[ORM\Entity(repositoryClass: SuggestionRepository::class)]
+#[ORM\Entity(repositoryClass: SuggestionPromptRepository::class)]
 class SuggestionPrompt
 {
     #[ORM\Id]

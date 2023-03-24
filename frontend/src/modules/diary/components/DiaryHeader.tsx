@@ -7,9 +7,13 @@ import {useTranslations} from "use-intl";
 import Link from "next/link";
 import bulbImg from "../../../../public/assets/therapy/bulb.svg";
 import Image from "next/image";
+import DialogWrapper, {CloseModalTopButton} from "./DialogWrapper";
+import {DiaryStateDto} from "../dto/DiaryStateDto";
+import {diaryStateAtom} from "../atoms/diaryStateAtom";
+import {InformationCircleIcon, LightBulbIcon} from "@heroicons/react/24/outline";
 
 // 2 buttons - Open menu, Add new note
-export function DiaryHeader({user}: { user: UserDto }) {
+export function DiaryHeader(props: { diaryState: DiaryStateDto }) {
     return (
         <>
             <div className="flex flex-row justify-between items-center mb-5">
@@ -30,7 +34,7 @@ function DiaryHeaderMenuButton() {
     return (
         <button
             onClick={() => setIsMenuOpen(true)}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+            className="dark:bg-menu dark:border-menu-b border font-bold py-2 px-4 rounded-3xl inline-flex items-center"
         >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                  xmlns="http://www.w3.org/2000/svg">
@@ -45,47 +49,28 @@ function DiaryHeaderMenuButton() {
 function DiaryMenuModal() {
     const [isMenuOpen, setIsMenuOpen] = useAtom(diaryMenuModalAtom)
 
-    return (
-        <Dialog
-            open={isMenuOpen}
-            onClose={() => setIsMenuOpen(false)}
-            className="relative z-50"
-        >
-            {/* The backdrop, rendered as a fixed sibling to the panel container */}
-            <div className="fixed inset-0 bg-black/30" aria-hidden="true"/>
+    const closeMenu = () => {
+        setIsMenuOpen(false)
+    }
 
-            {/* Full-screen scrollable container */}
-            <div className="fixed inset-0 overflow-y-auto">
-                {/* Container to center the panel */}
-                <div className="flex min-h-full items-center justify-center p-4">
-                    {/* The actual dialog panel  */}
-                    <Dialog.Panel className="mx-auto max-w-md rounded bg-white">
-                        <DiaryMenuModalContent onClose={() => setIsMenuOpen(false)}/>
-                    </Dialog.Panel>
-                </div>
-            </div>
-        </Dialog>
+    return (
+        <DialogWrapper modalAtom={diaryMenuModalAtom}>
+            <DiaryMenuModalContent onClose={closeMenu}/>
+        </DialogWrapper>
     )
 }
 
 function DiaryMenuModalContent({onClose}: { onClose: () => void }) {
-    return (
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <button type="button"
-                    onClick={onClose}
-                    className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-                    data-modal-hide="crypto-modal">
-                <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"></path>
-                </svg>
-                <span className="sr-only">Close modal</span>
-            </button>
+    const [diaryState] = useAtom(diaryStateAtom)
 
-            <div className="px-6 py-4 border-b rounded-t dark:border-gray-600">
-                <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
+    const unSeenSuggestionsCount = diaryState.suggestions.filter(s => !s.isReceived).length
+
+    return (
+        <div className="relative rounded-lg shadow">
+            <CloseModalTopButton onClose={onClose}/>
+
+            <div className="px-6 py-4 border-b rounded-t border-sep dark:border-sep-alt">
+                <h3 className="text-base font-semibold text-dark dark:text-light lg:text-xl">
                     Main Menu
                 </h3>
             </div>
@@ -96,15 +81,26 @@ function DiaryMenuModalContent({onClose}: { onClose: () => void }) {
                 </p>
                 <ul className="my-4 space-y-3">
                     <li>
-                        <Link href="/diary/suggestions" onClick={onClose}
-                           className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow">
-                            <Image src={bulbImg} className={"inline-flex w-8 h-8"} alt={""}/>
+                        <Link href="/diary/therapy" onClick={onClose}
+                              className="flex items-center p-3 text-base font-bold text-dark dark:text-nav-item-alt rounded-3xl border dark:border-sep-alt group hover:shadow">
+                            <LightBulbIcon className={"inline-flex w-8 h-8"}/>
                             <span className="ml-3 flex-1 whitespace-nowrap align-middle">
-                                AI Psychologist
+                                AI Therapy
                             </span>
-                            <span
-                                className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                                +1
+                            {unSeenSuggestionsCount > 0 && (
+                                <span
+                                    className="animate-pulse inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
+                                +{unSeenSuggestionsCount}
+                                </span>
+                            )}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/diary/feedback" onClick={onClose}
+                              className="flex items-center p-3 text-base font-bold text-dark dark:text-nav-item-alt rounded-3xl border dark:border-sep-alt group hover:shadow">
+                            <InformationCircleIcon className={"inline-flex w-8 h-8"}/>
+                            <span className="ml-3 flex-1 whitespace-nowrap align-middle">
+                                Feedback / Support
                             </span>
                         </Link>
                     </li>
@@ -119,6 +115,6 @@ function DiaryHeaderAddNoteButton() {
     const t = useTranslations("DiaryPage")
     return (
         <Link href={"/diary/new-note"}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{t("addNewNote")}</Link>
+              className="bg-brand text-light font-bold py-2 px-4 rounded-3xl">{t("addNewNote")}</Link>
     )
 }
