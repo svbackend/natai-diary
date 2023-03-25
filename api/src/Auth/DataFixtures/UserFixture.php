@@ -19,6 +19,9 @@ class UserFixture extends Fixture
     public const USER2_ID = '13b2f597-b294-45a4-84e2-b4f04666733a';
     public const USER2_LOGIN = 'example2@email.com';
 
+    public const BLOG_EDITOR_ID = 'f382482b-7fa4-45b3-a54e-cf662fb0ae27';
+    public const BLOG_EDITOR_LOGIN = 'example3@email.com';
+
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher
     )
@@ -46,11 +49,21 @@ class UserFixture extends Fixture
             name: 'Ethan',
         );
 
+        $entity3 = new User(
+            id: UuidV4::fromString(self::BLOG_EDITOR_ID),
+            email: self::BLOG_EDITOR_LOGIN,
+            password: $password,
+            name: 'Jack',
+        );
+        $entity3->assignBlogEditorRole();
+
         $this->addReference(self::USER_ID, $entity);
         $this->addReference(self::USER2_ID, $entity2);
+        $this->addReference(self::BLOG_EDITOR_ID, $entity3);
 
         $manager->persist($entity);
         $manager->persist($entity2);
+        $manager->persist($entity3);
         $manager->flush();
     }
 }

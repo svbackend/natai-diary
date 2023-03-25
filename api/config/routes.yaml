@@ -13,3 +13,7 @@ auth:
 diary:
   type: attribute
   resource: ../src/Diary/Controller/
+
+blog:
+  type: attribute
+  resource: ../src/Blog/Controller/

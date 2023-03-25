@@ -2,18 +2,16 @@
 
 namespace App\Blog\Controller;
 
-use App\Attachment\Repository\UploadedAttachmentRepository;
 use App\Auth\Entity\User;
 use App\Blog\Entity\BlogArticle;
 use App\Blog\Entity\BlogArticleImage;
-use App\Blog\Entity\BlogArticleTranslation;
 use App\Blog\Http\Request\NewArticleRequest;
 use App\Blog\Http\Response\NewArticleResponse;
+use App\Blog\Security\BlogSecurity;
 use App\Blog\Service\ArticleImageAttacherService;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
 use App\Common\OpenApi\Ref\ValidationErrorResponseRef;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -47,7 +45,7 @@ class NewArticleAction extends BaseAction
         NewArticleRequest $req,
     ): NewArticleResponse
     {
-        $this->denyAccessUnlessGranted('ROLE_BLOG_EDITOR');
+        $this->denyAccessUnlessGranted(BlogSecurity::ROLE_BLOG_EDITOR);
 
         $newArticleId = Uuid::v4();
 

@@ -3,6 +3,7 @@
 namespace App\Auth\Entity;
 
 use App\Auth\Repository\UserRepository;
+use App\Blog\Security\BlogSecurity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -128,5 +129,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $newEmail): void
     {
         $this->email = $newEmail;
+    }
+
+    public function assignBlogEditorRole()
+    {
+        $this->roles[] = BlogSecurity::ROLE_BLOG_EDITOR;
     }
 }

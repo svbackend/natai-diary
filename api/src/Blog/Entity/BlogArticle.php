@@ -79,7 +79,6 @@ class BlogArticle
      */
     public function update(array $translations): void
     {
-        $this->translations->clear();
         $this->translations = new ArrayCollection(
             array_map(fn(ArticleTranslationDto $t) => $this->mapTranslation($t), $translations)
         );
