@@ -9,6 +9,7 @@ class CloudBlogArticleDto
     public function __construct(
         public Uuid $id,
         public int $shortId,
+        public string $cover,
         /** @var ArticleTranslationDto[] $translations */
         public array $translations,
     )

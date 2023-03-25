@@ -38,6 +38,7 @@ class NewArticleActionTest extends AbstractFunctionalTest
                         'metaDescription' => 'metaDescription1',
                     ],
                 ],
+                'cover' => 'https://example.com/cover.jpg',
                 'images' => [],
             ],
         ]);
@@ -54,6 +55,7 @@ class NewArticleActionTest extends AbstractFunctionalTest
             ]);
 
         $this->assertNotEmpty($articleInDb);
+        $this->assertSame('https://example.com/cover.jpg', $articleInDb['cover']);
 
         $translationsInDb = $this
             ->getConnection()
@@ -71,6 +73,8 @@ class NewArticleActionTest extends AbstractFunctionalTest
         $this->assertSame('slug', $enTranslation['slug']);
         $this->assertSame('metaKeywords', $enTranslation['meta_keywords']);
         $this->assertSame('metaDescription', $enTranslation['meta_description']);
+        $this->assertSame('metaDescription', $enTranslation['meta_description']);
+
 
         $this->assertSame('Title1', $frTranslation['title']);
         $this->assertSame('Content1', $frTranslation['content']);

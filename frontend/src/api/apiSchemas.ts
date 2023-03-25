@@ -318,6 +318,7 @@ export type FindAllArticlesResponse = {
 };
 
 export type NewArticleRequest = {
+  cover: string;
   translations: ArticleTranslationDto[];
   images: string[];
 };
@@ -332,6 +333,7 @@ export type ArticleResponse = {
 };
 
 export type EditArticleRequest = {
+  cover: string;
   translations: ArticleTranslationDto[];
   images: string[];
 };
@@ -420,6 +422,7 @@ export type CloudAttachmentDto = {
 export type CloudBlogArticleDto = {
   id: Uuid;
   shortId: number;
+  cover: string;
   translations: ArticleTranslationDto[];
 };
 

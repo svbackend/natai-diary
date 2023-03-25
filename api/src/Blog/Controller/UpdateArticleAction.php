@@ -61,7 +61,7 @@ class UpdateArticleAction extends BaseAction
             $this->em->remove($translation);
         }
 
-        $article->update($req->translations);
+        $article->update($req->translations, $req->cover);
 
         $this->em->persist($article);
         $this->em->flush();

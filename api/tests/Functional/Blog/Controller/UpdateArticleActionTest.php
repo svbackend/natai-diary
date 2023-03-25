@@ -42,6 +42,7 @@ class UpdateArticleActionTest extends AbstractFunctionalTest
                     ],
                 ],
                 'images' => [],
+                'cover' => 'https://example.com/cover.jpg',
             ],
         ]);
 
@@ -54,6 +55,7 @@ class UpdateArticleActionTest extends AbstractFunctionalTest
             ]);
 
         $this->assertNotEmpty($articleInDb);
+        $this->assertSame('https://example.com/cover.jpg', $articleInDb['cover']);
 
         $translationsInDb = $this
             ->getConnection()

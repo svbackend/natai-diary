@@ -48,6 +48,8 @@ class BlogArticleRepository extends ServiceEntityRepository
         $articlesQuery = $this->createQueryBuilder('a')
             ->leftJoin('a.translations', 'at', 'WITH')
             ->addSelect('at')
+            ->where('a.status = :status')
+            ->setParameter('status', BlogArticle::STATUS_PUBLISHED)
             ->orderBy('a.createdAt', 'DESC')
             ->getQuery();
 
@@ -57,6 +59,7 @@ class BlogArticleRepository extends ServiceEntityRepository
         return array_map(fn($article) => new CloudBlogArticleDto(
             id: $article['id'],
             shortId: $article['shortId'],
+            cover: $article['cover'],
             translations: array_map(fn($translation) => new ArticleTranslationDto(
                 locale: $translation['locale'],
                 title: $translation['title'],
@@ -100,6 +103,7 @@ class BlogArticleRepository extends ServiceEntityRepository
         return new CloudBlogArticleDto(
             id: $article['id'],
             shortId: $article['shortId'],
+            cover: $article['cover'],
             translations: array_map(fn($translation) => new ArticleTranslationDto(
                 locale: $translation['locale'],
                 title: $translation['title'],

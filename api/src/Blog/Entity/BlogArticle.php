@@ -15,6 +15,9 @@ use Symfony\Component\Uid\UuidV4;
 #[ORM\Entity]
 class BlogArticle
 {
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_PUBLISHED = 'published';
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     private UuidV4 $id;
@@ -30,6 +33,12 @@ class BlogArticle
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: BlogArticleImage::class)]
     private Collection $images;
 
+    #[ORM\Column(type: 'string')]
+    private string $status = self::STATUS_DRAFT;
+
+    #[ORM\Column(type: 'string')]
+    private string $cover;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
@@ -42,7 +51,8 @@ class BlogArticle
     public function __construct(
         UuidV4 $id,
         int $shortId,
-        array $translations
+        array $translations,
+        string $cover
     )
     {
         $this->id = $id;
@@ -51,6 +61,7 @@ class BlogArticle
             array_map(fn(ArticleTranslationDto $t) => $this->mapTranslation($t), $translations)
         );
         $this->images = new ArrayCollection();
+        $this->cover = $cover;
         $this->createdAt = $this->updatedAt = new \DateTimeImmutable();
     }
 
@@ -82,11 +93,18 @@ class BlogArticle
     /**
      * @param ArticleTranslationDto[] $translations
      */
-    public function update(array $translations): void
+    public function update(array $translations, string $cover): void
     {
         $this->translations = new ArrayCollection(
             array_map(fn(ArticleTranslationDto $t) => $this->mapTranslation($t), $translations)
         );
+        $this->cover = $cover;
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function publish(): void
+    {
+        $this->status = self::STATUS_PUBLISHED;
         $this->updatedAt = new \DateTimeImmutable();
     }
 }

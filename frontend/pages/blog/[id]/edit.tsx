@@ -1,17 +1,19 @@
-import {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
-import MainLayout from "../../src/modules/common/components/mainLayout";
-import {fetchPostArticles} from "../../src/api/apiComponents";
-import {AlertApiError} from "../../src/modules/common/components/alert";
-import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
+import {fetchGetArticlesById, fetchPutArticlesById} from "../../../src/api/apiComponents";
+import {CloudBlogArticleDto} from "../../../src/api/apiSchemas";
+import {AlertApiError} from "../../../src/modules/common/components/alert";
+import MainLayout from "../../../src/modules/common/components/mainLayout";
+import NarrowWrapper from "../../../src/modules/common/components/NarrowWrapper";
 
-function CreateArticle() {
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
-    const [slug, setSlug] = useState("");
-    const [metaKeywords, setMetaKeywords] = useState("");
-    const [metaDescription, setMetaDescription] = useState("");
-    const [cover, setCover] = useState("");
+function UpdateArticle(props: { article: CloudBlogArticleDto }) {
+    const trans = props.article.translations[0];
+
+    const [title, setTitle] = useState(trans.title);
+    const [content, setContent] = useState(trans.content);
+    const [slug, setSlug] = useState(trans.slug);
+    const [metaKeywords, setMetaKeywords] = useState(trans.metaKeywords);
+    const [metaDescription, setMetaDescription] = useState(trans.metaDescription);
     const [err, setErr] = useState(null);
 
     const router = useRouter();
@@ -27,7 +29,10 @@ function CreateArticle() {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
-        fetchPostArticles({
+        fetchPutArticlesById({
+            pathParams: {
+                id: props.article.id,
+            },
             body: {
                 translations: [
                     {
@@ -43,7 +48,7 @@ function CreateArticle() {
             }
         })
             .then((res) => {
-                router.push(`/article/${res.articleShortId}/${slug}`);
+                router.push(`/article/${props.article.shortId}/${slug}`);
             })
             .catch(e => {
                 setErr(e);
@@ -52,7 +57,7 @@ function CreateArticle() {
 
     return (
         <div className={"w-full my-2"}>
-            <h3 className={"text-3xl"}>New Article</h3>
+            <h3 className={"text-3xl"}>Edit Article</h3>
 
             {err && (
                 <AlertApiError error={err}/>
@@ -130,11 +135,35 @@ function CreateArticle() {
     );
 }
 
-export default function CreateArticlePage() {
+export default function UpdateArticlePage() {
+    const router = useRouter();
+
+    const {id} = router.query;
+
+    const articleResponse = fetchGetArticlesById({
+        pathParams: {id: id as string},
+    })
+
+    const [article, setArticle] = useState<CloudBlogArticleDto | null>(null)
+
+    useEffect(() => {
+        if (id) {
+            articleResponse
+                .then(res => {
+                    setArticle(res.article)
+                })
+                .catch(e => {
+                    console.error(e)
+                })
+        }
+    }, [id])
+
     return (
         <MainLayout>
             <NarrowWrapper>
-                <CreateArticle/>
+                {article && (
+                    <UpdateArticle article={article}/>
+                )}
             </NarrowWrapper>
         </MainLayout>
     )

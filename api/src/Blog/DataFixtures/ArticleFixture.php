@@ -30,7 +30,10 @@ class ArticleFixture extends Fixture
             id: UuidV4::fromString(self::ARTICLE_ID),
             shortId: self::ARTICLE_SHORT_ID,
             translations: $translations,
+            cover: 'https://picsum.photos/300/200',
         );
+
+        $article->publish();
 
         $manager->persist($article);
 

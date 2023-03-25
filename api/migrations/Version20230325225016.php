@@ -7,12 +7,13 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20230325172346 extends AbstractMigration
+final class Version20230325225016 extends AbstractMigration
 {
+
     public function up(Schema $schema): void
     {
         $this->addSql('CREATE SEQUENCE blog_article_translation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE blog_article (id UUID NOT NULL, short_id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE blog_article (id UUID NOT NULL, short_id INT NOT NULL, status VARCHAR(255) NOT NULL, cover VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_EECCB3E5F8496E51 ON blog_article (short_id)');
         $this->addSql('COMMENT ON COLUMN blog_article.id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN blog_article.created_at IS \'(DC2Type:datetime_immutable)\'');

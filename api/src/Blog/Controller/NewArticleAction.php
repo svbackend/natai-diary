@@ -56,6 +56,7 @@ class NewArticleAction extends BaseAction
             id: $newArticleId,
             shortId: $shortId,
             translations: $req->translations,
+            cover: $req->cover,
         );
 
         /*** @var BlogArticleImage[] $images */

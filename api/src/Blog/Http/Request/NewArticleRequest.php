@@ -9,10 +9,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class NewArticleRequest implements HttpInputInterface
 {
     public function __construct(
+        public string $cover,
         /** @var ArticleTranslationDto[] $translations */
-        public array $translations = [],
+        public array $translations,
         /** @var string[] $images */
-        public array $images = [],
+        public array $images,
     )
     {
     }
@@ -34,6 +35,7 @@ class NewArticleRequest implements HttpInputInterface
                 new Assert\NotBlank(),
                 new Assert\Uuid()
             ]),
+            'cover' => new Assert\Required([new Assert\NotBlank(), new Assert\Url()]),
         ]);
     }
 }
