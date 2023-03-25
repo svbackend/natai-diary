@@ -1270,6 +1270,63 @@ export const usePostArticles = (
   );
 };
 
+export type GetArticlesByIdPathParams = {
+  id: string;
+};
+
+export type GetArticlesByIdError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Schemas.NotFoundErrorRef;
+}>;
+
+export type GetArticlesByIdVariables = {
+  pathParams: GetArticlesByIdPathParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchGetArticlesById = (
+  variables: GetArticlesByIdVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.ArticleResponse,
+    GetArticlesByIdError,
+    undefined,
+    {},
+    {},
+    GetArticlesByIdPathParams
+  >({ url: "/api/v1/articles/{id}", method: "get", ...variables, signal });
+
+export const useGetArticlesById = <TData = Schemas.ArticleResponse>(
+  variables: GetArticlesByIdVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ArticleResponse,
+      GetArticlesByIdError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.ArticleResponse,
+    GetArticlesByIdError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/articles/{id}",
+      operationId: "getArticlesById",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetArticlesById({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type PutArticlesByIdPathParams = {
   id: string;
 };
@@ -1364,4 +1421,9 @@ export type QueryOperation =
       path: "/api/v1/articles";
       operationId: "getArticles";
       variables: GetArticlesVariables;
+    }
+  | {
+      path: "/api/v1/articles/{id}";
+      operationId: "getArticlesById";
+      variables: GetArticlesByIdVariables;
     };

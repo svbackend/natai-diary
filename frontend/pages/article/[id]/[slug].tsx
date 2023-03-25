@@ -1,14 +1,49 @@
-import {CloudBlogArticleDto} from "../../../src/api/apiSchemas";
+import {ArticleResponse, CloudBlogArticleDto} from "../../../src/api/apiSchemas";
 import MainLayout from "../../../src/modules/common/components/mainLayout";
 import {NotFound} from "../../../src/modules/common/components/NotFound";
-import {fetchGetArticles} from "../../../src/api/apiComponents";
+import {fetchGetArticlesById} from "../../../src/api/apiComponents";
+import NarrowWrapper from "../../../src/modules/common/components/NarrowWrapper";
 
 
-export function getServerSideProps(context) {
+export async function getServerSideProps(context: any) {
     const {slug, id} = context.query;
+
+    let articleResponse: ArticleResponse
+    try {
+        articleResponse = await fetchGetArticlesById({
+            pathParams: {id: id},
+        })
+    } catch (e) {
+        return {
+            notFound: true,
+        }
+    }
+
+    const t = articleResponse.article.translations.find(a => a.locale === "en")
+
+    if (!t) {
+        return {
+            notFound: true,
+        }
+    }
+
+    if (t.slug !== slug) {
+        return {
+            redirect: {
+                destination: `/article/${id}/${t.slug}`,
+                permanent: true,
+            },
+        }
+    }
+
+    return {
+        props: {
+            article: articleResponse.article,
+        }
+    }
 }
 
-export default function ArticleViewPage(props: {article: CloudBlogArticleDto}) {
+export default function ArticleViewPage(props: { article: CloudBlogArticleDto }) {
 
     const translation = props.article
         .translations
@@ -22,13 +57,15 @@ export default function ArticleViewPage(props: {article: CloudBlogArticleDto}) {
 
     return (
         <MainLayout>
-            <div className="prose dark:prose-invert">
-                <h1>
-                    {translation.title}
-                </h1>
+            <NarrowWrapper>
+                <div className="prose dark:prose-invert">
+                    <h1>
+                        {translation.title}
+                    </h1>
 
-                <div dangerouslySetInnerHTML={innerHtml}></div>
-            </div>
+                    <div dangerouslySetInnerHTML={innerHtml}></div>
+                </div>
+            </NarrowWrapper>
         </MainLayout>
     )
 }

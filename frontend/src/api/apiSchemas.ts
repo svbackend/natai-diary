@@ -327,6 +327,10 @@ export type NewArticleResponse = {
   articleShortId: number;
 };
 
+export type ArticleResponse = {
+  article: CloudBlogArticleDto;
+};
+
 export type EditArticleRequest = {
   translations: ArticleTranslationDto[];
   images: string[];

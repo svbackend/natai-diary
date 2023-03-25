@@ -48,8 +48,6 @@ class BlogArticleRepository extends ServiceEntityRepository
         $articlesQuery = $this->createQueryBuilder('a')
             ->leftJoin('a.translations', 'at', 'WITH')
             ->addSelect('at')
-            ->leftJoin('a.images', 'ai', 'WITH')
-            ->addSelect('ai')
             ->orderBy('a.createdAt', 'DESC')
             ->getQuery();
 
@@ -78,5 +76,38 @@ class BlogArticleRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         return (int)$shortId + 1;
+    }
+
+    public function findArticleByShortId(int $shortId): ?CloudBlogArticleDto
+    {
+        $articleQuery = $this->createQueryBuilder('a')
+            ->leftJoin('a.translations', 'at', 'WITH')
+            ->addSelect('at')
+            ->where('a.shortId = :shortId')
+            ->setParameter('shortId', $shortId)
+            ->getQuery();
+
+        $articleQuery->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);
+
+        $result = $articleQuery->getArrayResult();
+
+        if (empty($result)) {
+            return null;
+        }
+
+        $article = $result[0];
+
+        return new CloudBlogArticleDto(
+            id: $article['id'],
+            shortId: $article['shortId'],
+            translations: array_map(fn($translation) => new ArticleTranslationDto(
+                locale: $translation['locale'],
+                title: $translation['title'],
+                content: $translation['content'],
+                slug: $translation['slug'],
+                metaKeywords: $translation['metaKeywords'],
+                metaDescription: $translation['metaDescription'],
+            ), $article['translations']),
+        );
     }
 }

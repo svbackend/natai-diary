@@ -11,6 +11,7 @@ use Symfony\Component\Uid\UuidV4;
 class ArticleFixture extends Fixture
 {
     public const ARTICLE_ID = '0c9b4bb9-0b4a-4b27-b2ca-8d885afcc65c';
+    public const ARTICLE_SHORT_ID = 1;
 
     public function load(ObjectManager $manager): void
     {
@@ -27,7 +28,7 @@ class ArticleFixture extends Fixture
 
         $article = new BlogArticle(
             id: UuidV4::fromString(self::ARTICLE_ID),
-            shortId: 1,
+            shortId: self::ARTICLE_SHORT_ID,
             translations: $translations,
         );
 
