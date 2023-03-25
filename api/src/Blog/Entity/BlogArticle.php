@@ -2,6 +2,8 @@
 
 namespace App\Blog\Entity;
 
+use App\Blog\DTO\ArticleTranslationDto;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
@@ -18,7 +20,7 @@ class BlogArticle
     private UuidV4 $id;
 
     /** @var $translations Collection<BlogArticleTranslation> */
-    #[ORM\OneToMany(mappedBy: 'article', targetEntity: BlogArticleTranslation::class)]
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: BlogArticleTranslation::class, cascade: ['persist', 'remove'])]
     private Collection $translations;
 
     /** @var $images Collection<BlogArticleImage> */
@@ -32,19 +34,32 @@ class BlogArticle
     private \DateTimeImmutable $updatedAt;
 
     /**
-     * @param Collection<BlogArticleTranslation> $translations
-     * @param Collection<BlogArticleImage> $images
+     * @param ArticleTranslationDto[] $translations
      */
     public function __construct(
         UuidV4 $id,
-        Collection $translations,
-        Collection $images,
+        array $translations
     )
     {
         $this->id = $id;
-        $this->translations = $translations;
-        $this->images = $images;
+        $this->translations = new ArrayCollection(
+            array_map(fn(ArticleTranslationDto $t) => $this->mapTranslation($t), $translations)
+        );
+        $this->images = new ArrayCollection();
         $this->createdAt = $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    private function mapTranslation(ArticleTranslationDto $translation): BlogArticleTranslation
+    {
+        return new BlogArticleTranslation(
+            article: $this,
+            locale: $translation->locale,
+            slug: $translation->slug,
+            title: $translation->title,
+            content: $translation->content,
+            metaKeywords: $translation->metaKeywords,
+            metaDescription: $translation->metaDescription,
+        );
     }
 
     /** @returns Collection<BlogArticleTranslation> */
@@ -59,10 +74,15 @@ class BlogArticle
         return $this->images;
     }
 
-    public function update(Collection $translations, Collection $images): void
+    /**
+     * @param ArticleTranslationDto[] $translations
+     */
+    public function update(array $translations): void
     {
-        $this->translations = $translations;
-        $this->images = $images;
+        $this->translations->clear();
+        $this->translations = new ArrayCollection(
+            array_map(fn(ArticleTranslationDto $t) => $this->mapTranslation($t), $translations)
+        );
         $this->updatedAt = new \DateTimeImmutable();
     }
 }

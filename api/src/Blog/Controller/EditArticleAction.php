@@ -10,6 +10,7 @@ use App\Blog\Entity\BlogArticleTranslation;
 use App\Blog\Http\Request\EditArticleRequest;
 use App\Blog\Http\Request\NewArticleRequest;
 use App\Blog\Http\Response\NewArticleResponse;
+use App\Blog\Service\ArticleImageAttacherService;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
 use App\Common\Http\Response\HttpOutputInterface;
@@ -31,14 +32,14 @@ class EditArticleAction extends BaseAction
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private UploadedAttachmentRepository $attachments,
+        private ArticleImageAttacherService $imageAttacherService,
     )
     {
     }
 
     /**
      * @OA\RequestBody(@Model(type=EditArticleRequest::class))
-     * @OA\Response(response=201, description="success", @Model(type=NewArticleResponse::class))
+     * @OA\Response(response=201, description="success")
      * @OA\Response(response=400,  description="validation error", @Model(type=ValidationErrorResponseRef::class))
      * @OA\Response(response=401,  description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
      * @OA\Response(response=404,  description="not found", @Model(type=NotFoundErrorRef::class)
@@ -59,51 +60,9 @@ class EditArticleAction extends BaseAction
             throw $this->createNotFoundException();
         }
 
-        foreach ($article->getTranslations() as $t) {
-            $this->em->remove($t);
-        }
+        $this->imageAttacherService->attachImagesToArticle($user, $article, $req->images);
 
-        foreach ($article->getImages() as $img) {
-            $this->em->remove($img);
-        }
-
-        /** @var BlogArticleTranslation[] $translations */
-        $translations = [];
-        foreach ($req->translations as $translation) {
-            $t = new BlogArticleTranslation(
-                article: $article,
-                locale: $translation->locale,
-                slug: $translation->slug,
-                title: $translation->title,
-                content: $translation->content,
-                metaKeywords: $translation->metaKeywords,
-                metaDescription: $translation->metaDescription,
-            );
-
-            $this->em->persist($t);
-
-            $translations[] = $t;
-        }
-
-        /*** @var BlogArticleImage[] $images */
-        $images = [];
-        $attachedImages = $this->attachments->findBy(['id' => $req->images]);
-        foreach ($attachedImages as $image) {
-            $img = new BlogArticleImage(
-                id: Uuid::v4(),
-                article: $article,
-                attachment: $image
-            );
-
-            $this->em->persist($img);
-
-            $images[] = $img;
-        }
-
-        $article->update(
-            translations: new ArrayCollection($translations),
-            images: new ArrayCollection($images),
-        );
+        $article->update($req->translations);
 
         $this->em->persist($article);
         $this->em->flush();

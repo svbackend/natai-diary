@@ -9,6 +9,7 @@ use App\Blog\Entity\BlogArticleImage;
 use App\Blog\Entity\BlogArticleTranslation;
 use App\Blog\Http\Request\NewArticleRequest;
 use App\Blog\Http\Response\NewArticleResponse;
+use App\Blog\Service\ArticleImageAttacherService;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
 use App\Common\OpenApi\Ref\ValidationErrorResponseRef;
@@ -28,7 +29,7 @@ class NewArticleAction extends BaseAction
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private UploadedAttachmentRepository $attachments
+        private ArticleImageAttacherService $imageAttacherService,
     )
     {
     }
@@ -49,49 +50,23 @@ class NewArticleAction extends BaseAction
         $this->denyAccessUnlessGranted('ROLE_BLOG_EDITOR');
 
         $newArticleId = Uuid::v4();
-        $articleRef = $this->em->getReference(BlogArticle::class, $newArticleId);
-
-        /** @var BlogArticleTranslation[] $translations */
-        $translations = [];
-        foreach ($req->translations as $translation) {
-            $t = new BlogArticleTranslation(
-                article: $articleRef,
-                locale: $translation->locale,
-                slug: $translation->slug,
-                title: $translation->title,
-                content: $translation->content,
-                metaKeywords: $translation->metaKeywords,
-                metaDescription: $translation->metaDescription,
-            );
-
-            $this->em->persist($t);
-
-            $translations[] = $t;
-        }
-
-        /*** @var BlogArticleImage[] $images */
-        $images = [];
-        $attachedImages = $this->attachments->findBy(['id' => $req->images]);
-        foreach ($attachedImages as $image) {
-            $img = new BlogArticleImage(
-                id: Uuid::v4(),
-                article: $articleRef,
-                attachment: $image
-            );
-
-            $this->em->persist($img);
-
-            $images[] = $img;
-        }
 
         $article = new BlogArticle(
             id: $newArticleId,
-            translations: new ArrayCollection($translations),
-            images: new ArrayCollection($images),
+            translations: $req->translations,
+        );
+
+        /*** @var BlogArticleImage[] $images */
+        $images = $this->imageAttacherService->attachImagesToArticle(
+            user: $user,
+            article: $article,
+            attachmentsIds: $req->images,
         );
 
         $this->em->persist($article);
         $this->em->flush();
+
+        // do we need to send event that article was created or images uploaded?
 
         return new NewArticleResponse(
             articleId: $newArticleId,
