@@ -8,7 +8,8 @@ class CloudBlogArticleDto
 {
     public function __construct(
         public Uuid $id,
-        /** @var ArticleTranslationDto $translations */
+        public int $shortId,
+        /** @var ArticleTranslationDto[] $translations */
         public array $translations,
     )
     {

@@ -34,8 +34,15 @@ tunnel-frontend:
 frontend-schema:
 	cd frontend && npx openapi-codegen gen api
 
-dev-db:
+dev-db-migration:
+	cd api && bin/console make:migration
+
+dev-db-schema:
 	cd api && bin/console doctrine:schema:update --force -n
+
+dev-db-reset:
+	cd api && bin/console messenger:stop-workers
+	cd api && bin/console doctrine:database:drop --force -n && bin/console doctrine:database:create -n && bin/console d:m:m -n
 
 prod-build:
 	./build.sh

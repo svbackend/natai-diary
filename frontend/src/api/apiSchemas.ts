@@ -313,6 +313,25 @@ export type UpdateNoteRequest = {
   attachments: string[];
 };
 
+export type FindAllArticlesResponse = {
+  articles: CloudBlogArticleDto[];
+};
+
+export type NewArticleRequest = {
+  translations: ArticleTranslationDto[];
+  images: string[];
+};
+
+export type NewArticleResponse = {
+  articleId: UuidV4;
+  articleShortId: number;
+};
+
+export type EditArticleRequest = {
+  translations: ArticleTranslationDto[];
+  images: string[];
+};
+
 /**
  * @format uuid
  */
@@ -392,6 +411,21 @@ export type CloudAttachmentDto = {
   originalFilename: string;
   metadata: CloudAttachmentMetadataDto;
   previews: CloudAttachmentPreviewDto[];
+};
+
+export type CloudBlogArticleDto = {
+  id: Uuid;
+  shortId: number;
+  translations: ArticleTranslationDto[];
+};
+
+export type ArticleTranslationDto = {
+  locale: string;
+  title: string;
+  content: string;
+  slug: string;
+  metaKeywords: string;
+  metaDescription: string;
 };
 
 /**

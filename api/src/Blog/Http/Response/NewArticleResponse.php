@@ -10,6 +10,7 @@ class NewArticleResponse implements HttpOutputInterface
 {
     public function __construct(
         public UuidV4 $articleId,
+        public int $articleShortId,
     )
     {
     }

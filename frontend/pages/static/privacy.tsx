@@ -2,10 +2,11 @@ import MainLayout from "../../src/modules/common/components/mainLayout";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {fetchGetStatic} from "../../src/api/apiComponents";
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
     let privacy: string
 
     try {
+        console.log("Fetching privacy policy")
         const response = await fetchGetStatic({})
         privacy = response.privacy
     } catch (e) {

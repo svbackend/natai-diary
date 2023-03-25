@@ -7,6 +7,7 @@ use App\Blog\Entity\BlogArticle;
 use App\Blog\Entity\BlogArticleImage;
 use App\Blog\Http\Request\NewArticleRequest;
 use App\Blog\Http\Response\NewArticleResponse;
+use App\Blog\Repository\BlogArticleRepository;
 use App\Blog\Security\BlogSecurity;
 use App\Blog\Service\ArticleImageAttacherService;
 use App\Common\Controller\BaseAction;
@@ -28,6 +29,7 @@ class NewArticleAction extends BaseAction
     public function __construct(
         private EntityManagerInterface $em,
         private ArticleImageAttacherService $imageAttacherService,
+        private BlogArticleRepository $articles,
     )
     {
     }
@@ -48,9 +50,11 @@ class NewArticleAction extends BaseAction
         $this->denyAccessUnlessGranted(BlogSecurity::ROLE_BLOG_EDITOR);
 
         $newArticleId = Uuid::v4();
+        $shortId = $this->articles->getNewShortId();
 
         $article = new BlogArticle(
             id: $newArticleId,
+            shortId: $shortId,
             translations: $req->translations,
         );
 
@@ -68,6 +72,7 @@ class NewArticleAction extends BaseAction
 
         return new NewArticleResponse(
             articleId: $newArticleId,
+            articleShortId: $shortId,
         );
     }
 }

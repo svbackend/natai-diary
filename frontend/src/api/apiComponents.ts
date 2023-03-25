@@ -1172,6 +1172,163 @@ export const usePutNotesByIdV2 = (
   );
 };
 
+export type GetArticlesError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetArticlesVariables = ApiContext["fetcherOptions"];
+
+export const fetchGetArticles = (
+  variables: GetArticlesVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.FindAllArticlesResponse,
+    GetArticlesError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/articles", method: "get", ...variables, signal });
+
+export const useGetArticles = <TData = Schemas.FindAllArticlesResponse>(
+  variables: GetArticlesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.FindAllArticlesResponse,
+      GetArticlesError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.FindAllArticlesResponse,
+    GetArticlesError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/articles",
+      operationId: "getArticles",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetArticles({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
+export type PostArticlesError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+>;
+
+export type PostArticlesVariables = {
+  body: Schemas.NewArticleRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostArticles = (
+  variables: PostArticlesVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.NewArticleResponse,
+    PostArticlesError,
+    Schemas.NewArticleRequest,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/articles", method: "post", ...variables, signal });
+
+export const usePostArticles = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.NewArticleResponse,
+      PostArticlesError,
+      PostArticlesVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    Schemas.NewArticleResponse,
+    PostArticlesError,
+    PostArticlesVariables
+  >(
+    (variables: PostArticlesVariables) =>
+      fetchPostArticles({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
+export type PutArticlesByIdPathParams = {
+  id: string;
+};
+
+export type PutArticlesByIdError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 404;
+      payload: Schemas.NotFoundErrorRef;
+    }
+>;
+
+export type PutArticlesByIdVariables = {
+  body: Schemas.EditArticleRequest;
+  pathParams: PutArticlesByIdPathParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPutArticlesById = (
+  variables: PutArticlesByIdVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    undefined,
+    PutArticlesByIdError,
+    Schemas.EditArticleRequest,
+    {},
+    {},
+    PutArticlesByIdPathParams
+  >({ url: "/api/v1/articles/{id}", method: "put", ...variables, signal });
+
+export const usePutArticlesById = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PutArticlesByIdError,
+      PutArticlesByIdVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    undefined,
+    PutArticlesByIdError,
+    PutArticlesByIdVariables
+  >(
+    (variables: PutArticlesByIdVariables) =>
+      fetchPutArticlesById({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type QueryOperation =
   | {
       path: "/api/v1/static";
@@ -1202,4 +1359,9 @@ export type QueryOperation =
       path: "/api/v1/notes/{id}/attachments";
       operationId: "getNotesByIdAttachments";
       variables: GetNotesByIdAttachmentsVariables;
+    }
+  | {
+      path: "/api/v1/articles";
+      operationId: "getArticles";
+      variables: GetArticlesVariables;
     };

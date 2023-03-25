@@ -2,15 +2,12 @@
 
 namespace App\Blog\Repository;
 
-use App\Auth\Entity\User;
 use App\Blog\DTO\ArticleTranslationDto;
 use App\Blog\DTO\CloudBlogArticleDto;
 use App\Blog\Entity\BlogArticle;
-use App\Diary\DTO\CloudTagDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Uid\UuidV4;
 
 /**
  * @extends ServiceEntityRepository<BlogArticle>
@@ -61,6 +58,7 @@ class BlogArticleRepository extends ServiceEntityRepository
 
         return array_map(fn($article) => new CloudBlogArticleDto(
             id: $article['id'],
+            shortId: $article['shortId'],
             translations: array_map(fn($translation) => new ArticleTranslationDto(
                 locale: $translation['locale'],
                 title: $translation['title'],
@@ -70,5 +68,15 @@ class BlogArticleRepository extends ServiceEntityRepository
                 metaDescription: $translation['metaDescription'],
             ), $article['translations']),
         ), $articles);
+    }
+
+    public function getNewShortId(): int
+    {
+        $shortId = $this->createQueryBuilder('a')
+            ->select('MAX(a.shortId)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (int)$shortId + 1;
     }
 }

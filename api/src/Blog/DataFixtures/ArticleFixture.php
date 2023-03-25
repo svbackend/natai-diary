@@ -27,6 +27,7 @@ class ArticleFixture extends Fixture
 
         $article = new BlogArticle(
             id: UuidV4::fromString(self::ARTICLE_ID),
+            shortId: 1,
             translations: $translations,
         );
 

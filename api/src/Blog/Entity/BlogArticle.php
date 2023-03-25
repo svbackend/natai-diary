@@ -19,6 +19,9 @@ class BlogArticle
     #[ORM\Column(type: 'uuid', unique: true)]
     private UuidV4 $id;
 
+    #[ORM\Column(type: 'integer', nullable: false, unique: true)]
+    private int $shortId;
+
     /** @var $translations Collection<BlogArticleTranslation> */
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: BlogArticleTranslation::class, cascade: ['persist', 'remove'])]
     private Collection $translations;
@@ -38,10 +41,12 @@ class BlogArticle
      */
     public function __construct(
         UuidV4 $id,
+        int $shortId,
         array $translations
     )
     {
         $this->id = $id;
+        $this->shortId = $shortId;
         $this->translations = new ArrayCollection(
             array_map(fn(ArticleTranslationDto $t) => $this->mapTranslation($t), $translations)
         );
