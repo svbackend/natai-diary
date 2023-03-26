@@ -3,7 +3,11 @@ import React from "react";
 import {useTranslations} from "use-intl";
 import MainLayout from "../../src/modules/common/components/mainLayout";
 import {AtSymbolIcon, FingerPrintIcon, TrashIcon} from "@heroicons/react/24/solid";
+import {defaultMetadata} from "../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function SettingsPage() {
     const t = useTranslations("SettingsPage")
 

@@ -7,6 +7,7 @@ import {TextField} from "../../src/modules/common/components/textField";
 import {FormSubmitButton} from "../../src/modules/common/components/FormSubmitButton";
 import {validationService} from "../../src/modules/common/services/validationService";
 import {AlertApiError, AlertSuccess} from "../../src/modules/common/components/alert";
+import {defaultMetadata} from "../../src/utils/seo";
 
 type FormValues = {
     oldPassword: string,
@@ -14,7 +15,9 @@ type FormValues = {
     newPasswordConfirmation: string
 }
 
-
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function ChangePasswordPage() {
     const router = useRouter();
     const t = useTranslations("ChangePasswordPage");

@@ -12,12 +12,16 @@ import {useAppStateManager} from "../src/modules/common/state";
 import {AlreadyLoggedIn} from "../src/modules/auth/components/alreadyLoggedIn";
 import {EaseOutTransition} from "../src/modules/common/components/EaseOutTransition";
 import Link from "next/link";
+import {defaultMetadata} from "../src/utils/seo";
 
 type FormValues = {
     email: string
     password: string
 }
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function LoginPage() {
     const router = useRouter()
     const t = useTranslations("LoginPage");

@@ -9,6 +9,11 @@ import {AlertApiError, AlertSuccess} from "../../../src/modules/common/component
 import {TextField} from "../../../src/modules/common/components/textField";
 import {FormSubmitButton} from "../../../src/modules/common/components/FormSubmitButton";
 import {useForm} from "react-hook-form";
+import {defaultMetadata} from "../../../src/utils/seo";
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 type FormValues = {
     password: string

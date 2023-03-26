@@ -3,7 +3,11 @@ import MainLayout from "../../../src/modules/common/components/mainLayout";
 import {NotFound} from "../../../src/modules/common/components/NotFound";
 import {fetchGetArticlesById} from "../../../src/api/apiComponents";
 import NarrowWrapper from "../../../src/modules/common/components/NarrowWrapper";
+import {defaultMetadata} from "../../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 export async function getServerSideProps(context: any) {
     const {slug, id} = context.query;

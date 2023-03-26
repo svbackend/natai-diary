@@ -4,7 +4,11 @@ import MainLayout from "../../src/modules/common/components/mainLayout";
 import {fetchPostArticles} from "../../src/api/apiComponents";
 import {AlertApiError} from "../../src/modules/common/components/alert";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
+import {defaultMetadata} from "../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 function CreateArticle() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -40,6 +44,7 @@ function CreateArticle() {
                     }
                 ],
                 images: [],
+                cover: cover,
             }
         })
             .then((res) => {
@@ -114,6 +119,17 @@ function CreateArticle() {
                                 onChange={(e) => setMetaDescription(e.target.value)}>
 
                             </textarea>
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label htmlFor="cover">Cover</label>
+                            <input
+                                className={"bg-dark rounded-md px-2 py-1"}
+                                type="text"
+                                id="cover"
+                                value={cover}
+                                onChange={(e) => setCover(e.target.value)}
+                            />
                         </div>
 
                     </div>

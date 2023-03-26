@@ -9,11 +9,15 @@ import {EaseOutTransition} from "../../src/modules/common/components/EaseOutTran
 import {AlertApiError, AlertSuccess} from "../../src/modules/common/components/alert";
 import {FormSubmitButton} from "../../src/modules/common/components/FormSubmitButton";
 import {TextField} from "../../src/modules/common/components/textField";
+import {defaultMetadata} from "../../src/utils/seo";
 
 type FormValues = {
     newEmail: string
 }
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function ChangeEmailPage() {
     const t = useTranslations("ChangeEmailPage");
     const router = useRouter()

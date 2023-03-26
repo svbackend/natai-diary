@@ -13,7 +13,11 @@ import 'photoswipe/dist/photoswipe.css'
 import {diaryStateAtom} from "../../../src/modules/diary/atoms/diaryStateAtom";
 import {useAtom} from "jotai";
 import DiaryLayout from "../../../src/modules/diary/components/DiaryLayout";
+import {defaultMetadata} from "../../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function ViewNotePage() {
     const [diaryState] = useAtom(diaryStateAtom)
     const [attachments, setAttachments] = useState<CloudAttachmentDto[]>([])

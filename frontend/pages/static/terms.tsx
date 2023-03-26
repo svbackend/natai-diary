@@ -1,7 +1,11 @@
 import MainLayout from "../../src/modules/common/components/mainLayout";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import {fetchGetStatic} from "../../src/api/apiComponents";
+import {defaultMetadata} from "../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export async function getServerSideProps() {
     let terms: string
 

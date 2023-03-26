@@ -5,6 +5,11 @@ import {CloudBlogArticleDto} from "../../../src/api/apiSchemas";
 import {AlertApiError} from "../../../src/modules/common/components/alert";
 import MainLayout from "../../../src/modules/common/components/mainLayout";
 import NarrowWrapper from "../../../src/modules/common/components/NarrowWrapper";
+import {defaultMetadata} from "../../../src/utils/seo";
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 function UpdateArticle(props: { article: CloudBlogArticleDto }) {
     const trans = props.article.translations[0];
@@ -14,6 +19,7 @@ function UpdateArticle(props: { article: CloudBlogArticleDto }) {
     const [slug, setSlug] = useState(trans.slug);
     const [metaKeywords, setMetaKeywords] = useState(trans.metaKeywords);
     const [metaDescription, setMetaDescription] = useState(trans.metaDescription);
+    const [cover, setCover] = useState(props.article.cover);
     const [err, setErr] = useState(null);
 
     const router = useRouter();
@@ -45,6 +51,7 @@ function UpdateArticle(props: { article: CloudBlogArticleDto }) {
                     }
                 ],
                 images: [],
+                cover: cover,
             }
         })
             .then((res) => {
@@ -119,6 +126,17 @@ function UpdateArticle(props: { article: CloudBlogArticleDto }) {
                                 onChange={(e) => setMetaDescription(e.target.value)}>
 
                             </textarea>
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label htmlFor="cover">Cover</label>
+                            <input
+                                className={"bg-dark rounded-md px-2 py-1"}
+                                type="text"
+                                id="cover"
+                                value={cover}
+                                onChange={(e) => setCover(e.target.value)}
+                            />
                         </div>
 
                     </div>

@@ -6,7 +6,11 @@ import {noteMapperService} from "../../../src/modules/diary/services/noteMapperS
 import {CloudNoteDto} from "../../../src/api/apiSchemas";
 import {DiaryNotesList} from "../../../src/modules/diary/components/DiaryNotesList";
 import MainLayout from "../../../src/modules/common/components/mainLayout";
+import {defaultMetadata} from "../../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function ViewNotesByDatePage() {
     const {data: notes, isLoading, isError, error} = useGetNotes({})
     const router = useRouter()

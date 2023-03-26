@@ -11,7 +11,12 @@ import womanMeditationIcon from "../../../public/assets/therapy/woman-meditation
 import {diaryStateAtom} from "../../../src/modules/diary/atoms/diaryStateAtom";
 import PrimaryButton from "../../../src/modules/common/components/PrimaryButton";
 import {useRouter} from "next/router";
+import {defaultMetadata} from "../../../src/utils/seo";
 
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function TherapyIndexPage({user}: { user: UserDto }) {
     const t = useTranslations("TherapyIndexPage");
     const [isSuggestionModalOpen, setIsSuggestionModalOpen] = useAtom(diarySuggestionModalAtom)

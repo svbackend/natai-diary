@@ -10,6 +10,11 @@ import {EaseOutTransition} from "../../src/modules/common/components/EaseOutTran
 import {AlertApiError, AlertError, AlertSuccess} from "../../src/modules/common/components/alert";
 import {TextField} from "../../src/modules/common/components/textField";
 import {FormSubmitButton} from "../../src/modules/common/components/FormSubmitButton";
+import {defaultMetadata} from "../../src/utils/seo";
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 type FormValues = {
     email: string

@@ -6,6 +6,11 @@ import AppSpinner from "../../../src/modules/common/components/AppSpinner";
 import {EaseOutTransition} from "../../../src/modules/common/components/EaseOutTransition";
 import {AlertApiError} from "../../../src/modules/common/components/alert";
 import MainLayout from "../../../src/modules/common/components/mainLayout";
+import {defaultMetadata} from "../../../src/utils/seo";
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 function VerifyNewEmailComponent() {
     const router = useRouter();

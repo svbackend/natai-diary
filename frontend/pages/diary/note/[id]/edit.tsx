@@ -36,6 +36,11 @@ import {diaryStateAtom} from "../../../../src/modules/diary/atoms/diaryStateAtom
 import SelectWeatherButton from "../../../../src/modules/diary/components/SelectWeatherButton";
 import DiarySelectWeatherModal from "../../../../src/modules/diary/components/DiarySelectWeatherModal";
 import {useDiaryStateManager} from "../../../../src/modules/diary/diaryStateManager";
+import {defaultMetadata} from "../../../../src/utils/seo";
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 export default function DiaryEditNote() {
     const {user, isLoading} = useAppStateManager()

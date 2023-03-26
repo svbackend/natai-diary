@@ -2,7 +2,11 @@ import React from "react";
 import Link from "next/link";
 import {fetchPostFeedback} from "../../src/api/apiComponents";
 import DiaryLayout from "../../src/modules/diary/components/DiaryLayout";
+import {defaultMetadata} from "../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 export default function FeedbackPage() {
     const [isLoading, setIsLoading] = React.useState(false);
 

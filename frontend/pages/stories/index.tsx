@@ -4,6 +4,11 @@ import {CloudBlogArticleDto, FindAllArticlesResponse} from "../../src/api/apiSch
 import {fetchGetArticles} from "../../src/api/apiComponents";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import Link from "next/link";
+import {defaultMetadata} from "../../src/utils/seo";
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 export async function getServerSideProps() {
     let articlesResponse: FindAllArticlesResponse

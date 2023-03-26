@@ -1,4 +1,9 @@
 import MainLayout from "../src/modules/common/components/mainLayout";
+import {defaultMetadata} from "../src/utils/seo";
+
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 
 export default function Profile() {
     return (

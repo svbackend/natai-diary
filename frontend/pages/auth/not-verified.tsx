@@ -6,7 +6,11 @@ import MainLayout from "../../src/modules/common/components/mainLayout";
 import {fetchGetMe} from "../../src/api/apiComponents";
 import {useAppStateManager} from "../../src/modules/common/state";
 import PrimaryButton from "../../src/modules/common/components/PrimaryButton";
+import {defaultMetadata} from "../../src/utils/seo";
 
+export async function generateMetadata(props: { params: any, searchParams: any }) {
+    return defaultMetadata;
+}
 function EmailNotYetVerifiedError() {
     const t = useTranslations("NotVerifiedPage");
 

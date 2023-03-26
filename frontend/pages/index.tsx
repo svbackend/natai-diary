@@ -40,8 +40,13 @@ import {Pagination} from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import {classNames} from "../src/utils/classNames";
+import {defaultMetadata} from "../src/utils/seo";
 
 const care01 = require("../public/assets/img/care01.svg");
+
+export async function generateMetadata(props: any) {
+    return defaultMetadata;
+}
 
 export default function HomeLandingPage() {
     const [isDarkMode] = useAtom(darkModeAtom)
