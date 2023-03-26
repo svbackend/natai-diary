@@ -6,9 +6,10 @@ import {NextIntlProvider} from "next-intl";
 import {getTranslations} from "../i18n/i18n";
 import {useRouter} from "next/router";
 import {AppContext, useGlobalState} from "../src/modules/common/state";
-import { Provider } from 'jotai'
+import {Provider} from 'jotai'
 import Body from "../src/modules/common/components/Body";
 import Script from "next/script";
+import GlobalSeo from "../src/modules/common/components/GlobalSeo";
 
 const queryClient = new QueryClient()
 
@@ -20,8 +21,8 @@ export default function App({Component, pageProps}: AppProps) {
 
     return (
         <NextIntlProvider messages={messages} locale={locale}>
-            <Script data-domain={"natai.app"} src="https://plausible.ukraidian.com/js/plausible.js" />
-
+            <Script data-domain={"natai.app"} src="https://plausible.ukraidian.com/js/plausible.js"/>
+            <GlobalSeo/>
             <QueryClientProvider client={queryClient}>
                 <AppContext.Provider value={globalAppState}>
                     <Provider>

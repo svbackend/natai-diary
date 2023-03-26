@@ -2,6 +2,7 @@ import {Metadata} from "next";
 import {OpenGraph} from "next/dist/lib/metadata/types/opengraph-types";
 import {Twitter} from "next/dist/lib/metadata/types/twitter-types";
 
+export const defaultTitle = 'AI Journaling App';
 export const defaultKeywords = "diary, journal, ai journal, ai therapy, mental health, ai psychologist, mental well-being, self-care, self-help, self-improvement, self-grow, reflection, mindfulness, gratitude, self-awareness, self-discovery, self-acceptance, self-love, self-esteem, self-confidence";
 export const defaultDescription = "Natai Diary is an AI journaling app that provides you with mental health advice based on your notes, as well as helps to keep track of your daily life";
 
@@ -73,6 +74,8 @@ export const defaultMetadata: Metadata = {
     },
 
 }
+
+
 
 export function getMetadata(metadata: Metadata): Metadata {
     return {

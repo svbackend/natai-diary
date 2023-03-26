@@ -4,6 +4,7 @@ import {NotFound} from "../../../src/modules/common/components/NotFound";
 import {fetchGetArticlesById} from "../../../src/api/apiComponents";
 import NarrowWrapper from "../../../src/modules/common/components/NarrowWrapper";
 import {defaultMetadata} from "../../../src/utils/seo";
+import {Seo} from "../../../src/modules/common/components/GlobalSeo";
 
 export async function generateMetadata(props: { params: any, searchParams: any }) {
     return defaultMetadata;
@@ -61,6 +62,12 @@ export default function ArticleViewPage(props: { article: CloudBlogArticleDto })
 
     return (
         <MainLayout>
+            <Seo
+                title={translation.title}
+                description={translation.metaDescription}
+                keywords={translation.metaKeywords}
+                img={props.article.cover}
+            />
             <NarrowWrapper>
                 <div className="prose dark:prose-invert">
                     <h1>

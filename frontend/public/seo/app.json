@@ -1,0 +1,19 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AI Enhanced Journaling App | Natai Diary",
+  "applicationCategory": "Productivity",
+  "applicationSubCategory": "Journaling, Diary",
+  "featureList": "AI Therapy, Cloud sync, Mood tracker",
+  "screenshot": "https://natai.app/seo/natai-diary-sq.png",
+  "softwareVersion": "1.5.3",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5",
+    "ratingCount": "5"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0"
+  }
+}

@@ -38,7 +38,12 @@ export class HttpClient {
             headers,
         }
 
-        return fetch(`${BASE_API_URL}${url}`, finalInit);
+        const finalUrl = `${BASE_API_URL}${url}`
+
+        console.log("TRYING TO FETCH", finalUrl)
+        console.log("WITH INIT", finalInit)
+
+        return fetch(finalUrl, finalInit);
     }
 
     private headers() {
