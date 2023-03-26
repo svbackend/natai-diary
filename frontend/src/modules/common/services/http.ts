@@ -2,6 +2,7 @@ import {getCookie} from "../../../utils/cookie";
 import {storageService} from "./storageService";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_INTERNAL_API_URL = process.env.NEXT_PUBLIC_INTERNAL_API_URL;
 const DEFAULT_LOCALE = "en";
 
 export class HttpClient {
@@ -38,7 +39,9 @@ export class HttpClient {
             headers,
         }
 
-        const finalUrl = `${BASE_API_URL}${url}`
+        const baseUrl = typeof window === 'undefined' ? BASE_INTERNAL_API_URL : BASE_API_URL;
+
+        const finalUrl = `${baseUrl}${url}`
 
         console.log("TRYING TO FETCH", finalUrl)
         console.log("WITH INIT", finalInit)
