@@ -39,12 +39,13 @@ export class HttpClient {
             headers,
         }
 
+        /**
+         * If we are on the server, we need to use the internal API URL (url of the docker container)
+         * Because otherwise it will TIMEOUT, don't know why, looks like a docker/network issue
+         */
         const baseUrl = typeof window === 'undefined' ? BASE_INTERNAL_API_URL : BASE_API_URL;
 
         const finalUrl = `${baseUrl}${url}`
-
-        console.log("TRYING TO FETCH", finalUrl)
-        console.log("WITH INIT", finalInit)
 
         return fetch(finalUrl, finalInit);
     }

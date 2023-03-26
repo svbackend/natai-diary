@@ -45,13 +45,10 @@ export async function apiFetch<TData,
             },
         }
     );
-    console.log("PROMISE RESOLVED", response)
     if (!response.ok) {
-        console.log("RESPONSE NOT OK")
         let error: ErrorWrapper<TError>;
         try {
             const payload = await response.json();
-            console.log("ERROR_PAYLOAD 1", payload)
             error = {
                 status: response.status,
                 payload: payload,
@@ -66,16 +63,12 @@ export async function apiFetch<TData,
             };
         }
 
-        console.log("ERROR_THROWN", error)
-
         throw error;
     }
 
     if (response.headers.get("content-type")?.includes("json")) {
-        console.log("RESPONSE IS JSON, AWAIT")
         return await response.json();
     } else {
-        console.log("RESPONSE IS NOT JSON, AWAIT BLOB")
         // if it is not a json response, assume it is a blob and cast it to TData
         return (await response.blob()) as unknown as TData;
     }
