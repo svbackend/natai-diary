@@ -21,7 +21,7 @@ use Symfony\Component\Uid\Uuid;
  */
 class NoteAnalyzer
 {
-    private const MIN_CHARS = 500; // at least 500 chars
+    private const MIN_CHARS = 150; // at least 150 chars
     private const TOKEN_LIMIT = 2048;
     private const TEXT_LIMIT = self::TOKEN_LIMIT * 4;
     private const CONTENT_LIMIT = self::TEXT_LIMIT - 255;
