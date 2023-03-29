@@ -102,7 +102,7 @@ export default function RegistrationPage() {
                     )}
 
                     <form onSubmit={handleSubmit(registerUser)}>
-                        <TextField label={t("Name")} name={"name"} type={"text"} placeholder={"John Doe"}
+                        <TextField label={t("FirstName")} name={"name"} type={"text"} placeholder={"John"}
                                    errors={errors}
                                    register={register("name", {required: true})}/>
                         <TextField label={t("Email")} name={"email"} type={"email"} placeholder={"john.doe@example.com"}

@@ -43,7 +43,7 @@
     "ForgotPassword": "Forgot password?",
     "ResetPassword": "Reset password",
     "Register": "Register",
-    "Name": "Name",
+    "FirstName": "First Name",
     "Email": "Email",
     "Password": "Password",
     "AlreadyHaveAnAccount": "Already have an account?",
@@ -130,7 +130,9 @@
   "NotLoggedIn": {
     "title": "You are not logged in",
     "description": "Please login to view this page",
-    "loginButton": "Login"
+    "loginButton": "Login",
+    "dontHaveAnAccount": "Don't have an account?",
+    "registerButton": "Create new account"
   },
   "DiaryPage": {
     "addNewNote": "Add new note",
