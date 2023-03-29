@@ -86,7 +86,7 @@ function HeroSection({isDarkMode}: { isDarkMode: boolean }) {
                 className="xl:container mx-auto flex flex-col lg:flex-row lg:justify-between px-4 lg:px-2 pt-7 lg:pt-24 pb-16 lg:pb-44">
 
                 <div className="flex flex-col z-[2]">
-                    <h1 className="text-3xl lg:text-4xl font-bold text-dark dark:text-light leading-10 text-center lg:text-left">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-dark dark:text-light leading-10 text-center lg:text-left">
                         <span className="whitespace-nowrap">Mental-health focused</span><br/>
                         <span className="whitespace-nowrap">journaling & diary app</span>
                     </h1>
@@ -154,6 +154,11 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
 
     const items = [
         {
+            title: "Receive personalized tips",
+            description: "Improve your mental health with AI-powered tips based on your mood and activities",
+            img: receiveIcon,
+        },
+        {
             title: "Remember your daily life",
             description: "Stay more grounded, self-aware, mindful of what you do and how you feel.",
             img: pencilIcon,
@@ -168,11 +173,11 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
             description: "Natai is not just an application, it's a community of people who share their struggles and victories.",
             img: coupleIcon,
         },
-        {
-            title: "It's free and open-source",
-            description: "Built with ❤️ by a small team of developers, designers and mental health advocates.",
-            img: receiveIcon,
-        }
+        // {
+        //     title: "It's free and open-source",
+        //     description: "Built with ❤️ by a small team of developers, designers and mental health advocates.",
+        //     img: receiveIcon,
+        // }
     ]
 
     const girlImg = isDarkMode ? whySectionGirlDarkImg : whySectionGirlImg
@@ -200,11 +205,11 @@ function WhyYouShouldTryNataiDiarySection({isDarkMode}: { isDarkMode: boolean })
 
     return (
         <section className={"why-section bg-whitish dark:bg-nav-bg py-12 lg:py-20 px-4 lg:px-0"}>
-            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
+            <h2 className={"text-2xl sm:text-3xl text-dark dark:text-light font-bold text-center"}>
                 Why you should try&nbsp;
                 <span className={"text-brand whitespace-nowrap relative z-10"}>
                     Natai Diary?
-                    <span className="brand-highlight w-[200px]"></span>
+                    <span className="brand-highlight w-full"></span>
                 </span>
             </h2>
 
@@ -386,10 +391,10 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
         <section className={"relative features-section overflow-hidden"}>
             <div className="bg-section-features"></div>
 
-            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center mt-4 lg:mt-8 mb-8 lg:mb-0"}>
+            <h2 className={"text-2xl sm:text-3xl text-dark dark:text-light font-bold text-center mt-4 lg:mt-8 mb-8 lg:mb-0"}>
                 <span className={"text-brand whitespace-nowrap relative z-10"}>
                     Natai Diary
-                    <span className="brand-highlight w-[184px]"></span>
+                    <span className="brand-highlight w-full"></span>
                 </span>
                 <span className={"relative z-[2]"}>
                     &nbsp;as your friend!
@@ -464,11 +469,11 @@ function UseAnywhereSection({isDarkMode}: { isDarkMode: boolean }) {
 
     return (
         <section className={"why-section bg-whitish dark:bg-nav-bg py-12 lg:py-20 px-4 lg:px-0"}>
-            <h2 className={"text-3xl text-dark dark:text-light font-bold text-center"}>
+            <h2 className={"text-2xl sm:text-3xl text-dark dark:text-light font-bold text-center"}>
                 <span>Use&nbsp;</span>
                 <span className={"text-brand whitespace-nowrap relative z-10"}>
                     Natai Diary
-                    <span className="brand-highlight w-[184px]"></span>
+                    <span className="brand-highlight w-full"></span>
                 </span>
                 <span className={"break-normal"}>&nbsp;anytime & anywhere!</span>
             </h2>

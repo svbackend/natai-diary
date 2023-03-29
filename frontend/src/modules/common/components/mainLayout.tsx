@@ -33,10 +33,10 @@ const Header = ({router}: { router: NextRouter }) => {
         <Disclosure as="nav">
             {({open}) => (
                 <>
-                    <header className="p-4 bg-white dark:bg-nav-bg text-gray-100 shadow">
+                    <header className="px-2 py-4 bg-white dark:bg-nav-bg text-gray-100 shadow">
                         {/* mobile navbar */}
                         <div className="xl:container mx-auto flex justify-between h-10 lg:hidden">
-                            <div className="flex gap-2">
+                            <div className="flex gap-1">
                                 <Disclosure.Button aria-label={"Open Navigation Menu"} className={"p-2"}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                          stroke="currentColor"
@@ -59,7 +59,7 @@ const Header = ({router}: { router: NextRouter }) => {
                                 {!user && (
                                     <Link
                                         href={"/registration" + from}
-                                        className="self-center mr-2 px-8 py-2 lg:px-8 lg:py-3 rounded-3xl font-semibold bg-brand hover:bg-opacity-20">
+                                        className="self-center whitespace-nowrap mr-2 px-7 py-2 lg:px-8 lg:py-3 rounded-3xl font-semibold bg-brand hover:bg-opacity-20">
                                         Sign up
                                     </Link>
                                 )}

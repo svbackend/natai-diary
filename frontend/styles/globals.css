@@ -176,8 +176,9 @@
     background-color: #E4F4FF;
     height: 24px;
     z-index: -1;
-    left: -5px;
-    top: 20px;
+    left: -3%;
+    top: 1rem;
+    width: 106%;
 }
 
 .dark .brand-highlight {
