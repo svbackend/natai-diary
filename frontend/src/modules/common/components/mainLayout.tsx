@@ -36,8 +36,8 @@ const Header = ({router}: { router: NextRouter }) => {
                     <header className="p-4 bg-white dark:bg-nav-bg text-gray-100 shadow">
                         {/* mobile navbar */}
                         <div className="xl:container mx-auto flex justify-between h-10 lg:hidden">
-                            <div className="flex">
-                                <Disclosure.Button>
+                            <div className="flex gap-2">
+                                <Disclosure.Button aria-label={"Open Navigation Menu"} className={"p-2"}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                          stroke="currentColor"
                                          className="w-6 h-6 navbar-menu-btn dark:text-white">
@@ -46,7 +46,7 @@ const Header = ({router}: { router: NextRouter }) => {
                                     </svg>
                                 </Disclosure.Button>
                                 <Link href={logoHref} aria-label="Back to homepage"
-                                      className="flex items-center p-2">
+                                      className="flex items-center">
 
                                     <ProjectLogo/>
 
