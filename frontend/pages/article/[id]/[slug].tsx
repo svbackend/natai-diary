@@ -5,6 +5,8 @@ import {fetchGetArticlesById} from "../../../src/api/apiComponents";
 import NarrowWrapper from "../../../src/modules/common/components/NarrowWrapper";
 import {defaultMetadata} from "../../../src/utils/seo";
 import {Seo} from "../../../src/modules/common/components/GlobalSeo";
+import Image from "next/image";
+import {BookOpenIcon} from "@heroicons/react/24/outline";
 
 export async function generateMetadata(props: { params: any, searchParams: any }) {
     return defaultMetadata;
@@ -74,9 +76,34 @@ export default function ArticleViewPage(props: { article: CloudBlogArticleDto })
                         {translation.title}
                     </h1>
 
+                    <Image
+                        src={props.article.cover}
+                        alt={`Cover image for article ${translation.title}`}
+                        width={1280}
+                        height={720}
+                        className={"rounded-lg"}
+                    />
+
                     <div dangerouslySetInnerHTML={innerHtml}></div>
                 </div>
+
+                <ArticleBottomBanner2/>
             </NarrowWrapper>
         </MainLayout>
     )
+}
+
+function ArticleBottomBanner2() {
+    return (
+        <div className="bg-copyright p-4 rounded-lg flex items-center">
+            <BookOpenIcon className="w-8 h-8 text-gray-400 mr-4"/>
+            <div>
+                <p className="text-gray-400 mb-2">Considering to start journaling?</p>
+                <a href="https://play.google.com/store/apps/details?id=com.svbackend.natai"
+                   className="text-brand hover:text-blue-400 font-bold">
+                    Try Natai Diary
+                </a>
+            </div>
+        </div>
+    );
 }

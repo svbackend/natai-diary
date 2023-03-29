@@ -8,7 +8,7 @@ const nextConfig = {
     },
     output: 'standalone',
     images: {
-        domains: ["natai.app", "natai.s3.ca-central-1.amazonaws.com"],
+        domains: ["natai.app", "natai.s3.ca-central-1.amazonaws.com", "natai-public.s3.ca-central-1.amazonaws.com"],
     }
 }
 

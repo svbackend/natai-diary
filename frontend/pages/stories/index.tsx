@@ -5,6 +5,7 @@ import {fetchGetArticles} from "../../src/api/apiComponents";
 import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
 import Link from "next/link";
 import {defaultMetadata} from "../../src/utils/seo";
+import Image from "next/image";
 
 export async function generateMetadata(props: { params: any, searchParams: any }) {
     return defaultMetadata;
@@ -59,14 +60,33 @@ function ArticlePreviewCard(props: { article: CloudBlogArticleDto }) {
 
     const shortDescription = trans.content.substring(0, 100) + "..."
 
+    const preview = shortDescription.replace(/(<([^>]+)>)/gi, "");
+    const url = `/article/${props.article.shortId}/${trans.slug}`
+
     return (
-        <div className={"bg-light3 text-dark dark:bg-menu dark:text-light p-6 rounded-md"}>
-            <h2 className={"text-2xl font-bold mb-4"}>
-                <Link href={`/article/${props.article.shortId}/${trans.slug}`}>
-                    {trans.title}
-                </Link>
-            </h2>
-            <p className={"text-darkish dark:text-light2"}>{shortDescription}</p>
+        <div className={"bg-light3 text-dark dark:bg-menu dark:text-light rounded-md"}>
+            <Image
+                className={"rounded-t-md w-full"}
+                src={props.article.cover}
+                alt={`Article cover for ${trans.title}`}
+                width={1280}
+                height={720}
+            />
+
+            <div className="p-4">
+                <h2 className={"text-2xl font-bold mt-2 mb-4"}>
+                    <Link href={url}>
+                        {trans.title}
+                    </Link>
+                </h2>
+                <p className={"text-darkish dark:text-light2"}>
+                    {preview}
+                    <Link href={url} className={"text-brand-alt ml-2"}>
+                        Read more
+                    </Link>
+                </p>
+
+            </div>
         </div>
     )
 }
