@@ -1,7 +1,7 @@
 import {useTranslations} from "use-intl";
 import Link from "next/link";
 import React from "react";
-import writingImg from "../../../../public/assets/img/writing.jpg";
+import womanMeditationImg from "../../../../public/assets/therapy/woman-meditation.svg";
 import Image from "next/image";
 
 export function NotLoggedIn() {
@@ -10,7 +10,7 @@ export function NotLoggedIn() {
     return (
         <div className="flex flex-col gap-2 items-center justify-center my-4">
 
-            <Image src={writingImg} alt="writing" className="rounded-md w-1/2 max-w-sm"/>
+            <Image src={womanMeditationImg} alt="Not logged in image (woman meditating)" className="rounded-md w-1/2 max-w-sm"/>
             <h1 className="text-2xl font-bold">{t("title")}</h1>
 
             <div className="my-2 flex flex-col gap-2">
