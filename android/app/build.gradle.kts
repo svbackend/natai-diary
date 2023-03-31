@@ -10,8 +10,8 @@ android {
         applicationId = "com.svbackend.natai"
         minSdk = 29
         targetSdk = 33
-        versionCode = 10
-        versionName = "1.5.4"
+        versionCode = 11
+        versionName = "1.5.5"
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
         //buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
 
