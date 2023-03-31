@@ -5,6 +5,7 @@ namespace App\Tests\Functional\Diary\Controller;
 use App\Auth\DataFixtures\UserFixture;
 use App\Auth\Entity\User;
 use App\Diary\Controller\FindAllNotesAction;
+use App\Diary\DataFixtures\NoteFixture;
 use App\Tests\AbstractFunctionalTest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -34,6 +35,6 @@ class FindAllNotesActionTest extends AbstractFunctionalTest
         $data = $response->toArray(false);
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertCount(2, $data['notes']);
+        $this->assertCount(NoteFixture::NOTES_COUNT, $data['notes']);
     }
 }

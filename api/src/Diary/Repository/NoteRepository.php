@@ -63,21 +63,7 @@ class NoteRepository extends ServiceEntityRepository
         $notesQuery->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);
         $notes = $notesQuery->getArrayResult();
 
-        return array_map(fn($note) => new CloudNoteDto(
-            id: $note['id'],
-            userId: $note['user_id'],
-            title: $note['title'],
-            content: $note['content'],
-            actualDate: $note['actualDate'],
-            createdAt: $note['createdAt'],
-            updatedAt: $note['updatedAt'],
-            deletedAt: $note['deletedAt'],
-            tags: array_map(fn($tag) => new CloudTagDto(
-                tag: $tag['tag'],
-                score: $tag['score'],
-            ), $note['tags']),
-            attachments: array_map(fn($attachment) => $attachment['id'], $note['attachments'])
-        ), $notes);
+        return array_map(fn($note) => $this->mapNoteToDto($note), $notes);
     }
 
     public function findByIdAndUser(string $id, User $user): ?Note
@@ -105,5 +91,51 @@ class NoteRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /** @return CloudNoteDto[] */
+    public function findNotesForSync(UuidV4 $userId, ?\DateTimeInterface $since): array
+    {
+        $notesQb = $this->createQueryBuilder('n')
+            ->leftJoin('n.tags', 'nt', 'WITH')
+            ->addSelect('nt')
+            ->leftJoin('n.attachments', 'na', 'WITH')
+            ->addSelect('na')
+            ->where('n.user = :userId')
+            ->setParameter('userId', $userId);
+
+        if ($since) {
+            $notesQb->andWhere('n.updatedAt > :since')
+                ->setParameter('since', $since);
+        }
+
+        $notesQuery = $notesQb->getQuery();
+        $notesQuery->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);
+        $notes = $notesQuery->getArrayResult();
+
+        return array_map(fn($note) => $this->mapNoteToDto($note), $notes);
+    }
+
+    /**
+     * Make sure to set the HINT_INCLUDE_META_COLUMNS hint on the query
+     * Tags and attachments must be joined
+     */
+    private function mapNoteToDto(array $note): CloudNoteDto
+    {
+        return new CloudNoteDto(
+            id: $note['id'],
+            userId: $note['user_id'],
+            title: $note['title'],
+            content: $note['content'],
+            actualDate: $note['actualDate'],
+            createdAt: $note['createdAt'],
+            updatedAt: $note['updatedAt'],
+            deletedAt: $note['deletedAt'],
+            tags: array_map(fn($tag) => new CloudTagDto(
+                tag: $tag['tag'],
+                score: $tag['score'],
+            ), $note['tags']),
+            attachments: array_map(fn($attachment) => $attachment['id'], $note['attachments'])
+        );
     }
 }
