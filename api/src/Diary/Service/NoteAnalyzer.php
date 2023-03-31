@@ -95,7 +95,7 @@ class NoteAnalyzer
             throw $e;
         }
 
-        $output = $response->choices[0]['message']['content'];
+        $output = $response->getFirstMessage();
 
         $suggestionId = Uuid::v4();
         $suggestion = new Suggestion(

@@ -35,4 +35,9 @@ class ChatGptResponse
     )
     {
     }
+
+    public function getFirstMessage()
+    {
+        return $this->choices[0]['message']['content'];
+    }
 }
