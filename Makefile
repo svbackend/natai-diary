@@ -14,7 +14,7 @@ api-up:
 	cd api && symfony serve
 
 api-queue-up:
-	cd api && bin/console messenger:consume async
+	cd api && bin/console messenger:consume async --limit=1
 
 frontend-up:
 	cd frontend && npm run dev

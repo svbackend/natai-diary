@@ -12,6 +12,7 @@ use App\Diary\Exception\NoNotesToAnalyzeException;
 use App\Diary\Exception\NotEnoughTextToAnalyzeException;
 use App\Diary\Queue\NoteSuggestionCreatedEvent;
 use App\Diary\Repository\NoteRepository;
+use App\Diary\Repository\SuggestionContextRepository;
 use App\Diary\Repository\SuggestionPromptRepository;
 use App\Diary\Repository\SuggestionRepository;
 use Psr\Log\LoggerInterface;
@@ -35,6 +36,7 @@ class NoteAnalyzer
         private NoteRepository $notes,
         private SuggestionRepository $suggestions,
         private SuggestionPromptRepository $prompts,
+        private SuggestionContextRepository $contextRepository,
         private UserRepository $users,
         private DiaryMailer $diaryMailer,
         private MessageBusInterface $bus,
@@ -57,6 +59,11 @@ class NoteAnalyzer
 
         $lastSuggestion = $this->suggestions->findLastByUser($userId);
         $lastSuggestionDate = $lastSuggestion?->getCreatedAt();
+        $lastSuggestionContext = null;
+
+        if ($lastSuggestion !== null) {
+            $lastSuggestionContext = $this->contextRepository->findBySuggestion($lastSuggestion);
+        }
 
         $notes = $this->notes->findNotesByUserSinceDate($userId, $lastSuggestionDate);
 
@@ -85,20 +92,24 @@ class NoteAnalyzer
 
         try {
             $response = $this->openAiClient->getRecommendationsBasedOnNotes(
-                $userId,
-                $systemPrompt->getSystemPrompt(),
-                $userPrompt
+                userId: $userId,
+                systemPrompt: $systemPrompt->getSystemPrompt(),
+                userPrompt: $userPrompt,
+                context: $lastSuggestionContext?->getContext(),
             );
         } catch (\Throwable $e) {
             $this->logger->error("Failed to get recommendations: " . $e->getMessage(), [
                 'systemPrompt' => $systemPrompt->getSystemPrompt(),
                 'userPrompt' => $userPrompt,
+                'context' => $lastSuggestionContext?->getContext(),
                 'notesIds' => $notesIds,
             ]);
             throw $e;
         }
 
         $output = $response->getFirstMessage();
+
+        $inputWithContext = $userPrompt . self::NEWLINE . $lastSuggestionContext?->getContext();
 
         $suggestionId = Uuid::v4();
         $suggestion = new Suggestion(
@@ -107,7 +118,7 @@ class NoteAnalyzer
             notesIds: $notesIds,
             period: $preparedInput->getPeriod(),
             prompt: $systemPrompt,
-            input: $userPrompt,
+            input: $inputWithContext,
             output: $output,
             usage: $response->usage,
         );

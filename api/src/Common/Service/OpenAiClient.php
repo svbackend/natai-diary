@@ -3,7 +3,6 @@
 namespace App\Common\Service;
 
 use App\Diary\DTO\ChatGptResponse;
-use App\Diary\Entity\SuggestionPrompt;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -17,17 +16,31 @@ class OpenAiClient
     {
     }
 
-    public function getRecommendationsBasedOnNotes(string $userId, string $systemPrompt, string $userPrompt): ChatGptResponse
+    public function getRecommendationsBasedOnNotes(
+        string $userId,
+        string $systemPrompt,
+        string $userPrompt,
+        ?string $context = null,
+    ): ChatGptResponse
     {
+
         $messages = [
             [
                 'role' => 'system',
                 'content' => $systemPrompt,
             ],
-            [
-                'role' => 'user',
-                'content' => $userPrompt,
-            ],
+        ];
+
+        if ($context !== null) {
+            $messages[] = [
+                'role' => 'assistant',
+                'content' => $context,
+            ];
+        }
+
+        $messages[] = [
+            'role' => 'user',
+            'content' => $userPrompt,
         ];
 
         $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
@@ -65,12 +78,19 @@ class OpenAiClient
     }
 
     // summarize last suggestions and generate context for next suggestion
-    public function generateContextForSuggestion(string $prompt): ChatGptResponse
+    public function generateContextForSuggestion(
+        string $patientName,
+        string $therapySessionContent
+    ): ChatGptResponse
     {
         $messages = [
             [
+                'role' => 'system',
+                'content' => "You are an AI-Psychologist, you need to summarize your last therapy session with {$patientName} as concise as possible, use 'I' when talking about AI-Psychologist, focus more on information provided by $patientName than on suggestions given by you"
+            ],
+            [
                 'role' => 'user',
-                'content' => $prompt,
+                'content' => $therapySessionContent,
             ],
         ];
 

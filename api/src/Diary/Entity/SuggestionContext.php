@@ -17,6 +17,9 @@ class SuggestionContext
     private Suggestion $suggestion;
 
     #[ORM\Column(type: 'text')]
+    private string $input;
+
+    #[ORM\Column(type: 'text')]
     private string $context;
 
     #[ORM\Column]
@@ -24,12 +27,14 @@ class SuggestionContext
 
     public function __construct(
         Suggestion $suggestion,
+        string $input,
         string $context,
         array $usage
     )
     {
         $this->id = $suggestion->getId();
         $this->suggestion = $suggestion;
+        $this->input = $input;
         $this->context = $context;
         $this->usage = $usage;
     }

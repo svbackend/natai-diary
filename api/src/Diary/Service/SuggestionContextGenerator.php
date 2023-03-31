@@ -22,13 +22,19 @@ class SuggestionContextGenerator
     {
         $this->logger->debug("Generating context for suggestion {$suggestion->getId()}");
 
-        $prompt = $this->preparePrompt($suggestion);
-        $this->logger->debug("Prompt: $prompt");
+        $suggestionContent = $this->compileSuggestionContent($suggestion);
+        $this->logger->debug("Suggestion content: $suggestionContent");
 
-        $response = $this->openAiClient->generateContextForSuggestion($prompt);
+        $userName = ucwords(strtolower($suggestion->getUser()->getName()));
+
+        $response = $this->openAiClient->generateContextForSuggestion(
+            patientName: $userName,
+            therapySessionContent: $suggestionContent
+        );
 
         $context = new SuggestionContext(
             suggestion: $suggestion,
+            input: $suggestionContent,
             context: $response->getFirstMessage(),
             usage: $response->usage
         );
@@ -36,17 +42,17 @@ class SuggestionContextGenerator
         $this->suggestionContexts->save($context, flush: true);
     }
 
-    private function preparePrompt(Suggestion $suggestion): string
+    private function compileSuggestionContent(Suggestion $suggestion): string
     {
         $userName = ucwords(strtolower($suggestion->getUser()->getName()));
 
-        $therapySession = "$userName: Here's my diary entries, please advice.\n{$suggestion->getInput()}\n\n";
+        $therapySession = "$userName:\n{$suggestion->getInput()}\n\n";
         $therapySession .= "AI-Psychologist: {$suggestion->getOutput()}\n\n";
         if ($suggestion->getFeedbackRating() !== null) {
             $feedback = $suggestion->getFeedbackRating() > 3 ? "Thank you!" : "Not helpful";
             $therapySession .= "$userName: $feedback\n\n";
         }
 
-        return "Summarize the following therapy session between you (AI-Psychologist) and '{$userName}' as concise as possible:\n$therapySession";
+        return $therapySession;
     }
 }

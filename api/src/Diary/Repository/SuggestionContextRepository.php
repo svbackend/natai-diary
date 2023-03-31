@@ -2,6 +2,7 @@
 
 namespace App\Diary\Repository;
 
+use App\Diary\Entity\Suggestion;
 use App\Diary\Entity\SuggestionContext;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -38,5 +39,10 @@ class SuggestionContextRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findBySuggestion(Suggestion $suggestion): ?SuggestionContext
+    {
+        return $this->findOneBy(['suggestion' => $suggestion]);
     }
 }
