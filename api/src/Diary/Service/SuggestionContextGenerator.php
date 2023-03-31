@@ -47,6 +47,6 @@ class SuggestionContextGenerator
             $therapySession .= "$userName: $feedback\n\n";
         }
 
-        return "Summarize the following therapy session between you (AI-Psychologist) and '{$userName}':\n$therapySession";
+        return "Summarize the following therapy session between you (AI-Psychologist) and '{$userName}' as concise as possible:\n$therapySession";
     }
 }

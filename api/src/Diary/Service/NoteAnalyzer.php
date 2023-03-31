@@ -10,10 +10,12 @@ use App\Diary\Entity\NoteTag;
 use App\Diary\Entity\Suggestion;
 use App\Diary\Exception\NoNotesToAnalyzeException;
 use App\Diary\Exception\NotEnoughTextToAnalyzeException;
+use App\Diary\Queue\NoteSuggestionCreatedEvent;
 use App\Diary\Repository\NoteRepository;
 use App\Diary\Repository\SuggestionPromptRepository;
 use App\Diary\Repository\SuggestionRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -35,6 +37,7 @@ class NoteAnalyzer
         private SuggestionPromptRepository $prompts,
         private UserRepository $users,
         private DiaryMailer $diaryMailer,
+        private MessageBusInterface $bus,
         private LoggerInterface $logger
     )
     {
@@ -112,6 +115,8 @@ class NoteAnalyzer
         $this->suggestions->save($suggestion, flush: true);
 
         $this->diaryMailer->sendNotificationAboutNewSuggestion($user, $suggestion);
+
+        $this->bus->dispatch(new NoteSuggestionCreatedEvent($suggestion->getId()->toRfc4122()));
     }
 
     /**

@@ -2,9 +2,7 @@
 
 namespace App\Diary\Queue;
 
-use App\Diary\Repository\NoteRepository;
 use App\Diary\Repository\SuggestionRepository;
-use App\Diary\Service\NoteAnalyzer;
 use App\Diary\Service\SuggestionContextGenerator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -36,7 +34,7 @@ class NoteSuggestionCreatedEventHandler
                 $suggestion
             );
         } catch (\Throwable $e) {
-            $this->logger->error("Error while analyzing notes for user {$note->getUser()->getId()->toRfc4122()}: {$e->getMessage()}");
+            $this->logger->error("Error while generating context for suggestion {$event->suggestionId}: {$e->getMessage()}");
         }
     }
 }
