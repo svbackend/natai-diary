@@ -21,8 +21,23 @@ export default function App({Component, pageProps}: AppProps) {
 
     return (
         <NextIntlProvider messages={messages} locale={locale}>
-            <Script data-domain={"natai.app"} src="https://plausible.ukraidian.com/js/plausible.js"/>
             <GlobalSeo/>
+            <Script data-domain={"natai.app"} src="https://plausible.ukraidian.com/js/plausible.js"/>
+
+            <Script
+                id={"ggl-tag"}
+                async
+                src="https://www.googletagmanager.com/gtag/js?id=AW-438699928"
+                strategy="afterInteractive"/>
+            <Script id={"ggl-script"} strategy="afterInteractive">
+                {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'AW-438699928');
+                `}
+            </Script>
             <QueryClientProvider client={queryClient}>
                 <AppContext.Provider value={globalAppState}>
                     <Provider>
