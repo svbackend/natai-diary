@@ -41,7 +41,7 @@ export function DiaryNotesPreviewByDate({date, notes}: { date: string, notes: Cl
         <>
             <div className="flex flex-row border-b border-sep dark:border-sep-alt overflow-hidden max-w-full">
                 <NotesListDateColumn date={date}/>
-                <div className="flex flex-col p-4 max-w-full overflow-hidden">
+                <div className="flex flex-col p-4 w-full overflow-hidden">
                     {reversedNotes.map((note, idx) => <DiaryNotePreview key={note.id} note={note} isLast={idx === lastIdx}/>)}
                 </div>
             </div>
@@ -58,7 +58,7 @@ export function DiaryNotesViewByDate({date, notes}: { date: string, notes: Cloud
         <>
             <div className="flex flex-row border-b border-sep dark:border-sep-alt overflow-hidden">
                 <NotesListDateColumn date={date}/>
-                <div className="flex flex-col p-4 max-w-full overflow-hidden">
+                <div className="flex flex-col p-4 w-full overflow-hidden">
                     {reversedNotes.map((note, idx) => <DiaryNoteView key={note.id} note={note} isLast={idx === lastIdx}/>)}
                 </div>
             </div>

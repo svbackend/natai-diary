@@ -224,6 +224,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             .edit()
             .remove("api_token")
             .remove("cloud_id")
+            .remove("last_sync_time")
             .apply()
 
         setUserCloudId(null)

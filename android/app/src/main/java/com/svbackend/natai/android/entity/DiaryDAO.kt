@@ -1,5 +1,6 @@
 package com.svbackend.natai.android.entity
 
+import android.util.Log
 import androidx.room.*
 import com.svbackend.natai.android.entity.relation.NoteWithRelations
 import com.svbackend.natai.android.entity.relation.NoteWithTags
@@ -9,6 +10,7 @@ import java.time.LocalDate
 
 @Dao
 abstract class DiaryDAO {
+    val TAG = "DiaryDAO"
     @Query("SELECT * FROM Note WHERE deletedAt IS NULL ORDER BY date(actualDate) DESC")
     abstract fun getNotes(): Flow<List<NoteWithRelations>>
 
@@ -59,5 +61,21 @@ abstract class DiaryDAO {
                 Attachment.create(noteId = localNoteId, dto = dto)
             )
         }
+    }
+
+    @Transaction
+    open fun updateTags(localNoteId: String, tags: List<TagEntityDto>) {
+        deleteTagsByNote(localNoteId)
+        tags.forEach {
+            insertTag(
+                Tag(
+                    noteId = localNoteId,
+                    tag = it.tag,
+                    score = it.score,
+                )
+            )
+        }
+
+        Log.v(TAG, "Updated tags for note $localNoteId")
     }
 }

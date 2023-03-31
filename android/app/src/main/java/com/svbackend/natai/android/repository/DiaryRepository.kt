@@ -55,14 +55,17 @@ class DiaryRepository(
         db.diaryDAO().updateNote(note)
     }
 
+    suspend fun syncLocalNote(localNote: LocalNote) = withContext(Dispatchers.IO) {
+        val note = Note.create(localNote)
+        updateNote(note)
+        updateTags(localNote)
+        updateAttachments(localNote.id, localNote.attachments)
+    }
+
     suspend fun updateNoteAndSync(note: LocalNote) = withContext(Dispatchers.IO) {
         updateNote(Note.create(note))
-
-        deleteTagsByNote(note.id)
-        addTags(note)
-
+        updateTags(note)
         updateAttachments(note.id, note.attachments)
-
         syncNoteWithCloud(note)
     }
 
@@ -84,6 +87,11 @@ class DiaryRepository(
     suspend fun updateAttachments(localNoteId: String, attachments: List<AttachmentEntityDto>) =
         withContext(Dispatchers.IO) {
             db.diaryDAO().updateAttachments(localNoteId, attachments)
+        }
+
+    suspend fun updateTags(note: LocalNote) =
+        withContext(Dispatchers.IO) {
+            db.diaryDAO().updateTags(note.id, note.tags)
         }
 
     private suspend fun addTags(note: LocalNote) {

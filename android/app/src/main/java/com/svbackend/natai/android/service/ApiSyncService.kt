@@ -4,6 +4,7 @@ import android.util.Log
 import com.svbackend.natai.android.entity.AttachmentEntityDto
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.entity.Note
+import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.model.CloudAttachment
 import com.svbackend.natai.android.http.model.CloudNote
@@ -115,18 +116,25 @@ class ApiSyncService(
     private suspend fun updateToLocal(localNote: LocalNote, cloudNote: CloudNote) {
         Log.v(TAG, "=== UPDATE TO LOCAL ===")
 
-        val note = Note.create(localNote)
-        note.sync(cloudNote)
-
         val response = apiClient.getAttachmentsByNote(cloudNote.id)
         val attachments = processAttachments(response.attachments, localNote.attachments)
+
+        val updatedLocalNote = localNote.update(
+            title = cloudNote.title,
+            content = cloudNote.content,
+            actualDate = cloudNote.actualDate,
+            tags = cloudNote.tags.map { TagEntityDto(it.tag, it.score) },
+            attachments = attachments,
+        )
+
+        Log.v(TAG, "=== UPDATE LOCAL NOTE ===")
+        Log.v(TAG, updatedLocalNote.toString())
 
         Log.v(TAG, "=== processAttachments ===")
         Log.v(TAG, attachments.toString())
 
         try {
-            repository.updateNote(note)
-            repository.updateAttachments(note.id, attachments)
+            repository.syncLocalNote(updatedLocalNote)
         } catch (e: Throwable) {
             e.printStackTrace()
         }
