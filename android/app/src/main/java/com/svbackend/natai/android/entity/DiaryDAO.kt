@@ -4,6 +4,7 @@ import androidx.room.*
 import com.svbackend.natai.android.entity.relation.NoteWithRelations
 import com.svbackend.natai.android.entity.relation.NoteWithTags
 import kotlinx.coroutines.flow.Flow
+import java.time.Instant
 import java.time.LocalDate
 
 @Dao

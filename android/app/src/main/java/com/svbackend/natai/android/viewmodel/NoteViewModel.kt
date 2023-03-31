@@ -17,6 +17,8 @@ import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.UserTheme
+import com.svbackend.natai.android.utils.getLastSyncTime
+import com.svbackend.natai.android.utils.updateLastSyncTime
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -131,8 +133,10 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     fun sync() = viewModelScope.launch {
         startSync()
+        val lastSyncTime = prefs.getLastSyncTime()
         try {
-            apiSyncService.syncNotes()
+            apiSyncService.syncNotes(lastSyncTime)
+            prefs.updateLastSyncTime()
         } catch (userError: UserQueryException) {
             logout { }
         } catch (e: Exception) {

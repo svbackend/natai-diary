@@ -12,6 +12,7 @@ import com.svbackend.natai.android.http.exception.*
 import com.svbackend.natai.android.http.request.*
 import com.svbackend.natai.android.http.response.*
 import com.svbackend.natai.android.query.UserQueryException
+import com.svbackend.natai.android.utils.UtcDateTimeFormatter
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -27,10 +28,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InputStream
+import java.time.Instant
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
-const val BASE_URL = "https://natai.app"
-//const val BASE_URL = "https://f226-24-203-8-51.ngrok.io"
+//const val BASE_URL = "https://natai.app"
+const val BASE_URL = "https://4022-24-203-8-51.ngrok.io"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -58,8 +60,13 @@ class ApiClient(
 
     private val s3Client = HttpClient(Android)
 
-    suspend fun getNotesForSync(): NotesResponse {
-        return client.get("/api/v1/notes").body()
+    suspend fun getNotesForSync(updatedSince: Instant): NotesResponse {
+        val response = client.get("/api/v1/sync") {
+            val dt = UtcDateTimeFormatter.backendDateTime.format(updatedSince)
+            parameter("updatedSince", dt)
+        }
+
+        return response.body()
     }
 
     suspend fun addNote(note: LocalNote): NewNoteResponse {

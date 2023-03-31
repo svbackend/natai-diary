@@ -29,6 +29,7 @@ import com.svbackend.natai.android.viewmodel.TherapyViewModel
 @Composable
 fun TherapyScreen(
     vm: TherapyViewModel = viewModel(),
+    onClickCreateAccount: () -> Unit,
 ) {
     Surface(
         modifier = Modifier
@@ -50,7 +51,7 @@ fun TherapyScreen(
                 LoadingState()
             } else {
                 if (vm.suggestions.value.isEmpty()) {
-                    EmptyState()
+                    EmptyState(vm.isUserLoggedIn, onClickCreateAccount)
                 } else {
                     SuggestionsList(vm)
                 }
@@ -128,7 +129,10 @@ fun SuggestionRow(
 }
 
 @Composable
-fun EmptyState() {
+fun EmptyState(
+    isUserLoggedIn: Boolean,
+    onClickCreateAccount: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -152,6 +156,32 @@ fun EmptyState() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            if (!isUserLoggedIn) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "(You need to have an account and be logged in to receive suggestions)",
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .padding(top = 12.dp),
+                        onClick = onClickCreateAccount,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.createAccount),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
         }
     }
 }

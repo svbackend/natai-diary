@@ -9,7 +9,9 @@ import com.svbackend.natai.android.http.model.CloudAttachment
 import com.svbackend.natai.android.http.model.CloudNote
 import com.svbackend.natai.android.http.model.PREVIEW_TYPE_MD
 import com.svbackend.natai.android.repository.DiaryRepository
+import com.svbackend.natai.android.utils.UtcDateTimeFormatter
 import com.svbackend.natai.android.utils.isAfterSecs
+import java.time.Instant
 
 class ApiSyncService(
     private val apiClient: ApiClient,
@@ -21,27 +23,35 @@ class ApiSyncService(
     @Volatile
     private var isRunning = false
 
-    suspend fun syncNotes() {
+    suspend fun syncNotes(lastSyncTime: Instant? = null) {
         if (isRunning) {
             return
         }
 
         isRunning = true
 
-        apiClient.getCurrentUser()
+        val currentUserResponse = apiClient.getCurrentUser()
 
-        val cloudNotesResponse = apiClient.getNotesForSync()
+        val updatedSince = lastSyncTime ?: Instant.ofEpochSecond(0)
+        val cloudNotesResponse = apiClient.getNotesForSync(updatedSince)
 
         val cloudNotes = cloudNotesResponse
             .notes
             .associateBy { it.id }
 
-        val localNotes = repository
+        val allLocalNotes = repository
             .getAllNotesForSync()
 
-        Log.v(TAG, "=== SYNC STARTED ===")
+        val localNotes = allLocalNotes
+            .filter { it.cloudUserId == null || it.cloudUserId == currentUserResponse.user.id.toString() }
 
-        localNotes.forEach {
+        val localNotesUpdated = localNotes
+            .filter { it.updatedAt.isAfterSecs(updatedSince) }
+
+        Log.v(TAG, "=== SYNC STARTED ===")
+        Log.v(TAG, "=== UPDATE SINCE ${UtcDateTimeFormatter.backendDateTime.format(updatedSince)} ===")
+
+        localNotesUpdated.forEach {
             val cloudNote = if (it.cloudId != null) cloudNotes[it.cloudId] else null
 
             Log.v(TAG, "=== LOCAL NOTE ===")
@@ -50,9 +60,9 @@ class ApiSyncService(
             Log.v(TAG, "=== CLOUD NOTE ===")
             Log.v(TAG, cloudNote.toString())
 
-            if (cloudNote == null) {
+            if (it.cloudId == null) {
                 insertToCloud(it)
-            } else if (it.updatedAt.isAfterSecs(cloudNote.updatedAt)) {
+            } else if (cloudNote == null || it.updatedAt.isAfterSecs(cloudNote.updatedAt)) {
                 updateToCloud(it)
             }
         }

@@ -23,6 +23,8 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val suggestions = mutableStateOf<List<CloudSuggestionDto>>(emptyList())
     val selectedSuggestion = mutableStateOf<CloudSuggestionDto?>(null)
 
+    val isUserLoggedIn = prefs.isLoggedIn()
+
     init {
         if (prefs.isLoggedIn()) {
             viewModelScope.launch {

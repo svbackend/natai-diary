@@ -108,7 +108,11 @@ fun Navigation(
         }
 
         composable(route = Route.TherapyRoute.route) {
-            TherapyScreen()
+            TherapyScreen(
+                onClickCreateAccount = {
+                    controller.go(Route.RegistrationRoute.withArgs())
+                },
+            )
         }
 
         composable(route = Route.AnalyticsRoute.route) {

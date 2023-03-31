@@ -32,3 +32,9 @@ object LocalDateTimeFormatter {
         .ofPattern("MMM d yyyy")
         .withZone(ZoneId.systemDefault())
 }
+
+object UtcDateTimeFormatter {
+    val backendDateTime: DateTimeFormatter = DateTimeFormatter
+        .ofPattern("yyyy-MM-dd HH:mm:ss")
+        .withZone(ZoneId.of("UTC"))
+}
