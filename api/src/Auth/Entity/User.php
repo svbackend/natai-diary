@@ -33,6 +33,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private string $name;
 
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $createdAt;
+
     public function __construct(
         UuidV4 $id,
         string $email,
@@ -45,6 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password->getHashedPassword($this);
         $this->roles = ['ROLE_USER'];
         $this->name = $name;
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): UuidV4

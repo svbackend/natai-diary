@@ -32,16 +32,17 @@
                                                                     <td>
                                                                         <table>
                                                                             <tr>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="">Web Interface</a>
+                                                                                <th class="menu-item float-center">
+                                                                                    <a href="{{ app_url }}">Web Interface</a>
                                                                                 </th>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="#">Android
-                                                                                        Application</a></th>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="#">About</a></th>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="#">Contact</a></th>
+                                                                                <th class="menu-item float-center">
+                                                                                    <a href="https://play.google.com/store/apps/details?id=com.svbackend.natai">
+                                                                                        Android Application
+                                                                                    </a>
+                                                                                </th>
+                                                                                <th class="menu-item float-center">
+                                                                                    <a href="{{ app_url }}/static/contacts">Contact</a>
+                                                                                </th>
                                                                             </tr>
                                                                         </table>
                                                                     </td>
@@ -82,7 +83,7 @@
                                                         </table>
                                                         <center data-parsed=""><img
                                                                     src="{{ email.image('@assets_img/email-bg.png') }}"
-                                                                    align="center" class="float-center"></center>
+                                                                    align="center" class="float-center" alt="cover photo"></center>
                                                         <table class="spacer">
                                                             <tbody>
                                                             <tr>
@@ -93,8 +94,10 @@
                                                             </tbody>
                                                         </table>
                                                         <h4>Hello {{ name }}, welcome to {{ app_name }}!</h4>
-                                                        <p>TODO: Text what's the goal of Natai and how it may help you
-                                                            improve your mental health</p>
+
+                                                        <p>Natai Diary is a unique journaling app that comes with
+                                                            AI-powered recommendations based on your notes. Receive
+                                                            mental health support to improve your well-being.</p>
 
                                                         <table class="button expanded">
                                                             <tbody>
@@ -126,8 +129,8 @@
                                                                     <td>
                                                                         <table>
                                                                             <tr>
-                                                                                <th class="menu-item float-center"><a
-                                                                                            href="{{ app_url }}">{{ app_url }}</a>
+                                                                                <th class="menu-item float-center">
+                                                                                    <a href="{{ app_url }}">{{ app_url }}</a>
                                                                                 </th>
                                                                             </tr>
                                                                         </table>

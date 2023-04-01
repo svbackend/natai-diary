@@ -34,7 +34,7 @@ function VerifyEmailComponent() {
             })
                 .then(r => {
                     setTimeout(() => {
-                        router.push("/");
+                        router.push("/diary");
                     }, 3500)
                 })
                 .catch(e => {

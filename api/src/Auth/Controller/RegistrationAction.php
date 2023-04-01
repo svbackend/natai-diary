@@ -2,8 +2,10 @@
 
 namespace App\Auth\Controller;
 
+use App\Auth\DTO\UserLogAnalyticDto;
 use App\Auth\Entity\ConfirmationToken;
 use App\Auth\Entity\User;
+use App\Auth\Entity\UserLog;
 use App\Auth\Entity\UserPassword;
 use App\Auth\Http\Request\RegistrationRequest;
 use App\Auth\Http\Response\RegistrationSuccessResponse;
@@ -19,6 +21,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,6 +51,7 @@ class RegistrationAction extends BaseAction
     #[Route('/api/v1/registration', methods: ['POST'])]
     public function __invoke(
         RegistrationRequest $request,
+        Request $httpRequest,
     ): HttpOutputInterface
     {
         $userId = Uuid::v4();
@@ -65,6 +69,9 @@ class RegistrationAction extends BaseAction
 
         $this->em->persist($newUser);
         $this->em->persist($emailVerificationToken);
+
+        $log = UserLog::registration($newUser, UserLogAnalyticDto::fromRequest($httpRequest));
+        $this->em->persist($log);
 
         try {
             $this->em->flush();
