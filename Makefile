@@ -5,7 +5,7 @@ install:
 	cd api && docker compose up -d && composer install && bin/console doctrine:schema:update -f && cd ../frontend && npm install
 
 up:
-	make db-up && (make api-up & make frontend-up & make api-queue-up)
+	make db-up && (make api-up & make frontend-up)
 
 db-up:
 	cd api && docker compose up -d
@@ -14,7 +14,7 @@ api-up:
 	cd api && symfony serve
 
 api-queue-up:
-	cd api && bin/console messenger:consume async
+	cd api && bin/console messenger:consume async -vv
 
 frontend-up:
 	cd frontend && npm run dev
