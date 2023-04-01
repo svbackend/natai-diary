@@ -22,3 +22,4 @@ cd $REPO && docker compose up -d --force-recreate
 cd $REPO && docker compose exec api-php-fpm composer install --no-dev --optimize-autoloader
 cd $REPO && docker compose exec api-php-fpm bin/console d:m:m -n
 cd $REPO && docker compose stop api-queue && docker compose up api-queue --force-recreate -d
+cd $REPO && cd api && sudo chmod -R 777 var/cache var/log
