@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 class UserLogAnalyticDto
 {
     public function __construct(
-        public string $referrer,
+        public ?string $referrer,
         public string $ip,
         public string $ua,
     )

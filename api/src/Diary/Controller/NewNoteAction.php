@@ -3,7 +3,9 @@
 namespace App\Diary\Controller;
 
 use App\Attachment\Queue\AttachmentUploadedEvent;
+use App\Auth\DTO\UserLogAnalyticDto;
 use App\Auth\Entity\User;
+use App\Auth\Entity\UserLog;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
 use App\Common\OpenApi\Ref\ValidationErrorResponseRef;
@@ -20,6 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -52,6 +55,7 @@ class NewNoteAction extends BaseAction
     public function __invoke(
         #[CurrentUser] User $user,
         NewNoteRequest $newNoteRequest,
+        Request $httpRequest,
     ): NewNoteResponse
     {
         $newNoteId = Uuid::v4();
@@ -85,6 +89,9 @@ class NewNoteAction extends BaseAction
             note: $newNote,
             attachmentsIds: $newNoteRequest->attachments,
         );
+
+        $log = UserLog::newNote($user, UserLogAnalyticDto::fromRequest($httpRequest));
+        $this->em->persist($log);
 
         $this->em->flush();
 

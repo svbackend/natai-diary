@@ -3,6 +3,7 @@
 namespace App\Auth\Entity;
 
 use App\Auth\DTO\UserLogAnalyticDto;
+use App\Diary\Entity\Note;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -44,5 +45,13 @@ class UserLog
     ): UserLog
     {
         return new self($user, 'registration', $analytic->toArray());
+    }
+
+    public static function newNote(
+        User $user,
+        UserLogAnalyticDto $analytic,
+    ): UserLog
+    {
+        return new self($user, 'new_note', $analytic->toArray());
     }
 }
