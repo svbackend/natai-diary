@@ -1,13 +1,17 @@
 package com.svbackend.natai.android
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.runtime.DisposableEffect
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.util.Consumer
 import androidx.navigation.compose.rememberNavController
 import androidx.work.*
 import com.svbackend.natai.android.service.ApiSyncService
@@ -75,6 +79,16 @@ class MainActivity : ScopedActivity() {
                         })
                     }
                 )
+            }
+
+            DisposableEffect(controller) {
+                val consumer = Consumer<Intent> {
+                    controller.handleDeepLink(it)
+                }
+                this@MainActivity.addOnNewIntentListener(consumer)
+                onDispose {
+                    this@MainActivity.removeOnNewIntentListener(consumer)
+                }
             }
         }
 

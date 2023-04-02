@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -48,6 +50,7 @@ fun MainScreen(
     vm: NoteViewModel,
     onAddClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit,
     onNoteClick: (LocalNote) -> Unit
 ) {
     val notes = vm.notesState
@@ -213,6 +216,26 @@ fun MainScreen(
                                     )
                                 },
                                 onClick = onLoginClick
+                            )
+                        }
+                    }
+
+                    if (!isLoggedIn) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row {
+                            ExtendedFloatingActionButton(
+                                text = {
+                                    Text(
+                                        text = stringResource(R.string.createAccount),
+                                    )
+                                },
+                                icon = {
+                                    Icon(
+                                        Icons.Default.Person,
+                                        stringResource(R.string.createAccount)
+                                    )
+                                },
+                                onClick = onRegisterClick
                             )
                         }
                     }

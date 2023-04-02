@@ -86,7 +86,7 @@ fun NataiTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        else -> LightColorScheme
+        else -> DarkColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -99,7 +99,7 @@ fun NataiTheme(
     val customColors = when (themeName) {
         UserTheme.Default -> { if (darkTheme) DynamicThemeDark else DynamicTheme }
         UserTheme.Pink -> LightPinkTheme
-        else -> DynamicTheme
+        else -> DynamicThemeDark
     }
 
     NataiCustomColors(customColors)

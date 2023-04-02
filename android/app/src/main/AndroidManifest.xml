@@ -12,21 +12,32 @@
 
     <application
         android:name=".DiaryApplication"
-        android:label="@string/appName"
-        android:icon="@drawable/ic_launcher"
         android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/appName"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/SplashScreenTheme">
+        android:theme="@style/SplashScreenTheme"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+
+                <data android:host="natai.app" android:pathPrefix="/diary" />
             </intent-filter>
         </activity>
 

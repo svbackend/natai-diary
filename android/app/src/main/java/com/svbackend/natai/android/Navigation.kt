@@ -1,5 +1,6 @@
 package com.svbackend.natai.android
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -7,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.svbackend.natai.android.ui.screen.*
 import com.svbackend.natai.android.ui.screen.auth.LoginScreen
 import com.svbackend.natai.android.ui.screen.auth.ManageAccountScreen
@@ -30,7 +32,15 @@ fun Navigation(
 ) {
 
     NavHost(navController = controller, startDestination = Route.MainRoute.route) {
-        composable(route = Route.MainRoute.route) {
+        composable(
+            route = Route.MainRoute.route,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://natai.app/diary"
+                    action = Intent.ACTION_VIEW
+                }
+            )
+        ) {
             MainScreen(
                 vm = vm,
                 onAddClick = {
@@ -38,6 +48,9 @@ fun Navigation(
                 },
                 onLoginClick = {
                     controller.go(Route.LoginRoute.withArgs())
+                },
+                onRegisterClick = {
+                    controller.go(Route.RegistrationRoute.withArgs())
                 },
                 onNoteClick = {
                     vm.selectNote(it.id)
@@ -107,7 +120,15 @@ fun Navigation(
             )
         }
 
-        composable(route = Route.TherapyRoute.route) {
+        composable(
+            route = Route.TherapyRoute.route,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://natai.app/diary/therapy"
+                    action = Intent.ACTION_VIEW
+                }
+            )
+        ) {
             TherapyScreen(
                 onClickCreateAccount = {
                     controller.go(Route.RegistrationRoute.withArgs())

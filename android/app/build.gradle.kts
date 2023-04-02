@@ -10,8 +10,8 @@ android {
         applicationId = "com.svbackend.natai"
         minSdk = 29
         targetSdk = 33
-        versionCode = 11
-        versionName = "1.5.5"
+        versionCode = 12
+        versionName = "1.5.6"
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
         //buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
 
@@ -83,7 +83,7 @@ dependencies {
     val composeVersion = "1.4.0-rc01"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha08")
+    implementation("androidx.compose.material3:material3:1.1.0-beta01")
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.animation:animation-graphics:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
