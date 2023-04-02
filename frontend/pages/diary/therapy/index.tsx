@@ -77,11 +77,38 @@ function SuggestionRow(
 
     const from = dateService.fromBackendFormat(props.suggestion.period.from)
     const to = dateService.fromBackendFormat(props.suggestion.period.to)
-    const period = dateService.toLocalShortDate(from) + " - " + dateService.toLocalShortDate(to)
+
+    let period = dateService.toLocalShortDate(from) + " - " + dateService.toLocalShortDate(to)
+
+    if (dateService.toYMD(from) === dateService.toYMD(to)) {
+        period = dateService.toLocalShortDate(from)
+    }
+
 
     const firstParagraph = suggestion.suggestion.split("\n\n")[0]
     const first20words = firstParagraph.split(" ").slice(0, 20).join(" ")
     const preview = first20words + "..."
+
+    return (
+        <div className="flex flex-row rounded-md">
+            <div className="flex flex-col">
+                <div className="py-4 px-2 bg-gradient-to-l from-indigo-300 to-purple-400 rounded-t-md">
+                    <div className="text-lg font-bold text-light">{period}</div>
+                </div>
+
+                <div className={"p-2 bg-light3 dark:bg-menu text-dark dark:text-light"}>{preview}</div>
+
+                <div className="p-2 bg-light3 dark:bg-menu text-dark dark:text-light border-t border-t-sep dark:border-t-sep-alt">
+                    <button
+                        className="text-left font-bold text-sm text-brand hover:text-brand/80 p-2"
+                        onClick={() => props.onClick(suggestion)}
+                    >
+                        Read more
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
 
     return (
         <div className="flex flex-row space-x-4">
