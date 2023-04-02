@@ -1,4 +1,4 @@
-import {CloudNoteDto, CloudTagDto} from "../../../api/apiSchemas";
+import {CloudNoteDto, CloudSuggestionDto, CloudTagDto} from "../../../api/apiSchemas";
 import {classNames} from "../../../utils/classNames";
 import SpecialTagsRow from "./SpecialTagsRow";
 import RegularTagsRow from "./RegularTagsRow";
@@ -9,15 +9,22 @@ import {weatherMapService} from "../services/weatherMapService";
 import Image from "next/image";
 import {useAtom} from "jotai";
 import {diaryStateAtom} from "../atoms/diaryStateAtom";
+import {useRouter} from "next/router";
 
-export function DiaryNotesPreviewList({notes}: { notes: CloudNoteDto[] }) {
+export function DiaryNotesPreviewList(props: { notes: CloudNoteDto[], suggestions: CloudSuggestionDto[] }) {
     // create map - key: date, value: array of notes
     // sort notes by date
-    const notesByDate = noteMapperService.mapNotesByDateToArray(notes)
+    const notesByDate = noteMapperService.mapNotesByDateToArray(props.notes)
+    const suggestionsByDate = noteMapperService.mapSuggestionsByDate(props.suggestions)
 
     return (
         <>
-            {notesByDate.map(([date, notes]) => <DiaryNotesPreviewByDate key={date} date={date} notes={notes}/>)}
+            {notesByDate.map(([date, notes]) => {
+                const suggestions = suggestionsByDate.get(date) || []
+                return (
+                    <DiaryNotesPreviewByDate key={date} date={date} notes={notes} suggestions={suggestions}/>
+                )
+            })}
         </>
     )
 }
@@ -32,17 +39,18 @@ export function DiaryNotesList({notes}: { notes: CloudNoteDto[] }) {
     )
 }
 
-export function DiaryNotesPreviewByDate({date, notes}: { date: string, notes: CloudNoteDto[] }) {
-    const lastIdx = notes.length - 1
+export function DiaryNotesPreviewByDate(props: { date: string, notes: CloudNoteDto[], suggestions: CloudSuggestionDto[] }) {
+    const lastIdx = props.notes.length - 1
 
-    const reversedNotes = notes.reverse()
+    const reversedNotes = props.notes.reverse()
 
     return (
         <>
             <div className="flex flex-row border-b border-sep dark:border-sep-alt overflow-hidden max-w-full">
-                <NotesListDateColumn date={date}/>
+                <NotesListDateColumn date={props.date} suggestions={props.suggestions}/>
                 <div className="flex flex-col p-4 w-full overflow-hidden">
-                    {reversedNotes.map((note, idx) => <DiaryNotePreview key={note.id} note={note} isLast={idx === lastIdx}/>)}
+                    {reversedNotes.map((note, idx) => <DiaryNotePreview key={note.id} note={note}
+                                                                        isLast={idx === lastIdx}/>)}
                 </div>
             </div>
         </>
@@ -57,9 +65,10 @@ export function DiaryNotesViewByDate({date, notes}: { date: string, notes: Cloud
     return (
         <>
             <div className="flex flex-row border-b border-sep dark:border-sep-alt overflow-hidden">
-                <NotesListDateColumn date={date}/>
+                <NotesListDateColumn date={date} suggestions={[]} />
                 <div className="flex flex-col p-4 w-full overflow-hidden">
-                    {reversedNotes.map((note, idx) => <DiaryNoteView key={note.id} note={note} isLast={idx === lastIdx}/>)}
+                    {reversedNotes.map((note, idx) => <DiaryNoteView key={note.id} note={note}
+                                                                     isLast={idx === lastIdx}/>)}
                 </div>
             </div>
         </>
@@ -73,7 +82,7 @@ export function DiaryNotePreview({note, isLast}: { note: CloudNoteDto, isLast: b
 
     const weatherTag = note.tags.find(tag => tag.tag === "weather")
 
-    const WeatherSpan = (props: {tag: CloudTagDto}) => {
+    const WeatherSpan = (props: { tag: CloudTagDto }) => {
         const weatherScore = props.tag.score
         const weatherImage = weatherMapService.mapWeatherScoreToImage(weatherScore)
         const weatherText = weatherMapService.mapWeatherScoreToText(weatherScore)
@@ -89,7 +98,8 @@ export function DiaryNotePreview({note, isLast}: { note: CloudNoteDto, isLast: b
 
     return (
         <>
-            <Link href={`/diary/note/${note.id}`} className={classNames("flex flex-col py-2 cursor-pointer max-w-full", !isLast && "border-b border-sep dark:border-sep-alt")}>
+            <Link href={`/diary/note/${note.id}`}
+                  className={classNames("flex flex-col py-2 cursor-pointer max-w-full", !isLast && "border-b border-sep dark:border-sep-alt")}>
                 <div className={"text-nav-item dark:text-nav-item-alt"}>
                     <span>{hm}</span>
                     {weatherTag && (
@@ -132,15 +142,30 @@ export function DiaryNoteView({note, isLast}: { note: CloudNoteDto, isLast: bool
     )
 }
 
-export function NotesListDateColumn({date}: { date: string }) {
-    const {dayOfMonth, shortMonth, year} = noteMapperService.getDateInfo(date)
+export function NotesListDateColumn(props: { date: string, suggestions: CloudSuggestionDto[] }) {
+    const {dayOfMonth, shortMonth, year} = noteMapperService.getDateInfo(props.date)
+    const router = useRouter()
+
+    const hasSuggestion = props.suggestions.length > 0
+
+    const onClick = () => {
+        const s = props.suggestions[0]
+        router.push(`/diary/therapy?id=${s.id}`)
+    }
 
     return (
-        <Link href={`/diary/date/${date}`} className="flex flex-col border-r border-sep dark:border-sep-alt text-dark dark:text-light text-center p-4">
+        <div
+              className="flex flex-col border-r border-sep dark:border-sep-alt text-dark dark:text-light text-center p-4">
             <span className={"text-2xl"}>{dayOfMonth}</span>
             <span>{shortMonth}</span>
             <span>{year}</span>
-        </Link>
+
+            {hasSuggestion && (
+                <span className={"text-2xl cursor-pointer"} onClick={() => onClick()}>
+                    🤖
+                </span>
+            )}
+        </div>
     )
 }
 
@@ -174,7 +199,7 @@ export function AttachmentsPreviews({attachments}: { attachments: string[] }) {
 function AttachmentPreview(
     props: {
         id: string,
-        preview: string|null,
+        preview: string | null,
         isLast: boolean,
         hiddenAttachmentsLength: number
     }
@@ -183,14 +208,16 @@ function AttachmentPreview(
     return (
         <div className={"flex flex-col mr-2 relative"}>
             {props.preview && (
-                <Image src={props.preview || "/images/placeholder.png"} width={128} height={128} alt="attachment" className={cls}/>
+                <Image src={props.preview || "/images/placeholder.png"} width={128} height={128} alt="attachment"
+                       className={cls}/>
             )}
             {!props.preview && (
                 <div className={cls}/>
             )}
             {props.isLast && props.hiddenAttachmentsLength > 0 && (
                 <div className={cls + " absolute flex justify-center"}>
-                    <span className={"p-2 text-xs font-bold rounded-full bg-black/70 text-light self-center"}>+{props.hiddenAttachmentsLength}</span>
+                    <span
+                        className={"p-2 text-xs font-bold rounded-full bg-black/70 text-light self-center"}>+{props.hiddenAttachmentsLength}</span>
                 </div>
             )}
         </div>

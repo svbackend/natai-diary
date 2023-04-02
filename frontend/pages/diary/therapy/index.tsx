@@ -93,7 +93,9 @@ function SuggestionRow(
         <div className="flex flex-row rounded-md">
             <div className="flex flex-col">
                 <div className="py-4 px-2 bg-gradient-to-l from-indigo-300 to-purple-400 rounded-t-md">
-                    <div className="text-lg font-bold text-light">{period}</div>
+                    <div className="text-lg font-bold text-light">
+                        {period}
+                    </div>
                 </div>
 
                 <div className={"p-2 bg-light3 dark:bg-menu text-dark dark:text-light"}>{preview}</div>
@@ -106,22 +108,6 @@ function SuggestionRow(
                         Read more
                     </button>
                 </div>
-            </div>
-        </div>
-    )
-
-    return (
-        <div className="flex flex-row space-x-4">
-            <div className="flex flex-col">
-                <div className="text-lg font-bold">{period} {to.getFullYear()}</div>
-                <div className="text-sm">{preview}</div>
-
-                <button
-                    className="text-left font-bold text-sm text-brand hover:text-brand/80"
-                    onClick={() => props.onClick(suggestion)}
-                >
-                    Read more
-                </button>
             </div>
         </div>
     )

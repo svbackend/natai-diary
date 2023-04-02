@@ -82,5 +82,14 @@ export const dateService = {
             day: '2-digit',
             month: 'short',
         });
+    },
+    getDatesBetween(fromDate: Date, toDate: Date): Date[] {
+        const dates = [];
+        const currentDate = new Date(fromDate);
+        while (currentDate <= toDate) {
+            dates.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        return dates;
     }
 }

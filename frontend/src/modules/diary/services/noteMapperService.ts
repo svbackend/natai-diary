@@ -1,4 +1,5 @@
-import {CloudNoteDto} from "../../../api/apiSchemas";
+import {CloudNoteDto, CloudSuggestionDto} from "../../../api/apiSchemas";
+import {dateService} from "../../common/services/dateService";
 
 export const noteMapperService = {
     mapNotesByDate(notes: CloudNoteDto[]) {
@@ -55,5 +56,27 @@ export const noteMapperService = {
         return Array.from(tags.entries())
             .sort((a, b) => b[1] - a[1])
             .map(entry => entry[0])
+    },
+    mapSuggestionsByDate(suggestions: CloudSuggestionDto[]): Map<string, CloudSuggestionDto[]> {
+        const suggestionsByDate = new Map<string, CloudSuggestionDto[]>()
+
+        suggestions.forEach(suggestion => {
+            const fromDate = dateService.fromBackendFormat(suggestion.period.from)
+            const toDate = dateService.fromBackendFormat(suggestion.period.to)
+
+            const dates = dateService.getDatesBetween(fromDate, toDate)
+
+            dates.forEach(date => {
+                const dateStr = dateService.toYMD(date)
+                if (suggestionsByDate.has(dateStr)) {
+                    suggestionsByDate.get(dateStr)?.push(suggestion)
+                } else {
+                    suggestionsByDate.set(dateStr, [suggestion])
+                }
+            })
+
+        })
+
+        return suggestionsByDate
     }
 }

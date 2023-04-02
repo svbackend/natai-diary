@@ -22,6 +22,7 @@ export default function DiaryPageContent() {
     const [diaryState] = useAtom(diaryStateAtom)
 
     const filteredNotes = diaryState.notes?.filter(note => note.deletedAt === null)
+    const suggestions = diaryState.suggestions
 
     const tm = (a: CloudSuggestionDto) => dateService.fromBackendFormat(a.createdAt).getTime()
 
@@ -39,7 +40,7 @@ export default function DiaryPageContent() {
             )}
 
             {filteredNotes && filteredNotes.length > 0 && (
-                <DiaryNotesPreviewList notes={filteredNotes}/>
+                <DiaryNotesPreviewList notes={filteredNotes} suggestions={suggestions} />
             )}
             {newSuggestion && <SuggestionModal suggestion={newSuggestion}/>}
         </DiaryLayout>
