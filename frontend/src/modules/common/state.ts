@@ -4,8 +4,6 @@ import {storageService} from "./services/storageService";
 import {fetchGetMe} from "../../api/apiComponents";
 import {authService} from "../auth/services/authService";
 
-type ModalsState = {}
-
 export type GlobalAppContext = {
     appState: AppState,
     setAppState: (appState: AppState) => void,
@@ -13,11 +11,13 @@ export type GlobalAppContext = {
 
 export type AppState = {
     isLoading: boolean;
+    isLoaded: boolean;
     user: UserDto | null;
 }
 
 export const initialAppState = {
     isLoading: false,
+    isLoaded: false,
     user: null,
 }
 
@@ -35,7 +35,6 @@ const useAppContext = (): GlobalAppContext => {
 
 type AppStateManager = {
     setUser: (user: UserDto | null) => void,
-    setLoading: (isLoading: boolean) => void,
 } & AppState
 
 export const useAppStateManager = (): AppStateManager => {
@@ -45,14 +44,9 @@ export const useAppStateManager = (): AppStateManager => {
         setAppState({...appState, user})
     }
 
-    const setLoading = (isLoading: boolean) => {
-        setAppState({...appState, isLoading})
-    }
-
     return {
         ...appState,
         setUser,
-        setLoading,
     }
 }
 
@@ -78,6 +72,8 @@ export const useGlobalState = (): GlobalAppContext => {
                         return {
                             ...s,
                             user: res.user,
+                            isLoading: false,
+                            isLoaded: true,
                         }
                     })
                 })
@@ -86,13 +82,17 @@ export const useGlobalState = (): GlobalAppContext => {
                     if (err.status && err.status === 401) {
                         authService.logout()
                     }
+                    setAppState(s => {
+                        return {...s, isLoading: false, isLoaded: true}
+                    })
                 })
                 .finally(() => {
-                    setAppState(s => {
-                        return {...s, isLoading: false}
-                    })
                     setAuthInProgress(false)
                 })
+        } else if (!canBeAuthenticated) {
+            setAppState(s => {
+                return {...s, isLoading: false, isLoaded: true}
+            })
         }
     }, [])
 

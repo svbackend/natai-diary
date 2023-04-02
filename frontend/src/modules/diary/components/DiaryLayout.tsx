@@ -13,19 +13,14 @@ import {CloudNoteDto} from "../../../api/apiSchemas";
 import {attachmentService} from "../services/attachmentService";
 
 export default function DiaryLayout(props: { children: React.ReactNode }) {
-    const {user, isLoading: isUserLoading} = useAppStateManager()
+    const {user, isLoaded: isUserLoaded} = useAppStateManager()
     const [diaryState, setDiaryState] = useAtom(diaryStateAtom)
     const [error, setError] = React.useState<any>(null)
-    const [notesLoading, setNotesLoading] = React.useState<boolean>(false)
-    const [suggestionsLoading, setSuggestionsLoading] = React.useState<boolean>(false)
 
     useEffect(() => {
         if (user?.id && !diaryState.isLoaded) {
             const notesRequest = fetchGetNotes({})
             const suggestionsRequest = fetchGetSuggestions({})
-
-            setNotesLoading(true)
-            setSuggestionsLoading(true)
 
             Promise.all([notesRequest, suggestionsRequest])
                 .then(([notesResponse, suggestionsResponse]) => {
@@ -51,11 +46,11 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
                     })
                     setError(error)
                 })
-                .finally(() => {
-                    setNotesLoading(false)
-                    setSuggestionsLoading(false)
-                })
-        } else {
+        }
+    }, [user?.id])
+
+    useEffect(() => {
+        if (isUserLoaded && !user?.id) {
             setDiaryState({
                 isLoading: false,
                 isLoaded: true,
@@ -65,9 +60,9 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
                 user: null
             })
         }
-    }, [user?.id])
+    }, [isUserLoaded, user?.id])
 
-    const combinedIsLoading = !diaryState.isLoaded || isUserLoading || notesLoading || suggestionsLoading
+    const combinedIsLoading = !isUserLoaded || !diaryState.isLoaded
 
     const loadPreviews = (notes: CloudNoteDto[]) => {
         const notesWithAttachments = notes.filter(note => note.attachments.length > 0)
@@ -117,9 +112,7 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
 
     console.log(
         "diaryState", diaryState.isLoaded,
-        "isUserLoading", isUserLoading,
-        "notesLoading", notesLoading,
-        "suggestionsLoading", suggestionsLoading,
+        "isUserLoaded", isUserLoaded,
         "combinedIsLoading", combinedIsLoading
     )
 
@@ -155,7 +148,10 @@ function LoadingState() {
     return (
         <NarrowWrapper>
             <div className="text-center mx-auto">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-dark dark:border-light"/>
+                <div className="">
+                    <div
+                        className="border-t-transparent border-solid animate-spin rounded-full border-brand border-4 h-16 w-16"></div>
+                </div>
             </div>
         </NarrowWrapper>
     )
