@@ -26,29 +26,7 @@
                                                 <tr>
                                                     <th>
                                                         <h1 class="text-center">Welcome to {{ app_name }}</h1>
-                                                        <center data-parsed="">
-                                                            <table align="center" class="menu text-center float-center">
-                                                                <tr>
-                                                                    <td>
-                                                                        <table>
-                                                                            <tr>
-                                                                                <th class="menu-item float-center">
-                                                                                    <a href="{{ app_url }}">Web Interface</a>
-                                                                                </th>
-                                                                                <th class="menu-item float-center">
-                                                                                    <a href="https://play.google.com/store/apps/details?id=com.svbackend.natai">
-                                                                                        Android Application
-                                                                                    </a>
-                                                                                </th>
-                                                                                <th class="menu-item float-center">
-                                                                                    <a href="{{ app_url }}/static/contacts">Contact</a>
-                                                                                </th>
-                                                                            </tr>
-                                                                        </table>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </center>
+                                                        {% include '_links.html.twig' %}
                                                     </th>
                                                     <th class="expander"></th>
                                                 </tr>
@@ -72,15 +50,6 @@
                                             <table>
                                                 <tr>
                                                     <th>
-                                                        <table class="spacer">
-                                                            <tbody>
-                                                            <tr>
-                                                                <td height="32px"
-                                                                    style="font-size:32px;line-height:32px;">&#xA0;
-                                                                </td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
                                                         <center data-parsed=""><img
                                                                     src="{{ email.image('@assets_img/email-bg.png') }}"
                                                                     align="center" class="float-center" alt="cover photo"></center>
@@ -122,22 +91,7 @@
                                                             </tbody>
                                                         </table>
 
-
-                                                        <center data-parsed="">
-                                                            <table align="center" class="menu float-center">
-                                                                <tr>
-                                                                    <td>
-                                                                        <table>
-                                                                            <tr>
-                                                                                <th class="menu-item float-center">
-                                                                                    <a href="{{ app_url }}">{{ app_url }}</a>
-                                                                                </th>
-                                                                            </tr>
-                                                                        </table>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </center>
+                                                        {% include '_url.html.twig' %}
                                                     </th>
                                                     <th class="expander"></th>
                                                 </tr>

@@ -110,12 +110,6 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
             })
     }
 
-    console.log(
-        "diaryState", diaryState.isLoaded,
-        "isUserLoaded", isUserLoaded,
-        "combinedIsLoading", combinedIsLoading
-    )
-
     return (
         <MainLayout>
             {combinedIsLoading ? (

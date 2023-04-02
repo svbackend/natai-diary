@@ -26,8 +26,8 @@
                                                 <tr>
                                                     <th>
                                                         <h2 class="text-center">Mental-Health Therapy by AI</h2>
+                                                        {% include '_links.html.twig' %}
                                                     </th>
-                                                    <th class="expander"></th>
                                                 </tr>
                                             </table>
                                         </th>
@@ -50,18 +50,41 @@
                                                 <tr>
                                                     <th>
                                                         <p>
-                                                            Hello, {{ user.name }}!
+                                                            Dear {{ user.name }},
                                                         </p>
 
                                                         <p>
-                                                            I wanted to let you know that there are new suggestions/recommendations based on your recent notes.
+                                                            I would like to inform you that there are new suggestions/recommendations based on your recent notes.
                                                         </p>
 
                                                         <h5>Preview</h5>
                                                         <p>
                                                             {{ suggestion.output | preview }}
-                                                            <a href="{{ app_url }}/diary/therapy">Read more</a>
                                                         </p>
+
+                                                        <table class="button expanded">
+                                                            <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <table>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <center>
+                                                                                    <a href="{{ app_url }}/diary/therapy"
+                                                                                       align="center"
+                                                                                       class="float-center">Read more</a></center>
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                                <td class="expander"></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                        {% include '_url.html.twig' %}
                                                     </th>
                                                     <th class="expander"></th>
                                                 </tr>
