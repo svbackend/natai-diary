@@ -11,6 +11,7 @@ import {AlertApiError, AlertError, AlertSuccess} from "../../src/modules/common/
 import {TextField} from "../../src/modules/common/components/textField";
 import {FormSubmitButton} from "../../src/modules/common/components/FormSubmitButton";
 import {defaultMetadata} from "../../src/utils/seo";
+import {Seo} from "../../src/modules/common/components/GlobalSeo";
 
 export async function generateMetadata(props: { params: any, searchParams: any }) {
     return defaultMetadata;

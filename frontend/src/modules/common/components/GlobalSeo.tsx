@@ -11,10 +11,11 @@ export type SeoType = {
 
 const webAppJson = require('../../../../public/seo/app.json')
 
-export default function GlobalSeo() {
+export default function GlobalSeo(props: { canonical: string }) {
     const title = webAppJson.name
     const appDescription = defaultDescription
     const appImg = "https://natai.app/seo/natai-diary-sq.png"
+    const url = props.canonical === "/" ? "https://natai.app" : `https://natai.app${props.canonical}`
 
     return (
         <Head>
@@ -23,6 +24,7 @@ export default function GlobalSeo() {
             <link rel="shortcut icon" type="image/png" sizes="32x32" href="/seo/natai-diary-logo-32.png"/>
             <link rel="shortcut icon" type="image/x-icon" sizes="16x16" href="/favicon.ico"/>
             <link rel="manifest" href="/manifest.json"/>
+            <link rel="canonical" href={url}/>
 
             <script type="application/ld+json"
                     dangerouslySetInnerHTML={{__html: JSON.stringify(webAppJson)}}></script>
@@ -34,7 +36,7 @@ export default function GlobalSeo() {
             <meta property="og:site_name" content="Natai Diary"/>
             <meta property="og:type" content="website"/>
 
-            <meta key={"twitter:url"} property="twitter:url" content="https://natai.app"/>
+            <meta key={"twitter:url"} property="twitter:url" content={url}/>
             <meta key={"twitter:title"} name="twitter:title" content={title}/>
             <meta key={"twitter:description"} name="twitter:description" content={appDescription}/>
             <meta key={"twitter:image"} name="twitter:image" content={appImg}/>
@@ -42,7 +44,7 @@ export default function GlobalSeo() {
             <meta key={"og:title"} property="og:title" content={title}/>
             <meta key={"og:description"} property="og:description" content={appDescription}/>
             <meta key={"og:image"} property="og:image" content={appImg}/>
-            <meta key={"og:url"} property="og:url" content="https://natai.app"/>
+            <meta key={"og:url"} property="og:url" content={url}/>
 
             <meta key={"meta:title"} name="title" content={title}/>
             <meta key={"meta:description"} name="description" content={appDescription}/>

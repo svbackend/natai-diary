@@ -55,8 +55,19 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
                     setNotesLoading(false)
                     setSuggestionsLoading(false)
                 })
+        } else {
+            setDiaryState({
+                isLoading: false,
+                isLoaded: true,
+                notes: [],
+                suggestions: [],
+                previews: new Map(),
+                user: null
+            })
         }
     }, [user?.id])
+
+    const combinedIsLoading = !diaryState.isLoaded || isUserLoading || notesLoading || suggestionsLoading
 
     const loadPreviews = (notes: CloudNoteDto[]) => {
         const notesWithAttachments = notes.filter(note => note.attachments.length > 0)
@@ -104,18 +115,29 @@ export default function DiaryLayout(props: { children: React.ReactNode }) {
             })
     }
 
-    const combinedIsLoading = isUserLoading || notesLoading || suggestionsLoading
+    console.log(
+        "diaryState", diaryState.isLoaded,
+        "isUserLoading", isUserLoading,
+        "notesLoading", notesLoading,
+        "suggestionsLoading", suggestionsLoading,
+        "combinedIsLoading", combinedIsLoading
+    )
 
     return (
         <MainLayout>
-            {combinedIsLoading && <LoadingState/>}
-            {!combinedIsLoading && !user && <NotLoggedIn/>}
-            {!combinedIsLoading && error && <ErrorState error={error}/>}
-            {!combinedIsLoading && user && (
-                <DiaryContentWrapper diaryState={diaryState}>
-                    {props.children}
-                </DiaryContentWrapper>
+            {combinedIsLoading ? (
+                <LoadingState/>
+            ) : (
+                <>
+                    {error && <ErrorState error={error}/>}
+                    {user ? (
+                        <DiaryContentWrapper diaryState={diaryState}>
+                            {props.children}
+                        </DiaryContentWrapper>
+                    ) : (<NotLoggedIn/>)}
+                </>
             )}
+
         </MainLayout>
     )
 }

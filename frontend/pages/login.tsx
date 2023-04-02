@@ -13,6 +13,7 @@ import {AlreadyLoggedIn} from "../src/modules/auth/components/alreadyLoggedIn";
 import {EaseOutTransition} from "../src/modules/common/components/EaseOutTransition";
 import Link from "next/link";
 import {defaultMetadata} from "../src/utils/seo";
+import {Seo} from "../src/modules/common/components/GlobalSeo";
 
 type FormValues = {
     email: string

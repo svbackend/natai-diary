@@ -21,7 +21,7 @@ export default function App({Component, pageProps}: AppProps) {
 
     return (
         <NextIntlProvider messages={messages} locale={locale}>
-            <GlobalSeo/>
+            <GlobalSeo canonical={router.asPath}/>
             <Script data-domain={"natai.app"} src="https://plausible.ukraidian.com/js/plausible.js"/>
 
             <Script
