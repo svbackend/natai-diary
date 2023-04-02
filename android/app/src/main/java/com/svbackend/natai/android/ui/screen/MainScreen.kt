@@ -66,7 +66,7 @@ fun MainScreen(
         destinationFunction = { dragAmount ->
             val isPullingDown = dragAmount.y > 0
 
-            if (isPullingDown) {
+            if (isPullingDown && isLoggedIn) {
                 // show short toast message that sync is started
                 Toast
                     .makeText(context, "Synchronization started..", Toast.LENGTH_SHORT)

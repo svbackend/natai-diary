@@ -166,6 +166,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         prefs.edit()
             .putString("api_token", user.apiToken)
             .putString("cloud_id", user.cloudId)
+            .putLong("last_sync_time", 0)
             .apply()
 
         setUserCloudId(user.cloudId)
