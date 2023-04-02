@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.svbackend.natai",
+      "sha256_cert_fingerprints": [
+        "7F:46:1F:EA:46:2B:18:A3:F3:EA:65:81:B1:C5:06:77:68:9E:E2:2B:06:45:3D:53:50:C6:9E:8C:0B:B7:26:14"
+      ]
+    }
+  }
+]
