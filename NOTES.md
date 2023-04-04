@@ -1,3 +1,19 @@
+### Apr 3, 2023
+
+Last couple of weeks I was adding small enhancements here and there, added easier access to "AI Therapy" screen,
+improved sync process for android app, so it's now much faster now,
+overall AI Therapy is working pretty well, I'm happy with the result and the quality of suggestions I'm getting,
+but sometimes they are in Ukrainian language and with pretty bad grammar, so I need to improve it.
+
+Next steps:
+I'm thinking about adding a chat with AI therapist,
+so user can ask for advice and get suggestions in real time without having to wait for suggestions based on diary notes.
+But it can be as a separate project, not sure yet.
+
+I started advertising on Facebook, and I'm getting some traffic and new users, but so far no feedback on what they want to see in the app.
+On one hand I'm enjoying working on this project and I like the way it looks and work so far,
+but on the other hand I need to figure out proper monetization strategy which will align with my vision of the app and will be sustainable.
+
 ### Mar 19, 2023
 
 Design update progress going well.
