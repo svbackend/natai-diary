@@ -1,3 +1,9 @@
+### Apr 5, 2023
+
+Today google released new rules for android apps that have feature to create account,
+so now it's required to have a feature to "Delete Account", I have 30 days to implement it.
+Probably will do it in the next release.
+
 ### Apr 3, 2023
 
 Last couple of weeks I was adding small enhancements here and there, added easier access to "AI Therapy" screen,
