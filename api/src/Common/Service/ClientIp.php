@@ -9,12 +9,13 @@ class ClientIp
     public static function fromRequest(Request $request): string
     {
         $ips = $request->getClientIps();
+        $ip = $request->getClientIp();
 
         if (count($ips) > 1) {
             // return last ip
-            return $ips[count($ips) - 1];
+            return $ips[count($ips) - 1] ?? $ip;
         }
 
-        return $request->getClientIp();
+        return $ip;
     }
 }
