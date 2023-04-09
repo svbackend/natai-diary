@@ -165,5 +165,12 @@
   },
   "TherapyIndexPage": {
     "therapy": "AI Therapy"
+  },
+  "RemoveProfilePage": {
+    "Title": "Remove my profile",
+    "Description": "You will lose access to all of your notes. This action cannot be undone.",
+    "removeButton": "Remove my profile",
+    "cancelButton": "Cancel",
+    "SuccessMessage": "Your profile has been removed successfully"
   }
 }

@@ -106,6 +106,10 @@ export type ChangePasswordErrorRef = {
   code: "old_password_invalid";
 };
 
+export type UserInfoResponse = {
+  user: UserDto;
+};
+
 export type LoginRequestRef = {
   email: string;
   password: string;
@@ -161,10 +165,6 @@ export type RegistrationErrorResponseRef = {
    * @example already_exists
    */
   code: string;
-};
-
-export type UserInfoResponse = {
-  user: UserDto;
 };
 
 export type VerifyEmailRequest = {

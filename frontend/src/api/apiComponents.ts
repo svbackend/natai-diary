@@ -310,6 +310,71 @@ export const usePostChangePassword = (
   );
 };
 
+export type GetMeError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.AuthRequiredErrorResponse;
+}>;
+
+export type GetMeVariables = ApiContext["fetcherOptions"];
+
+export const fetchGetMe = (variables: GetMeVariables, signal?: AbortSignal) =>
+  apiFetch<Schemas.UserInfoResponse, GetMeError, undefined, {}, {}, {}>({
+    url: "/api/v1/me",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetMe = <TData = Schemas.UserInfoResponse>(
+  variables: GetMeVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<Schemas.UserInfoResponse, GetMeError, TData>,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<Schemas.UserInfoResponse, GetMeError, TData>(
+    queryKeyFn({ path: "/api/v1/me", operationId: "getMe", variables }),
+    ({ signal }) => fetchGetMe({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
+export type DeleteMeError = Fetcher.ErrorWrapper<{
+  status: 500;
+  payload: Schemas.ServerErrorRef;
+}>;
+
+export type DeleteMeVariables = ApiContext["fetcherOptions"];
+
+export const fetchDeleteMe = (
+  variables: DeleteMeVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<undefined, DeleteMeError, undefined, {}, {}, {}>({
+    url: "/api/v1/me",
+    method: "delete",
+    ...variables,
+    signal,
+  });
+
+export const useDeleteMe = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<undefined, DeleteMeError, DeleteMeVariables>,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<undefined, DeleteMeError, DeleteMeVariables>(
+    (variables: DeleteMeVariables) =>
+      fetchDeleteMe({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type PostLoginError = Fetcher.ErrorWrapper<
   | {
       status: 401;
@@ -561,39 +626,6 @@ export const usePostRegistration = (
     (variables: PostRegistrationVariables) =>
       fetchPostRegistration({ ...fetcherOptions, ...variables }),
     options
-  );
-};
-
-export type GetMeError = Fetcher.ErrorWrapper<{
-  status: 401;
-  payload: Schemas.AuthRequiredErrorResponse;
-}>;
-
-export type GetMeVariables = ApiContext["fetcherOptions"];
-
-export const fetchGetMe = (variables: GetMeVariables, signal?: AbortSignal) =>
-  apiFetch<Schemas.UserInfoResponse, GetMeError, undefined, {}, {}, {}>({
-    url: "/api/v1/me",
-    method: "get",
-    ...variables,
-    signal,
-  });
-
-export const useGetMe = <TData = Schemas.UserInfoResponse>(
-  variables: GetMeVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<Schemas.UserInfoResponse, GetMeError, TData>,
-    "queryKey" | "queryFn"
-  >
-) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
-  return reactQuery.useQuery<Schemas.UserInfoResponse, GetMeError, TData>(
-    queryKeyFn({ path: "/api/v1/me", operationId: "getMe", variables }),
-    ({ signal }) => fetchGetMe({ ...fetcherOptions, ...variables }, signal),
-    {
-      ...options,
-      ...queryOptions,
-    }
   );
 };
 
@@ -1109,6 +1141,65 @@ export const usePutSuggestionsByIdFeedback = (
   );
 };
 
+export type GetSyncQueryParams = {
+  /**
+   * Only return notes updated since this date
+   *
+   * @format date-time
+   */
+  updatedSince?: string;
+};
+
+export type GetSyncError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+>;
+
+export type GetSyncVariables = {
+  queryParams?: GetSyncQueryParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchGetSync = (
+  variables: GetSyncVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.FindAllNotesResponse,
+    GetSyncError,
+    undefined,
+    {},
+    GetSyncQueryParams,
+    {}
+  >({ url: "/api/v1/sync", method: "get", ...variables, signal });
+
+export const useGetSync = <TData = Schemas.FindAllNotesResponse>(
+  variables: GetSyncVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.FindAllNotesResponse,
+      GetSyncError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<Schemas.FindAllNotesResponse, GetSyncError, TData>(
+    queryKeyFn({ path: "/api/v1/sync", operationId: "getSync", variables }),
+    ({ signal }) => fetchGetSync({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type PutNotesByIdV2PathParams = {
   id: string;
 };
@@ -1393,14 +1484,14 @@ export type QueryOperation =
       variables: GetStaticVariables;
     }
   | {
-      path: "/api/v1/logout";
-      operationId: "getLogout";
-      variables: GetLogoutVariables;
-    }
-  | {
       path: "/api/v1/me";
       operationId: "getMe";
       variables: GetMeVariables;
+    }
+  | {
+      path: "/api/v1/logout";
+      operationId: "getLogout";
+      variables: GetLogoutVariables;
     }
   | {
       path: "/api/v1/notes";
@@ -1416,6 +1507,11 @@ export type QueryOperation =
       path: "/api/v1/notes/{id}/attachments";
       operationId: "getNotesByIdAttachments";
       variables: GetNotesByIdAttachmentsVariables;
+    }
+  | {
+      path: "/api/v1/sync";
+      operationId: "getSync";
+      variables: GetSyncVariables;
     }
   | {
       path: "/api/v1/articles";
