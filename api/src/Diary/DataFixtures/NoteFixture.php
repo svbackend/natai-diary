@@ -19,12 +19,17 @@ class NoteFixture extends Fixture implements DependentFixtureInterface
     public const UPDATED_NOTE_ID = '993e29fd-ccce-4705-b17a-d455d584f4ef';
 
     public const UPDATED_NOTE_DT = '2050-01-01 10:00:00';
-    public const NOTES_COUNT = 3;
+    public const USER1_NOTES_COUNT = 3;
+
+    public const USER2_NOTE_ID = 'c16f135c-3b45-4c1a-b97a-dff7a9a050f1';
 
     public function load(ObjectManager $manager): void
     {
         /** @var $userRef User */
         $userRef = $this->getReference(UserFixture::USER_ID);
+
+        /** @var $user2Ref User */
+        $user2Ref = $this->getReference(UserFixture::USER2_ID);
 
         $entity = new Note(
             id: UuidV4::fromString(self::NOTE_ID),
@@ -86,6 +91,16 @@ class NoteFixture extends Fixture implements DependentFixtureInterface
         foreach ($tags as $tag) {
             $manager->persist($tag);
         }
+
+        $user2Note = new Note(
+            id: UuidV4::fromString(self::USER2_NOTE_ID),
+            user: $user2Ref,
+            actualDate: new \DateTimeImmutable('2021-01-01'),
+            title: 'user2 note title',
+            content: 'user2 note content',
+        );
+
+        $manager->persist($user2Note);
 
         $manager->flush();
     }

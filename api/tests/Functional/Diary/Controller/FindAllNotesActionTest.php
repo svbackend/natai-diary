@@ -35,6 +35,6 @@ class FindAllNotesActionTest extends AbstractFunctionalTest
         $data = $response->toArray(false);
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertCount(NoteFixture::NOTES_COUNT, $data['notes']);
+        $this->assertCount(NoteFixture::USER1_NOTES_COUNT, $data['notes']);
     }
 }

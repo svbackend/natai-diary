@@ -26,7 +26,7 @@ class NoteRepositoryTest extends AbstractFunctionalTest
         );
 
         $this->assertNotEmpty($notes);
-        $this->assertCount(NoteFixture::NOTES_COUNT, $notes);
+        $this->assertCount(NoteFixture::USER1_NOTES_COUNT, $notes);
 
         foreach ($notes as $note) {
             $this->assertInstanceOf(CloudNoteDto::class, $note);
