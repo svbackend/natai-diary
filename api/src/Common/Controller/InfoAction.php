@@ -2,6 +2,7 @@
 
 namespace App\Common\Controller;
 
+use App\Common\Service\ClientIp;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,10 +21,7 @@ class InfoAction extends BaseAction
 
         return $this->json(
             [
-                'headers' => $headersValues,
-                'server' => $_SERVER,
-                'request' => $request->request->all(),
-                'ip' => $request->getClientIp(),
+                'ip' => ClientIp::fromRequest($request),
             ]
         );
     }
