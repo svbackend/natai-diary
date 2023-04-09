@@ -31,8 +31,8 @@ import java.io.InputStream
 import java.time.Instant
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
-//const val BASE_URL = "https://natai.app"
-const val BASE_URL = "https://0011-24-203-8-51.ngrok-free.app"
+const val BASE_URL = "https://natai.app"
+//const val BASE_URL = "https://0011-24-203-8-51.ngrok-free.app"
 
 class ApiClient(
     private val getApiToken: () -> String?
