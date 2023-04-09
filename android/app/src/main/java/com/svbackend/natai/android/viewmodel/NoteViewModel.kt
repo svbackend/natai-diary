@@ -17,7 +17,9 @@ import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.ui.UserTheme
+import com.svbackend.natai.android.utils.KEY_LAST_SYNC_TIME
 import com.svbackend.natai.android.utils.getLastSyncTime
+import com.svbackend.natai.android.utils.resetLastSyncTime
 import com.svbackend.natai.android.utils.updateLastSyncTime
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -166,7 +168,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         prefs.edit()
             .putString("api_token", user.apiToken)
             .putString("cloud_id", user.cloudId)
-            .putLong("last_sync_time", 0)
+            .remove(KEY_LAST_SYNC_TIME)
             .apply()
 
         setUserCloudId(user.cloudId)
@@ -225,7 +227,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             .edit()
             .remove("api_token")
             .remove("cloud_id")
-            .remove("last_sync_time")
+            .remove(KEY_LAST_SYNC_TIME)
             .apply()
 
         setUserCloudId(null)
@@ -269,5 +271,9 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         val nextIndex = if (currentIndex == 0) attachments.lastIndex else currentIndex - 1
 
         selectAttachment(attachments[nextIndex])
+    }
+
+    fun resetLastSyncTime() {
+        prefs.resetLastSyncTime()
     }
 }

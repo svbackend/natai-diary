@@ -35,6 +35,7 @@ import com.svbackend.natai.android.ui.component.RegularTagsRow
 import com.svbackend.natai.android.ui.component.SpecialTagsRow
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.gradientBackground
+import com.svbackend.natai.android.utils.resetLastSyncTime
 import com.svbackend.natai.android.utils.throttleLatest
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import kotlinx.coroutines.launch
@@ -72,6 +73,7 @@ fun MainScreen(
                     .makeText(context, "Synchronization started..", Toast.LENGTH_SHORT)
                     .show()
 
+                vm.resetLastSyncTime()
                 vm.sync()
             }
         }
