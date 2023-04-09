@@ -60,4 +60,7 @@
     <string name="therapyTitle">AI Therapy</string>
     <string name="therapySessionImage">Therapy Session</string>
     <string name="settingsFeedbackTitle">Feedback</string>
+    <string name="deleteAccount">Delete Account</string>
+    <string name="accountDeleteError">Error! Account note deleted. Please make sure you have internet connection.</string>
+    <string name="deleteAccountWarning">You will lose access to all of your notes. This action cannot be undone.</string>
 </resources>

@@ -15,14 +15,13 @@ import com.svbackend.natai.android.R
 fun NPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    loadingModifier: Modifier = Modifier,
     isLoading: Boolean = false,
     loadingText: String = stringResource(id = R.string.loading),
     content: @Composable RowScope.() -> Unit,
 ) {
     if (isLoading) {
         Button(
-            onClick = {}, modifier = loadingModifier
+            onClick = {}, modifier = modifier
                 .fillMaxWidth()
         ) {
             NProgressBtn()

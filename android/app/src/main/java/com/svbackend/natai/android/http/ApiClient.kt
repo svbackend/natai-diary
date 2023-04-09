@@ -31,8 +31,8 @@ import java.io.InputStream
 import java.time.Instant
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
-const val BASE_URL = "https://natai.app"
-//const val BASE_URL = "https://4022-24-203-8-51.ngrok.io"
+//const val BASE_URL = "https://natai.app"
+const val BASE_URL = "https://0011-24-203-8-51.ngrok-free.app"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -269,5 +269,9 @@ class ApiClient(
             Log.e(TAG, e.message ?: "Error while sending suggestion feedback")
             throw e
         }
+    }
+
+    suspend fun deleteAccount() {
+        client.delete("/api/v1/me")
     }
 }

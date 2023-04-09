@@ -10,10 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.svbackend.natai.android.ui.screen.*
-import com.svbackend.natai.android.ui.screen.auth.LoginScreen
-import com.svbackend.natai.android.ui.screen.auth.ManageAccountScreen
-import com.svbackend.natai.android.ui.screen.auth.RegistrationScreen
-import com.svbackend.natai.android.ui.screen.auth.TermsScreen
+import com.svbackend.natai.android.ui.screen.auth.*
 import com.svbackend.natai.android.ui.screen.settings.AppInfoScreen
 import com.svbackend.natai.android.ui.screen.settings.FeedbackScreen
 import com.svbackend.natai.android.ui.screen.settings.ReminderScreen
@@ -175,10 +172,23 @@ fun Navigation(
                 onClickCreateAccount = {
                     controller.go(Route.RegistrationRoute.withArgs())
                 },
+                onClickDeleteAccount = {
+                    controller.go(Route.DeleteAccountRoute.withArgs())
+                },
                 onClickLogin = {
                     controller.go(Route.LoginRoute.withArgs())
                 },
                 onLogout = {
+                    controller.clearBackStack(Route.ManageAccountRoute.route)
+                    controller.go(Route.MainRoute.withArgs())
+                }
+            )
+        }
+
+        composable(route = Route.DeleteAccountRoute.route) {
+            DeleteAccountScreen(
+                vm = vm,
+                onAccountDeleted = {
                     controller.clearBackStack(Route.ManageAccountRoute.route)
                     controller.go(Route.MainRoute.withArgs())
                 }

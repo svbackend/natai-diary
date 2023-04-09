@@ -28,6 +28,7 @@ fun ManageAccountScreen(
     manageAccountViewModel: ManageAccountViewModel = viewModel(),
     onClickCreateAccount: () -> Unit,
     onClickLogin: () -> Unit,
+    onClickDeleteAccount: () -> Unit,
     onLogout: () -> Unit,
 ) {
     val user = vm.userState
@@ -44,6 +45,7 @@ fun ManageAccountScreen(
             manageAccountViewModel = manageAccountViewModel,
             vm = vm,
             onLogout = onLogout,
+            onClickDeleteAccount = onClickDeleteAccount,
         )
     }
 }
@@ -54,6 +56,7 @@ fun Authorized(
     manageAccountViewModel: ManageAccountViewModel,
     vm: NoteViewModel,
     onLogout: () -> Unit,
+    onClickDeleteAccount: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -73,8 +76,8 @@ fun Authorized(
                 .padding(16.dp)
         ) {
             Text(
-                text = user.email,
-                style = MaterialTheme.typography.headlineLarge,
+                text = user.name,
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -82,8 +85,8 @@ fun Authorized(
             )
 
             Text(
-                text = user.name,
-                style = MaterialTheme.typography.bodyLarge,
+                text = user.email,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -114,6 +117,8 @@ fun Authorized(
                 NPrimaryButton(
                     onClick = { checkEmailVerification() },
                     isLoading = manageAccountViewModel.userQuery.isLoading.value,
+                    modifier = Modifier
+                        .padding(bottom = 16.dp),
                 ) {
                     Icon(
                         Icons.Filled.Email,
@@ -126,23 +131,37 @@ fun Authorized(
                 }
             }
 
-            Text(
-                text = stringResource(id = R.string.logout),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        scope.launch {
-                            vm.logout(onLogout)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.logout),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .clickable {
+                            scope.launch {
+                                vm.logout(onLogout)
+                            }
                         }
-                    }
-                    .padding(top = 16.dp),
-            )
+                        .padding(4.dp),
+                )
 
-            // todo add logout button?
-            // delete account button?
+                // todo add logout button?
+                // delete account button
+
+                Text(
+                    text = stringResource(id = R.string.deleteAccount),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .clickable {
+                            onClickDeleteAccount()
+                        }
+                        .padding(4.dp),
+                )
+            }
         }
     }
 }

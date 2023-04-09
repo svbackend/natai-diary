@@ -152,7 +152,7 @@ fun RegistrationScreen(
                 onClick = onRegister(),
                 isLoading = vm.isLoading.value,
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(top = 16.dp),
             ) {
                 Icon(
                     Icons.Filled.Person,
