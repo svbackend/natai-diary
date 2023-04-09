@@ -2,6 +2,7 @@
 
 namespace App\Auth\DTO;
 
+use App\Common\Service\ClientIp;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserLogAnalyticDto
@@ -17,9 +18,9 @@ class UserLogAnalyticDto
     public static function fromRequest(Request $request): self
     {
         return new self(
-            $request->headers->get('referer'),
-            $request->getClientIp(),
-            $request->headers->get('User-Agent'),
+            referrer: $request->headers->get('referer'),
+            ip: ClientIp::fromRequest($request),
+            ua: $request->headers->get('User-Agent'),
         );
     }
 
