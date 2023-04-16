@@ -17,3 +17,8 @@ diary:
 blog:
   type: attribute
   resource: ../src/Blog/Controller/
+
+
+ai_therapy:
+  type: attribute
+  resource: ../src/AiTherapy/Controller/
