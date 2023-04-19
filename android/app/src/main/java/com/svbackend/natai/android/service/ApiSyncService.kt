@@ -31,6 +31,14 @@ class ApiSyncService(
 
         isRunning = true
 
+        try {
+            sync(lastSyncTime)
+        } finally {
+            isRunning = false
+        }
+    }
+
+    private suspend fun sync(lastSyncTime: Instant? = null) {
         val currentUserResponse = apiClient.getCurrentUser()
 
         val updatedSince = lastSyncTime ?: Instant.ofEpochSecond(0)
@@ -85,10 +93,6 @@ class ApiSyncService(
                 updateToLocal(localNote, cloudNote)
             }
         }
-
-        //cleanOldAttachments()
-
-        isRunning = false
     }
 
     private suspend fun insertToLocal(cloudNote: CloudNote) {
