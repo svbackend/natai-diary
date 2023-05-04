@@ -4,10 +4,10 @@ namespace App\Diary\Queue;
 
 use App\Common\Queue\AsyncMessageInterface;
 
-class NoteCreatedEvent implements AsyncMessageInterface
+class GenerateSuggestionContextMessage implements AsyncMessageInterface
 {
     public function __construct(
-        public string $noteId,
+        public string $suggestionId,
     )
     {
     }

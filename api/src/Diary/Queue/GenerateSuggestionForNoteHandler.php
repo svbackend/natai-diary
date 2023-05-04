@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class NoteCreatedEventHandler
+class GenerateSuggestionForNoteHandler
 {
     public function __construct(
         private NoteRepository $notes,
@@ -18,9 +18,9 @@ class NoteCreatedEventHandler
     {
     }
 
-    public function __invoke(NoteCreatedEvent $event): void
+    public function __invoke(GenerateSuggestionForNoteMessage $event): void
     {
-        $this->logger->debug("Handling note created event for note {$event->noteId}");
+        $this->logger->debug("GenerateSuggestionForNoteCommand id = {$event->noteId}");
 
         $note = $this->notes->find($event->noteId);
 

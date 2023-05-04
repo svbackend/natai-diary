@@ -14,7 +14,7 @@ use App\Diary\Entity\Note;
 use App\Diary\Entity\NoteTag;
 use App\Diary\Http\Request\NewNoteRequest;
 use App\Diary\Http\Response\NewNoteResponse;
-use App\Diary\Queue\NoteCreatedEvent;
+use App\Diary\Queue\GenerateSuggestionForNoteMessage;
 use App\Diary\Repository\NoteRepository;
 use App\Diary\Repository\NoteTagRepository;
 use App\Diary\Service\NoteFileAttacherService;
@@ -99,7 +99,7 @@ class NewNoteAction extends BaseAction
             $this->bus->dispatch(new AttachmentUploadedEvent($uploadedAttachment->getId()->toRfc4122()));
         }
 
-        $this->bus->dispatch(new NoteCreatedEvent($newNoteId->toRfc4122()));
+        $this->bus->dispatch(new GenerateSuggestionForNoteMessage($newNoteId->toRfc4122()));
 
         return new NewNoteResponse(
             noteId: $newNoteId,

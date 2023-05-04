@@ -16,6 +16,14 @@ class OpenAiClient
     {
     }
 
+    private function headers(): array
+    {
+        return [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->apiKey
+        ];
+    }
+
     public function getRecommendationsBasedOnNotes(
         string $userId,
         string $systemPrompt,
@@ -44,10 +52,7 @@ class OpenAiClient
         ];
 
         $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->apiKey
-            ],
+            'headers' => $this->headers(),
             'json' => [
                 'model' => 'gpt-3.5-turbo',
                 'messages' => $messages,
@@ -95,10 +100,54 @@ class OpenAiClient
         ];
 
         $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->apiKey
+            'headers' => $this->headers(),
+            'json' => [
+                'model' => 'gpt-3.5-turbo',
+                'messages' => $messages,
+                'temperature' => 1.0,
             ],
+        ]);
+
+        $responseContent = $response->getContent();
+
+        $responseArray = json_decode($responseContent, true);
+
+        if (!isset($responseArray['choices'])) {
+            $this->logger->error('OpenAI API returned ' . $responseContent);
+            throw new \Exception("OpenAI API returned invalid response");
+        } else {
+            $this->logger->debug('OpenAI API returned ' . $responseContent);
+        }
+
+        return new ChatGptResponse(
+            $responseArray['id'],
+            $responseArray['object'],
+            $responseArray['created'],
+            $responseArray['model'],
+            $responseArray['usage'],
+            $responseArray['choices'],
+        );
+    }
+
+    /**
+     * @param string $contentToAnalyze
+     * @param string[] $availableCategories
+     */
+    public function getCategoriesByNotesContent(string $contentToAnalyze, array $availableCategories): ChatGptResponse
+    {
+        $prompt = "Based on the following diary notes, please categorize the input into one of the following categories and return just the names of categories split by comma.";
+        $prompt .= "\nList of available categories: " . implode(', ', $availableCategories);
+        $prompt .= "\n\nDiary notes:\n" . $contentToAnalyze;
+
+        $messages = [
+            [
+                'role' => 'user',
+                'content' => $prompt,
+            ],
+        ];
+
+        $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
+            'headers' => $this->headers(),
             'json' => [
                 'model' => 'gpt-3.5-turbo',
                 'messages' => $messages,

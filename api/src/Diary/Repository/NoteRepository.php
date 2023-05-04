@@ -6,6 +6,7 @@ use App\Auth\Entity\User;
 use App\Diary\DTO\CloudNoteDto;
 use App\Diary\DTO\CloudTagDto;
 use App\Diary\Entity\Note;
+use App\Diary\Entity\Suggestion;
 use App\Tests\Functional\Diary\Repository\NoteRepositoryTest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
@@ -137,5 +138,18 @@ class NoteRepository extends ServiceEntityRepository
             ), $note['tags']),
             attachments: array_map(fn($attachment) => $attachment['id'], $note['attachments'])
         );
+    }
+
+    /** @return Note[] */
+    public function findNotesForLinking(array $ids): array
+    {
+        $qb = $this->createQueryBuilder('n')
+            ->where('n.id IN (:ids)')
+            ->andWhere('n.deletedAt IS NULL')
+            ->leftJoin('n.tags', 'nt', 'WITH')
+            ->addSelect('nt')
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
     }
 }
