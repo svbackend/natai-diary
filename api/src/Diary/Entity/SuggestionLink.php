@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 class SuggestionLink
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
-    private int $id;
+    private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: Suggestion::class)]
     #[ORM\JoinColumn(nullable: false)]

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Feedback
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
     private ?int $id = null;
 

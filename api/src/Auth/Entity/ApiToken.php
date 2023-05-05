@@ -11,9 +11,9 @@ class ApiToken
     private const EXPIRATION_TIME = 3600 * 24 * 14; // 14 days in seconds
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
-    private int $id;
+    private ?int $id;
 
     #[ORM\Column(length: 255, unique: true)]
     private string $apiToken;

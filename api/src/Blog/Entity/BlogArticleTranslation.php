@@ -14,9 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 class BlogArticleTranslation
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
-    private int $id;
+    private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: BlogArticle::class, inversedBy: 'translations')]
     #[ORM\JoinColumn(nullable: false)]

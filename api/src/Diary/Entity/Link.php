@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Link
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
-    private int $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private string $url;

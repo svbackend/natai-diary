@@ -10,9 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 class UserLog
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column]
-    private int $id;
+    private ?int $id;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
