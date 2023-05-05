@@ -75,9 +75,11 @@ export default function NewLinkPage() {
         const title = doc.querySelector("title")?.textContent;
         const description = doc.querySelector("meta[name='description']")?.getAttribute("content");
         const image = doc.querySelector("meta[property='og:image']")?.getAttribute("content");
+        const canonicalUrl = doc.querySelector("link[rel='canonical']")?.getAttribute("href");
         if (title) setTitle(title);
         if (description) setDescription(description);
         if (image) setImage(image);
+        if (canonicalUrl) setUrl(canonicalUrl);
     }
 
     return (
