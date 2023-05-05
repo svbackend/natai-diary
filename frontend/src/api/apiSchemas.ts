@@ -234,6 +234,10 @@ export type NotFoundErrorRef = {
   detail: string;
 };
 
+export type FindAllLinkCategoriesResponse = {
+  categories: LinkCategoryDto[];
+};
+
 export type FindAllNotesResponse = {
   notes: CloudNoteDto[];
 };
@@ -271,6 +275,14 @@ export type GetNoteAttachmentsErrorRef = {
    * @example attachments_not_array
    */
   code: "attachments_not_array" | "attachments_not_uuids";
+};
+
+export type NewLinkRequest = {
+  title: string;
+  description: string;
+  url: string;
+  image: string | null;
+  categories: number[];
 };
 
 export type NewNoteRequest = {
@@ -369,6 +381,11 @@ export type UserDto = {
 export type CloudTagDto = {
   tag: string;
   score: number | null;
+};
+
+export type LinkCategoryDto = {
+  id: number;
+  name: string;
 };
 
 export type CloudNoteDto = {

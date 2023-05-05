@@ -18,6 +18,12 @@ class Category
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     private string $name;
 
+    public function __construct(
+        string $name,
+    )
+    {
+        $this->name = $name;
+    }
     public function getName(): string
     {
         return $this->name;

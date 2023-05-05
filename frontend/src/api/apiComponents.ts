@@ -808,6 +808,57 @@ export const useDeleteNotesById = (
   );
 };
 
+export type GetCategoriesError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.AuthRequiredErrorResponse;
+}>;
+
+export type GetCategoriesVariables = ApiContext["fetcherOptions"];
+
+export const fetchGetCategories = (
+  variables: GetCategoriesVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.FindAllLinkCategoriesResponse,
+    GetCategoriesError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/categories", method: "get", ...variables, signal });
+
+export const useGetCategories = <TData = Schemas.FindAllLinkCategoriesResponse>(
+  variables: GetCategoriesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.FindAllLinkCategoriesResponse,
+      GetCategoriesError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.FindAllLinkCategoriesResponse,
+    GetCategoriesError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/categories",
+      operationId: "getCategories",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetCategories({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type GetNotesError = Fetcher.ErrorWrapper<{
   status: 401;
   payload: Schemas.AuthRequiredErrorResponse;
@@ -1028,6 +1079,50 @@ export const useGetNotesByIdAttachments = <
       ...options,
       ...queryOptions,
     }
+  );
+};
+
+export type PostLinksError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+>;
+
+export type PostLinksVariables = {
+  body: Schemas.NewLinkRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostLinks = (
+  variables: PostLinksVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<undefined, PostLinksError, Schemas.NewLinkRequest, {}, {}, {}>({
+    url: "/api/v1/links",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const usePostLinks = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      PostLinksError,
+      PostLinksVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<undefined, PostLinksError, PostLinksVariables>(
+    (variables: PostLinksVariables) =>
+      fetchPostLinks({ ...fetcherOptions, ...variables }),
+    options
   );
 };
 
@@ -1492,6 +1587,11 @@ export type QueryOperation =
       path: "/api/v1/logout";
       operationId: "getLogout";
       variables: GetLogoutVariables;
+    }
+  | {
+      path: "/api/v1/categories";
+      operationId: "getCategories";
+      variables: GetCategoriesVariables;
     }
   | {
       path: "/api/v1/notes";

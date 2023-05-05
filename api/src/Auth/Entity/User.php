@@ -14,6 +14,7 @@ use Symfony\Component\Uid\UuidV4;
 #[ORM\Table(name: '`users`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     private UuidV4 $id;

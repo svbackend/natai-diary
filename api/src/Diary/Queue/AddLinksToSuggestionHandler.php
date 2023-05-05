@@ -19,7 +19,7 @@ class AddLinksToSuggestionHandler
     {
     }
 
-    public function __invoke(GenerateSuggestionContextMessage $event): void
+    public function __invoke(AddLinksToSuggestionMessage $event): void
     {
         $this->logger->debug("Handling suggestion created event for id {$event->suggestionId}");
 

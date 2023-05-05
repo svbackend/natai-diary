@@ -47,7 +47,7 @@ class NewArticleAction extends BaseAction
         NewArticleRequest $req,
     ): NewArticleResponse
     {
-        //$this->denyAccessUnlessGranted(BlogSecurity::ROLE_BLOG_EDITOR);
+        $this->denyAccessUnlessGranted(BlogSecurity::ROLE_BLOG_EDITOR);
 
         $newArticleId = Uuid::v4();
         $shortId = $this->articles->getNewShortId();

@@ -19,4 +19,10 @@ class LinkCategory
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Category $category;
+
+    public function __construct(Link $link, Category $category)
+    {
+        $this->link = $link;
+        $this->category = $category;
+    }
 }

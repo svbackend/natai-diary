@@ -4,6 +4,7 @@ namespace App\Diary\Repository;
 
 use App\Diary\Entity\Link;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -49,18 +50,21 @@ class LinkRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = <<<SQL
-            SELECT sl.link_id AS link_id, COUNT(sl.link_id) AS cnt
-            FROM suggestion_link sl
-            LEFT JOIN link_category lc ON lc.id = sl.link_id
+            SELECT l.id as link_id, COUNT(sl.link_id) AS cnt
+            FROM link l
+            INNER JOIN link_category lc on l.id = lc.link_id
+            LEFT JOIN suggestion_link sl on l.id = sl.link_id
             WHERE lc.category_id IN (:categoryIds)
-            GROUP BY sl.link_id
+            GROUP BY l.id
             ORDER BY cnt
             LIMIT 3
         SQL;
 
-        $result = $conn
-            ->prepare($sql)
-            ->executeQuery(['categoryIds' => $categoryIds]);
+        $result = $conn->executeQuery($sql, [
+            'categoryIds' => $categoryIds
+        ], [
+            'categoryIds' => ArrayParameterType::INTEGER
+        ]);
 
         $linksIds = $result->fetchAllAssociative();
 
