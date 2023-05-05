@@ -1,5 +1,10 @@
 import DiaryLayout from "../../../src/modules/diary/components/DiaryLayout";
-import {fetchPostLinks, fetchPostLinksLoad, useGetCategories} from "../../../src/api/apiComponents";
+import {
+    fetchPostLinks,
+    fetchPostLinksLoad,
+    fetchPostLinksUploadImage,
+    useGetCategories
+} from "../../../src/api/apiComponents";
 import {useState} from "react";
 import {AlertApiError} from "../../../src/modules/common/components/alert";
 
@@ -82,6 +87,28 @@ export default function NewLinkPage() {
         if (canonicalUrl) setUrl(canonicalUrl);
     }
 
+    const [isImgUploading, setIsImgUploading] = useState<boolean>(false)
+
+    const uploadImage = async () => {
+        if (!image) return;
+        if (isImgUploading) return;
+        setIsImgUploading(true);
+
+        try {
+            const res = await fetchPostLinksUploadImage({
+                body: {
+                    imageUrl: image
+                }
+            })
+
+            setImage(res.url);
+        } catch (e: any) {
+            setError(e)
+        } finally {
+            setIsImgUploading(false)
+        }
+    }
+
     return (
         <DiaryLayout>
             <h1>New Link</h1>
@@ -119,10 +146,11 @@ export default function NewLinkPage() {
             <h3>Description</h3>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)}/>
 
-            <h3>Image</h3>
+            <h3>Image {isImgUploading && <span className={"animate-pulse"}>Uploading..</span>}</h3>
 
             {image && (
-                <img className={"block max-w-max rounded"} src={image} alt={"og:image"}/>
+                <img onClick={uploadImage} className={"block cursor-pointer max-w-max rounded"} src={image}
+                     alt={"og:image"}/>
             )}
 
             <input type={"text"} value={image || ""} onChange={(e) => setImage(e.target.value)}/>

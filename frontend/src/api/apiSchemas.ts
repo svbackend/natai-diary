@@ -333,6 +333,14 @@ export type UpdateNoteRequest = {
   attachments: string[];
 };
 
+export type UploadLinkImageRequest = {
+  imageUrl: string;
+};
+
+export type UploadLinkImageResponse = {
+  url: string;
+};
+
 export type FindAllArticlesResponse = {
   articles: CloudBlogArticleDto[];
 };

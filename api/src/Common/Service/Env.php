@@ -20,6 +20,12 @@ class Env
         return self::get('AWS_S3_UPLOAD_BUCKET');
     }
 
+    public static function getAwsUploadPublicBucket(): string
+    {
+        $regularBucket = self::getAwsUploadBucket();
+        return $regularBucket . '-public';
+    }
+
     public static function isProd(): bool
     {
         return self::get('APP_ENV') === 'prod';

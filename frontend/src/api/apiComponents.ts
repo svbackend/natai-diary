@@ -1408,6 +1408,61 @@ export const usePutNotesByIdV2 = (
   );
 };
 
+export type PostLinksUploadImageError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+>;
+
+export type PostLinksUploadImageVariables = {
+  body: Schemas.UploadLinkImageRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostLinksUploadImage = (
+  variables: PostLinksUploadImageVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.UploadLinkImageResponse,
+    PostLinksUploadImageError,
+    Schemas.UploadLinkImageRequest,
+    {},
+    {},
+    {}
+  >({
+    url: "/api/v1/links/upload-image",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const usePostLinksUploadImage = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.UploadLinkImageResponse,
+      PostLinksUploadImageError,
+      PostLinksUploadImageVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    Schemas.UploadLinkImageResponse,
+    PostLinksUploadImageError,
+    PostLinksUploadImageVariables
+  >(
+    (variables: PostLinksUploadImageVariables) =>
+      fetchPostLinksUploadImage({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type GetArticlesError = Fetcher.ErrorWrapper<undefined>;
 
 export type GetArticlesVariables = ApiContext["fetcherOptions"];
