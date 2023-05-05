@@ -1082,6 +1082,56 @@ export const useGetNotesByIdAttachments = <
   );
 };
 
+export type PostLinksLoadError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+>;
+
+export type PostLinksLoadVariables = {
+  body: Schemas.LoadLinkRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPostLinksLoad = (
+  variables: PostLinksLoadVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.LoadLinkResponse,
+    PostLinksLoadError,
+    Schemas.LoadLinkRequest,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/links/load", method: "post", ...variables, signal });
+
+export const usePostLinksLoad = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.LoadLinkResponse,
+      PostLinksLoadError,
+      PostLinksLoadVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    Schemas.LoadLinkResponse,
+    PostLinksLoadError,
+    PostLinksLoadVariables
+  >(
+    (variables: PostLinksLoadVariables) =>
+      fetchPostLinksLoad({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type PostLinksError = Fetcher.ErrorWrapper<
   | {
       status: 400;

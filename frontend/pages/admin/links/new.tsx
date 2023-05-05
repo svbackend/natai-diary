@@ -1,5 +1,5 @@
 import DiaryLayout from "../../../src/modules/diary/components/DiaryLayout";
-import {fetchPostLinks, useGetCategories} from "../../../src/api/apiComponents";
+import {fetchPostLinks, fetchPostLinksLoad, useGetCategories} from "../../../src/api/apiComponents";
 import {useState} from "react";
 import {AlertApiError} from "../../../src/modules/common/components/alert";
 
@@ -35,6 +35,8 @@ export default function NewLinkPage() {
 
     const send = () => {
         if (loading) return;
+        if (!categories.length) return;
+
         setLoading(true);
         setError(null);
 
@@ -54,6 +56,28 @@ export default function NewLinkPage() {
         }).finally(() => {
             setLoading(false);
         })
+    }
+
+    // load title, description, og:image from url
+    const loadInfo = async () => {
+        const loadLinkResponse = await fetchPostLinksLoad({
+            body: {
+                url: url
+            }
+        })
+        const html = loadLinkResponse.html;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        processDoc(doc);
+    }
+
+    const processDoc = (doc: Document) => {
+        const title = doc.querySelector("title")?.textContent;
+        const description = doc.querySelector("meta[name='description']")?.getAttribute("content");
+        const image = doc.querySelector("meta[property='og:image']")?.getAttribute("content");
+        if (title) setTitle(title);
+        if (description) setDescription(description);
+        if (image) setImage(image);
     }
 
     return (
@@ -82,16 +106,23 @@ export default function NewLinkPage() {
                 ))}
             </div>
 
-            <h3>Title</h3>
-            <input type={"text"} value={title} onChange={(e) => setTitle(e.target.value)}/>
-
             <h3>Url</h3>
             <input type={"text"} value={url} onChange={(e) => setUrl(e.target.value)}/>
+
+            <button onClick={loadInfo}>Load</button>
+
+            <h3>Title</h3>
+            <input type={"text"} value={title} onChange={(e) => setTitle(e.target.value)}/>
 
             <h3>Description</h3>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)}/>
 
             <h3>Image</h3>
+
+            {image && (
+                <img className={"block max-w-max rounded"} src={image} alt={"og:image"}/>
+            )}
+
             <input type={"text"} value={image || ""} onChange={(e) => setImage(e.target.value)}/>
 
             <button onClick={send}>Submit</button>

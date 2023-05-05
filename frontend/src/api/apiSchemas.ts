@@ -277,6 +277,14 @@ export type GetNoteAttachmentsErrorRef = {
   code: "attachments_not_array" | "attachments_not_uuids";
 };
 
+export type LoadLinkRequest = {
+  url: string;
+};
+
+export type LoadLinkResponse = {
+  html: string;
+};
+
 export type NewLinkRequest = {
   title: string;
   description: string;
