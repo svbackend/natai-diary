@@ -1,12 +1,15 @@
-import {CloudSuggestionDto} from "../../../api/apiSchemas";
+import {CloudSuggestionDto, SuggestionLinkDto} from "../../../api/apiSchemas";
 import {useAtom} from "jotai";
 import React from "react";
 import {diarySuggestionModalAtom} from "../atoms/diarySuggestionModalAtom";
-import {fetchPutSuggestionsByIdFeedback} from "../../../api/apiComponents";
+import {fetchPutSuggestionsByIdFeedback, useGetSuggestionByIdLinks} from "../../../api/apiComponents";
 import {dateService} from "../../common/services/dateService";
 import therapySession from "../../../../public/assets/therapy/therapy-session.svg";
 import Image from "next/image";
 import DialogWrapper, {CloseModalTopButton} from "./DialogWrapper";
+import AppSpinner from "../../common/components/AppSpinner";
+import {AlertApiError} from "../../common/components/alert";
+import Link from "next/link";
 
 export function SuggestionModal(
     props: {
@@ -77,7 +80,7 @@ function DiarySuggestionModalContent(props: { suggestion: CloudSuggestionDto, on
             <div className="p-6">
                 <article className="prose dark:prose-invert text-nav-item dark:text-nav-item-alt">
 
-                    <Image src={therapySession} alt={"Therapy session"} />
+                    <Image src={therapySession} alt={"Therapy session"}/>
 
                     <p className="text-center -mt-8 text-sm text-nav-item dark:text-nav-item-alt">
                         Natai Diary • {period}
@@ -87,6 +90,8 @@ function DiarySuggestionModalContent(props: { suggestion: CloudSuggestionDto, on
                         <p key={i}>{p}</p>
                     )}
                 </article>
+
+                <SuggestionLinks suggestion={props.suggestion}/>
             </div>
 
             <div className="flex p-6 flex flex-col">
@@ -103,5 +108,60 @@ function DiarySuggestionModalContent(props: { suggestion: CloudSuggestionDto, on
                 </button>
             </div>
         </div>
+    )
+}
+
+function SuggestionLinks(props: { suggestion: CloudSuggestionDto }) {
+    const {data, isLoading, error} = useGetSuggestionByIdLinks({
+        pathParams: {
+            id: props.suggestion.id,
+        }
+    })
+
+    if (isLoading) {
+        return (<AppSpinner/>)
+    }
+
+    if (error) {
+        return <AlertApiError error={error}/>
+    }
+
+    if (data?.links.length === 0) {
+        return null
+    }
+
+    return <SuggestionLinksCards links={data.links}/>
+}
+
+function SuggestionLinksCards(props: { links: SuggestionLinkDto[] }) {
+    return (
+        <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
+            {props.links.map((link, i) =>
+                <SuggestionLinkCard key={i} link={link}/>
+            )}
+        </div>
+    )
+}
+
+function SuggestionLinkCard(props: { link: SuggestionLinkDto }) {
+    return (
+        <Link href={props.link.url} target="_blank" rel="noreferrer"
+              className="flex flex-col rounded-lg shadow-lg overflow-hidden">
+            {props.link.image && (
+                <div className="flex-shrink-0">
+                    <Image className="h-48 w-full object-cover" src={props.link.image} width={480} height={360} alt=""/>
+                </div>
+            )}
+            <div className="flex-1 bg-white dark:bg-dark dark:text-light p-6 flex flex-col justify-between">
+                <div className="flex-1">
+                    <p className="text-sm font-medium text-brand">
+                        {props.link.title}
+                    </p>
+                    <p className="mt-3 text-base text-nav-item dark:text-nav-item-alt">
+                        {props.link.description}
+                    </p>
+                </div>
+            </div>
+        </Link>
     )
 }

@@ -33,4 +33,19 @@ class SuggestionLink
         $this->suggestion = $suggestion;
         $this->link = $link;
     }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getSuggestion(): Suggestion
+    {
+        return $this->suggestion;
+    }
+
+    public function getLink(): Link
+    {
+        return $this->link;
+    }
 }

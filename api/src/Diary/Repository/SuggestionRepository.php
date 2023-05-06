@@ -63,4 +63,15 @@ class SuggestionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findOneByIdAndUser(UuidV4 $suggestionId, UuidV4 $userId): ?Suggestion
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.id = :suggestionId')
+            ->setParameter('suggestionId', $suggestionId)
+            ->andWhere('s.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

@@ -277,6 +277,10 @@ export type GetNoteAttachmentsErrorRef = {
   code: "attachments_not_array" | "attachments_not_uuids";
 };
 
+export type SuggestionLinksResponse = {
+  links: SuggestionLinkDto[];
+};
+
 export type LoadLinkRequest = {
   url: string;
 };
@@ -450,6 +454,14 @@ export type CloudAttachmentDto = {
   originalFilename: string;
   metadata: CloudAttachmentMetadataDto;
   previews: CloudAttachmentPreviewDto[];
+};
+
+export type SuggestionLinkDto = {
+  id: number;
+  url: string;
+  title: string;
+  description: string;
+  image: string | null;
 };
 
 export type CloudBlogArticleDto = {

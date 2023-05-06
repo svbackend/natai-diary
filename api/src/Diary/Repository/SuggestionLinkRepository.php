@@ -2,9 +2,12 @@
 
 namespace App\Diary\Repository;
 
+use App\Diary\DTO\SuggestionLinkDto;
+use App\Diary\Entity\Link;
 use App\Diary\Entity\SuggestionLink;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @extends ServiceEntityRepository<SuggestionLink>
@@ -37,5 +40,28 @@ class SuggestionLinkRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /** @return SuggestionLinkDto */
+    public function findAllBySuggestionId(UuidV4 $suggestionId): array
+    {
+        $links = $this->createQueryBuilder('sl')
+            ->andWhere('sl.suggestion = :suggestionId')
+            ->setParameter('suggestionId', $suggestionId)
+            ->join('sl.link', 'l')
+            ->addSelect('l')
+            ->getQuery()
+            ->getResult();
+
+        return array_map(
+            fn (SuggestionLink $sl) => new SuggestionLinkDto(
+                id: $sl->getId(),
+                url: $sl->getLink()->getUrl(),
+                title: $sl->getLink()->getTitle(),
+                description: $sl->getLink()->getDescription(),
+                image: $sl->getLink()->getImage(),
+            ),
+            $links
+        );
     }
 }

@@ -1082,6 +1082,80 @@ export const useGetNotesByIdAttachments = <
   );
 };
 
+export type GetSuggestionByIdLinksPathParams = {
+  id: string;
+};
+
+export type GetSuggestionByIdLinksError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 404;
+      payload: Schemas.NotFoundErrorRef;
+    }
+  | {
+      status: 422;
+      payload: Schemas.GetNoteAttachmentsErrorRef;
+    }
+>;
+
+export type GetSuggestionByIdLinksVariables = {
+  pathParams: GetSuggestionByIdLinksPathParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchGetSuggestionByIdLinks = (
+  variables: GetSuggestionByIdLinksVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.SuggestionLinksResponse,
+    GetSuggestionByIdLinksError,
+    undefined,
+    {},
+    {},
+    GetSuggestionByIdLinksPathParams
+  >({
+    url: "/api/v1/suggestion/{id}/links",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetSuggestionByIdLinks = <
+  TData = Schemas.SuggestionLinksResponse
+>(
+  variables: GetSuggestionByIdLinksVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.SuggestionLinksResponse,
+      GetSuggestionByIdLinksError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.SuggestionLinksResponse,
+    GetSuggestionByIdLinksError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/suggestion/{id}/links",
+      operationId: "getSuggestionByIdLinks",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetSuggestionByIdLinks({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type PostLinksLoadError = Fetcher.ErrorWrapper<
   | {
       status: 400;
@@ -1712,6 +1786,11 @@ export type QueryOperation =
       path: "/api/v1/notes/{id}/attachments";
       operationId: "getNotesByIdAttachments";
       variables: GetNotesByIdAttachmentsVariables;
+    }
+  | {
+      path: "/api/v1/suggestion/{id}/links";
+      operationId: "getSuggestionByIdLinks";
+      variables: GetSuggestionByIdLinksVariables;
     }
   | {
       path: "/api/v1/sync";
