@@ -54,13 +54,16 @@ class UploadLinkImageAction extends BaseAction
         $tmpImageFile = tempnam(sys_get_temp_dir(), 'link_image');
         file_put_contents($tmpImageFile, $imageContent);
 
-        // resize image to 480×360
+        // resize image to 426×240 (16:9 240p)
         $imageManager = new ImageManager();
+
+        $w = 426;
+        $h = 240;
 
         $imageStream = $imageManager
             ->make($tmpImageFile)
             ->orientate()
-            ->fit(480, 360)
+            ->fit($w, $h)
             ->stream('jpg');
 
         // upload image to s3 with public access

@@ -1,3 +1,5 @@
+const { blackA, mauve, violet } = require('@radix-ui/colors');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -8,6 +10,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        ...blackA,
+        ...mauve,
+        ...violet,
         'brand': '#9571F8',
         'brand-alt': '#d1beff',
         'dark': '#29293E',

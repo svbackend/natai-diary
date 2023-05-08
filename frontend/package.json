@@ -11,6 +11,8 @@
   "dependencies": {
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
+    "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-scroll-area": "^1.0.3",
     "@tanstack/react-query": "^4.16.1",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
