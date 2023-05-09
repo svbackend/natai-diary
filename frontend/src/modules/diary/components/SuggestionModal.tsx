@@ -11,6 +11,9 @@ import AppSpinner from "../../common/components/AppSpinner";
 import {AlertApiError} from "../../common/components/alert";
 import Link from "next/link";
 import * as ScrollArea from '@radix-ui/react-scroll-area';
+import {reactQueryNoRefetchOptions} from "../../../utils/noRefetch";
+import preview1Img from "../../../../public/assets/therapy/suggestion-links-preview1.jpg";
+import {price_suggestion_links, price_suggestion_links_early_bird} from "../../../utils/prices";
 
 export function SuggestionModal(
     props: {
@@ -116,7 +119,10 @@ function SuggestionLinks(props: { suggestion: CloudSuggestionDto }) {
     const {data, isLoading, error} = useGetSuggestionByIdLinks({
         pathParams: {
             id: props.suggestion.id,
-        }
+        },
+
+    }, {
+        ...reactQueryNoRefetchOptions,
     })
 
     if (isLoading) {
@@ -124,7 +130,7 @@ function SuggestionLinks(props: { suggestion: CloudSuggestionDto }) {
     }
 
     if (error) {
-        return <AlertApiError error={error}/>
+        return <SuggestionLinksErrorHandler error={error}/>
     }
 
     if (data?.links.length === 0) {
@@ -158,7 +164,8 @@ function SuggestionLinkCard(props: { link: SuggestionLinkDto }) {
               className="flex flex-shrink-0 max-w-[80%] flex-col rounded-lg shadow-lg">
             {props.link.image && (
                 <div className="flex-shrink-0">
-                    <Image className="h-48 w-full object-cover rounded-lg" src={props.link.image} width={426} height={240} alt=""/>
+                    <Image className="h-48 w-full object-cover rounded-lg" src={props.link.image} width={426}
+                           height={240} alt=""/>
                 </div>
             )}
             <div className="flex-1 bg-white dark:bg-dark dark:text-light p-6 flex flex-col justify-between">
@@ -172,5 +179,41 @@ function SuggestionLinkCard(props: { link: SuggestionLinkDto }) {
                 </div>
             </div>
         </Link>
+    )
+}
+
+function SuggestionLinksErrorHandler(props: { error: any }) {
+    const err = props.error
+
+    if (err.status && err.status === 422 && err.payload && err.payload.code == "feature_not_available") {
+        return <SuggestionLinksNotAvailable/>
+    }
+
+    return <AlertApiError error={err}/>
+}
+
+function SuggestionLinksNotAvailable() {
+    // promote the feature, show placeholder + button to buy it
+    return (
+        <div className="flex flex-nowrap mt-4 gap-4">
+            <Link href={"/"} target="_blank" rel="noreferrer"
+                  className="flex flex-shrink-0 max-w-[80%] flex-col rounded-lg shadow-lg">
+                <div className="flex-shrink-0">
+                    <Image className="h-48 w-full object-cover rounded-lg" src={preview1Img} alt=""/>
+                </div>
+
+                <div className="flex-1 bg-white dark:bg-dark dark:text-light p-6 flex flex-col justify-between">
+                    <div className="flex-1">
+                        <p className="text-sm font-medium text-brand">
+                            Want to learn more about feelings that you're experiencing?
+                        </p>
+                        <p className="mt-3 text-base text-nav-item dark:text-nav-item-alt">
+                            Get lifetime access to additional resources such as videos, podcasts and articles
+                            for just <s>{price_suggestion_links}</s> {price_suggestion_links_early_bird}!
+                        </p>
+                    </div>
+                </div>
+            </Link>
+        </div>
     )
 }

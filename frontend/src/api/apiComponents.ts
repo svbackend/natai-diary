@@ -1097,7 +1097,7 @@ export type GetSuggestionByIdLinksError = Fetcher.ErrorWrapper<
     }
   | {
       status: 422;
-      payload: Schemas.GetNoteAttachmentsErrorRef;
+      payload: Schemas.GetSuggestionLinksErrorRef;
     }
 >;
 

@@ -281,6 +281,13 @@ export type SuggestionLinksResponse = {
   links: SuggestionLinkDto[];
 };
 
+export type GetSuggestionLinksErrorRef = {
+  /**
+   * @example feature_not_available
+   */
+  code: "feature_not_available";
+};
+
 export type LoadLinkRequest = {
   url: string;
 };
