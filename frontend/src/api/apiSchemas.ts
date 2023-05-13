@@ -445,6 +445,7 @@ export type CloudSuggestionDto = {
   id: UuidV4;
   notes: string[];
   suggestion: string;
+  suggestionLinksCount: number;
   period: SuggestionPeriodDto;
   isReceived: boolean;
   feedbackRating: number | null;

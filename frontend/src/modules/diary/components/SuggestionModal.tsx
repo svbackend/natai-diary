@@ -94,9 +94,13 @@ function DiarySuggestionModalContent(props: { suggestion: CloudSuggestionDto, on
                         <p key={i}>{p}</p>
                     )}
 
-                    <h2>Additional resources</h2>
+                    {props.suggestion.suggestionLinksCount > 0 && (
+                        <h2>Additional resources</h2>
+                    )}
                 </article>
-                <SuggestionLinks suggestion={props.suggestion}/>
+                {props.suggestion.suggestionLinksCount > 0 && (
+                    <SuggestionLinks suggestion={props.suggestion}/>
+                )}
             </div>
 
             <div className="flex p-6 flex-col">
@@ -131,7 +135,10 @@ function SuggestionLinks(props: { suggestion: CloudSuggestionDto }) {
     }
 
     if (error) {
-        return <SuggestionLinksErrorHandler error={error}/>
+        return <SuggestionLinksErrorHandler
+            error={error}
+            suggestionLinksCount={props.suggestion.suggestionLinksCount}
+        />
     }
 
     if (data?.links.length === 0) {
@@ -183,40 +190,48 @@ function SuggestionLinkCard(props: { link: SuggestionLinkDto }) {
     )
 }
 
-function SuggestionLinksErrorHandler(props: { error: any }) {
+function SuggestionLinksErrorHandler(props: { error: any, suggestionLinksCount: number }) {
     const err = props.error
 
     if (err.status && err.status === 422 && err.payload && err.payload.code == "feature_not_available") {
-        return <SuggestionLinksNotAvailable/>
+        return <SuggestionLinksNotAvailable suggestionLinksCount={props.suggestionLinksCount}/>
     }
 
     return <AlertApiError error={err}/>
 }
 
-function SuggestionLinksNotAvailable() {
+function SuggestionLinksNotAvailable(props: { suggestionLinksCount: number }) {
     // promote the feature, show placeholder + button to buy it
+    const arr = Array.from(Array(props.suggestionLinksCount).keys())
     return (
-        <div className="flex flex-nowrap mt-4 gap-4">
-            <div className="relative flex flex-shrink-0 max-w-[80%] flex-col rounded-lg shadow-lg">
-                <div className="flex-shrink-0">
-                    <Image className="h-48 w-full object-cover rounded-t-lg" src={preview1Img} alt=""/>
-                </div>
+        <div className="flex flex-nowrap mt-4 gap-4 overflow-hidden">
+            {arr.map((_, i) => <SuggestionLinksGetAccessCard key={`sl${i}`}/>)}
+        </div>
+    )
+}
 
-                <div className="flex-1 bg-white dark:bg-dark dark:text-light p-6 flex flex-col justify-between rounded-b-lg">
-                    <div className="flex-1">
-                        <p className="text-sm font-medium text-brand">
-                            Want to learn more about feelings that you're experiencing?
-                        </p>
-                        <p className="mt-3 text-base text-nav-item dark:text-nav-item-alt">
-                            Get lifetime access to additional resources such as videos, podcasts and articles
-                            for just <s>{price_suggestion_links}</s> {price_suggestion_links_early_bird}!
-                        </p>
-                    </div>
-                </div>
+function SuggestionLinksGetAccessCard() {
+    return (
+        <div className="relative flex flex-shrink-0 max-w-[80%] flex-col rounded-lg shadow-lg">
+            <div className="flex-shrink-0">
+                <Image className="h-48 w-full object-cover rounded-t-lg" src={preview1Img} alt=""/>
+            </div>
 
-                <div className="absolute top-0 right-0 h-full w-full backdrop-blur-sm">
-                    <BuySuggestionLinksButton/>
+            <div
+                className="flex-1 bg-white dark:bg-dark dark:text-light p-6 flex flex-col justify-between rounded-b-lg">
+                <div className="flex-1">
+                    <p className="text-sm font-medium text-brand">
+                        Want to learn more about feelings that you're experiencing?
+                    </p>
+                    <p className="mt-3 text-base text-nav-item dark:text-nav-item-alt">
+                        Get lifetime access to additional resources such as videos, podcasts and articles
+                        for just <s>{price_suggestion_links}</s> {price_suggestion_links_early_bird}!
+                    </p>
                 </div>
+            </div>
+
+            <div className="absolute top-0 right-0 h-full w-full backdrop-blur-sm">
+                <BuySuggestionLinksButton/>
             </div>
         </div>
     )
@@ -228,7 +243,7 @@ function SuggestionLinksNotAvailable() {
 function BuySuggestionLinksButton() {
     return (
         <Link href={"/feature/suggestion-links"} target="_blank" rel="noreferrer"
-                className="flex items-center justify-center h-full w-full">
+              className="flex items-center justify-center h-full w-full">
             <button
                 className="px-4 py-2 text-white bg-brand hover:bg-brand/80 focus:ring-4 focus:outline-none focus:ring-indigo-900 font-bold rounded-full">
                 Get access

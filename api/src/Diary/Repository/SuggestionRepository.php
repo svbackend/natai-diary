@@ -2,6 +2,8 @@
 
 namespace App\Diary\Repository;
 
+use App\Diary\DTO\CloudSuggestionDto;
+use App\Diary\DTO\SuggestionPeriodDto;
 use App\Diary\Entity\Suggestion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -52,16 +54,52 @@ class SuggestionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Suggestion[]
+     * @return CloudSuggestionDto[]
      */
     public function findAllByUserId(UuidV4 $userId): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.user = :userId')
-            ->setParameter('userId', $userId)
-            ->orderBy('s.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = <<<SQL
+            SELECT s.id,
+                   s.notes_ids,
+                   s.output,
+                   count(sl.id) as suggestion_links_count,
+                   s.date_from,
+                   s.date_to,
+                   s.is_received,
+                   s.feedback_rating,
+                   s.created_at
+            FROM suggestion s
+                     LEFT JOIN suggestion_link sl ON sl.suggestion_id = s.id
+            WHERE s.user_id = :userId
+            GROUP BY s.id
+            ORDER BY s.created_at DESC;
+        SQL;
+
+        $suggestions = $conn
+            ->prepare($sql)
+            ->executeQuery(['userId' => $userId])
+            ->fetchAllAssociative();
+
+        $dtos = [];
+
+        foreach ($suggestions as $suggestion) {
+            $dtos[] = new CloudSuggestionDto(
+                id: UuidV4::fromString($suggestion['id']),
+                notes: json_decode($suggestion['notes_ids'], true),
+                suggestion: $suggestion['output'],
+                suggestionLinksCount: (int)$suggestion['suggestion_links_count'],
+                period: new SuggestionPeriodDto(
+                    from: new \DateTimeImmutable($suggestion['date_from']),
+                    to: new \DateTimeImmutable($suggestion['date_to']),
+                ),
+                isReceived: (bool)$suggestion['is_received'],
+                feedbackRating: $suggestion['feedback_rating'] ? (int)$suggestion['feedback_rating'] : null,
+                createdAt: new \DateTimeImmutable($suggestion['created_at'])
+            );
+        }
+
+        return $dtos;
     }
 
     public function findOneByIdAndUser(UuidV4 $suggestionId, UuidV4 $userId): ?Suggestion

@@ -11,6 +11,7 @@ class CloudSuggestionDto
         /** @var string[] $notes */
         public array $notes,
         public string $suggestion,
+        public int $suggestionLinksCount,
         public SuggestionPeriodDto $period,
         public bool $isReceived,
         public ?int $feedbackRating,

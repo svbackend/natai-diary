@@ -35,23 +35,9 @@ class FindAllSuggestionsAction extends BaseAction
         #[CurrentUser] User $user,
     ): FindAllSuggestionsResponse
     {
-        $suggestions = $this->suggestions->findAllByUserId(
+        $dtos = $this->suggestions->findAllByUserId(
             userId: $user->getId()
         );
-
-        $dtos = [];
-
-        foreach ($suggestions as $suggestion) {
-            $dtos[] = new CloudSuggestionDto(
-                id: $suggestion->getId(),
-                notes: $suggestion->getNotesIds(),
-                suggestion: $suggestion->getOutput(),
-                period: $suggestion->getPeriod(),
-                isReceived: $suggestion->isReceived(),
-                feedbackRating: $suggestion->getFeedbackRating(),
-                createdAt: $suggestion->getCreatedAt(),
-            );
-        }
 
         return new FindAllSuggestionsResponse(
             suggestions: $dtos,
