@@ -1,3 +1,23 @@
+### May 13, 2023
+
+Just to give an update about deleting account feature, it was implemented and released soon after I got
+a message from Google. Couple of users actually deleted their accounts, but it's fine,
+total number of users is almost 100 now, but they all were brought by Facebook or Google ads,
+no organic traffic. So that's why I want to work on blog, stories & SEO,
+in the future I could also add monetization on top of some content,
+similar to StarterStory, but more about people who found their way to heal themselves from depression/anxiety other mental-health issues.
+
+I'm also working on a new paid feature "Suggestion Links" or "Additional Resources".
+The idea is to provide links to articles, videos, books, podcasts, etc. that can help user to improve their life based on their notes. 
+So the initial AI suggestion will be free, but access to additional resources will be paid (one-time payment).
+
+I kinda excited about this because it may be the first thing that I can actually sell in the app and overall my first experience of selling something in the internet.
+On the other hand I understand that number of people that will actually see the proposal to buy this feature will be very small,
+since you need to write a note, then you need to get a suggestion and only then you can decide whether you want to buy something additional.
+I'm not expecting to earn a lot of money on this, but it's a good way for me to have some experience with payment gateways, accepting payments etc.
+
+So I will be able to reuse a lot of code and experience on other features or even other projects.
+
 ### Apr 5, 2023
 
 Today google released new rules for android apps that have feature to create account,
