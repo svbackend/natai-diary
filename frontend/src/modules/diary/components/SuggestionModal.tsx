@@ -14,6 +14,7 @@ import * as ScrollArea from '@radix-ui/react-scroll-area';
 import {reactQueryNoRefetchOptions} from "../../../utils/noRefetch";
 import preview1Img from "../../../../public/assets/therapy/suggestion-links-preview1.jpg";
 import {price_suggestion_links, price_suggestion_links_early_bird} from "../../../utils/prices";
+import {LockOpenIcon} from "@heroicons/react/24/outline";
 
 export function SuggestionModal(
     props: {
@@ -231,7 +232,10 @@ function SuggestionLinksGetAccessCard() {
             </div>
 
             <div className="absolute top-0 right-0 h-full w-full backdrop-blur-sm">
-                <BuySuggestionLinksButton/>
+                <div className={"flex flex-col items-center gap-4 justify-center h-full w-full"}>
+                    <BuySuggestionLinksButton/>
+                    <LearnMoreSuggestionLinksButton/>
+                </div>
             </div>
         </div>
     )
@@ -242,11 +246,21 @@ function SuggestionLinksGetAccessCard() {
  */
 function BuySuggestionLinksButton() {
     return (
+        <div className="flex items-center justify-center">
+            <button className="px-4 py-2 text-dark dark:text-white bg-white dark:bg-nav-bg border-2 border-indigo-900 hover:bg-indigo-900 dark:hover:bg-indigo-900 focus:ring-2 focus:ring-indigo-900 font-bold rounded-full transition duration-300 ease-in-out">
+                Get Access <LockOpenIcon className="inline w-4 h-4"/>
+            </button>
+        </div>
+    )
+}
+
+function LearnMoreSuggestionLinksButton() {
+    return (
         <Link href={"/feature/suggestion-links"} target="_blank" rel="noreferrer"
-              className="flex items-center justify-center h-full w-full">
+              className="flex items-center justify-center">
             <button
                 className="px-4 py-2 text-white bg-brand hover:bg-brand/80 focus:ring-4 focus:outline-none focus:ring-indigo-900 font-bold rounded-full">
-                Get access
+                Learn More
             </button>
         </Link>
     )
