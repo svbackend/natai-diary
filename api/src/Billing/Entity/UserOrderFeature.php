@@ -16,7 +16,7 @@ class UserOrderFeature
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: UserOrder::class)]
     #[ORM\JoinColumn(nullable: false)]
     private UserOrder $order;
 
@@ -26,10 +26,15 @@ class UserOrderFeature
     #[ORM\Column(type: 'integer')]
     private int $price;
 
-    public function __construct(UserOrder $order, string $feature)
+    public function __construct(
+        UserOrder $order,
+        string $feature,
+        int $price,
+    )
     {
         $this->order = $order;
         $this->feature = $feature;
+        $this->price = $price;
     }
 
     public function getId(): ?int
@@ -45,5 +50,10 @@ class UserOrderFeature
     public function getFeature(): string
     {
         return $this->feature;
+    }
+
+    public function getPrice(): int
+    {
+        return $this->price;
     }
 }

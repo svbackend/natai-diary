@@ -24,7 +24,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class BuySuggestionLinksAction extends BaseAction
 {
     public function __construct(
-        private PaymentGateway $paymentGateway,
+        private PaymentGateway         $paymentGateway,
         private EntityManagerInterface $em,
     )
     {
@@ -42,11 +42,15 @@ class BuySuggestionLinksAction extends BaseAction
     {
         $checkoutSession = $this->paymentGateway->createSuggestionLinksCheckoutSession();
 
-        $userOrder = new UserOrder($user);
+        $userOrder = new UserOrder(
+            user: $user,
+            stripeSessionId: $checkoutSession->id
+        );
 
         $suggestionLinksFeature = new UserOrderFeature(
             order: $userOrder,
             feature: UserFeature::FEAT_SUGGESTION_LINKS,
+            price: PaymentGateway::PRICE_SUGGESTION_LINKS,
         );
 
         $this->em->persist($userOrder);

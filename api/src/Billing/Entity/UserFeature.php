@@ -13,6 +13,11 @@ class UserFeature
 {
     public const FEAT_SUGGESTION_LINKS = 'suggestion_links';
 
+    /** @see UserFeature::getFeatureName */
+    private const FEATURE_NAME_MAP = [
+        UserFeature::FEAT_SUGGESTION_LINKS => 'AI-Suggestion: Additional Resources',
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: 'integer')]
@@ -48,5 +53,10 @@ class UserFeature
     public function getFeature(): string
     {
         return $this->feature;
+    }
+
+    public static function getFeatureName(string $featureCode): string
+    {
+        return self::FEATURE_NAME_MAP[$featureCode] ?? $featureCode;
     }
 }

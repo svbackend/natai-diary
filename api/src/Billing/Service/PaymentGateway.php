@@ -3,6 +3,7 @@
 namespace App\Billing\Service;
 
 use App\Billing\DTO\PaymentLinkDto;
+use App\Billing\Entity\UserFeature;
 use App\Common\Service\Env;
 use Psr\Log\LoggerInterface;
 use Stripe\StripeClient;
@@ -11,8 +12,6 @@ class PaymentGateway
 {
     public const SUCCESS_URL = '/feature/success?session_id={CHECKOUT_SESSION_ID}';
     public const CANCEL_URL = '/feature/cancel';
-
-    public const PRODUCT_NAME_SUGGESTION_LINKS = 'AI-Suggestion: Additional Resources';
     public const PRICE_SUGGESTION_LINKS = 1120;
     public const PRICE_SUGGESTION_LINKS_DISCOUNT = 799;
 
@@ -25,8 +24,9 @@ class PaymentGateway
 
     public function createSuggestionLinksCheckoutSession(): PaymentLinkDto
     {
+        $name = UserFeature::getFeatureName(UserFeature::FEAT_SUGGESTION_LINKS);
         return $this->createCheckoutSession(
-            productName: self::PRODUCT_NAME_SUGGESTION_LINKS,
+            productName: $name,
             amount: self::PRICE_SUGGESTION_LINKS,
         );
     }

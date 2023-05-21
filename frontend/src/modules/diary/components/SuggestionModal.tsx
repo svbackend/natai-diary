@@ -238,7 +238,13 @@ export function BuySuggestionLinksButton() {
         <div className="flex items-center justify-center">
             <button onClick={onClick}
                     className={classNames("px-4 py-2 text-dark dark:text-white bg-white dark:bg-nav-bg border-2 border-indigo-900 hover:bg-indigo-900 dark:hover:bg-indigo-900 focus:ring-2 focus:ring-indigo-900 font-bold rounded-full transition duration-300 ease-in-out", isLoading && "animate-pulse")}>
-                Get Access <LockOpenIcon className="inline w-4 h-4"/>
+                Get Access
+                &nbsp;
+                {isLoading ? (
+                    <AppSpinner/>
+                ) : (
+                    <LockOpenIcon className="inline w-4 h-4"/>
+                )}
             </button>
         </div>
     )

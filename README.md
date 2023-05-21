@@ -43,3 +43,4 @@ http://localhost:1080 - MailCatcher
 - `make up` - start all services
 - `make frontend-schema` - generate react-query hooks + schema from openapi spec
 - `make frontend-tunnel` - create ngrok tunnel for frontend
+- `stripe listen --forward-to localhost:8000/api/v1/stripe` - start stripe webhook listener
