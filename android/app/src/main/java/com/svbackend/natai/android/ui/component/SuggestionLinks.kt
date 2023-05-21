@@ -1,5 +1,7 @@
 package com.svbackend.natai.android.ui.component
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.http.dto.CloudSuggestionLinkDto
@@ -38,9 +41,11 @@ fun SuggestionLinks(links: List<CloudSuggestionLinkDto>, error: String?) {
         }
 
         if (links.isNotEmpty()) {
-            LazyRow(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            ) {
                 items(links) { link ->
                     SuggestionLinkCard(link)
                 }
@@ -51,8 +56,12 @@ fun SuggestionLinks(links: List<CloudSuggestionLinkDto>, error: String?) {
 
 @Composable
 fun SuggestionLinkCard(link: CloudSuggestionLinkDto) {
-    fun onOpenLinkInBrowser(url: String) {
+    val context = androidx.compose.ui.platform.LocalContext.current
 
+    fun onOpenLinkInBrowser(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(context, intent, null)
     }
 
     Card(
