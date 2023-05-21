@@ -8,11 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.dto.CloudSuggestionDto
+import com.svbackend.natai.android.http.dto.CloudSuggestionLinkDto
 import com.svbackend.natai.android.http.dto.SuggestionPeriodDto
+import com.svbackend.natai.android.http.exception.FeatureNotAvailableException
 import com.svbackend.natai.android.http.request.SuggestionFeedbackRequest
 import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.isLoggedIn
 import kotlinx.coroutines.launch
+
+const val FEATURE_NOT_AVAILABLE = "FEATURE_NOT_AVAILABLE"
 
 class TherapyViewModel(application: Application) : AndroidViewModel(application) {
     val TAG = "TherapyViewModel"
@@ -24,6 +28,10 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val selectedSuggestion = mutableStateOf<CloudSuggestionDto?>(null)
 
     val isUserLoggedIn = prefs.isLoggedIn()
+
+    val suggestionLinks = mutableStateOf<List<CloudSuggestionLinkDto>>(emptyList())
+    val suggestionLinksLoading = mutableStateOf(false)
+    val suggestionLinksError = mutableStateOf<String?>(null)
 
     init {
         if (prefs.isLoggedIn()) {
@@ -38,6 +46,25 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
 
     fun selectSuggestion(suggestion: CloudSuggestionDto?) {
         selectedSuggestion.value = suggestion
+
+        if (suggestion != null) {
+            viewModelScope.launch {
+                suggestionLinksLoading.value = true
+                suggestionLinksError.value = null
+                try {
+                    val response = api.getSuggestionLinks(suggestion.id)
+                    suggestionLinks.value = response.links
+                    Log.v(TAG, "Loaded ${response.links.size} links")
+                    Log.v(TAG, response.links.toString())
+                } catch (e: FeatureNotAvailableException) {
+                    suggestionLinksError.value = FEATURE_NOT_AVAILABLE
+                } catch (e: Throwable) {
+                    suggestionLinksError.value = "Failed to load links"
+                } finally {
+                    suggestionLinksLoading.value = false
+                }
+            }
+        }
     }
 
     fun sendFeedbackAndClose(suggestion: CloudSuggestionDto, rating: Int) = viewModelScope.launch {

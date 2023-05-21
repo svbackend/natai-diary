@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.http.dto.CloudSuggestionDto
+import com.svbackend.natai.android.ui.component.SuggestionLinks
 import com.svbackend.natai.android.ui.component.TagPreviewBadge
 import com.svbackend.natai.android.viewmodel.TherapyViewModel
 
@@ -222,6 +223,7 @@ fun SuggestionDetailsDialog(vm: TherapyViewModel) {
                     text = suggestion.suggestion,
                     fontSize = 14.sp
                 )
+                SuggestionLinks(vm.suggestionLinks.value, vm.suggestionLinksError.value)
             }
         },
         confirmButton = {

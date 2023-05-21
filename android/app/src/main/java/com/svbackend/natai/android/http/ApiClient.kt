@@ -31,8 +31,8 @@ import java.io.InputStream
 import java.time.Instant
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
-const val BASE_URL = "https://natai.app"
-//const val BASE_URL = "https://0011-24-203-8-51.ngrok-free.app"
+//const val BASE_URL = "https://natai.app"
+const val BASE_URL = "https://4be5-24-203-8-51.ngrok-free.app"
 
 class ApiClient(
     private val getApiToken: () -> String?
@@ -273,5 +273,23 @@ class ApiClient(
 
     suspend fun deleteAccount() {
         client.delete("/api/v1/me")
+    }
+
+    suspend fun getSuggestionLinks(suggestionId: String): SuggestionLinksResponse {
+        val response = client.get("/api/v1/suggestion/$suggestionId/links")
+
+        if (response.status == HttpStatusCode.UnprocessableEntity) {
+            val body = response.body<ErrorResponse>()
+
+            if (body.code == "feature_not_available") {
+                throw FeatureNotAvailableException()
+            }
+
+            throw SuggestionLinksErrorException(response)
+        } else if (response.status != HttpStatusCode.OK) {
+            throw SuggestionLinksErrorException(response)
+        }
+
+        return response.body()
     }
 }
