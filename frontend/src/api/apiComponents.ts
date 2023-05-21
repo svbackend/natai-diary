@@ -687,6 +687,48 @@ export const usePostVerifyEmail = (
   );
 };
 
+export type PostLinksBuyError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.AuthRequiredErrorResponse;
+}>;
+
+export type PostLinksBuyVariables = ApiContext["fetcherOptions"];
+
+export const fetchPostLinksBuy = (
+  variables: PostLinksBuyVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.BuyFeatureResponse,
+    PostLinksBuyError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/links/buy", method: "post", ...variables, signal });
+
+export const usePostLinksBuy = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.BuyFeatureResponse,
+      PostLinksBuyError,
+      PostLinksBuyVariables
+    >,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<
+    Schemas.BuyFeatureResponse,
+    PostLinksBuyError,
+    PostLinksBuyVariables
+  >(
+    (variables: PostLinksBuyVariables) =>
+      fetchPostLinksBuy({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type PutNotesByIdPathParams = {
   id: string;
 };
@@ -997,6 +1039,57 @@ export const useGetSuggestions = <TData = Schemas.FindAllSuggestionsResponse>(
     }),
     ({ signal }) =>
       fetchGetSuggestions({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
+export type GetLinksExampleError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Schemas.NotFoundErrorRef;
+}>;
+
+export type GetLinksExampleVariables = ApiContext["fetcherOptions"];
+
+export const fetchGetLinksExample = (
+  variables: GetLinksExampleVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.SuggestionLinksResponse,
+    GetLinksExampleError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/links-example", method: "get", ...variables, signal });
+
+export const useGetLinksExample = <TData = Schemas.SuggestionLinksResponse>(
+  variables: GetLinksExampleVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.SuggestionLinksResponse,
+      GetLinksExampleError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.SuggestionLinksResponse,
+    GetLinksExampleError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/links-example",
+      operationId: "getLinksExample",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetLinksExample({ ...fetcherOptions, ...variables }, signal),
     {
       ...options,
       ...queryOptions,
@@ -1781,6 +1874,11 @@ export type QueryOperation =
       path: "/api/v1/suggestions";
       operationId: "getSuggestions";
       variables: GetSuggestionsVariables;
+    }
+  | {
+      path: "/api/v1/links-example";
+      operationId: "getLinksExample";
+      variables: GetLinksExampleVariables;
     }
   | {
       path: "/api/v1/notes/{id}/attachments";

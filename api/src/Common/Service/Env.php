@@ -49,4 +49,14 @@ class Env
             return "svbackend22@gmail.com";
         }
     }
+
+    public static function getAppUrl(): string
+    {
+        return self::get('APP_URL');
+    }
+
+    public static function getStripeWebhookSecret(): string
+    {
+        return self::get('STRIPE_WEBHOOK_SECRET');
+    }
 }

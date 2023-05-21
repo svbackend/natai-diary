@@ -178,6 +178,10 @@ export type VerifyEmailResponseRef = {
   code: string;
 };
 
+export type BuyFeatureResponse = {
+  checkoutUrl: string;
+};
+
 export type UpdateNoteRequestV1 = {
   title: string;
   content: string;
@@ -266,6 +270,10 @@ export type FindAllSuggestionsResponse = {
   suggestions: CloudSuggestionDto[];
 };
 
+export type SuggestionLinksResponse = {
+  links: SuggestionLinkDto[];
+};
+
 export type NoteAttachmentsResponse = {
   attachments: CloudAttachmentDto[];
 };
@@ -275,10 +283,6 @@ export type GetNoteAttachmentsErrorRef = {
    * @example attachments_not_array
    */
   code: "attachments_not_array" | "attachments_not_uuids";
-};
-
-export type SuggestionLinksResponse = {
-  links: SuggestionLinkDto[];
 };
 
 export type GetSuggestionLinksErrorRef = {
@@ -455,6 +459,14 @@ export type CloudSuggestionDto = {
   createdAt: string;
 };
 
+export type SuggestionLinkDto = {
+  id: number;
+  url: string;
+  title: string;
+  description: string;
+  image: string | null;
+};
+
 export type CloudAttachmentDto = {
   attachmentId: Uuid;
   signedUrl: string;
@@ -462,14 +474,6 @@ export type CloudAttachmentDto = {
   originalFilename: string;
   metadata: CloudAttachmentMetadataDto;
   previews: CloudAttachmentPreviewDto[];
-};
-
-export type SuggestionLinkDto = {
-  id: number;
-  url: string;
-  title: string;
-  description: string;
-  image: string | null;
 };
 
 export type CloudBlogArticleDto = {

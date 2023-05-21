@@ -1,8 +1,12 @@
-import {CloudSuggestionDto, SuggestionLinkDto} from "../../../api/apiSchemas";
+import {CloudSuggestionDto} from "../../../api/apiSchemas";
 import {useAtom} from "jotai";
-import React from "react";
+import React, {useState} from "react";
 import {diarySuggestionModalAtom} from "../atoms/diarySuggestionModalAtom";
-import {fetchPutSuggestionsByIdFeedback, useGetSuggestionByIdLinks} from "../../../api/apiComponents";
+import {
+    fetchPostLinksBuy,
+    fetchPutSuggestionsByIdFeedback,
+    useGetSuggestionByIdLinks
+} from "../../../api/apiComponents";
 import {dateService} from "../../common/services/dateService";
 import therapySession from "../../../../public/assets/therapy/therapy-session.svg";
 import Image from "next/image";
@@ -10,11 +14,12 @@ import DialogWrapper, {CloseModalTopButton} from "./DialogWrapper";
 import AppSpinner from "../../common/components/AppSpinner";
 import {AlertApiError} from "../../common/components/alert";
 import Link from "next/link";
-import * as ScrollArea from '@radix-ui/react-scroll-area';
 import {reactQueryNoRefetchOptions} from "../../../utils/noRefetch";
 import preview1Img from "../../../../public/assets/therapy/suggestion-links-preview1.jpg";
 import {price_suggestion_links, price_suggestion_links_early_bird} from "../../../utils/prices";
 import {LockOpenIcon} from "@heroicons/react/24/outline";
+import {SuggestionLinksCards} from "./SuggestionLinkCard";
+import {classNames} from "../../../utils/classNames";
 
 export function SuggestionModal(
     props: {
@@ -149,48 +154,6 @@ function SuggestionLinks(props: { suggestion: CloudSuggestionDto }) {
     return <SuggestionLinksCards links={data.links}/>
 }
 
-function SuggestionLinksCards(props: { links: SuggestionLinkDto[] }) {
-    return (
-        <ScrollArea.Root className="ScrollAreaRoot">
-            <ScrollArea.Viewport className="ScrollAreaViewport">
-                <div className="flex flex-nowrap mt-4 gap-4">
-                    {props.links.map((link, i) =>
-                        <SuggestionLinkCard key={i} link={link}/>
-                    )}
-                </div>
-            </ScrollArea.Viewport>
-            <ScrollArea.Scrollbar className="ScrollAreaScrollbar" orientation="horizontal">
-                <ScrollArea.Thumb className="ScrollAreaThumb"/>
-            </ScrollArea.Scrollbar>
-            <ScrollArea.Corner className="ScrollAreaCorner"/>
-        </ScrollArea.Root>
-    )
-}
-
-function SuggestionLinkCard(props: { link: SuggestionLinkDto }) {
-    return (
-        <Link href={props.link.url} target="_blank" rel="noreferrer"
-              className="flex flex-shrink-0 max-w-[80%] flex-col rounded-lg shadow-lg">
-            {props.link.image && (
-                <div className="flex-shrink-0">
-                    <Image className="h-48 w-full object-cover rounded-lg" src={props.link.image} width={426}
-                           height={240} alt=""/>
-                </div>
-            )}
-            <div className="flex-1 bg-white dark:bg-dark dark:text-light p-6 flex flex-col justify-between">
-                <div className="flex-1">
-                    <p className="text-sm font-medium text-brand">
-                        {props.link.title}
-                    </p>
-                    <p className="mt-3 text-base text-nav-item dark:text-nav-item-alt">
-                        {props.link.description}
-                    </p>
-                </div>
-            </div>
-        </Link>
-    )
-}
-
 function SuggestionLinksErrorHandler(props: { error: any, suggestionLinksCount: number }) {
     const err = props.error
 
@@ -202,12 +165,20 @@ function SuggestionLinksErrorHandler(props: { error: any, suggestionLinksCount: 
 }
 
 function SuggestionLinksNotAvailable(props: { suggestionLinksCount: number }) {
-    // promote the feature, show placeholder + button to buy it
     const arr = Array.from(Array(props.suggestionLinksCount).keys())
     return (
-        <div className="flex flex-nowrap mt-4 gap-4 overflow-hidden">
-            {arr.map((_, i) => <SuggestionLinksGetAccessCard key={`sl${i}`}/>)}
-        </div>
+        <>
+            <p className="text-sm text-nav-item dark:text-nav-item-alt">
+                Gain easy access to curated mental health resources and content tailored to your needs
+                for just <span className="font-bold">$11.20</span> one-time payment.
+            </p>
+            <p className="text-sm text-nav-item dark:text-nav-item-alt">
+                <span className="font-bold">No subscription.</span>
+            </p>
+            <div className="flex flex-nowrap mt-4 gap-4 overflow-hidden">
+                {arr.map((_, i) => <SuggestionLinksGetAccessCard key={`sl${i}`}/>)}
+            </div>
+        </>
     )
 }
 
@@ -244,10 +215,29 @@ function SuggestionLinksGetAccessCard() {
 /**
  * Button must be centered in the parent absolute positioned element with 100% width and height
  */
-function BuySuggestionLinksButton() {
+export function BuySuggestionLinksButton() {
+
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const onClick = () => {
+        setIsLoading(true)
+        fetchPostLinksBuy({})
+            .then((res) => {
+                // redirect to payment page
+                window.location.href = res.checkoutUrl
+            })
+            .catch(e => {
+                setError(e)
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
+    }
+
     return (
         <div className="flex items-center justify-center">
-            <button className="px-4 py-2 text-dark dark:text-white bg-white dark:bg-nav-bg border-2 border-indigo-900 hover:bg-indigo-900 dark:hover:bg-indigo-900 focus:ring-2 focus:ring-indigo-900 font-bold rounded-full transition duration-300 ease-in-out">
+            <button onClick={onClick}
+                    className={classNames("px-4 py-2 text-dark dark:text-white bg-white dark:bg-nav-bg border-2 border-indigo-900 hover:bg-indigo-900 dark:hover:bg-indigo-900 focus:ring-2 focus:ring-indigo-900 font-bold rounded-full transition duration-300 ease-in-out", isLoading && "animate-pulse")}>
                 Get Access <LockOpenIcon className="inline w-4 h-4"/>
             </button>
         </div>
@@ -256,8 +246,7 @@ function BuySuggestionLinksButton() {
 
 function LearnMoreSuggestionLinksButton() {
     return (
-        <Link href={"/feature/suggestion-links"} target="_blank" rel="noreferrer"
-              className="flex items-center justify-center">
+        <Link href={"/feature/suggestion-links"} className="flex items-center justify-center">
             <button
                 className="px-4 py-2 text-white bg-brand hover:bg-brand/80 focus:ring-4 focus:outline-none focus:ring-indigo-900 font-bold rounded-full">
                 Learn More

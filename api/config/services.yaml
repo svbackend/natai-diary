@@ -47,3 +47,7 @@ services:
   App\Common\Service\OpenAiClient:
     arguments:
       - '%env(OPENAI_API_KEY)%'
+
+  Stripe\StripeClient:
+    arguments:
+      - '%env(STRIPE_SECRET_KEY)%'

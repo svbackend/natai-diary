@@ -3,7 +3,6 @@
 namespace App\Diary\Repository;
 
 use App\Diary\DTO\SuggestionLinkDto;
-use App\Diary\Entity\Link;
 use App\Diary\Entity\SuggestionLink;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,7 +41,7 @@ class SuggestionLinkRepository extends ServiceEntityRepository
         }
     }
 
-    /** @return SuggestionLinkDto */
+    /** @return SuggestionLinkDto[] */
     public function findAllBySuggestionId(UuidV4 $suggestionId): array
     {
         $links = $this->createQueryBuilder('sl')
@@ -54,7 +53,32 @@ class SuggestionLinkRepository extends ServiceEntityRepository
             ->getResult();
 
         return array_map(
-            fn (SuggestionLink $sl) => new SuggestionLinkDto(
+            fn(SuggestionLink $sl) => new SuggestionLinkDto(
+                id: $sl->getId(),
+                url: $sl->getLink()->getUrl(),
+                title: $sl->getLink()->getTitle(),
+                description: $sl->getLink()->getDescription(),
+                image: $sl->getLink()->getImage(),
+            ),
+            $links
+        );
+    }
+
+    /** @return SuggestionLinkDto[] */
+    public function findExampleLinks(): array
+    {
+        $ids = [4, 6, 7];
+
+        $links = $this->createQueryBuilder('sl')
+            ->where('sl.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->join('sl.link', 'l')
+            ->addSelect('l')
+            ->getQuery()
+            ->getResult();
+
+        return array_map(
+            fn(SuggestionLink $sl) => new SuggestionLinkDto(
                 id: $sl->getId(),
                 url: $sl->getLink()->getUrl(),
                 title: $sl->getLink()->getTitle(),

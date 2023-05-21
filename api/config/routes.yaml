@@ -17,3 +17,7 @@ diary:
 blog:
   type: attribute
   resource: ../src/Blog/Controller/
+
+billing:
+  type: attribute
+  resource: ../src/Billing/Controller/
