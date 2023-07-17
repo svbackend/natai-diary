@@ -20,6 +20,10 @@ services:
       - "traefik.http.routers.natai.rule=Host(`natai.app`)"
       - "traefik.http.routers.natai.entrypoints=websecure"
       - "traefik.http.routers.natai.tls.certresolver=myresolver"
+      # support for www.natai.app
+      - "traefik.http.routers.www-natai.rule=Host(`www.natai.app`)"
+      - "traefik.http.routers.www-natai.entrypoints=websecure"
+      - "traefik.http.routers.www-natai.tls.certresolver=myresolver"
 
   api-gateway:
     build:
