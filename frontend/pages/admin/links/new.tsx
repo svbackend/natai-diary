@@ -136,15 +136,15 @@ export default function NewLinkPage() {
             </div>
 
             <h3>Url</h3>
-            <input type={"text"} value={url} onChange={(e) => setUrl(e.target.value)}/>
+            <input className={"text-black"} type={"text"} value={url} onChange={(e) => setUrl(e.target.value)}/>
 
             <button onClick={loadInfo}>Load</button>
 
             <h3>Title</h3>
-            <input type={"text"} value={title} onChange={(e) => setTitle(e.target.value)}/>
+            <input className={"text-black"} type={"text"} value={title} onChange={(e) => setTitle(e.target.value)}/>
 
             <h3>Description</h3>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)}/>
+            <textarea className={"text-black"} value={description} onChange={(e) => setDescription(e.target.value)}/>
 
             <h3>Image {isImgUploading && <span className={"animate-pulse"}>Uploading..</span>}</h3>
 
@@ -153,7 +153,7 @@ export default function NewLinkPage() {
                      alt={"og:image"}/>
             )}
 
-            <input type={"text"} value={image || ""} onChange={(e) => setImage(e.target.value)}/>
+            <input className={"text-black"} type={"text"} value={image || ""} onChange={(e) => setImage(e.target.value)}/>
 
             <button onClick={send}>Submit</button>
         </DiaryLayout>
