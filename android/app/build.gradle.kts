@@ -93,6 +93,9 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+    // stripe
+    implementation("com.stripe:stripe-android:20.28.1")
+
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.core:core-splashscreen:1.0.0")
 

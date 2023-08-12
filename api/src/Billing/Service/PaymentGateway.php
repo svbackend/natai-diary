@@ -2,6 +2,7 @@
 
 namespace App\Billing\Service;
 
+use App\Auth\Entity\User;
 use App\Billing\DTO\PaymentLinkDto;
 use App\Billing\Entity\UserFeature;
 use App\Common\Service\Env;
@@ -63,6 +64,35 @@ class PaymentGateway
         return new PaymentLinkDto(
             url: $session->url,
             id: $session->id,
+            paymentIntentSecret: $session->payment_intent->client_secret,
         );
+    }
+
+    public function createCustomer(User $user): string
+    {
+        $customer = $this->stripeClient->customers->create([
+            'email' => $user->getEmail(),
+        ]);
+
+        $this->logger->info('Created customer', [
+            'customerId' => $customer->id,
+        ]);
+
+        return $customer->id;
+    }
+
+    public function createEphemeralKey(string $stripeCustomerId): ?string
+    {
+        $key = $this->stripeClient->ephemeralKeys->create([
+            'customer' => $stripeCustomerId,
+        ], [
+            'stripe_version' => '2022-08-01',
+        ]);
+
+        $this->logger->info('Created ephemeral key', [
+            'keyId' => $key->id,
+        ]);
+
+        return $key->secret;
     }
 }

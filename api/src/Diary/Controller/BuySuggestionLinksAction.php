@@ -40,6 +40,10 @@ class BuySuggestionLinksAction extends BaseAction
         #[CurrentUser] User $user,
     ): HttpOutputInterface
     {
+        $stripeCustomerId = $user->getStripeCustomerId() ?: $this->paymentGateway->createCustomer($user);
+
+        $ephemeralKey = $this->paymentGateway->createEphemeralKey($stripeCustomerId);
+
         $checkoutSession = $this->paymentGateway->createSuggestionLinksCheckoutSession();
 
         $userOrder = new UserOrder(
@@ -59,6 +63,8 @@ class BuySuggestionLinksAction extends BaseAction
 
         return new BuyFeatureResponse(
             checkoutUrl: $checkoutSession->url,
+            ephemeralKey: $ephemeralKey,
+            paymentIntentSecret: $checkoutSession->paymentIntentSecret,
         );
     }
 }

@@ -34,6 +34,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private string $name;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $stripeCustomerId;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
@@ -139,5 +142,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function assignBlogEditorRole()
     {
         $this->roles[] = BlogSecurity::ROLE_BLOG_EDITOR;
+    }
+
+    public function setStripeCustomerId(string $stripeCustomerId): void
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
     }
 }
