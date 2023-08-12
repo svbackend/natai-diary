@@ -3,12 +3,13 @@ package com.svbackend.natai.android.ui.component
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,24 +34,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.http.dto.CloudSuggestionLinkDto
-import com.svbackend.natai.android.ui.NPrimaryButton
-import com.svbackend.natai.android.utils.suggestionLinkPlaceholderUri
 
 @Composable
 fun SuggestionLinks(links: List<CloudSuggestionLinkDto>, error: String?) {
+
+    val onClickGetAccess = {}
+    val onClickLearnMore = {}
+
     Column(modifier = Modifier.padding(top = 16.dp)) {
         Text(text = "Additional Resources", fontWeight = FontWeight.Bold, fontSize = 24.sp)
 
         if (error != null) {
             if (error === "FEATURE_NOT_AVAILABLE") {
-                SuggestionLinksBlurred()
+                SuggestionLinksBlurred(
+                    onClickGetAccess = onClickGetAccess,
+                    onClickLearnMore = onClickLearnMore
+                )
             } else {
                 Text(
                     text = "Error: $error",
@@ -154,44 +160,43 @@ fun SuggestionLinksBlurred(
         modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            text = "Gain easy access to curated mental health resources and content tailored to your needs for just \$11.20, one-time payment.\n",
+            text = "Gain easy access to curated mental health resources and content tailored to your needs for just \$11.20, one-time payment.",
         )
+
+        Text(
+            text = "Learn More",
+            modifier = Modifier
+                .clickable { onClickLearnMore() },
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Box(
             modifier = Modifier
-                .height(290.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
+                .size(240.dp, 290.dp),
+            contentAlignment = Alignment.TopStart
         ) {
             Image(
                 painter = painterResource(id = R.drawable.link_card_placeholder),
                 contentDescription = "Link to additional content",
-                modifier = Modifier
-                    .size(240.dp, 290.dp)
-                    .clip(RoundedCornerShape(percent = 10))
+                modifier = Modifier.fillMaxSize()
             )
 
-            Row(horizontalArrangement = Arrangement.Center) {
-                Column {
-                    Button(
-                        onClick = { /* Handle "Get Access" button click */ },
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    ) {
-                        Text(text = "Get Access \uD83D\uDD11", color = Color.White)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = { /* Handle "Get Access" button click */ },
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    ) {
-                        Text(text = "Learn More", color = Color.White)
-                    }
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Button(
+                    onClick = { /* Handle "Get Access" button click */ },
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    modifier = Modifier.padding(top = 48.dp)
+                ) {
+                    Text(text = "Get Access \uD83D\uDD11", color = Color.White)
                 }
             }
         }
