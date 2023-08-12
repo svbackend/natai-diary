@@ -3,10 +3,23 @@ package com.svbackend.natai.android.ui.component
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -14,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -23,8 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.http.dto.CloudSuggestionLinkDto
+import com.svbackend.natai.android.ui.NPrimaryButton
+import com.svbackend.natai.android.utils.suggestionLinkPlaceholderUri
 
 @Composable
 fun SuggestionLinks(links: List<CloudSuggestionLinkDto>, error: String?) {
@@ -32,12 +49,16 @@ fun SuggestionLinks(links: List<CloudSuggestionLinkDto>, error: String?) {
         Text(text = "Additional Resources", fontWeight = FontWeight.Bold, fontSize = 24.sp)
 
         if (error != null) {
-            Text(
-                text = "Error: $error",
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            if (error === "FEATURE_NOT_AVAILABLE") {
+                SuggestionLinksBlurred()
+            } else {
+                Text(
+                    text = "Error: $error",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
         }
 
         if (links.isNotEmpty()) {
@@ -125,6 +146,54 @@ fun SuggestionLinkCard(link: CloudSuggestionLinkDto) {
 }
 
 @Composable
-fun SuggestionLinksBlurred() {
+fun SuggestionLinksBlurred(
+    onClickGetAccess: () -> Unit,
+    onClickLearnMore: () -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "Gain easy access to curated mental health resources and content tailored to your needs for just \$11.20, one-time payment.\n",
+        )
 
+        Box(
+            modifier = Modifier
+                .height(290.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.link_card_placeholder),
+                contentDescription = "Link to additional content",
+                modifier = Modifier
+                    .size(240.dp, 290.dp)
+                    .clip(RoundedCornerShape(percent = 10))
+            )
+
+            Row(horizontalArrangement = Arrangement.Center) {
+                Column {
+                    Button(
+                        onClick = { /* Handle "Get Access" button click */ },
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    ) {
+                        Text(text = "Get Access \uD83D\uDD11", color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = { /* Handle "Get Access" button click */ },
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    ) {
+                        Text(text = "Learn More", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
 }

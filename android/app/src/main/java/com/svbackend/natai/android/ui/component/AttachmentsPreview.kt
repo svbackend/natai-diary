@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.svbackend.natai.android.entity.AttachmentEntityDto
-import com.svbackend.natai.android.utils.placeholderUri
+import com.svbackend.natai.android.utils.filePreviewPlaceholderUri
 
 @Composable
 fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
@@ -32,7 +32,7 @@ fun AttachmentsPreview(attachments: List<AttachmentEntityDto>) {
             .padding(bottom = 4.dp),
     ) {
         visibleAttachments.forEachIndexed { idx, attachment ->
-            val uri = attachment.getPreview() ?: placeholderUri
+            val uri = attachment.getPreview() ?: filePreviewPlaceholderUri
             val isLast = idx == lastIdx
             Column(
                 horizontalAlignment = Alignment.Start,

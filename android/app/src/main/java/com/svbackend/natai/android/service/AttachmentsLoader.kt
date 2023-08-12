@@ -1,6 +1,5 @@
 package com.svbackend.natai.android.service
 
-import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.util.Log
@@ -10,8 +9,7 @@ import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.utils.hasInternetConnection
-import com.svbackend.natai.android.utils.isGuest
-import com.svbackend.natai.android.utils.placeholderUri
+import com.svbackend.natai.android.utils.filePreviewPlaceholderUri
 
 class AttachmentsLoader(
     private val api: ApiClient,
@@ -25,7 +23,7 @@ class AttachmentsLoader(
         Log.v(TAG, "=== LOAD ATTACHMENTS STARTED ===")
 
         val localAttachments = note.attachments.mapNotNull { attachment ->
-            val previewUri = attachment.previewUri ?: placeholderUri
+            val previewUri = attachment.previewUri ?: filePreviewPlaceholderUri
             val uri = attachment.uri ?: previewUri
 
             if (attachment.cloudAttachmentId == null) {
@@ -106,8 +104,8 @@ class AttachmentsLoader(
             val updatedAttachments = repository.updateAttachmentsUris(note, downloadedUrisMap)
 
             return updatedAttachments.mapNotNull { attachment ->
-                val uri = attachment.uri ?: placeholderUri
-                val previewUri = attachment.previewUri ?: placeholderUri
+                val uri = attachment.uri ?: filePreviewPlaceholderUri
+                val previewUri = attachment.previewUri ?: filePreviewPlaceholderUri
 
                 if (attachment.cloudAttachmentId == null) {
                     return@mapNotNull null
@@ -147,7 +145,7 @@ class AttachmentsLoader(
             ExistingLocalAttachmentDto(
                 cloudAttachmentId = it.cloudAttachmentId,
                 filename = it.filename,
-                uri = it.uri ?: previewUri ?: placeholderUri,
+                uri = it.uri ?: previewUri ?: filePreviewPlaceholderUri,
                 previewUri = previewUri,
             )
         }
