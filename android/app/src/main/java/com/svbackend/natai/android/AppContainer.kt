@@ -7,6 +7,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.activity.ComponentActivity
+import com.stripe.android.paymentsheet.PaymentSheet
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
@@ -55,6 +56,8 @@ class AppContainer(context: Context) {
         diaryRepository,
         connectivityManager
     )
+
+    var paymentSheet: PaymentSheet? = null
 
     companion object {
         @Volatile

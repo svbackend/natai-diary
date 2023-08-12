@@ -14,6 +14,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.util.Consumer
 import androidx.navigation.compose.rememberNavController
 import androidx.work.*
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.svbackend.natai.android.service.ApiSyncService
 import com.svbackend.natai.android.service.ApiSyncWorker
 import com.svbackend.natai.android.service.ReminderWorker
@@ -32,6 +34,7 @@ class MainActivity : ScopedActivity() {
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var apiSyncService: ApiSyncService
     private lateinit var prefs: SharedPreferences
+    private lateinit var paymentSheet: PaymentSheet
 
     private val viewModel by viewModels<NoteViewModel>()
     private val splashViewModel by viewModels<SplashViewModel>()
@@ -49,10 +52,15 @@ class MainActivity : ScopedActivity() {
 
         super.onCreate(savedInstanceState)
 
+        paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
+
         (application as DiaryApplication).let {
             connectivityManager = it.appContainer.connectivityManager
             apiSyncService = it.appContainer.apiSyncService
             prefs = it.appContainer.sharedPrefs
+
+            // add payment sheet to container
+            it.appContainer.paymentSheet = paymentSheet
         }
 
         //val prefs = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE)
@@ -129,5 +137,9 @@ class MainActivity : ScopedActivity() {
         } catch (e: Throwable) {
             e.printStackTrace()
         }
+    }
+
+    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        // implemented in the next steps
     }
 }

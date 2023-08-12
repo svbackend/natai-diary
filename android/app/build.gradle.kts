@@ -13,6 +13,7 @@ android {
         versionCode = 14
         versionName = "1.5.8"
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080\"")
+        buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", "\"pk_test_51N47wRCN1hwEuS9VkiczMeL0YVViEvifpBeiULw6ZXzEdPUPAX7DmPzNcLCqsTfp9xEdrChnICgdER61zvnhgqMc00oEooAKPk\"")
         //buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
 
         kapt {

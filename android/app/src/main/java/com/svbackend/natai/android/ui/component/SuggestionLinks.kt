@@ -43,11 +43,12 @@ import com.svbackend.natai.android.R
 import com.svbackend.natai.android.http.dto.CloudSuggestionLinkDto
 
 @Composable
-fun SuggestionLinks(links: List<CloudSuggestionLinkDto>, error: String?) {
-
-    val onClickGetAccess = {}
-    val onClickLearnMore = {}
-
+fun SuggestionLinks(
+    links: List<CloudSuggestionLinkDto>,
+    error: String?,
+    onClickGetAccess: () -> Unit,
+    onClickLearnMore: () -> Unit
+) {
     Column(modifier = Modifier.padding(top = 16.dp)) {
         Text(text = "Additional Resources", fontWeight = FontWeight.Bold, fontSize = 24.sp)
 
@@ -189,7 +190,7 @@ fun SuggestionLinksBlurred(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Button(
-                    onClick = { /* Handle "Get Access" button click */ },
+                    onClick = onClickGetAccess,
                     colors = ButtonDefaults.textButtonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer

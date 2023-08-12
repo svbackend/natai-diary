@@ -192,6 +192,10 @@ fun SuggestionDetailsDialog(vm: TherapyViewModel) {
     val suggestion = vm.selectedSuggestion.value!!
     val scroll = rememberScrollState()
 
+    val onClickGetAccess = {
+        vm.onClickGetAccess()
+    }
+
     AlertDialog(
         onDismissRequest = { vm.selectSuggestion(null) },
         title = {

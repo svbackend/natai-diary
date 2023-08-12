@@ -292,4 +292,14 @@ class ApiClient(
 
         return response.body()
     }
+
+    suspend fun buySuggestionLinks(): BuyFeatureResponse {
+        val response = client.post("/api/v1/links/buy")
+
+        if (response.status == HttpStatusCode.OK) {
+            return response.body()
+        }
+
+        throw SuggestionLinksErrorException(response)
+    }
 }

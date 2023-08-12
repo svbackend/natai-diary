@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.dto.CloudSuggestionDto
@@ -22,6 +24,7 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val TAG = "TherapyViewModel"
     val api: ApiClient = (application as DiaryApplication).appContainer.apiClient
     val prefs = (application as DiaryApplication).appContainer.sharedPrefs
+    val paymentSheet = (application as DiaryApplication).appContainer.paymentSheet
 
     val isLoading = mutableStateOf(false)
     val suggestions = mutableStateOf<List<CloudSuggestionDto>>(emptyList())
@@ -102,5 +105,26 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
         val to = LocalDateTimeFormatter.fullDateAmerica.format(period.to)
 
         return "$from - $to"
+    }
+
+    fun onClickGetAccess() = viewModelScope.launch {
+        if (paymentSheet == null) {
+            Log.e(TAG, "PaymentSheet is not ready! (null)")
+            return@launch
+        }
+
+        val response = api.buySuggestionLinks()
+
+        if (response.ephemeralKey == null) {
+            Log.e(TAG, "ephemeralKey is null")
+            return@launch
+        }
+
+        val customerConfig = PaymentSheet.CustomerConfiguration(
+            response.customerId,
+            response.ephemeralKey
+        )
+        val publishableKey = BuildConfig.API_BASE_URL
+        PaymentConfiguration.init(this, publishableKey)
     }
 }
