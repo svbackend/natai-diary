@@ -65,6 +65,7 @@ class BuySuggestionLinksAction extends BaseAction
             checkoutUrl: $checkoutSession->url,
             ephemeralKey: $ephemeralKey,
             paymentIntentSecret: $checkoutSession->paymentIntentSecret,
+            customerId: $stripeCustomerId,
         );
     }
 }
