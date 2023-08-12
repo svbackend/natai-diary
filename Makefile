@@ -26,7 +26,7 @@ test:
 	cd api && bin/phpunit
 
 tunnel-api:
-	ngrok http 8000
+	ngrok http --domain=legally-ideal-macaw.ngrok-free.app 8000
 
 tunnel-frontend:
 	ngrok http 3000
