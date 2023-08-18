@@ -23,18 +23,20 @@ class PaymentGateway
     {
     }
 
-    public function createSuggestionLinksCheckoutSession(): PaymentLinkDto
+    public function createSuggestionLinksCheckoutSession(string $stripeCustomerId): PaymentLinkDto
     {
         $name = UserFeature::getFeatureName(UserFeature::FEAT_SUGGESTION_LINKS);
         return $this->createCheckoutSession(
             productName: $name,
             amount: self::PRICE_SUGGESTION_LINKS,
+            stripeCustomerId: $stripeCustomerId
         );
     }
 
     private function createCheckoutSession(
         string $productName,
         int    $amount,
+        string $stripeCustomerId
     ): PaymentLinkDto
     {
         $url = Env::getAppUrl();
@@ -57,14 +59,22 @@ class PaymentGateway
             'cancel_url' => $cancelUrl,
         ]);
 
+        $paymentIntent = $this->stripeClient->paymentIntents->create([
+            'amount' => $amount,
+            'currency' => 'usd',
+            'payment_method_types' => ['card'],
+            'customer' => $stripeCustomerId,
+        ]);
+
         $this->logger->info('Created checkout session', [
             'sessionId' => $session->id,
+            'intent' => $session->payment_intent,
         ]);
 
         return new PaymentLinkDto(
             url: $session->url,
             id: $session->id,
-            paymentIntentSecret: $session->payment_intent->client_secret,
+            paymentIntentSecret: $paymentIntent->client_secret,
         );
     }
 

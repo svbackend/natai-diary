@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.DiaryApplication
@@ -25,6 +26,8 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val api: ApiClient = (application as DiaryApplication).appContainer.apiClient
     val prefs = (application as DiaryApplication).appContainer.sharedPrefs
     val paymentSheet = (application as DiaryApplication).appContainer.paymentSheet
+
+    val context = application
 
     val isLoading = mutableStateOf(false)
     val suggestions = mutableStateOf<List<CloudSuggestionDto>>(emptyList())
@@ -124,7 +127,25 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
             response.customerId,
             response.ephemeralKey
         )
-        val publishableKey = BuildConfig.API_BASE_URL
-        PaymentConfiguration.init(this, publishableKey)
+        val publishableKey = BuildConfig.STRIPE_PUBLISHABLE_KEY
+        PaymentConfiguration.init(context, publishableKey)
+
+        presentPaymentSheet(
+            paymentIntentClientSecret = response.paymentIntentSecret,
+            customerConfig = customerConfig,
+        )
+    }
+
+    fun presentPaymentSheet(
+        paymentIntentClientSecret: String,
+        customerConfig: PaymentSheet.CustomerConfiguration
+    ) {
+        paymentSheet?.presentWithPaymentIntent(
+            paymentIntentClientSecret,
+            PaymentSheet.Configuration(
+                merchantDisplayName = "Natai Diary",
+                customer = customerConfig,
+            )
+        )
     }
 }

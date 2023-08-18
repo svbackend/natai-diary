@@ -192,8 +192,8 @@ fun SuggestionDetailsDialog(vm: TherapyViewModel) {
     val suggestion = vm.selectedSuggestion.value!!
     val scroll = rememberScrollState()
 
-    val onClickGetAccess = {
-        vm.onClickGetAccess()
+    val onClickLearnMore = {
+        // todo call parent function and redirect user to new screen
     }
 
     AlertDialog(
@@ -227,7 +227,12 @@ fun SuggestionDetailsDialog(vm: TherapyViewModel) {
                     text = suggestion.suggestion,
                     fontSize = 14.sp
                 )
-                SuggestionLinks(vm.suggestionLinks.value, vm.suggestionLinksError.value)
+                SuggestionLinks(
+                    links = vm.suggestionLinks.value,
+                    error = vm.suggestionLinksError.value,
+                    onClickGetAccess = { vm.onClickGetAccess() },
+                    onClickLearnMore = onClickLearnMore,
+                )
             }
         },
         confirmButton = {

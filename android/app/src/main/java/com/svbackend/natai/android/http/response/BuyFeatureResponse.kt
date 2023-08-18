@@ -4,5 +4,5 @@ data class BuyFeatureResponse(
     val checkoutUrl: String,
     val customerId: String,
     val ephemeralKey: String?,
-    val paymentIntentSecret: String?,
+    val paymentIntentSecret: String,
 )
