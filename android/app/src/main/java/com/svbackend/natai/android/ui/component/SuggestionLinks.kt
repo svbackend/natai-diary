@@ -201,7 +201,7 @@ fun SuggestionLinksBlurred(
                     ),
                     modifier = Modifier.padding(top = 48.dp)
                 ) {
-                    if (getAccessLoading) {
+                    if (!getAccessLoading) {
                         Text(text = "Get Access \uD83D\uDD11", color = Color.White)
                     } else {
                         Text(
