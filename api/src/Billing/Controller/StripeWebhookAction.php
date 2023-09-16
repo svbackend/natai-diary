@@ -48,6 +48,7 @@ class StripeWebhookAction extends BaseAction
                 case $event::CHARGE_SUCCEEDED:
                 case $event::CHECKOUT_SESSION_ASYNC_PAYMENT_SUCCEEDED:
                     $this->logger->info('Stripe webhook payment succeeded');
+                    $this->handleChargeSuccess($event);
                     break;
                 case $event::CHECKOUT_SESSION_ASYNC_PAYMENT_FAILED:
                     $this->logger->info('Stripe webhook checkout completed');
@@ -81,6 +82,17 @@ class StripeWebhookAction extends BaseAction
 
         $order = $this->orders->findOrderWithFeatures($sessionId);
         Assert::notNull($order, 'User Order not found, sessionId: ' . $sessionId);
+
+        $this->orderManager->fulfillOrder($order);
+    }
+
+    private function handleChargeSuccess(Event $event): void
+    {
+        $paymentIntentId = $event->data->object->payment_intent;
+        Assert::stringNotEmpty($paymentIntentId, 'Stripe webhook payment intent id is empty');
+
+        $order = $this->orders->findOrderWithFeatures($paymentIntentId);
+        Assert::notNull($order, 'User Order not found, paymentIntentId: ' . $paymentIntentId);
 
         $this->orderManager->fulfillOrder($order);
     }

@@ -41,13 +41,15 @@ import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.http.dto.CloudSuggestionLinkDto
+import com.svbackend.natai.android.ui.NProgressBtn
 
 @Composable
 fun SuggestionLinks(
     links: List<CloudSuggestionLinkDto>,
     error: String?,
     onClickGetAccess: () -> Unit,
-    onClickLearnMore: () -> Unit
+    onClickLearnMore: () -> Unit,
+    getAccessLoading: Boolean
 ) {
     Column(modifier = Modifier.padding(top = 16.dp)) {
         Text(text = "Additional Resources", fontWeight = FontWeight.Bold, fontSize = 24.sp)
@@ -56,7 +58,8 @@ fun SuggestionLinks(
             if (error === "FEATURE_NOT_AVAILABLE") {
                 SuggestionLinksBlurred(
                     onClickGetAccess = onClickGetAccess,
-                    onClickLearnMore = onClickLearnMore
+                    onClickLearnMore = onClickLearnMore,
+                    getAccessLoading = getAccessLoading
                 )
             } else {
                 Text(
@@ -156,6 +159,7 @@ fun SuggestionLinkCard(link: CloudSuggestionLinkDto) {
 fun SuggestionLinksBlurred(
     onClickGetAccess: () -> Unit,
     onClickLearnMore: () -> Unit,
+    getAccessLoading: Boolean
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -197,7 +201,15 @@ fun SuggestionLinksBlurred(
                     ),
                     modifier = Modifier.padding(top = 48.dp)
                 ) {
-                    Text(text = "Get Access \uD83D\uDD11", color = Color.White)
+                    if (getAccessLoading) {
+                        Text(text = "Get Access \uD83D\uDD11", color = Color.White)
+                    } else {
+                        Text(
+                            text = "Get Access",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        NProgressBtn()
+                    }
                 }
             }
         }

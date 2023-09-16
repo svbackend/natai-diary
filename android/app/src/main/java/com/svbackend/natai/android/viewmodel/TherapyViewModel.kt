@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.DiaryApplication
 import com.svbackend.natai.android.http.ApiClient
@@ -39,6 +40,9 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val suggestionLinksLoading = mutableStateOf(false)
     val suggestionLinksError = mutableStateOf<String?>(null)
 
+    val getAccessLoading = mutableStateOf(false)
+    val paymentSheetResult = mutableStateOf<PaymentSheetResult?>(null)
+
     init {
         if (prefs.isLoggedIn()) {
             viewModelScope.launch {
@@ -46,6 +50,22 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
                 val response = api.getSuggestions()
                 suggestions.value = response.suggestions
                 isLoading.value = false
+            }
+        }
+
+        (application as DiaryApplication).appContainer.paymentSheetCallback = {
+            when(it) {
+                is PaymentSheetResult.Canceled -> {
+                    Log.i(TAG, "Canceled 123")
+                }
+                is PaymentSheetResult.Failed -> {
+                    Log.i(TAG, "Error 123")
+                    paymentSheetResult.value = it
+                }
+                is PaymentSheetResult.Completed -> {
+                    Log.i(TAG, "Completed 123")
+                    paymentSheetResult.value = it
+                }
             }
         }
     }
@@ -116,24 +136,30 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
             return@launch
         }
 
-        val response = api.buySuggestionLinks()
+        getAccessLoading.value = true
 
-        if (response.ephemeralKey == null) {
-            Log.e(TAG, "ephemeralKey is null")
-            return@launch
+        try {
+            val response = api.buySuggestionLinks()
+
+            if (response.ephemeralKey == null) {
+                Log.e(TAG, "ephemeralKey is null")
+                return@launch
+            }
+
+            val customerConfig = PaymentSheet.CustomerConfiguration(
+                response.customerId,
+                response.ephemeralKey
+            )
+            val publishableKey = BuildConfig.STRIPE_PUBLISHABLE_KEY
+            PaymentConfiguration.init(context, publishableKey)
+
+            presentPaymentSheet(
+                paymentIntentClientSecret = response.paymentIntentSecret,
+                customerConfig = customerConfig,
+            )
+        } finally {
+            getAccessLoading.value = false
         }
-
-        val customerConfig = PaymentSheet.CustomerConfiguration(
-            response.customerId,
-            response.ephemeralKey
-        )
-        val publishableKey = BuildConfig.STRIPE_PUBLISHABLE_KEY
-        PaymentConfiguration.init(context, publishableKey)
-
-        presentPaymentSheet(
-            paymentIntentClientSecret = response.paymentIntentSecret,
-            customerConfig = customerConfig,
-        )
     }
 
     fun presentPaymentSheet(
@@ -147,5 +173,9 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
                 customer = customerConfig,
             )
         )
+    }
+
+    fun resetPaymentSheetResult() {
+        paymentSheetResult.value = null
     }
 }

@@ -8,10 +8,13 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.activity.ComponentActivity
 import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.repository.UserRepository
 import com.svbackend.natai.android.service.*
+
+typealias PaymentSheetCallback = (PaymentSheetResult) -> Unit
 
 class AppContainer(context: Context) {
     private val db = DiaryDatabase.getInstance(context)
@@ -58,6 +61,8 @@ class AppContainer(context: Context) {
     )
 
     var paymentSheet: PaymentSheet? = null
+
+    var paymentSheetCallback: PaymentSheetCallback? = null
 
     companion object {
         @Volatile

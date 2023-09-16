@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.http.dto.CloudSuggestionDto
@@ -60,9 +61,67 @@ fun TherapyScreen(
         }
     }
 
+    if (vm.paymentSheetResult.value != null) {
+        PaymentCompletedDialog(vm.paymentSheetResult.value!!, vm)
+        return;
+    }
+
     if (vm.selectedSuggestion.value != null) {
         SuggestionDetailsDialog(vm)
     }
+}
+
+@Composable
+fun PaymentCompletedDialog(paymentSheetResult: PaymentSheetResult, vm: TherapyViewModel) {
+    AlertDialog(
+        onDismissRequest = { vm.resetPaymentSheetResult() },
+        title = {
+            Text(
+                text = "Purchase summary",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                if (paymentSheetResult is PaymentSheetResult.Failed) {
+                    Text(
+                        text = paymentSheetResult.error.message ?: "Error processing your payment, please try different payment method",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    )
+                }
+                if (paymentSheetResult is PaymentSheetResult.Completed) {
+                    Text(
+                        text = "Thank you for your purchase! You should be able to access 'Additional Resources' in your AI suggestions.",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { vm.resetPaymentSheetResult() },
+                colors = ButtonDefaults.textButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            ) {
+                Text(
+                    text = "Got it",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+    )
 }
 
 @Composable
@@ -191,6 +250,7 @@ fun EmptyState(
 fun SuggestionDetailsDialog(vm: TherapyViewModel) {
     val suggestion = vm.selectedSuggestion.value!!
     val scroll = rememberScrollState()
+    val getAccessLoading = vm.getAccessLoading.value
 
     val onClickLearnMore = {
         // todo call parent function and redirect user to new screen
@@ -232,6 +292,7 @@ fun SuggestionDetailsDialog(vm: TherapyViewModel) {
                     error = vm.suggestionLinksError.value,
                     onClickGetAccess = { vm.onClickGetAccess() },
                     onClickLearnMore = onClickLearnMore,
+                    getAccessLoading = getAccessLoading
                 )
             }
         },

@@ -58,7 +58,6 @@ class MainActivity : ScopedActivity() {
             connectivityManager = it.appContainer.connectivityManager
             apiSyncService = it.appContainer.apiSyncService
             prefs = it.appContainer.sharedPrefs
-
             // add payment sheet to container
             it.appContainer.paymentSheet = paymentSheet
         }
@@ -139,7 +138,28 @@ class MainActivity : ScopedActivity() {
         }
     }
 
-    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
-        // implemented in the next steps
+    private fun onPaymentSheetResultDefaultHandler(paymentSheetResult: PaymentSheetResult) {
+        when(paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                print("Canceled")
+            }
+            is PaymentSheetResult.Failed -> {
+                print("Error: ${paymentSheetResult.error}")
+            }
+            is PaymentSheetResult.Completed -> {
+                print("Completed")
+            }
+        }
+    }
+
+    private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        (application as DiaryApplication).let {
+            val callback = it.appContainer.paymentSheetCallback
+            if (callback != null) {
+                callback(paymentSheetResult)
+            } else {
+                onPaymentSheetResultDefaultHandler(paymentSheetResult)
+            }
+        }
     }
 }

@@ -73,7 +73,7 @@ class PaymentGateway
 
         return new PaymentLinkDto(
             url: $session->url,
-            id: $session->id,
+            id: $paymentIntent->id,
             paymentIntentSecret: $paymentIntent->client_secret,
         );
     }

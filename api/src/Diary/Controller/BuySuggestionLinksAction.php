@@ -41,6 +41,7 @@ class BuySuggestionLinksAction extends BaseAction
     ): HttpOutputInterface
     {
         $stripeCustomerId = $user->getStripeCustomerId() ?: $this->paymentGateway->createCustomer($user);
+        $user->setStripeCustomerId($stripeCustomerId);
 
         $ephemeralKey = $this->paymentGateway->createEphemeralKey($stripeCustomerId);
 
