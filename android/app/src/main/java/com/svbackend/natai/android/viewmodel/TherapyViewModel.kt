@@ -32,7 +32,8 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
 
     val isLoading = mutableStateOf(false)
     val suggestions = mutableStateOf<List<CloudSuggestionDto>>(emptyList())
-    val selectedSuggestion = mutableStateOf<CloudSuggestionDto?>(null)
+    val selectedSuggestion = mutableStateOf<String?>(null) // id of suggestion or null
+    val selectedSuggestionBackup = mutableStateOf<String?>(null) // id of suggestion that was open before payment or null
 
     val isUserLoggedIn = prefs.isLoggedIn()
 
@@ -44,7 +45,7 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val paymentSheetResult = mutableStateOf<PaymentSheetResult?>(null)
 
     init {
-        if (!prefs.isLoggedIn()) {
+        if (prefs.isLoggedIn()) {
             loadSuggestions()
 
             (application as DiaryApplication).appContainer.paymentSheetCallback = {
@@ -56,6 +57,8 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
                         paymentSheetResult.value = it
                     }
                     is PaymentSheetResult.Completed -> {
+                        selectSuggestionBackup(selectedSuggestion.value)
+                        selectSuggestion(null)
                         loadSuggestions()
                         paymentSheetResult.value = it
                     }
@@ -64,17 +67,26 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    private fun loadSuggestions() {
-        viewModelScope.launch {
+    private fun loadSuggestions() = viewModelScope.launch {
             isLoading.value = true
             val response = api.getSuggestions()
             suggestions.value = response.suggestions
             isLoading.value = false
         }
+
+    private fun selectSuggestionBackup(suggestionId: String?) {
+        selectedSuggestionBackup.value = suggestionId
     }
 
-    fun selectSuggestion(suggestion: CloudSuggestionDto?) {
-        selectedSuggestion.value = suggestion
+    fun restoreSuggestionFromBackup() {
+        Log.i(TAG, "RESTORING FROM BACKUP")
+        Log.i(TAG, "BACKUP VALUE: ${selectedSuggestionBackup.value}")
+        selectedSuggestion.value = selectedSuggestionBackup.value
+    }
+
+    fun selectSuggestion(suggestionId: String?) {
+        val suggestion = suggestions.value.find { it.id == suggestionId }
+        selectedSuggestion.value = suggestionId
 
         if (suggestion != null) {
             viewModelScope.launch {

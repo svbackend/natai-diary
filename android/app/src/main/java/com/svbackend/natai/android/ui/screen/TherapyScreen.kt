@@ -67,14 +67,22 @@ fun TherapyScreen(
     }
 
     if (vm.selectedSuggestion.value != null) {
-        SuggestionDetailsDialog(vm)
+        SuggestionDetailsDialog(
+            vm = vm,
+            suggestionId = vm.selectedSuggestion.value!!
+        )
     }
 }
 
 @Composable
 fun PaymentCompletedDialog(paymentSheetResult: PaymentSheetResult, vm: TherapyViewModel) {
+    val onClose = {
+        vm.resetPaymentSheetResult()
+        vm.restoreSuggestionFromBackup()
+    }
+
     AlertDialog(
-        onDismissRequest = { vm.resetPaymentSheetResult() },
+        onDismissRequest = onClose,
         title = {
             Text(
                 text = "Purchase summary",
@@ -86,7 +94,8 @@ fun PaymentCompletedDialog(paymentSheetResult: PaymentSheetResult, vm: TherapyVi
             Column {
                 if (paymentSheetResult is PaymentSheetResult.Failed) {
                     Text(
-                        text = paymentSheetResult.error.message ?: "Error processing your payment, please try different payment method",
+                        text = paymentSheetResult.error.message
+                            ?: "Error processing your payment, please try different payment method",
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -108,7 +117,7 @@ fun PaymentCompletedDialog(paymentSheetResult: PaymentSheetResult, vm: TherapyVi
         },
         confirmButton = {
             Button(
-                onClick = { vm.resetPaymentSheetResult() },
+                onClick = onClose,
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -172,7 +181,7 @@ fun SuggestionRow(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Button(
-                onClick = { vm.selectSuggestion(suggestion) },
+                onClick = { vm.selectSuggestion(suggestion.id) },
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.primary
@@ -247,8 +256,9 @@ fun EmptyState(
 }
 
 @Composable
-fun SuggestionDetailsDialog(vm: TherapyViewModel) {
-    val suggestion = vm.selectedSuggestion.value!!
+fun SuggestionDetailsDialog(vm: TherapyViewModel, suggestionId: String) {
+    val suggestion = vm.suggestions.value.find { it.id == suggestionId } ?: return
+
     val scroll = rememberScrollState()
     val getAccessLoading = vm.getAccessLoading.value
 

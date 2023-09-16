@@ -40,39 +40,17 @@ class PaymentGateway
     ): PaymentLinkDto
     {
         $url = Env::getAppUrl();
-        $successUrl = $url . self::SUCCESS_URL;
-        $cancelUrl = $url . self::CANCEL_URL;
-        $session = $this->stripeClient->checkout->sessions->create([
-            'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'usd',
-                    'unit_amount' => $amount,
-                    'product_data' => [
-                        'name' => $productName,
-                    ],
-                ],
-                'quantity' => 1,
-            ]],
-            'mode' => 'payment',
-            'success_url' => $successUrl,
-            'cancel_url' => $cancelUrl,
-        ]);
 
         $paymentIntent = $this->stripeClient->paymentIntents->create([
+            'description' => $productName,
             'amount' => $amount,
             'currency' => 'usd',
             'payment_method_types' => ['card'],
             'customer' => $stripeCustomerId,
         ]);
 
-        $this->logger->info('Created checkout session', [
-            'sessionId' => $session->id,
-            'intent' => $session->payment_intent,
-        ]);
-
         return new PaymentLinkDto(
-            url: $session->url,
+            url: '', // todo delete?
             id: $paymentIntent->id,
             paymentIntentSecret: $paymentIntent->client_secret,
         );
@@ -80,8 +58,14 @@ class PaymentGateway
 
     public function createCustomer(User $user): string
     {
+        if ($user->getStripeCustomerId()) {
+            $this->logger->info('Using existing customer');
+            return $user->getStripeCustomerId();
+        }
+
         $customer = $this->stripeClient->customers->create([
             'email' => $user->getEmail(),
+            'name' => $user->getName(),
         ]);
 
         $this->logger->info('Created customer', [

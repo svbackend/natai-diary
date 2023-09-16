@@ -52,7 +52,9 @@ fun SuggestionLinks(
     getAccessLoading: Boolean
 ) {
     Column(modifier = Modifier.padding(top = 16.dp)) {
-        Text(text = "Additional Resources", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        if (error != null || links.isNotEmpty()) {
+            Text(text = "Additional Resources", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        }
 
         if (error != null) {
             if (error === "FEATURE_NOT_AVAILABLE") {
