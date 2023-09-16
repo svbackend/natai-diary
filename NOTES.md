@@ -1,3 +1,28 @@
+### Sep 15, 2023
+
+Continuing to work on integrating payments,
+took a huge break from this project,
+lack of energy, can't do much apart from work.
+
+So far actually pretty good progress, slowly but surely discovering how to work with stripe,
+how to properly integrate it into an android app.
+
+I'm happy with their api and CLI tool that gives me ability to test payments locally.
+Thanks to Ngrok I can test it on my phone as well.
+
+Overall payment on android app works, but needs refining and UX improvements. But not too much left.
+Recently I've got my first feedback through the website, which is really motivating.
+I'm also seeing some traffic increase from google search console, I believe if I will just keep going then one day it will be something big.
+
+Next steps:
+* Finish with android payments (reload "Additional Resources" after payment so user sees what they paid for)
+* Fix additional resources infinite loading on "Get Access" button.
+* Do the same for web app, remove usage of "Checkout Session", use "Payment Intent" instead.
+* In web app - start using Stripe Elements instead of redirecting users to stripe payment link.
+
+One thing that I'm not really happy about is that mostly users are using website,
+instead of android app, which is surprising for me. I thought that android app will be more popular.
+
 ### May 13, 2023
 
 Just to give an update about deleting account feature, it was implemented and released soon after I got
