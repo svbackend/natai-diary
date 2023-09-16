@@ -44,29 +44,32 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val paymentSheetResult = mutableStateOf<PaymentSheetResult?>(null)
 
     init {
-        if (prefs.isLoggedIn()) {
-            viewModelScope.launch {
-                isLoading.value = true
-                val response = api.getSuggestions()
-                suggestions.value = response.suggestions
-                isLoading.value = false
+        if (!prefs.isLoggedIn()) {
+            loadSuggestions()
+
+            (application as DiaryApplication).appContainer.paymentSheetCallback = {
+                when(it) {
+                    is PaymentSheetResult.Canceled -> {
+                        Log.i(TAG, "Payment Sheet Canceled")
+                    }
+                    is PaymentSheetResult.Failed -> {
+                        paymentSheetResult.value = it
+                    }
+                    is PaymentSheetResult.Completed -> {
+                        loadSuggestions()
+                        paymentSheetResult.value = it
+                    }
+                }
             }
         }
+    }
 
-        (application as DiaryApplication).appContainer.paymentSheetCallback = {
-            when(it) {
-                is PaymentSheetResult.Canceled -> {
-                    Log.i(TAG, "Canceled 123")
-                }
-                is PaymentSheetResult.Failed -> {
-                    Log.i(TAG, "Error 123")
-                    paymentSheetResult.value = it
-                }
-                is PaymentSheetResult.Completed -> {
-                    Log.i(TAG, "Completed 123")
-                    paymentSheetResult.value = it
-                }
-            }
+    private fun loadSuggestions() {
+        viewModelScope.launch {
+            isLoading.value = true
+            val response = api.getSuggestions()
+            suggestions.value = response.suggestions
+            isLoading.value = false
         }
     }
 
