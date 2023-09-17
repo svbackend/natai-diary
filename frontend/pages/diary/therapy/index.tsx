@@ -85,7 +85,7 @@ function SuggestionRow(
     }
 
 
-    const firstParagraph = suggestion.suggestion.split("\n\n")[0]
+    const firstParagraph = suggestion.suggestion.replaceAll("\n\n", " ")
     const first20words = firstParagraph.split(" ").slice(0, 20).join(" ")
     const preview = first20words + "..."
 
