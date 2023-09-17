@@ -2,7 +2,7 @@
 
 mkdir "/tmp/natai" -p
 
-rf -rf "/tmp/natai/*"
+rm -rf "/tmp/natai/*"
 
 docker compose build api-php-fpm frontend
 
