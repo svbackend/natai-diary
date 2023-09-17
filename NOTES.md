@@ -1,3 +1,13 @@
+### Sep 17, 2023
+
+Migrated from server in Ukraine to server in Canada,
+want to keep all my projects on 1 server to reduce cost + improve performance,
+natai is focused on US & Canada so it makes sense to use server closer to the target audience.
+
+Fixed small UI bug with AI suggestions when suggestion preview was cut off after greeting.
+
+Happy that migration went smoothly.
+
 ### Sep 15, 2023
 
 Continuing to work on integrating payments,
