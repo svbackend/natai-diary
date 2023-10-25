@@ -5,5 +5,5 @@ import React from "react";
 
 export default function Body(props: {children: React.ReactNode}) {
     const [darkMode, setDarkMode] = useAtom(darkModeAtom)
-    return <div className={classNames(darkMode ? "dark" : "light")}>{props.children}</div>
+    return <body className={classNames(darkMode ? "dark" : "light")}>{props.children}</body>
 }
