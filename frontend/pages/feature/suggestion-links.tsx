@@ -70,7 +70,7 @@ function SuggestionLinks(props: { links: SuggestionLinkDto[] }) {
 
 function SuggestionLinksExample(props: { links: SuggestionLinkDto[] }) {
     return (
-        <div className="relative max-w-md mx-auto">
+        <div className="relative max-w-lg mx-auto">
             <div className="flex flex-nowrap mt-4 gap-4 overflow-hidden">
                 <SuggestionLinksCards links={props.links}/>
             </div>
