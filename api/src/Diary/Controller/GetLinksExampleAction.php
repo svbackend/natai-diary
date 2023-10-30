@@ -6,7 +6,7 @@ use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\OpenApi\Ref\NotFoundErrorRef;
 use App\Diary\Http\Response\SuggestionLinksResponse;
-use App\Diary\Repository\SuggestionLinkRepository;
+use App\Diary\Repository\LinkRepository;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class GetLinksExampleAction extends BaseAction
 {
     public function __construct(
-        private SuggestionLinkRepository $suggestionLinks,
+        private LinkRepository $links,
     )
     {
     }
@@ -31,7 +31,7 @@ class GetLinksExampleAction extends BaseAction
     #[Route('/api/v1/links-example', methods: ['GET'])]
     public function __invoke(): HttpOutputInterface
     {
-        $links = $this->suggestionLinks->findExampleLinks();
+        $links = $this->links->findExampleLinks();
 
         return new SuggestionLinksResponse(
             links: $links

@@ -2,6 +2,7 @@
 
 namespace App\Diary\Repository;
 
+use App\Diary\DTO\SuggestionLinkDto;
 use App\Diary\Entity\Link;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\ArrayParameterType;
@@ -69,5 +70,28 @@ class LinkRepository extends ServiceEntityRepository
         $linksIds = $result->fetchAllAssociative();
 
         return $this->findBy(['id' => array_column($linksIds, 'link_id')]);
+    }
+
+    /** @return SuggestionLinkDto[] */
+    public function findExampleLinks(): array
+    {
+        $ids = [1, 2, 3];
+
+        $links = $this->createQueryBuilder('l')
+            ->where('l.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+
+        return array_map(
+            static fn(Link $l) => new SuggestionLinkDto(
+                id: $l->getId(),
+                url: $l->getUrl(),
+                title: $l->getTitle(),
+                description: $l->getDescription(),
+                image: $l->getImage(),
+            ),
+            $links
+        );
     }
 }

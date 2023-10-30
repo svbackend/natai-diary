@@ -2,7 +2,6 @@
 
 namespace App\Diary\Repository;
 
-use App\Common\Service\Env;
 use App\Diary\DTO\SuggestionLinkDto;
 use App\Diary\Entity\SuggestionLink;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -48,31 +47,6 @@ class SuggestionLinkRepository extends ServiceEntityRepository
         $links = $this->createQueryBuilder('sl')
             ->andWhere('sl.suggestion = :suggestionId')
             ->setParameter('suggestionId', $suggestionId)
-            ->join('sl.link', 'l')
-            ->addSelect('l')
-            ->getQuery()
-            ->getResult();
-
-        return array_map(
-            fn(SuggestionLink $sl) => new SuggestionLinkDto(
-                id: $sl->getId(),
-                url: $sl->getLink()->getUrl(),
-                title: $sl->getLink()->getTitle(),
-                description: $sl->getLink()->getDescription(),
-                image: $sl->getLink()->getImage(),
-            ),
-            $links
-        );
-    }
-
-    /** @return SuggestionLinkDto[] */
-    public function findExampleLinks(): array
-    {
-        $ids = [4, 6, 7];
-
-        $links = $this->createQueryBuilder('sl')
-            ->where('sl.id IN (:ids)')
-            ->setParameter('ids', $ids)
             ->join('sl.link', 'l')
             ->addSelect('l')
             ->getQuery()
