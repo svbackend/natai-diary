@@ -2,6 +2,7 @@
 
 namespace App\Diary\Repository;
 
+use App\Common\Service\Env;
 use App\Diary\DTO\SuggestionLinkDto;
 use App\Diary\Entity\SuggestionLink;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -78,7 +79,7 @@ class SuggestionLinkRepository extends ServiceEntityRepository
             ->getResult();
 
         return array_map(
-            fn(SuggestionLink $sl) => new SuggestionLinkDto(
+            static fn(SuggestionLink $sl) => new SuggestionLinkDto(
                 id: $sl->getId(),
                 url: $sl->getLink()->getUrl(),
                 title: $sl->getLink()->getTitle(),
