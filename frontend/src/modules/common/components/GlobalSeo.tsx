@@ -9,7 +9,7 @@ export type SeoType = {
     img: string,
 }
 
-const webAppJson = require('../../../../public/seo/app.json')
+import webAppJson from '../../../../public/seo/app.json';
 
 export default function GlobalSeo(props: { canonical: string }) {
     const title = webAppJson.name
@@ -19,7 +19,7 @@ export default function GlobalSeo(props: { canonical: string }) {
 
     return (
         <Head>
-            <title>{title}</title>
+            <title key={"document-title"}>{title}</title>
             <link rel="apple-touch-icon" sizes="180x180" href="/seo/icongen/apple-touch-icon.png"/>
             <link rel="shortcut icon" type="image/png" sizes="32x32" href="/seo/natai-diary-logo-32.png"/>
             <link rel="shortcut icon" type="image/x-icon" sizes="16x16" href="/favicon.ico"/>
@@ -58,20 +58,22 @@ export default function GlobalSeo(props: { canonical: string }) {
 }
 
 export function Seo(props: SeoType) {
+    const combinedTitle = `${props.title} | Natai Diary`;
     return (
         <Head>
-            <title>{props.title} | Natai Diary</title>
+            <title key={'document-title'}>{combinedTitle}</title>
 
-            <meta name="description" content={props.description}/>
-            <meta name="keywords" content={props.keywords}/>
+            <meta key="meta:title" name="title" content={combinedTitle}/>
+            <meta key="meta:description" name="description" content={props.description}/>
+            <meta key="meta:keywords" name="keywords" content={props.keywords}/>
 
-            <meta property="og:title" content={props.title}/>
-            <meta property="og:description" content={props.description}/>
-            <meta property="og:image" content={props.img}/>
+            <meta key="og:title" property="og:title" content={combinedTitle}/>
+            <meta key="og:description" property="og:description" content={props.description}/>
+            <meta key="og:image" property="og:image" content={props.img}/>
 
-            <meta name="twitter:title" content={props.title}/>
-            <meta name="twitter:description" content={props.description}/>
-            <meta name="twitter:image" content={props.img}/>
+            <meta key="twitter:title" name="twitter:title" content={combinedTitle}/>
+            <meta key="twitter:description" name="twitter:description" content={props.description}/>
+            <meta key="twitter:image" name="twitter:image" content={props.img}/>
         </Head>
     )
 }
