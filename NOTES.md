@@ -1,3 +1,14 @@
+### Oct 30,31 2023
+
+Finally back to Poland, after a year in Canada.
+Feeling good, slowly but surely starting to work on this project again.
+Last couple of days was fixing small but seo-impactful bugs.
+Next - need to finish with the first paid feature (Additional Resources) and should focus on adding more content to the site (articles, suggestion links).
+Thinking more and more about adding "chat with therapist feature" but not sure how it's gonna be better than just using ChatGpt.
+
+I'm actually grateful for having this project, it's kind of indicator of my mental health.
+When I'm feeling good - I'm working on it.
+
 ### Sep 17, 2023
 
 Migrated from server in Ukraine to server in Canada,
