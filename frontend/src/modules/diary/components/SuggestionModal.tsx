@@ -223,8 +223,7 @@ export function BuySuggestionLinksButton() {
         setIsLoading(true)
         fetchPostLinksBuy({})
             .then((res) => {
-                // redirect to payment page
-                window.location.href = res.checkoutUrl
+                // todo open stripe ui modal?
             })
             .catch(e => {
                 setError(e)

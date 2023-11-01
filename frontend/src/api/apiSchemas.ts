@@ -179,7 +179,6 @@ export type VerifyEmailResponseRef = {
 };
 
 export type BuyFeatureResponse = {
-  checkoutUrl: string;
   customerId: string;
   ephemeralKey: string | null;
   paymentIntentSecret: string | null;
