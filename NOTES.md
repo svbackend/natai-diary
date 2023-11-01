@@ -1,3 +1,12 @@
+### Nov 1, 2023
+
+Did some research on how to add payments through Stripe to the web app,
+I want it to be similar to what I've implemented in the android app.
+Removed "Checkout Session", now using "Payment Intent" instead.
+
+On a side-note - ordered another pack of brainzyme supplements, I really like how they work for me,
+even considering to become an affiliate, although I don't have any audience yet :)
+
 ### Oct 30,31 2023
 
 Finally back to Poland, after a year in Canada.
