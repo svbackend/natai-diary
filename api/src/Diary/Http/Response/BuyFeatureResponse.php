@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 class BuyFeatureResponse implements HttpOutputInterface
 {
     public function __construct(
-        public string  $checkoutUrl,
         public string  $customerId,
         public ?string $ephemeralKey,
         public ?string $paymentIntentSecret,

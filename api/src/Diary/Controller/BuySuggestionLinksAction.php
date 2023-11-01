@@ -63,7 +63,6 @@ class BuySuggestionLinksAction extends BaseAction
         $this->em->flush();
 
         return new BuyFeatureResponse(
-            checkoutUrl: $checkoutSession->url,
             customerId: $stripeCustomerId,
             ephemeralKey: $ephemeralKey,
             paymentIntentSecret: $checkoutSession->paymentIntentSecret,

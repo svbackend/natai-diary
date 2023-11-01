@@ -39,8 +39,6 @@ class PaymentGateway
         string $stripeCustomerId
     ): PaymentLinkDto
     {
-        $url = Env::getAppUrl();
-
         $paymentIntent = $this->stripeClient->paymentIntents->create([
             'description' => $productName,
             'amount' => $amount,
@@ -50,7 +48,6 @@ class PaymentGateway
         ]);
 
         return new PaymentLinkDto(
-            url: '', // todo delete?
             id: $paymentIntent->id,
             paymentIntentSecret: $paymentIntent->client_secret,
         );
