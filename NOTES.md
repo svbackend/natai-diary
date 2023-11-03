@@ -1,3 +1,25 @@
+### Nov 3, 2023
+
+I LOVE TESTS!!!
+today I had no energy after work,
+so I decided to do something relatively simple - upgrade symfony version from 6.1 to 6.3
+Plus upgraded all other dependencies.
+I did it in 2 steps - first I upgraded to 6.2, fixed deprecations, then to 6.3
+Luckily - I have tests so after first upgrade I very quickly verified that everything works as expected.
+
+And tests are actually executing my code so I can find deprecations quickly,
+I fixed all of them, and then repeated the process for 6.3 version.
+
+PHPUnit 9.6.13 by Sebastian Bergmann and contributors.
+
+Testing
+.........................................................         57 / 57 (100%)
+
+Time: 00:02.019, Memory: 78.50 MB
+
+OK (57 tests, 236 assertions)
+
+
 ### Nov 1, 2023
 
 Did some research on how to add payments through Stripe to the web app,
