@@ -9,9 +9,9 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    public function boot()
+    public function boot(): void
     {
         date_default_timezone_set('UTC');
-        return parent::boot();
+        parent::boot();
     }
 }

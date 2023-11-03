@@ -100,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -139,7 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $newEmail;
     }
 
-    public function assignBlogEditorRole()
+    public function assignBlogEditorRole(): void
     {
         $this->roles[] = BlogSecurity::ROLE_BLOG_EDITOR;
     }
