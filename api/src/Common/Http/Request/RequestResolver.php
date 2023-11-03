@@ -5,7 +5,7 @@ namespace App\Common\Http\Request;
 use App\Common\Exception\ValidationException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -14,17 +14,17 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * Purpose of this class is to create DTO object from request and validate it.
  * But validation works BEFORE creating DTO object, so it's not possible to create an object with invalid data.
  */
-class RequestResolver implements ArgumentValueResolverInterface
+class RequestResolver implements ValueResolverInterface
 {
     public function __construct(
-        private ValidatorInterface $validator,
+        private ValidatorInterface  $validator,
         private SerializerInterface $serializer,
-        private LoggerInterface $logger,
+        private LoggerInterface     $logger,
     )
     {
     }
 
-    public function supports(Request $request, ArgumentMetadata $argument): bool
+    private function supports(ArgumentMetadata $argument): bool
     {
         $argType = $argument->getType();
 
@@ -46,6 +46,10 @@ class RequestResolver implements ArgumentValueResolverInterface
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
+        if (!$this->supports($argument)) {
+            return;
+        }
+
         /** @var $class HttpInputInterface */
         $class = $argument->getType();
 
@@ -71,7 +75,7 @@ class RequestResolver implements ArgumentValueResolverInterface
         }
 
         $dto = $this->serializer->denormalize($request->request->all(), $class);
-        
+
         yield $dto;
     }
 }
