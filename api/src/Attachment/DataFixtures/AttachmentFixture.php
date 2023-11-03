@@ -20,7 +20,7 @@ class AttachmentFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         /** @var $userRef User */
-        $userRef = $this->getReference(UserFixture::USER_ID);
+        $userRef = $this->getReference(UserFixture::USER_ID, User::class);
 
         $expiresAt = (new \DateTimeImmutable())->add(new \DateInterval('PT72H'));
 

@@ -27,7 +27,7 @@ class ConfirmationTokenFixture extends Fixture implements DependentFixtureInterf
     public function load(ObjectManager $manager): void
     {
         /** @var User $userRef */
-        $userRef = $this->getReference(UserFixture::USER_ID);
+        $userRef = $this->getReference(UserFixture::USER_ID, User::class);
 
         $emailVerificationToken = ConfirmationToken::createTokenForEmailVerification($userRef);
         $emailVerificationExpiredToken = ConfirmationToken::createTokenForEmailVerification($userRef);

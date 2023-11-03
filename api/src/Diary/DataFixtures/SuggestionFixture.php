@@ -19,10 +19,10 @@ class SuggestionFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         /** @var $userRef User */
-        $userRef = $this->getReference(UserFixture::USER_ID);
+        $userRef = $this->getReference(UserFixture::USER_ID, User::class);
 
         /** @var $promptRef SuggestionPrompt */
-        $promptRef = $this->getReference(SuggestionPromptFixture::PROMPT_1_ID);
+        $promptRef = $this->getReference(SuggestionPromptFixture::PROMPT_1_ID, SuggestionPrompt::class);
 
         $suggestion1 = new Suggestion(
             id: UuidV4::fromString(self::SUGGESTION_1_ID),

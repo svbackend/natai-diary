@@ -25,7 +25,7 @@ class ChangeEmailTokenFixture extends Fixture implements DependentFixtureInterfa
     public function load(ObjectManager $manager): void
     {
         /** @var User $userRef */
-        $userRef = $this->getReference(UserFixture::USER_ID);
+        $userRef = $this->getReference(UserFixture::USER_ID, User::class);
 
         $changeEmailToken = new ChangeEmailToken($userRef, self::NEW_EMAIL);
         $changeEmailExpiredToken = new ChangeEmailToken($userRef, self::NEW_EMAIL);

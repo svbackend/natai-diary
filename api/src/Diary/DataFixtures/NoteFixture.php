@@ -26,10 +26,10 @@ class NoteFixture extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         /** @var $userRef User */
-        $userRef = $this->getReference(UserFixture::USER_ID);
+        $userRef = $this->getReference(UserFixture::USER_ID, User::class);
 
         /** @var $user2Ref User */
-        $user2Ref = $this->getReference(UserFixture::USER2_ID);
+        $user2Ref = $this->getReference(UserFixture::USER2_ID, User::class);
 
         $entity = new Note(
             id: UuidV4::fromString(self::NOTE_ID),
