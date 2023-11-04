@@ -10,6 +10,7 @@ import Image from "next/image";
 import {useAtom} from "jotai";
 import {diaryStateAtom} from "../atoms/diaryStateAtom";
 import {useRouter} from "next/router";
+import NoteContent from "./NoteContent";
 
 export function DiaryNotesPreviewList(props: { notes: CloudNoteDto[], suggestions: CloudSuggestionDto[] }) {
     // create map - key: date, value: array of notes
@@ -136,7 +137,9 @@ export function DiaryNoteView({note, isLast}: { note: CloudNoteDto, isLast: bool
 
                 <RegularTagsRow note={note}/>
 
-                <p>{note.content}</p>
+                {note.content && (
+                    <NoteContent content={note.content}/>
+                )}
             </div>
         </>
     )
