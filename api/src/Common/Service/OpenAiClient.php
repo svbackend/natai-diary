@@ -9,9 +9,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class OpenAiClient
 {
     public function __construct(
-        private string $apiKey,
+        private string              $apiKey,
         private HttpClientInterface $client,
-        private LoggerInterface $logger,
+        private LoggerInterface     $logger,
     )
     {
     }
@@ -25,13 +25,12 @@ class OpenAiClient
     }
 
     public function getRecommendationsBasedOnNotes(
-        string $userId,
-        string $systemPrompt,
-        string $userPrompt,
+        string  $userId,
+        string  $systemPrompt,
+        string  $userPrompt,
         ?string $context = null,
     ): ChatGptResponse
     {
-
         $messages = [
             [
                 'role' => 'system',
@@ -59,6 +58,7 @@ class OpenAiClient
                 'temperature' => 1.0,
                 'user' => $userId,
             ],
+            'timeout' => 180, // 3 mins for this specific request
         ]);
 
         $responseContent = $response->getContent();
