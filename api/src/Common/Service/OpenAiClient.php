@@ -8,6 +8,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class OpenAiClient
 {
+    private const GPT3_MODEL = 'gpt-3.5-turbo-1106';
+
     public function __construct(
         private string              $apiKey,
         private HttpClientInterface $client,
@@ -53,7 +55,7 @@ class OpenAiClient
         $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
             'headers' => $this->headers(),
             'json' => [
-                'model' => 'gpt-3.5-turbo',
+                'model' => self::GPT3_MODEL,
                 'messages' => $messages,
                 'temperature' => 1.0,
                 'user' => $userId,
@@ -102,7 +104,7 @@ class OpenAiClient
         $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
             'headers' => $this->headers(),
             'json' => [
-                'model' => 'gpt-3.5-turbo',
+                'model' => self::GPT3_MODEL,
                 'messages' => $messages,
                 'temperature' => 1.0,
             ],
@@ -149,7 +151,7 @@ class OpenAiClient
         $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
             'headers' => $this->headers(),
             'json' => [
-                'model' => 'gpt-3.5-turbo',
+                'model' => self::GPT3_MODEL,
                 'messages' => $messages,
                 'temperature' => 1.0,
             ],
