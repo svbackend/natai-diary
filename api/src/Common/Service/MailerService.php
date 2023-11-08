@@ -14,8 +14,8 @@ use Symfony\Component\Mime\Address;
  */
 class MailerService
 {
-    const FROM_EMAIL = 'noreply@natai.app';
-    const FROM_NAME = 'Natai Diary App';
+    public const FROM_EMAIL = 'noreply@natai.app';
+    public const FROM_NAME = 'Natai Diary App';
 
     public function __construct(
         private MailerInterface $mailer,

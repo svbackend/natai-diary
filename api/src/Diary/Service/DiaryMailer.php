@@ -19,6 +19,10 @@ class DiaryMailer
 
     public function sendNotificationAboutNewSuggestion(User $user, Suggestion $suggestion): void
     {
+        if ($user->isEmailVerified() === false) {
+            return;
+        }
+
         $period = $suggestion->getPeriod();
         if ($period->from->format("Y-m-d") === $period->to->format("Y-m-d")) {
             // 19 March
