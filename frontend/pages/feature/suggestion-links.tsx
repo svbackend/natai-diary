@@ -2,9 +2,9 @@ import React from 'react';
 import MainLayout from "../../src/modules/common/components/mainLayout";
 import {fetchGetLinksExample} from "../../src/api/apiComponents";
 import {SuggestionLinkDto} from "../../src/api/apiSchemas";
-import {SuggestionLinksCards, SuggestionLinksCardsVisible} from "../../src/modules/diary/components/SuggestionLinkCard";
-import {LockOpenIcon} from "@heroicons/react/24/outline";
-import {BuySuggestionLinksButton} from "../../src/modules/diary/components/SuggestionModal";
+import {SuggestionLinksCards} from "../../src/modules/diary/components/SuggestionLinkCard";
+import {formatPrice, price_suggestion_links} from "../../src/utils/prices";
+import {SuggestionLinksPaymentForm} from "../../src/modules/diary/components/SuggestionLinksPaymentForm";
 
 export async function getServerSideProps() {
     let links: SuggestionLinkDto[] = []
@@ -24,6 +24,8 @@ export async function getServerSideProps() {
 }
 
 function SuggestionLinks(props: { links: SuggestionLinkDto[] }) {
+    const formattedPrice = formatPrice(price_suggestion_links)
+
     return (
         <MainLayout>
             <div className="py-16 px-4 sm:px-6 lg:px-8">
@@ -36,9 +38,9 @@ function SuggestionLinks(props: { links: SuggestionLinkDto[] }) {
                             Gain easy access to curated mental health resources and content tailored to your needs.
                         </p>
 
-                        <div className="mt-4">
-                            <BuySuggestionLinksButton/>
-                        </div>
+                        <p className={"mt-2 text-dark dark:text-light mx-auto"}>
+                            Make 1-time payment of {formattedPrice} for lifetime access, no subscription!
+                        </p>
                     </div>
 
                     <div className="mt-10">
@@ -48,9 +50,9 @@ function SuggestionLinks(props: { links: SuggestionLinkDto[] }) {
                             </h2>
                             <p className="mt-4 max-w-2xl text-xl text-dark dark:text-light mx-auto">
                                 For each generated AI-suggestion you will receive up to 3 links to articles, videos,
-                                podcasts, etc.
-                                All of them are hand-picked and curated by our team of mental health experts
-                                but provided to you by AI based on your diary notes.
+                                podcasts, etc.<br/>
+                                All of them are hand-picked and curated by our team of mental health experts.
+                                Provided to you by AI, based on your diary notes.
                             </p>
                         </div>
 
@@ -59,7 +61,7 @@ function SuggestionLinks(props: { links: SuggestionLinkDto[] }) {
                         )}
 
                         <div className="mt-4">
-                            <BuySuggestionLinksButton/>
+                            <SuggestionLinksPaymentForm/>
                         </div>
                     </div>
                 </div>
