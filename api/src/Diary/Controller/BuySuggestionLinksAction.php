@@ -6,11 +6,14 @@ use App\Auth\Entity\User;
 use App\Billing\Entity\UserFeature;
 use App\Billing\Entity\UserOrder;
 use App\Billing\Entity\UserOrderFeature;
+use App\Billing\Exception\EmptyClientSecretException;
+use App\Billing\Exception\EmptyEphemeralKeyException;
 use App\Billing\Service\PaymentGateway;
 use App\Common\Controller\BaseAction;
 use App\Common\Http\Response\AuthRequiredErrorResponse;
 use App\Common\Http\Response\HttpOutputInterface;
 use App\Diary\Http\Response\BuyFeatureResponse;
+use App\Diary\OpenApi\Ref\BuySuggestionLinksErrorRef;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -33,6 +36,7 @@ class BuySuggestionLinksAction extends BaseAction
     /**
      * @OA\Response(response=200, description="success", @Model(type=BuyFeatureResponse::class))
      * @OA\Response(response=401, description="not authorized", @Model(type=AuthRequiredErrorResponse::class))
+     * @OA\Response(response=422, description="checkout session error", @Model(type=BuySuggestionLinksErrorRef::class))
      * @Security(name="ApiToken")
      */
     #[Route('/api/v1/links/buy', methods: ['POST'])]
@@ -40,12 +44,13 @@ class BuySuggestionLinksAction extends BaseAction
         #[CurrentUser] User $user,
     ): HttpOutputInterface
     {
-        $stripeCustomerId = $this->paymentGateway->createCustomer($user);
-        $user->setStripeCustomerId($stripeCustomerId);
-
-        $ephemeralKey = $this->paymentGateway->createEphemeralKey($stripeCustomerId);
-
-        $checkoutSession = $this->paymentGateway->createSuggestionLinksCheckoutSession($stripeCustomerId);
+        try {
+            $checkoutSession = $this->paymentGateway->createSuggestionLinksCheckoutSession($user);
+        } catch (EmptyEphemeralKeyException) {
+            return $this->error(BuySuggestionLinksErrorRef::EMPTY_EPHEMERAL_KEY);
+        } catch (EmptyClientSecretException) {
+            return $this->error(BuySuggestionLinksErrorRef::EMPTY_PAYMENT_INTENT_CLIENT_SECRET);
+        }
 
         $userOrder = new UserOrder(
             user: $user,
@@ -63,8 +68,8 @@ class BuySuggestionLinksAction extends BaseAction
         $this->em->flush();
 
         return new BuyFeatureResponse(
-            customerId: $stripeCustomerId,
-            ephemeralKey: $ephemeralKey,
+            customerId: $checkoutSession->stripeCustomerId,
+            ephemeralKey: $checkoutSession->ephemeralKey,
             paymentIntentSecret: $checkoutSession->paymentIntentSecret,
         );
     }

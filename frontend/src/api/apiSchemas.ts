@@ -184,6 +184,13 @@ export type BuyFeatureResponse = {
   paymentIntentSecret: string | null;
 };
 
+export type BuySuggestionLinksErrorRef = {
+  /**
+   * @example empty_ephemeral_key
+   */
+  code: "empty_payment_intent_client_secret" | "empty_ephemeral_key";
+};
+
 export type UpdateNoteRequestV1 = {
   title: string;
   content: string;

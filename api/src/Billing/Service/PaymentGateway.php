@@ -3,16 +3,16 @@
 namespace App\Billing\Service;
 
 use App\Auth\Entity\User;
-use App\Billing\DTO\PaymentLinkDto;
+use App\Billing\DTO\StripeCheckoutSessionDto;
 use App\Billing\Entity\UserFeature;
-use App\Common\Service\Env;
+use App\Billing\Exception\EmptyClientSecretException;
+use App\Billing\Exception\EmptyEphemeralKeyException;
 use Psr\Log\LoggerInterface;
+use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class PaymentGateway
 {
-    public const SUCCESS_URL = '/feature/success?session_id={CHECKOUT_SESSION_ID}';
-    public const CANCEL_URL = '/feature/cancel';
     public const PRICE_SUGGESTION_LINKS = 1120;
     public const PRICE_SUGGESTION_LINKS_DISCOUNT = 799;
 
@@ -23,8 +23,26 @@ class PaymentGateway
     {
     }
 
-    public function createSuggestionLinksCheckoutSession(string $stripeCustomerId): PaymentLinkDto
+    /**
+     * @throws ApiErrorException
+     * @throws EmptyEphemeralKeyException
+     * @throws EmptyClientSecretException
+     */
+    public function createSuggestionLinksCheckoutSession(User $user): StripeCheckoutSessionDto
     {
+        $stripeCustomerId = $this->createCustomer($user);
+
+        if ($user->getStripeCustomerId() !== $stripeCustomerId) {
+            $this->logger->info(
+                "Updating user's stripe customer id",
+                [
+                    'old' => $user->getStripeCustomerId(),
+                    'new' => $stripeCustomerId,
+                ],
+            );
+            $user->setStripeCustomerId($stripeCustomerId);
+        }
+
         $name = UserFeature::getFeatureName(UserFeature::FEAT_SUGGESTION_LINKS);
         return $this->createCheckoutSession(
             productName: $name,
@@ -33,11 +51,16 @@ class PaymentGateway
         );
     }
 
+    /**
+     * @throws ApiErrorException
+     * @throws EmptyEphemeralKeyException
+     * @throws EmptyClientSecretException
+     */
     private function createCheckoutSession(
         string $productName,
         int    $amount,
         string $stripeCustomerId
-    ): PaymentLinkDto
+    ): StripeCheckoutSessionDto
     {
         $paymentIntent = $this->stripeClient->paymentIntents->create([
             'description' => $productName,
@@ -47,9 +70,21 @@ class PaymentGateway
             'customer' => $stripeCustomerId,
         ]);
 
-        return new PaymentLinkDto(
+        $paymentIntentSecret = $paymentIntent->client_secret;
+        if (!$paymentIntentSecret) {
+            throw new EmptyClientSecretException();
+        }
+
+        $ephemeralKey = $this->createEphemeralKey($stripeCustomerId);
+        if (!$ephemeralKey) {
+            throw new EmptyEphemeralKeyException();
+        }
+
+        return new StripeCheckoutSessionDto(
             id: $paymentIntent->id,
-            paymentIntentSecret: $paymentIntent->client_secret,
+            stripeCustomerId: $stripeCustomerId,
+            paymentIntentSecret: $paymentIntentSecret,
+            ephemeralKey: $ephemeralKey,
         );
     }
 

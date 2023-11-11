@@ -687,10 +687,16 @@ export const usePostVerifyEmail = (
   );
 };
 
-export type PostLinksBuyError = Fetcher.ErrorWrapper<{
-  status: 401;
-  payload: Schemas.AuthRequiredErrorResponse;
-}>;
+export type PostLinksBuyError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 422;
+      payload: Schemas.BuySuggestionLinksErrorRef;
+    }
+>;
 
 export type PostLinksBuyVariables = ApiContext["fetcherOptions"];
 
