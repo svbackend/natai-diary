@@ -1,4 +1,5 @@
 export function formatPrice(price: number) {
+    price = price / 100
     const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',

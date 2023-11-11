@@ -5,6 +5,8 @@ import {SuggestionLinkDto} from "../../src/api/apiSchemas";
 import {SuggestionLinksCards} from "../../src/modules/diary/components/SuggestionLinkCard";
 import {formatPrice, price_suggestion_links} from "../../src/utils/prices";
 import {SuggestionLinksPaymentForm} from "../../src/modules/diary/components/SuggestionLinksPaymentForm";
+import NarrowWrapper from "../../src/modules/common/components/NarrowWrapper";
+import {Spacer} from "ink";
 
 export async function getServerSideProps() {
     let links: SuggestionLinkDto[] = []
@@ -28,44 +30,43 @@ function SuggestionLinks(props: { links: SuggestionLinkDto[] }) {
 
     return (
         <MainLayout>
-            <div className="py-16 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
+            <NarrowWrapper>
+                <div className="lg:text-center">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-whitish sm:text-4xl">
+                        Additional Mental Health Resources
+                    </h2>
+                    <p className="mt-4 max-w-2xl text-xl text-dark dark:text-light mx-auto">
+                        Gain easy access to curated mental health resources and content tailored to your needs.
+                    </p>
+
+                    <p className={"mt-2 text-dark dark:text-light mx-auto"}>
+                        Make 1-time payment of {formattedPrice} for lifetime access, <b>no subscription</b>!
+                    </p>
+                </div>
+
+                <div className="mt-4">
+                    <SuggestionLinksPaymentForm/>
+                </div>
+
+                <div className="mt-10">
                     <div className="lg:text-center">
                         <h2 className="text-3xl font-extrabold tracking-tight text-whitish sm:text-4xl">
-                            Additional Mental Health Resources
+                            Example of what you can get
                         </h2>
                         <p className="mt-4 max-w-2xl text-xl text-dark dark:text-light mx-auto">
-                            Gain easy access to curated mental health resources and content tailored to your needs.
-                        </p>
-
-                        <p className={"mt-2 text-dark dark:text-light mx-auto"}>
-                            Make 1-time payment of {formattedPrice} for lifetime access, no subscription!
+                            For each generated AI-suggestion you will receive up to 3 links to articles, videos,
+                            podcasts, etc.<br/>
+                            <span className="inline-table w-full">{" "}</span>
+                            All of them are hand-picked and curated by our team of mental health experts.
+                            Provided to you by AI, based on your diary notes.
                         </p>
                     </div>
 
-                    <div className="mt-10">
-                        <div className="lg:text-center">
-                            <h2 className="text-3xl font-extrabold tracking-tight text-whitish sm:text-4xl">
-                                Example of what you can get
-                            </h2>
-                            <p className="mt-4 max-w-2xl text-xl text-dark dark:text-light mx-auto">
-                                For each generated AI-suggestion you will receive up to 3 links to articles, videos,
-                                podcasts, etc.<br/>
-                                All of them are hand-picked and curated by our team of mental health experts.
-                                Provided to you by AI, based on your diary notes.
-                            </p>
-                        </div>
-
-                        {props.links.length > 0 && (
-                            <SuggestionLinksExample links={props.links}/>
-                        )}
-
-                        <div className="mt-4">
-                            <SuggestionLinksPaymentForm/>
-                        </div>
-                    </div>
+                    {props.links.length > 0 && (
+                        <SuggestionLinksExample links={props.links}/>
+                    )}
                 </div>
-            </div>
+            </NarrowWrapper>
         </MainLayout>
     );
 }

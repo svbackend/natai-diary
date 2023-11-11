@@ -16,7 +16,7 @@ export const AlertApiError = ({error}: { error: any }) => {
     const t = useTranslations("Error");
 
     let message = "Unknown error";
-    const status = error.status || null
+    const status = error?.status || null
 
     if (error && error.payload) {
         if (typeof error.payload === 'object') {

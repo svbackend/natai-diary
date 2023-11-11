@@ -1,1 +1,1 @@
-export const GOOGLE_MAPS_API_TOKEN = process.env.NEXT_PUBLIC_GOOGLE_MAPS;
+export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
