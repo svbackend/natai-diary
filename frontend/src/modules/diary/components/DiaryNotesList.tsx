@@ -1,5 +1,5 @@
 import {CloudNoteDto, CloudSuggestionDto, CloudTagDto} from "../../../api/apiSchemas";
-import {classNames} from "../../../utils/classNames";
+import {cn} from "../../../utils/cn";
 import SpecialTagsRow from "./SpecialTagsRow";
 import RegularTagsRow from "./RegularTagsRow";
 import React from "react";
@@ -100,7 +100,7 @@ export function DiaryNotePreview({note, isLast}: { note: CloudNoteDto, isLast: b
     return (
         <>
             <Link href={`/diary/note/${note.id}`}
-                  className={classNames("flex flex-col py-2 cursor-pointer max-w-full", !isLast && "border-b border-sep dark:border-sep-alt")}>
+                  className={cn("flex flex-col py-2 cursor-pointer max-w-full", !isLast && "border-b border-sep dark:border-sep-alt")}>
                 <div className={"text-nav-item dark:text-nav-item-alt"}>
                     <span>{hm}</span>
                     {weatherTag && (
@@ -129,7 +129,7 @@ export function DiaryNoteView({note, isLast}: { note: CloudNoteDto, isLast: bool
 
     return (
         <>
-            <div className={classNames("flex flex-col py-2 cursor-pointer", !isLast && "border-b")}>
+            <div className={cn("flex flex-col py-2 cursor-pointer", !isLast && "border-b")}>
                 <span>{hm}</span>
                 <h1 className="text-2xl font-bold">{note.title}</h1>
 
@@ -207,7 +207,7 @@ function AttachmentPreview(
         hiddenAttachmentsLength: number
     }
 ) {
-    const cls = classNames("w-20 h-20 mt-2 rounded-xl", props.preview ? "" : "bg-gray-200 dark:bg-gray-800 animate-pulse")
+    const cls = cn("w-20 h-20 mt-2 rounded-xl", props.preview ? "" : "bg-gray-200 dark:bg-gray-800 animate-pulse")
     return (
         <div className={"flex flex-col mr-2 relative"}>
             {props.preview && (

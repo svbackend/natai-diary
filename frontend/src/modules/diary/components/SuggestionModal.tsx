@@ -19,7 +19,8 @@ import preview1Img from "../../../../public/assets/therapy/suggestion-links-prev
 import {price_suggestion_links, price_suggestion_links_early_bird} from "../../../utils/prices";
 import {LockOpenIcon} from "@heroicons/react/24/outline";
 import {SuggestionLinksCards} from "./SuggestionLinkCard";
-import {classNames} from "../../../utils/classNames";
+import {cn} from "../../../utils/cn";
+import {useRouter} from "next/router";
 
 export function SuggestionModal(
     props: {
@@ -205,38 +206,23 @@ function SuggestionLinksGetAccessCard() {
             <div className="absolute top-0 right-0 h-full w-full backdrop-blur-sm">
                 <div className={"flex flex-col items-center gap-4 justify-center h-full w-full"}>
                     <BuySuggestionLinksButton/>
-                    <LearnMoreSuggestionLinksButton/>
                 </div>
             </div>
         </div>
     )
 }
 
-/**
- * Button must be centered in the parent absolute positioned element with 100% width and height
- */
 export function BuySuggestionLinksButton() {
-
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState(null)
-    const onClick = () => {
+    const startLoading = () => {
         setIsLoading(true)
-        fetchPostLinksBuy({})
-            .then((res) => {
-                // todo open stripe ui modal?
-            })
-            .catch(e => {
-                setError(e)
-            })
-            .finally(() => {
-                setIsLoading(false)
-            })
     }
 
     return (
         <div className="flex items-center justify-center">
-            <button onClick={onClick}
-                    className={classNames("px-4 py-2 text-dark dark:text-white bg-white dark:bg-nav-bg border-2 border-indigo-900 hover:bg-indigo-900 dark:hover:bg-indigo-900 focus:ring-2 focus:ring-indigo-900 font-bold rounded-full transition duration-300 ease-in-out", isLoading && "animate-pulse")}>
+            <Link onClick={startLoading}
+                  href={"/feature/suggestion-links"}
+                  className={cn("px-4 py-2 text-dark dark:text-white bg-white dark:bg-nav-bg border-2 border-indigo-900 hover:bg-indigo-900 dark:hover:bg-indigo-900 focus:ring-2 focus:ring-indigo-900 font-bold rounded-full transition duration-300 ease-in-out", isLoading && "animate-pulse")}>
                 Get Access
                 &nbsp;
                 {isLoading ? (
@@ -244,18 +230,7 @@ export function BuySuggestionLinksButton() {
                 ) : (
                     <LockOpenIcon className="inline w-4 h-4"/>
                 )}
-            </button>
+            </Link>
         </div>
-    )
-}
-
-function LearnMoreSuggestionLinksButton() {
-    return (
-        <Link href={"/feature/suggestion-links"} className="flex items-center justify-center">
-            <button
-                className="px-4 py-2 text-white bg-brand hover:bg-brand/80 focus:ring-4 focus:outline-none focus:ring-indigo-900 font-bold rounded-full">
-                Learn More
-            </button>
-        </Link>
     )
 }

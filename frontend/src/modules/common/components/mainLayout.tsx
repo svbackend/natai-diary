@@ -6,7 +6,7 @@ import Link from "next/link";
 import {NextRouter, useRouter} from "next/router";
 import {authService} from "../../auth/services/authService";
 import {useAppStateManager} from "../state";
-import {classNames} from "../../../utils/classNames";
+import {cn} from "../../../utils/cn";
 import UserDropdownMenu from "../../auth/components/userDropdownMenu";
 import {UserDto} from "../../../api/apiSchemas";
 import {CheckCircleIcon} from "@heroicons/react/20/solid";
@@ -128,25 +128,25 @@ const DesktopNavBar = ({
             <ul className="items-stretch hidden space-x-3 lg:flex -my-4">
                 <li className="flex">
                     <Link href={"/"}
-                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/") ? activeClass : "border-transparent")}>
+                          className={cn("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/") ? activeClass : "border-transparent")}>
                         Home
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/diary"}
-                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/diary") ? activeClass : "border-transparent")}>
+                          className={cn("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/diary") ? activeClass : "border-transparent")}>
                         My Diary
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/stories"}
-                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/stories") ? activeClass : "border-transparent")}>
+                          className={cn("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/stories") ? activeClass : "border-transparent")}>
                         Stories
                     </Link>
                 </li>
                 <li className="flex">
                     <Link href={"/static/contacts"}
-                          className={classNames("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/static/contacts") ? activeClass : "border-transparent")}>
+                          className={cn("flex items-center px-4 border-b-2 text-nav-item dark:text-nav-item-alt", isActive("/static/contacts") ? activeClass : "border-transparent")}>
                         Contacts
                     </Link>
                 </li>
@@ -238,21 +238,21 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                 <li>
                     <Link
                         href={"/"}
-                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
+                        className={cn("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         Home
                     </Link>
                 </li>
                 <li>
                     <Link
                         href={"/diary"}
-                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/diary") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
+                        className={cn("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/diary") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         My Diary
                     </Link>
                 </li>
                 <li>
                     <Link
                         href={"/stories"}
-                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/stories") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
+                        className={cn("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/stories") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         Stories
                     </Link>
                 </li>
@@ -260,7 +260,7 @@ const MobileNavBar = ({router}: { router: NextRouter }) => {
                     <Link
                         href={"/static/contacts"}
 
-                        className={classNames("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/static/contacts") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
+                        className={cn("text-nav-item dark:text-nav-item-alt block px-3 py-2 rounded-md text-base", isActive("/static/contacts") ? "text-brand dark:text-brand font-semibold" : "font-medium")}>
                         Contacts
                     </Link>
                 </li>
@@ -300,9 +300,9 @@ function MainLayout({children, containerClass}: { children: ReactNode, container
     const router = useRouter()
 
     return (
-        <div className={classNames("main-layout min-h-screen flex flex-col dark:bg-nav-bg dark:text-white")}>
+        <div className={cn("main-layout min-h-screen flex flex-col dark:bg-nav-bg dark:text-white")}>
             <Header router={router}/>
-            <div className={classNames(containerClass || "flex-1 container mx-auto p-3 sm:p-0")}>
+            <div className={cn(containerClass || "flex-1 container mx-auto p-3 sm:p-0")}>
                 {children}
             </div>
             <Footer/>

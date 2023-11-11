@@ -1,5 +1,5 @@
 import {useTranslations} from "use-intl";
-import {classNames} from "../../../utils/classNames";
+import {cn} from "../../../utils/cn";
 import {FieldErrors} from "react-hook-form/dist/types/errors";
 
 type NoteEditorFieldProps = {
@@ -36,7 +36,7 @@ export function NoteEditorField(
                     placeholder={t("placeholder")}
                     autoComplete={name}
                     required={true}
-                    className={classNames(
+                    className={cn(
                         "block bg:white dark:bg-field w-full px-3 py-2 border border-sep dark:border-sep-alt text-nav-item dark:text-nav-item-alt rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm",
                         errors && errors.hasOwnProperty(name) && "border-red-500",
                     )}

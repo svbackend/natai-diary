@@ -1,7 +1,7 @@
 import React from "react";
 import {PrimitiveAtom, useAtom} from "jotai";
 import {darkModeAtom} from "../../common/atoms/darkModeAtom";
-import {classNames} from "../../../utils/classNames";
+import {cn} from "../../../utils/cn";
 import {Dialog} from "@headlessui/react";
 
 export default function DialogWrapper(props: { children: React.ReactNode, modalAtom: PrimitiveAtom<boolean> }) {
@@ -12,7 +12,7 @@ export default function DialogWrapper(props: { children: React.ReactNode, modalA
         <Dialog
             open={isMenuOpen}
             onClose={() => setIsMenuOpen(false)}
-            className={classNames("relative z-50", darkMode ? "dark" : "light")}
+            className={cn("relative z-50", darkMode ? "dark" : "light")}
         >
             {/* The backdrop, rendered as a fixed sibling to the panel container */}
             <div className="fixed inset-0 bg-black/80" aria-hidden="true"/>

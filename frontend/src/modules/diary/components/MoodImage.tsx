@@ -1,6 +1,6 @@
 import {CloudTagDto} from "../../../api/apiSchemas";
 import {moodMapService} from "../services/moodMapService";
-import {classNames} from "../../../utils/classNames";
+import {cn} from "../../../utils/cn";
 import Image from "next/image";
 import React from "react";
 
@@ -14,7 +14,7 @@ export default function MoodImage({
     return (
         <button
             onClick={() => onSelect({tag: "mood", score: moodScore})}
-            className={classNames("flex flex-row items-center", currentValue === moodScore ? "rounded-full border-2 bg-light3 border-brand dark:bg-brand dark:border-darkish" : "")}
+            className={cn("flex flex-row items-center", currentValue === moodScore ? "rounded-full border-2 bg-light3 border-brand dark:bg-brand dark:border-darkish" : "")}
         >
             <Image src={moodImg} alt={"Select mood"} className={"w-16 h-16"}/>
         </button>

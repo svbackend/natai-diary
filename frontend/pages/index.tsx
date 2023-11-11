@@ -39,7 +39,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
-import {classNames} from "../src/utils/classNames";
+import {cn} from "../src/utils/cn";
 import {defaultMetadata} from "../src/utils/seo";
 
 const care01 = require("../public/assets/img/care01.svg");
@@ -329,7 +329,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                     {smiles.map((moodSmileImg, idx) => (
                         <Image
                             key={`features-mood-${1 + idx}`}
-                            className={classNames("w-16 h-16 drop-shadow", `features-mood-${1 + idx}`)}
+                            className={cn("w-16 h-16 drop-shadow", `features-mood-${1 + idx}`)}
                             src={moodSmileImg} alt={"Natai Diary Mood Icon"}
                         />
                     ))}
@@ -378,7 +378,7 @@ function FeaturesSection({isDarkMode}: { isDarkMode: boolean }) {
                     {smiles.map((moodSmileImg, idx) => (
                         <Image
                             key={`features-mood-${1 + idx}`}
-                            className={classNames("w-16 h-16 drop-shadow left", `features-mood-${1 + idx}`)}
+                            className={cn("w-16 h-16 drop-shadow left", `features-mood-${1 + idx}`)}
                             src={moodSmileImg} alt={"Natai Diary Mood Icon"}
                         />
                     ))}
