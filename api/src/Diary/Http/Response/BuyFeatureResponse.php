@@ -9,8 +9,8 @@ class BuyFeatureResponse implements HttpOutputInterface
 {
     public function __construct(
         public string  $customerId,
-        public ?string $ephemeralKey,
-        public ?string $paymentIntentSecret,
+        public string $ephemeralKey,
+        public string $paymentIntentSecret,
     )
     {
     }

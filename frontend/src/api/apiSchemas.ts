@@ -180,8 +180,8 @@ export type VerifyEmailResponseRef = {
 
 export type BuyFeatureResponse = {
   customerId: string;
-  ephemeralKey: string | null;
-  paymentIntentSecret: string | null;
+  ephemeralKey: string;
+  paymentIntentSecret: string;
 };
 
 export type BuySuggestionLinksErrorRef = {
