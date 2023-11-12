@@ -11,11 +11,7 @@ import Image from "next/image";
 import noNotesIcon from "../../public/assets/diary/no-notes.svg";
 import PrimaryButton from "../../src/modules/common/components/PrimaryButton";
 import {useRouter} from "next/router";
-import {defaultMetadata} from "../../src/utils/seo";
 
-export async function generateMetadata(props: { params: any, searchParams: any }) {
-    return defaultMetadata;
-}
 export default function DiaryPageContent() {
     const t = useTranslations("DiaryPage");
 

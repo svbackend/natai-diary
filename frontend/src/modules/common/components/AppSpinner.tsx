@@ -1,3 +1,6 @@
+import NarrowWrapper from "./NarrowWrapper";
+import React from "react";
+
 export default function AppSpinner() {
     return (
         <svg role="status" className="inline w-4 h-4 ml-2 text-gray-200 animate-spin dark:text-gray-600 dark:fill-light"
@@ -27,5 +30,18 @@ export function SmallSpinner() {
             </svg>
             <span className="sr-only">Loading...</span>
         </div>
+    )
+}
+
+export function LoadingState() {
+    return (
+        <NarrowWrapper>
+            <div className="text-center mx-auto">
+                <div className="">
+                    <div
+                        className="border-t-transparent border-solid animate-spin rounded-full border-brand border-4 h-16 w-16"></div>
+                </div>
+            </div>
+        </NarrowWrapper>
     )
 }

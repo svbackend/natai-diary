@@ -11,6 +11,7 @@ import NarrowWrapper from "../../common/components/NarrowWrapper";
 import {DiaryStateDto} from "../dto/DiaryStateDto";
 import {CloudNoteDto} from "../../../api/apiSchemas";
 import {attachmentService} from "../services/attachmentService";
+import {LoadingState} from "../../common/components/AppSpinner";
 
 export default function DiaryLayout(props: { children: React.ReactNode }) {
     const {user, isLoaded: isUserLoaded} = useAppStateManager()
@@ -134,19 +135,6 @@ function DiaryContentWrapper(props: { children: React.ReactNode, diaryState: Dia
         <NarrowWrapper>
             <DiaryHeader diaryState={props.diaryState}/>
             {props.children}
-        </NarrowWrapper>
-    )
-}
-
-function LoadingState() {
-    return (
-        <NarrowWrapper>
-            <div className="text-center mx-auto">
-                <div className="">
-                    <div
-                        className="border-t-transparent border-solid animate-spin rounded-full border-brand border-4 h-16 w-16"></div>
-                </div>
-            </div>
         </NarrowWrapper>
     )
 }

@@ -1,8 +1,9 @@
 import {usePostLinksBuy} from "../../../api/apiComponents";
-import AppSpinner from "../../common/components/AppSpinner";
+import {LoadingState} from "../../common/components/AppSpinner";
 import {AlertApiError} from "../../common/components/alert";
 import React, {useEffect} from "react";
 import {StripePaymentForm} from "../../billing/componenets/StripePaymentForm";
+import {STRIPE_PUBLIC_KEY} from "../../../utils/env";
 
 export const SuggestionLinksPaymentForm = () => {
     const {
@@ -17,15 +18,20 @@ export const SuggestionLinksPaymentForm = () => {
     }, [buySuggestionLinks])
 
     if (isLoading) {
-        return <AppSpinner/>
+        return <LoadingState/>
     }
 
     if (error || !result) {
         return <AlertApiError error={error}/>
     }
 
+    if (!STRIPE_PUBLIC_KEY) {
+        return <div>STRIPE_PUBLIC_KEY not set</div>
+    }
+
     return (
         <StripePaymentForm
+            stripePublicKey={STRIPE_PUBLIC_KEY}
             ephemeralKey={result.ephemeralKey}
             paymentIntentSecret={result.paymentIntentSecret}
             customerId={result.customerId}

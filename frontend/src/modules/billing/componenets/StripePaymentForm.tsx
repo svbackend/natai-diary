@@ -1,31 +1,28 @@
 import {Elements, PaymentElement, useStripe} from '@stripe/react-stripe-js';
 import {loadStripe, StripeElementsOptions} from '@stripe/stripe-js';
-import {STRIPE_PUBLIC_KEY} from "../../../utils/env";
-import PrimaryButton from "../../common/components/PrimaryButton";
 import {cn} from "../../../utils/cn";
+import React from "react";
 
 type StripePaymentFormProps = {
+    stripePublicKey: string,
     ephemeralKey: string,
     paymentIntentSecret: string,
     customerId: string,
 }
 
 export const StripePaymentForm = (props: StripePaymentFormProps) => {
-    // todo load stripe promise and render payment form using data from result
-    console.log("STRIPE PUBLIC KEY", STRIPE_PUBLIC_KEY)
+    const stripePromise = loadStripe(props.stripePublicKey);
 
-    if (!STRIPE_PUBLIC_KEY) {
-        return <div>STRIPE_PUBLIC_KEY not set</div>
-    }
+    const options: StripeElementsOptions = React.useMemo(() => {
+        return {
+            clientSecret: props.paymentIntentSecret,
+            appearance: {
+                theme: "night",
+                labels: "floating",
+            }
+        };
+    }, [props.paymentIntentSecret]);
 
-    const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
-    const options: StripeElementsOptions = {
-        clientSecret: props.paymentIntentSecret,
-        appearance: {
-            theme: "night",
-            labels: "floating",
-        }
-    };
     return (
         <Elements stripe={stripePromise} options={options}>
             <CheckoutForm/>
@@ -40,9 +37,13 @@ const CheckoutForm = () => {
             theme: "night",
             labels: "floating",
         }
-    });
+    })
 
-    const handleSubmit = async () => {
+    const buy = (e: any) => {
+        e.preventDefault()
+
+        console.log("buy", !!stripe, !!elements)
+
         if (!stripe || !elements) {
             // Stripe.js hasn't yet loaded.
             // Make sure to disable form submission until Stripe.js has loaded.
@@ -51,30 +52,31 @@ const CheckoutForm = () => {
 
         const currentSiteUrl = window.location.href;
         console.log("currentSiteUrl", currentSiteUrl)
-        const result = await stripe.confirmPayment({
-            //`Elements` instance that was used to create the Payment Element
-            elements,
+        const result = stripe.confirmPayment({
+            elements: elements,
             confirmParams: {
                 return_url: currentSiteUrl + '/feature/success',
             },
         });
 
-
-        if (result.error) {
-            // Show error to your customer (for example, payment details incomplete)
-            console.log(result.error.message);
-        } else {
-            // Your customer will be redirected to your `return_url`. For some payment
-            // methods like iDEAL, your customer will be redirected to an intermediate
-            // site first to authorize the payment, then redirected to the `return_url`.
-        }
+        result.then(res => {
+            if (res.error) {
+                console.log("res.error", res.error)
+            }
+        })
     };
 
     return (
-        <form className={cn("max-w-2xl mx-auto")}>
+        <form className={cn("max-w-2xl mx-auto")} onSubmit={buy}>
             <PaymentElement/>
             {stripe && (
-                <PrimaryButton onClick={handleSubmit}>Buy</PrimaryButton>
+                <div className={"mt-4"}>
+                    <button
+                        role={"button"}
+                        className="p-6 text-white bg-brand hover:bg-brand/80 focus:ring-4 focus:outline-none focus:ring-indigo-900 font-bold rounded-full py-4">
+                        Buy now
+                    </button>
+                </div>
             )}
         </form>
     )
