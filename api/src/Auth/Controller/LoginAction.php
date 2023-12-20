@@ -3,6 +3,7 @@
 namespace App\Auth\Controller;
 
 use App\Auth\DTO\UserDto;
+use App\Auth\DTO\UserProfileDto;
 use App\Auth\Entity\ApiToken;
 use App\Auth\Entity\User;
 use App\Auth\Http\Response\LoginSuccessResponse;
@@ -48,6 +49,8 @@ class LoginAction extends BaseAction
         $apiToken = new ApiToken($user);
         $this->apiTokens->save($apiToken, flush: true);
 
+        $profile = $user->getProfile();
+
         return new LoginSuccessResponse(
             user: new UserDto(
                 id: $user->getId(),
@@ -55,6 +58,7 @@ class LoginAction extends BaseAction
                 isEmailVerified: $user->isEmailVerified(),
                 name: $user->getName(),
                 roles: $user->getRoles(),
+                profile: $profile ? UserProfileDto::createFromProfile($profile) : null,
             ),
             apiToken: $apiToken->getToken(),
         );

@@ -3,6 +3,7 @@
 namespace App\Auth\Controller;
 
 use App\Auth\DTO\UserDto;
+use App\Auth\DTO\UserProfileDto;
 use App\Auth\Entity\User;
 use App\Auth\Http\Response\UserInfoResponse;
 use App\Common\Controller\BaseAction;
@@ -29,6 +30,7 @@ class UserInfoAction extends BaseAction
         #[CurrentUser] User $user
     ): UserInfoResponse
     {
+        $profile = $user->getProfile();
         return new UserInfoResponse(
             user: new UserDto(
                 id: $user->getId(),
@@ -36,6 +38,7 @@ class UserInfoAction extends BaseAction
                 isEmailVerified: $user->isEmailVerified(),
                 name: $user->getName(),
                 roles: $user->getRoles(),
+                profile: $profile ? UserProfileDto::createFromProfile($profile) : null,
             ),
         );
     }

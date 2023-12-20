@@ -22,6 +22,7 @@ class UserInfoActionTest extends AbstractFunctionalTest
             'isEmailVerified' => false,
             'name' => 'John',
             'roles' => ['ROLE_USER'],
+            'profile' => null,
         ], $output['user']);
     }
 

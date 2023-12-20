@@ -21,3 +21,7 @@ blog:
 billing:
   type: attribute
   resource: ../src/Billing/Controller/
+
+location:
+  type: attribute
+  resource: ../src/Location/Controller/

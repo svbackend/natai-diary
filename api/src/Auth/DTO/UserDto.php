@@ -13,6 +13,7 @@ class UserDto
         public string $name,
         /** @var string[] $roles */
         public array $roles,
+        public ?UserProfileDto $profile = null,
     )
     {
     }

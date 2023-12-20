@@ -37,6 +37,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?string $stripeCustomerId;
 
+    #[ORM\OneToOne(cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?UserProfile $profile = null;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
@@ -152,5 +156,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getStripeCustomerId(): ?string
     {
         return $this->stripeCustomerId;
+    }
+
+    public function getProfile(): ?UserProfile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(UserProfile $profile): void
+    {
+        $this->profile = $profile;
+    }
+
+    public function update(string $name): void
+    {
+        $this->name = $name;
     }
 }

@@ -59,4 +59,9 @@ class Env
     {
         return self::get('STRIPE_WEBHOOK_SECRET');
     }
+
+    public static function getGooglePlacesApiKey(): string
+    {
+        return self::get('GOOGLE_PLACES_API_KEY');
+    }
 }
