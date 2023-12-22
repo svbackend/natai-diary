@@ -1,5 +1,5 @@
 check:
-	php --version && node --version && npm --version && npx --version && symfony -V && docker --version && docker compose version
+	php --version && composer --version && node --version && npm --version && npx --version && symfony -V && docker --version && docker compose version
 
 install:
 	cd api && docker compose up -d && composer install && bin/console doctrine:schema:update -f && cd ../frontend && npm install
