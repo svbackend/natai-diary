@@ -39,7 +39,7 @@ function ProfilePageInner({user}: { user: UserDto }) {
     const [cityId, setCityId] = useState<number | null>(user?.profile?.city.id || null)
 
 
-    const enableEmailNotifications = user?.profile?.enableEmailNotifications !== null ? user.profile.enableEmailNotifications : true
+    const enableEmailNotifications = typeof user.profile?.enableEmailNotifications === 'undefined' ? true : user.profile.enableEmailNotifications
     const {register, handleSubmit, formState: {errors}, setError} = useForm<FormValues>({
         defaultValues: {
             name: user?.name || "",
