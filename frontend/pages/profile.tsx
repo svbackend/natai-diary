@@ -38,10 +38,12 @@ function ProfilePageInner({user}: { user: UserDto }) {
     const [showSuccess, setShowSuccess] = useState(false)
     const [cityId, setCityId] = useState<number | null>(user?.profile?.city.id || null)
 
+
+    const enableEmailNotifications = user?.profile?.enableEmailNotifications !== null ? user.profile.enableEmailNotifications : true
     const {register, handleSubmit, formState: {errors}, setError} = useForm<FormValues>({
         defaultValues: {
             name: user?.name || "",
-            enableEmailNotifications: user?.profile?.enableEmailNotifications || true
+            enableEmailNotifications: enableEmailNotifications
         }
     });
 
@@ -116,7 +118,7 @@ function ProfilePageInner({user}: { user: UserDto }) {
                             id="enableEmailNotifications"
                             type="checkbox"
                             className="focus:ring-brand h-4 w-4 text-brand border-gray-300 rounded"
-                            defaultChecked={user?.profile?.enableEmailNotifications || true}
+                            defaultChecked={enableEmailNotifications}
                             {...register("enableEmailNotifications")}
                         />
                         <label htmlFor="enableEmailNotifications"
