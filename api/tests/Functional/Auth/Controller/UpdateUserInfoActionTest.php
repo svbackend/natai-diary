@@ -26,7 +26,7 @@ class UpdateUserInfoActionTest extends AbstractFunctionalTest
 
         $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
 
-        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset, p.enable_email_notifications FROM users u JOIN user_profile p ON u.profile_id = p.id WHERE u.id = :id", [
+        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset, p.enable_email_notifications FROM users u JOIN user_profile p ON u.id = p.user_id WHERE u.id = :id", [
             'id' => UserFixture::USER_ID
         ]);
 
@@ -54,7 +54,7 @@ class UpdateUserInfoActionTest extends AbstractFunctionalTest
 
         $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
 
-        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset, p.enable_email_notifications FROM users u JOIN user_profile p ON u.profile_id = p.id WHERE u.id = :id", [
+        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset, p.enable_email_notifications FROM users u JOIN user_profile p ON u.id = p.user_id WHERE u.id = :id", [
             'id' => UserFixture::USER_ID
         ]);
 

@@ -37,8 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?string $stripeCustomerId;
 
-    #[ORM\OneToOne(cascade: ['persist'], orphanRemoval: true)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: UserProfile::class, cascade: ['persist', 'remove'])]
     private ?UserProfile $profile = null;
 
     #[ORM\Column(type: 'datetime_immutable')]

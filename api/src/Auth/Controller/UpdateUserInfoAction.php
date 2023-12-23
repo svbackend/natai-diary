@@ -65,6 +65,7 @@ class UpdateUserInfoAction extends BaseAction
             );
         } else {
             $profile = new UserProfile(
+                user: $user,
                 city: $city,
                 timezoneOffset: $request->timezoneOffset,
                 enableEmailNotifications: $request->enableEmailNotifications,
