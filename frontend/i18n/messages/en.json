@@ -174,5 +174,14 @@
     "removeButton": "Remove my profile",
     "cancelButton": "Cancel",
     "SuccessMessage": "Your profile has been removed successfully"
+  },
+  "ProfilePage": {
+    "Title": "My Profile",
+    "Description": "You can specify your location to automatically attach weather information to your notes.",
+    "updateButton": "Update Profile",
+    "SuccessMessage": "Your profile has been updated successfully",
+    "Location": "Location",
+    "Name": "Name",
+    "EnableEmailNotifications": "Enable Email notifications?"
   }
 }

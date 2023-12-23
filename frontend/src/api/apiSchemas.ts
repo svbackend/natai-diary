@@ -114,6 +114,7 @@ export type UpdateUserRequest = {
   name: string;
   cityId: number;
   timezoneOffset: number;
+  enableEmailNotifications: boolean;
 };
 
 export type NotFoundErrorRef = {
@@ -521,6 +522,7 @@ export type CityDto = {
 export type UserProfileDto = {
   city: CityDto;
   timezoneOffset: number;
+  enableEmailNotifications: boolean;
 };
 
 /**

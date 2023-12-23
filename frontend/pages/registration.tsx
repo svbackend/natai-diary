@@ -13,12 +13,6 @@ import {authService} from "../src/modules/auth/services/authService";
 import Link from "next/link";
 import {useTranslations} from "use-intl";
 import {EaseOutTransition} from "../src/modules/common/components/EaseOutTransition";
-import {defaultMetadata} from "../src/utils/seo";
-import {Seo} from "../src/modules/common/components/GlobalSeo";
-
-export async function generateMetadata(props: { params: any, searchParams: any }) {
-    return defaultMetadata;
-}
 
 type FormValues = {
     name: string
