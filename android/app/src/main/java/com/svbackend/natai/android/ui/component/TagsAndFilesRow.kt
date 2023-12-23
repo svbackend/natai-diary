@@ -28,7 +28,6 @@ import com.svbackend.natai.android.ui.NTextField
 import com.svbackend.natai.android.viewmodel.AddFileViewModel
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagsAndFilesRow(
     tagsSuggestions: List<String>,
