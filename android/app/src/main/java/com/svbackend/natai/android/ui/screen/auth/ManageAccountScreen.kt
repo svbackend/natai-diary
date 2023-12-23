@@ -20,6 +20,9 @@ import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.viewmodel.ManageAccountViewModel
 import com.svbackend.natai.android.viewmodel.NoteViewModel
+import com.svbackend.natai.android.viewmodel.UpdateProfileViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Composable
@@ -94,42 +97,14 @@ fun Authorized(
             )
 
             if (!user.isEmailVerified) {
-                Text(
-                    text = stringResource(id = R.string.emailNotVerified),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                )
-
-                if (manageAccountViewModel.showStillNotVerifiedError.value) {
-                    Text(
-                        text = stringResource(id = R.string.yourEmailStillNotVerified),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp),
-                    )
-                }
-
-                NPrimaryButton(
-                    onClick = { checkEmailVerification() },
-                    isLoading = manageAccountViewModel.userQuery.isLoading.value,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp),
-                ) {
-                    Icon(
-                        Icons.Filled.Email,
-                        stringResource(R.string.done)
-                    )
-                    Text(
-                        text = stringResource(R.string.done),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
+                EmailVerificationUi(manageAccountViewModel, checkEmailVerification)
             }
+
+            UpdateProfileUi(
+                user = user,
+                vm = vm,
+                scope = scope,
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -148,9 +123,6 @@ fun Authorized(
                         .padding(4.dp),
                 )
 
-                // todo add logout button?
-                // delete account button
-
                 Text(
                     text = stringResource(id = R.string.deleteAccount),
                     style = MaterialTheme.typography.bodyLarge,
@@ -163,6 +135,81 @@ fun Authorized(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun UpdateProfileUi(
+    user: User,
+    vm: UpdateProfileViewModel = viewModel(),
+    scope: CoroutineScope
+) {
+    vm.initData(user)
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.updateProfile),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+        )
+
+        TextField(
+            value = user.name,
+            label = @Composable { Text(stringResource(R.string.name)) },
+            onValueChange = { vm.onChangeName(it) },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+        )
+    }
+}
+
+@Composable
+private fun EmailVerificationUi(
+    manageAccountViewModel: ManageAccountViewModel,
+    checkEmailVerification: () -> Job
+) {
+    Text(
+        text = stringResource(id = R.string.emailNotVerified),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+    )
+
+    if (manageAccountViewModel.showStillNotVerifiedError.value) {
+        Text(
+            text = stringResource(id = R.string.yourEmailStillNotVerified),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+        )
+    }
+
+    NPrimaryButton(
+        onClick = { checkEmailVerification() },
+        isLoading = manageAccountViewModel.userQuery.isLoading.value,
+        modifier = Modifier
+            .padding(bottom = 16.dp),
+    ) {
+        Icon(
+            Icons.Filled.Email,
+            stringResource(R.string.done)
+        )
+        Text(
+            text = stringResource(R.string.done),
+            modifier = Modifier.padding(start = 8.dp)
+        )
     }
 }
 

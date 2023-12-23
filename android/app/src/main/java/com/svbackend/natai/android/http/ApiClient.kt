@@ -25,6 +25,7 @@ import com.svbackend.natai.android.http.request.SuggestionFeedbackRequest
 import com.svbackend.natai.android.http.response.AttachmentSignedUrlResponse
 import com.svbackend.natai.android.http.response.AttachmentsResponse
 import com.svbackend.natai.android.http.response.BuyFeatureResponse
+import com.svbackend.natai.android.http.response.CitiesResponse
 import com.svbackend.natai.android.http.response.ErrorResponse
 import com.svbackend.natai.android.http.response.LoginSuccessResponse
 import com.svbackend.natai.android.http.response.NewNoteResponse
@@ -342,6 +343,26 @@ class ApiClient(
 
     suspend fun buySuggestionLinks(): BuyFeatureResponse {
         val response = client.post("/api/v1/links/buy")
+
+        if (response.status == HttpStatusCode.OK) {
+            return response.body()
+        }
+
+        throw SuggestionLinksErrorException(response)
+    }
+
+    suspend fun loadCities(): CitiesResponse {
+        val response = client.get("/api/v1/cities")
+
+        if (response.status == HttpStatusCode.OK) {
+            return response.body()
+        }
+
+        throw SuggestionLinksErrorException(response)
+    }
+
+    suspend fun loadCitiesAutocomplete(query: String): CitiesResponse {
+        val response = client.get("/api/v1/cities/autocomplete?q=$query")
 
         if (response.status == HttpStatusCode.OK) {
             return response.body()

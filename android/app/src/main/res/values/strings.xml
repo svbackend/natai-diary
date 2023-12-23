@@ -63,4 +63,5 @@
     <string name="deleteAccount">Delete Account</string>
     <string name="accountDeleteError">Error! Account note deleted. Please make sure you have internet connection.</string>
     <string name="deleteAccountWarning">You will lose access to all of your notes. This action cannot be undone.</string>
+    <string name="updateProfile">Update Profile</string>
 </resources>
