@@ -1,3 +1,10 @@
+### Dec 23, 2023
+
+Working on a profile update functionality, basically we give ability to user to
+save their name, timezone, city and country.
+We will use city info to automatically grab the weather information for the notes.
+Timezone is needed to show correct time for the notes.
+
 ### Nov 3, 2023
 
 I LOVE TESTS!!!
