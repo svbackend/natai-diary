@@ -102,26 +102,19 @@ fun MainScreen(
     if (notes.isNotEmpty()) {
         val groups = mapNotes(notes)
         Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = pullToRefreshModifier.fillMaxWidth(),
-            content = {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Wallpaper()
-                }
-            }
-        )
-
-        Surface(
-            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 240.dp),
+                .fillMaxSize(),
         ) {
-            LazyColumn {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Wallpaper()
+            }
+
+            LazyColumn(
+                modifier = Modifier.padding(top = 240.dp),
+            ) {
                 items(
                     items = groups,
                     key = { group -> group.date.toString() }
