@@ -17,9 +17,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class RequestResolver implements ValueResolverInterface
 {
     public function __construct(
-        private ValidatorInterface  $validator,
+        private ValidatorInterface $validator,
         private SerializerInterface $serializer,
-        private LoggerInterface     $logger,
+        private LoggerInterface $logger,
     )
     {
     }

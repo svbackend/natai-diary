@@ -55,7 +55,6 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentLength
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
@@ -83,7 +82,7 @@ class ApiClient(
             url(BASE_URL)
         }
         install(ContentNegotiation) {
-            jackson {
+            jackson(streamRequestBody = false) {
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 registerModule(JavaTimeModule())
