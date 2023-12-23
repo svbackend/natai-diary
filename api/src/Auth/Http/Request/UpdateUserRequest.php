@@ -10,7 +10,8 @@ class UpdateUserRequest implements HttpInputInterface
     public function __construct(
         public string $name,
         public int $cityId,
-        public int $timezoneOffset, // in minutes, could be negative
+        public int $timezoneOffset = 0, // in minutes, could be negative, 0 = UTC
+        public bool $enableEmailNotifications = true, // e.g about new ai analysis
     )
     {
     }
@@ -31,6 +32,9 @@ class UpdateUserRequest implements HttpInputInterface
                 new Assert\NotBlank(),
                 new Assert\Type('string'),
                 new Assert\Length(min: 1, max: 255),
+            ],
+            'enableEmailNotifications' => [
+                new Assert\Type('boolean'),
             ],
         ]);
     }

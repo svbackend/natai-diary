@@ -16,7 +16,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
@@ -61,11 +61,13 @@ class UpdateUserInfoAction extends BaseAction
             $profile->update(
                 city: $city,
                 timezoneOffset: $request->timezoneOffset,
+                enableEmailNotifications: $request->enableEmailNotifications,
             );
         } else {
             $profile = new UserProfile(
                 city: $city,
                 timezoneOffset: $request->timezoneOffset,
+                enableEmailNotifications: $request->enableEmailNotifications,
             );
             $user->setProfile($profile);
         }

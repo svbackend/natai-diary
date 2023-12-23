@@ -6,7 +6,7 @@ use App\Common\Http\Response\HttpOutputInterface;
 use App\Common\Http\Response\StaticContentResponse;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class StaticAction extends BaseAction
 {

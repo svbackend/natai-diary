@@ -110,6 +110,31 @@ export type UserInfoResponse = {
   user: UserDto;
 };
 
+export type UpdateUserRequest = {
+  name: string;
+  cityId: number;
+  timezoneOffset: number;
+};
+
+export type NotFoundErrorRef = {
+  /**
+   * @example https://tools.ietf.org/html/rfc2616#section-10
+   */
+  type: string;
+  /**
+   * @example An error occurred
+   */
+  title: string;
+  /**
+   * @example 404
+   */
+  status: number;
+  /**
+   * @example Note with provided id not found
+   */
+  detail: string;
+};
+
 export type LoginRequestRef = {
   email: string;
   password: string;
@@ -224,25 +249,6 @@ export type AccessDeniedErrorRef = {
   status: number;
   /**
    * @example You can't delete this note, only owner can do it
-   */
-  detail: string;
-};
-
-export type NotFoundErrorRef = {
-  /**
-   * @example https://tools.ietf.org/html/rfc2616#section-10
-   */
-  type: string;
-  /**
-   * @example An error occurred
-   */
-  title: string;
-  /**
-   * @example 404
-   */
-  status: number;
-  /**
-   * @example Note with provided id not found
    */
   detail: string;
 };
@@ -390,6 +396,10 @@ export type EditArticleRequest = {
   images: string[];
 };
 
+export type CitiesResponse = {
+  cities: CityDto[];
+};
+
 /**
  * @format uuid
  */
@@ -416,6 +426,7 @@ export type UserDto = {
   isEmailVerified: boolean;
   name: string;
   roles: string[];
+  profile: UserProfileDto;
 };
 
 export type CloudTagDto = {
@@ -499,6 +510,17 @@ export type ArticleTranslationDto = {
   slug: string;
   metaKeywords: string;
   metaDescription: string;
+};
+
+export type CityDto = {
+  id: number;
+  name: string;
+  country: string;
+};
+
+export type UserProfileDto = {
+  city: CityDto;
+  timezoneOffset: number;
 };
 
 /**

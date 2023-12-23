@@ -10,7 +10,7 @@ use App\Common\Repository\FeedbackRepository;
 use App\Common\Service\MailerService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class FeedbackAction extends BaseAction
 {

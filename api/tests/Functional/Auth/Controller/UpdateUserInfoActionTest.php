@@ -20,18 +20,20 @@ class UpdateUserInfoActionTest extends AbstractFunctionalTest
                 'name' => 'John Doe',
                 'cityId' => $firstCityId,
                 'timezoneOffset' => 180,
+                'enableEmailNotifications' => false,
             ]
         ]);
 
         $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
 
-        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset FROM users u JOIN user_profile p ON u.profile_id = p.id WHERE u.id = :id", [
+        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset, p.enable_email_notifications FROM users u JOIN user_profile p ON u.profile_id = p.id WHERE u.id = :id", [
             'id' => UserFixture::USER_ID
         ]);
 
         self::assertEquals("John Doe", $userInDb['name']);
         self::assertEquals($firstCityId, $userInDb['city_id']);
         self::assertEquals(180, $userInDb['timezone_offset']);
+        self::assertFalse($userInDb['enable_email_notifications']);
     }
 
     public function testUpdateWithNegativeTimezoneOffset(): void
@@ -46,18 +48,20 @@ class UpdateUserInfoActionTest extends AbstractFunctionalTest
                 'name' => 'John Doe',
                 'cityId' => $firstCityId,
                 'timezoneOffset' => -180,
+                'enableEmailNotifications' => false,
             ]
         ]);
 
         $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
 
-        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset FROM users u JOIN user_profile p ON u.profile_id = p.id WHERE u.id = :id", [
+        $userInDb = $conn->fetchAssociative("SELECT u.name, p.city_id, p.timezone_offset, p.enable_email_notifications FROM users u JOIN user_profile p ON u.profile_id = p.id WHERE u.id = :id", [
             'id' => UserFixture::USER_ID
         ]);
 
         self::assertEquals("John Doe", $userInDb['name']);
         self::assertEquals($firstCityId, $userInDb['city_id']);
         self::assertEquals(-180, $userInDb['timezone_offset']);
+        self::assertFalse($userInDb['enable_email_notifications']);
     }
 
     public function testUpdateUserInfoWhenNotLoggedInMustGiveError(): void
@@ -68,6 +72,7 @@ class UpdateUserInfoActionTest extends AbstractFunctionalTest
                 'name' => 'John Doe',
                 'cityId' => 1,
                 'timezoneOffset' => 180,
+                'enableEmailNotifications' => false,
             ]
         ]);
 
@@ -83,6 +88,7 @@ class UpdateUserInfoActionTest extends AbstractFunctionalTest
                 'name' => 'John Doe',
                 'cityId' => 999999,
                 'timezoneOffset' => 180,
+                'enableEmailNotifications' => false,
             ]
         ]);
 

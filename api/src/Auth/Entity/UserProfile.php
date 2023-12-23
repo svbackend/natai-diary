@@ -21,22 +21,29 @@ class UserProfile
     #[ORM\Column(type: 'integer', nullable: false)]
     private int $timezoneOffset = 0;
 
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
+    private bool $enableEmailNotifications = true;
+
     public function __construct(
         City $city,
-        int $timezoneOffset,
+        int  $timezoneOffset,
+        bool $enableEmailNotifications = true,
     )
     {
         $this->city = $city;
         $this->timezoneOffset = $timezoneOffset;
+        $this->enableEmailNotifications = $enableEmailNotifications;
     }
 
     public function update(
         City $city,
-        int $timezoneOffset,
+        int  $timezoneOffset,
+        bool $enableEmailNotifications = true,
     ): void
     {
         $this->city = $city;
         $this->timezoneOffset = $timezoneOffset;
+        $this->enableEmailNotifications = $enableEmailNotifications;
     }
 
     public function getId(): ?int
@@ -52,5 +59,10 @@ class UserProfile
     public function getTimezoneOffset(): int
     {
         return $this->timezoneOffset;
+    }
+
+    public function isEnableEmailNotifications(): bool
+    {
+        return $this->enableEmailNotifications;
     }
 }

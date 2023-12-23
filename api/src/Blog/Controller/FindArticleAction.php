@@ -8,7 +8,7 @@ use App\Common\Controller\BaseAction;
 use App\Common\OpenApi\Ref\NotFoundErrorRef;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * @OA\Tag(name="Blog")

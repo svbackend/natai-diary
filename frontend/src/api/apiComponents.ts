@@ -343,6 +343,43 @@ export const useGetMe = <TData = Schemas.UserInfoResponse>(
   );
 };
 
+export type PutMeError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 404;
+      payload: Schemas.NotFoundErrorRef;
+    }
+>;
+
+export type PutMeVariables = {
+  body: Schemas.UpdateUserRequest;
+} & ApiContext["fetcherOptions"];
+
+export const fetchPutMe = (variables: PutMeVariables, signal?: AbortSignal) =>
+  apiFetch<undefined, PutMeError, Schemas.UpdateUserRequest, {}, {}, {}>({
+    url: "/api/v1/me",
+    method: "put",
+    ...variables,
+    signal,
+  });
+
+export const usePutMe = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<undefined, PutMeError, PutMeVariables>,
+    "mutationFn"
+  >
+) => {
+  const { fetcherOptions } = useApiContext();
+  return reactQuery.useMutation<undefined, PutMeError, PutMeVariables>(
+    (variables: PutMeVariables) =>
+      fetchPutMe({ ...fetcherOptions, ...variables }),
+    options
+  );
+};
+
 export type DeleteMeError = Fetcher.ErrorWrapper<{
   status: 500;
   payload: Schemas.ServerErrorRef;
@@ -1850,6 +1887,104 @@ export const usePutArticlesById = (
   );
 };
 
+export type GetCitiesError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.AuthRequiredErrorResponse;
+}>;
+
+export type GetCitiesVariables = ApiContext["fetcherOptions"];
+
+export const fetchGetCities = (
+  variables: GetCitiesVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<Schemas.CitiesResponse, GetCitiesError, undefined, {}, {}, {}>({
+    url: "/api/v1/cities",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetCities = <TData = Schemas.CitiesResponse>(
+  variables: GetCitiesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<Schemas.CitiesResponse, GetCitiesError, TData>,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<Schemas.CitiesResponse, GetCitiesError, TData>(
+    queryKeyFn({ path: "/api/v1/cities", operationId: "getCities", variables }),
+    ({ signal }) => fetchGetCities({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
+export type GetCitiesAutocompleteQueryParams = {
+  q: string;
+};
+
+export type GetCitiesAutocompleteError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.AuthRequiredErrorResponse;
+}>;
+
+export type GetCitiesAutocompleteVariables = {
+  queryParams: GetCitiesAutocompleteQueryParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchGetCitiesAutocomplete = (
+  variables: GetCitiesAutocompleteVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.CitiesResponse,
+    GetCitiesAutocompleteError,
+    undefined,
+    {},
+    GetCitiesAutocompleteQueryParams,
+    {}
+  >({
+    url: "/api/v1/cities/autocomplete",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetCitiesAutocomplete = <TData = Schemas.CitiesResponse>(
+  variables: GetCitiesAutocompleteVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.CitiesResponse,
+      GetCitiesAutocompleteError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.CitiesResponse,
+    GetCitiesAutocompleteError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/cities/autocomplete",
+      operationId: "getCitiesAutocomplete",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetCitiesAutocomplete({ ...fetcherOptions, ...variables }, signal),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type QueryOperation =
   | {
       path: "/api/v1/static";
@@ -1910,4 +2045,14 @@ export type QueryOperation =
       path: "/api/v1/articles/{id}";
       operationId: "getArticlesById";
       variables: GetArticlesByIdVariables;
+    }
+  | {
+      path: "/api/v1/cities";
+      operationId: "getCities";
+      variables: GetCitiesVariables;
+    }
+  | {
+      path: "/api/v1/cities/autocomplete";
+      operationId: "getCitiesAutocomplete";
+      variables: GetCitiesAutocompleteVariables;
     };
