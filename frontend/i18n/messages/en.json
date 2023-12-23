@@ -90,7 +90,9 @@
     "changePassword": "Change password",
     "changePasswordDescription": "Change password that's used for signing in. Use at least 6 letters with special characters.",
     "deleteProfile": "Remove my profile",
-    "deleteProfileDescription": "You will lose access to all of your notes and posts. This action cannot be undone."
+    "deleteProfileDescription": "You will lose access to all of your notes and posts. This action cannot be undone.",
+    "updateProfile": "Update Profile",
+    "updateProfileDescription": "You can specify your location to automatically attach weather information to your notes."
   },
   "UserDropdownMenu": {
     "settings": "Settings",

@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import {useTranslations} from "use-intl";
 import MainLayout from "../../src/modules/common/components/mainLayout";
-import {AtSymbolIcon, FingerPrintIcon, TrashIcon} from "@heroicons/react/24/solid";
+import {AtSymbolIcon, FingerPrintIcon, TrashIcon, UserIcon} from "@heroicons/react/24/solid";
 import {defaultMetadata} from "../../src/utils/seo";
 
 export async function generateMetadata(props: { params: any, searchParams: any }) {
@@ -12,6 +12,12 @@ export default function SettingsPage() {
     const t = useTranslations("SettingsPage")
 
     const settingsItems = [
+        {
+            title: t("updateProfile"),
+            ItemIcon: <UserIcon className="w-12 h-12 rounded-full drop-shadow-md"/>,
+            url: '/profile',
+            description: t("updateProfileDescription")
+        },
         {
             title: t("changeEmail"),
             ItemIcon: <AtSymbolIcon className="w-12 h-12 rounded-full drop-shadow-md"/>,
