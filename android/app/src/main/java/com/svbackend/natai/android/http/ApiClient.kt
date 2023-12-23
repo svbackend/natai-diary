@@ -8,22 +8,58 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
-import com.svbackend.natai.android.http.exception.*
-import com.svbackend.natai.android.http.request.*
-import com.svbackend.natai.android.http.response.*
+import com.svbackend.natai.android.http.exception.CloudIdMissingException
+import com.svbackend.natai.android.http.exception.DownloadAttachmentErrorException
+import com.svbackend.natai.android.http.exception.FeatureNotAvailableException
+import com.svbackend.natai.android.http.exception.GeneralFeedbackErrorException
+import com.svbackend.natai.android.http.exception.LoginErrorException
+import com.svbackend.natai.android.http.exception.NewNoteErrorException
+import com.svbackend.natai.android.http.exception.RegistrationErrorException
+import com.svbackend.natai.android.http.exception.SuggestionLinksErrorException
+import com.svbackend.natai.android.http.exception.UpdateNoteErrorException
+import com.svbackend.natai.android.http.request.AttachmentSignedUrlRequest
+import com.svbackend.natai.android.http.request.GeneralFeedbackRequest
+import com.svbackend.natai.android.http.request.LoginRequest
+import com.svbackend.natai.android.http.request.RegisterRequest
+import com.svbackend.natai.android.http.request.SuggestionFeedbackRequest
+import com.svbackend.natai.android.http.response.AttachmentSignedUrlResponse
+import com.svbackend.natai.android.http.response.AttachmentsResponse
+import com.svbackend.natai.android.http.response.BuyFeatureResponse
+import com.svbackend.natai.android.http.response.ErrorResponse
+import com.svbackend.natai.android.http.response.LoginSuccessResponse
+import com.svbackend.natai.android.http.response.NewNoteResponse
+import com.svbackend.natai.android.http.response.NotesResponse
+import com.svbackend.natai.android.http.response.RegisterSuccessResponse
+import com.svbackend.natai.android.http.response.StaticSuccessResponse
+import com.svbackend.natai.android.http.response.SuggestionLinksResponse
+import com.svbackend.natai.android.http.response.SuggestionsResponse
+import com.svbackend.natai.android.http.response.UserSuccessResponse
 import com.svbackend.natai.android.query.UserQueryException
 import com.svbackend.natai.android.utils.UtcDateTimeFormatter
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.android.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
-import io.ktor.util.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.android.Android
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.onUpload
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentLength
+import io.ktor.http.contentType
+import io.ktor.http.isSuccess
+import io.ktor.serialization.jackson.jackson
+import io.ktor.util.InternalAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -54,7 +90,15 @@ class ApiClient(
             }
         }
         install(HttpTimeout) {
-            requestTimeoutMillis = 5000
+            requestTimeoutMillis = 10000
+        }
+        install(Logging) {
+            logger = object : io.ktor.client.plugins.logging.Logger {
+                override fun log(message: String) {
+                    Log.d(TAG, message)
+                }
+            }
+            level = LogLevel.ALL
         }
     }
 
@@ -117,6 +161,7 @@ class ApiClient(
     suspend fun login(request: LoginRequest): LoginSuccessResponse {
         val response = client.post("/api/v1/login") {
             setBody(request)
+            contentType(ContentType.Application.Json)
         }
 
         if (response.status != HttpStatusCode.OK) {
@@ -127,11 +172,14 @@ class ApiClient(
     }
 
     suspend fun register(request: RegisterRequest): RegisterSuccessResponse {
+        Log.d(TAG, request.toString())
+
         val response = client.post("/api/v1/registration") {
             setBody(request)
         }
 
         if (response.status != HttpStatusCode.Created) {
+            Log.d(TAG, "RegisterResponse: ${response.bodyAsText()}")
             throw RegistrationErrorException()
         }
 

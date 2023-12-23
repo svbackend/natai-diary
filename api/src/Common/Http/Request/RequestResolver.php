@@ -53,10 +53,22 @@ class RequestResolver implements ValueResolverInterface
         /** @var $class HttpInputInterface */
         $class = $argument->getType();
 
+        $this->logger->debug("NEW_REQUEST", [
+            'method' => $request->getMethod(),
+            'uri' => $request->getUri(),
+            'content' => $request->getContent(),
+            'input' => $request->request->all(),
+            'headers' => $request->headers->all(),
+        ]);
+
         if ($request->headers->get('Content-Type') === 'application/json') {
             try {
                 $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException $e) {
+                $this->logger->error('JSON decode error', [
+                    'input' => $request->getContent(),
+                    'exception' => $e,
+                ]);
                 $data = [];
             }
             $request->request->replace(is_array($data) ? $data : []);
