@@ -11,6 +11,7 @@ class UserProfileDto
     public function __construct(
         public CityDto $city,
         public int $timezoneOffset,
+        public bool $enableEmailNotifications = true,
     )
     {
     }
@@ -20,6 +21,7 @@ class UserProfileDto
         return new self(
             city: CityDto::createFromEntity($userProfile->getCity()),
             timezoneOffset: $userProfile->getTimezoneOffset(),
+            enableEmailNotifications: $userProfile->isEnableEmailNotifications(),
         );
     }
 }
