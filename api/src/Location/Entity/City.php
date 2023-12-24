@@ -26,15 +26,21 @@ class City
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private int $popularity = 0;
 
+    // coordinates (lat, lng)
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $coordinates = null;
+
     public function __construct(
         string $name,
         string $googlePlaceId,
         string $country,
+        Coordinates $coordinates = null,
     )
     {
         $this->name = $name;
         $this->googlePlaceId = $googlePlaceId;
         $this->country = $country;
+        $this->coordinates = $coordinates?->toArray();
     }
 
     public function getId(): ?int
@@ -65,5 +71,22 @@ class City
     public function incrementPopularity(): void
     {
         $this->popularity++;
+    }
+
+    public function getCoordinates(): ?Coordinates
+    {
+        if ($this->coordinates === null) {
+            return null;
+        }
+
+        return new Coordinates(
+            lat: (float)$this->coordinates['lat'],
+            lon: (float)$this->coordinates['lon'],
+        );
+    }
+
+    public function setCoordinates(Coordinates $coordinates): void
+    {
+        $this->coordinates = $coordinates->toArray();
     }
 }

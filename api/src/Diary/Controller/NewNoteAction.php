@@ -2,7 +2,7 @@
 
 namespace App\Diary\Controller;
 
-use App\Attachment\Queue\AttachmentUploadedEvent;
+use App\Attachment\Queue\CityAddedEvent;
 use App\Auth\DTO\UserLogAnalyticDto;
 use App\Auth\Entity\User;
 use App\Auth\Entity\UserLog;
@@ -96,7 +96,7 @@ class NewNoteAction extends BaseAction
         $this->em->flush();
 
         foreach ($uploadedAttachments as $uploadedAttachment) {
-            $this->bus->dispatch(new AttachmentUploadedEvent($uploadedAttachment->getId()->toRfc4122()));
+            $this->bus->dispatch(new CityAddedEvent($uploadedAttachment->getId()->toRfc4122()));
         }
 
         $this->bus->dispatch(new GenerateSuggestionForNoteMessage($newNoteId->toRfc4122()));

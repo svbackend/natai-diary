@@ -3,7 +3,7 @@
 namespace App\Diary\Service;
 
 use App\Attachment\Entity\UploadedAttachment;
-use App\Attachment\Queue\AttachmentUploadedEvent;
+use App\Attachment\Queue\CityAddedEvent;
 use App\Attachment\Repository\PendingAttachmentRepository;
 use App\Attachment\Repository\UploadedAttachmentRepository;
 use App\Auth\Entity\User;
