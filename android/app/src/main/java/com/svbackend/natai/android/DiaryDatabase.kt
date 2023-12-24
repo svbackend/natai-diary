@@ -1,12 +1,21 @@
 package com.svbackend.natai.android
 
 import android.content.Context
-import androidx.room.*
-import com.svbackend.natai.android.entity.*
+import androidx.room.AutoMigration
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.svbackend.natai.android.entity.Attachment
+import com.svbackend.natai.android.entity.DiaryDAO
+import com.svbackend.natai.android.entity.Note
+import com.svbackend.natai.android.entity.Tag
+import com.svbackend.natai.android.entity.User
+import com.svbackend.natai.android.entity.UserDAO
 import com.svbackend.natai.android.room.Converters
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         Note::class,
         Tag::class,
@@ -14,7 +23,8 @@ import com.svbackend.natai.android.room.Converters
         Attachment::class,
     ],
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3),
     ]
 )
 @TypeConverters(Converters::class)

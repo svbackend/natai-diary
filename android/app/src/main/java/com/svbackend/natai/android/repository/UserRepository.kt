@@ -3,9 +3,9 @@ package com.svbackend.natai.android.repository
 import com.svbackend.natai.android.DiaryDatabase
 import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.http.ApiClient
+import com.svbackend.natai.android.http.dto.CloudUserDto
 import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
-import com.svbackend.natai.android.http.dto.CloudUserDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -17,12 +17,6 @@ class UserRepository(
     val users: Flow<List<User>> = db
         .userDAO()
         .getUsers()
-
-    suspend fun getUserByCloudId(cloudId: String): Flow<User?> = withContext(Dispatchers.IO) {
-        db
-            .userDAO()
-            .getUserByCloudId(cloudId)
-    }
 
     suspend fun getUserByCloudIdSync(cloudId: String): User? = withContext(Dispatchers.IO) {
         db
@@ -50,7 +44,8 @@ class UserRepository(
                 email = cloudUser.email,
                 apiToken = newApiToken,
                 name = cloudUser.name,
-                isEmailVerified = cloudUser.isEmailVerified
+                isEmailVerified = cloudUser.isEmailVerified,
+                cloudCityId = cloudUser.profile?.city?.id
             )
 
             db.userDAO().insertUser(newLocalUser)
@@ -60,7 +55,8 @@ class UserRepository(
                 apiToken = newApiToken,
                 isEmailVerified = cloudUser.isEmailVerified,
                 name = cloudUser.name,
-                email = cloudUser.email
+                email = cloudUser.email,
+                cloudCityId = cloudUser.profile?.city?.id
             )
 
             db.userDAO().updateUser(updatedUser)
@@ -81,15 +77,27 @@ class UserRepository(
         return login(email, password)
     }
 
-    suspend fun updateUserEmailVerificationStatus(user: CloudUserDto) = withContext(Dispatchers.IO) {
-        val entity = getUserByCloudIdSync(user.id.toString()) ?: return@withContext
+    suspend fun updateUserEmailVerificationStatus(user: CloudUserDto) =
+        withContext(Dispatchers.IO) {
+            val entity = getUserByCloudIdSync(user.id.toString()) ?: return@withContext
 
-        if (entity.isEmailVerified == user.isEmailVerified) {
-            return@withContext
+            if (entity.isEmailVerified == user.isEmailVerified) {
+                return@withContext
+            }
+
+            val updatedEntity = entity.copy(
+                isEmailVerified = user.isEmailVerified
+            )
+
+            db.userDAO().updateUser(updatedEntity)
         }
 
+    suspend fun updateUserInfo(user: CloudUserDto) = withContext(Dispatchers.IO) {
+        val entity = getUserByCloudIdSync(user.id.toString()) ?: return@withContext
+
         val updatedEntity = entity.copy(
-            isEmailVerified = user.isEmailVerified
+            cloudCityId = user.profile?.city?.id,
+            name = user.name,
         )
 
         db.userDAO().updateUser(updatedEntity)

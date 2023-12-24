@@ -8,7 +8,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.http.ApiClient
 import com.svbackend.natai.android.http.dto.CityDto
 import com.svbackend.natai.android.http.dto.CloudUserDto
 import com.svbackend.natai.android.http.request.UpdateProfileRequest
@@ -17,7 +16,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class UpdateProfileViewModel(application: Application) : AndroidViewModel(application) {
-    val api: ApiClient = (application as DiaryApplication).appContainer.apiClient
+    val api = (application as DiaryApplication).appContainer.apiClient
+    val userRepository = (application as DiaryApplication).appContainer.userRepository
 
     val cities = mutableStateOf(emptyList<CityDto>())
     val selectedCity = mutableStateOf<Int?>(null)
@@ -82,6 +82,8 @@ class UpdateProfileViewModel(application: Application) : AndroidViewModel(applic
                         timezoneOffset = getTimezoneOffset()
                     )
                 )
+
+                userRepository.updateUserInfo(response.user)
 
                 showSuccess.value = true
             } catch (e: Throwable) {
