@@ -4,14 +4,13 @@ import {useRouter} from "next/router";
 import {useAppStateManager} from "../../src/modules/common/state";
 import {AlreadyLoggedIn} from "../../src/modules/auth/components/alreadyLoggedIn";
 import {useTranslations} from "use-intl";
-import {usePostLogin, usePostPasswordReset} from "../../src/api/apiComponents";
+import {usePostPasswordReset} from "../../src/api/apiComponents";
 import Link from "next/link";
 import {EaseOutTransition} from "../../src/modules/common/components/EaseOutTransition";
-import {AlertApiError, AlertError, AlertSuccess} from "../../src/modules/common/components/alert";
+import {AlertApiError, AlertSuccess} from "../../src/modules/common/components/alert";
 import {TextField} from "../../src/modules/common/components/textField";
 import {FormSubmitButton} from "../../src/modules/common/components/FormSubmitButton";
 import {defaultMetadata} from "../../src/utils/seo";
-import {Seo} from "../../src/modules/common/components/GlobalSeo";
 
 export async function generateMetadata(props: { params: any, searchParams: any }) {
     return defaultMetadata;
@@ -32,7 +31,7 @@ export default function PasswordRecoverRequestPage() {
 
     const {mutate: sendPasswordRecoverRequest, isSuccess, isError, error, isLoading} = usePostPasswordReset()
 
-    const {user, setUser} = useAppStateManager()
+    const {user} = useAppStateManager()
 
     if (user) {
         return <AlreadyLoggedIn/>

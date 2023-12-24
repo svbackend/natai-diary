@@ -91,7 +91,7 @@ class UpdateProfileViewModel(application: Application) : AndroidViewModel(applic
                 isSaving.value = false
             }
 
-            delay(2500)
+            delay(5000)
             showSuccess.value = false
             showError.value = false
         }

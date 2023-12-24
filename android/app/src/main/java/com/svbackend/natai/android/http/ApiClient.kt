@@ -373,13 +373,15 @@ class ApiClient(
         throw SuggestionLinksErrorException(response)
     }
 
-    suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) {
+    suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest): UserSuccessResponse {
         val response = client.put("/api/v1/me") {
             setBody(updateProfileRequest)
         }
 
-        if (response.status != HttpStatusCode.NoContent) {
+        if (response.status != HttpStatusCode.OK) {
             throw GenericHttpErrorException(response)
         }
+
+        return response.body()
     }
 }

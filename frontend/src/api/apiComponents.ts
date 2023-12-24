@@ -359,21 +359,31 @@ export type PutMeVariables = {
 } & ApiContext["fetcherOptions"];
 
 export const fetchPutMe = (variables: PutMeVariables, signal?: AbortSignal) =>
-  apiFetch<undefined, PutMeError, Schemas.UpdateUserRequest, {}, {}, {}>({
-    url: "/api/v1/me",
-    method: "put",
-    ...variables,
-    signal,
-  });
+  apiFetch<
+    Schemas.UserInfoResponse,
+    PutMeError,
+    Schemas.UpdateUserRequest,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/me", method: "put", ...variables, signal });
 
 export const usePutMe = (
   options?: Omit<
-    reactQuery.UseMutationOptions<undefined, PutMeError, PutMeVariables>,
+    reactQuery.UseMutationOptions<
+      Schemas.UserInfoResponse,
+      PutMeError,
+      PutMeVariables
+    >,
     "mutationFn"
   >
 ) => {
   const { fetcherOptions } = useApiContext();
-  return reactQuery.useMutation<undefined, PutMeError, PutMeVariables>(
+  return reactQuery.useMutation<
+    Schemas.UserInfoResponse,
+    PutMeError,
+    PutMeVariables
+  >(
     (variables: PutMeVariables) =>
       fetchPutMe({ ...fetcherOptions, ...variables }),
     options
@@ -1292,6 +1302,82 @@ export const useGetSuggestionByIdLinks = <
   );
 };
 
+export type GetWeatherByCityIdByDatePathParams = {
+  cityId: string;
+  date: string;
+};
+
+export type GetWeatherByCityIdByDateError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ValidationErrorResponseRef;
+    }
+  | {
+      status: 401;
+      payload: Schemas.AuthRequiredErrorResponse;
+    }
+  | {
+      status: 404;
+      payload: Schemas.NotFoundErrorRef;
+    }
+>;
+
+export type GetWeatherByCityIdByDateVariables = {
+  pathParams: GetWeatherByCityIdByDatePathParams;
+} & ApiContext["fetcherOptions"];
+
+export const fetchGetWeatherByCityIdByDate = (
+  variables: GetWeatherByCityIdByDateVariables,
+  signal?: AbortSignal
+) =>
+  apiFetch<
+    Schemas.WeatherResponse,
+    GetWeatherByCityIdByDateError,
+    undefined,
+    {},
+    {},
+    GetWeatherByCityIdByDatePathParams
+  >({
+    url: "/api/v1/weather/{cityId}/{date}",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export const useGetWeatherByCityIdByDate = <TData = Schemas.WeatherResponse>(
+  variables: GetWeatherByCityIdByDateVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.WeatherResponse,
+      GetWeatherByCityIdByDateError,
+      TData
+    >,
+    "queryKey" | "queryFn"
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useApiContext(options);
+  return reactQuery.useQuery<
+    Schemas.WeatherResponse,
+    GetWeatherByCityIdByDateError,
+    TData
+  >(
+    queryKeyFn({
+      path: "/api/v1/weather/{cityId}/{date}",
+      operationId: "getWeatherByCityIdByDate",
+      variables,
+    }),
+    ({ signal }) =>
+      fetchGetWeatherByCityIdByDate(
+        { ...fetcherOptions, ...variables },
+        signal
+      ),
+    {
+      ...options,
+      ...queryOptions,
+    }
+  );
+};
+
 export type PostLinksLoadError = Fetcher.ErrorWrapper<
   | {
       status: 400;
@@ -2030,6 +2116,11 @@ export type QueryOperation =
       path: "/api/v1/suggestion/{id}/links";
       operationId: "getSuggestionByIdLinks";
       variables: GetSuggestionByIdLinksVariables;
+    }
+  | {
+      path: "/api/v1/weather/{cityId}/{date}";
+      operationId: "getWeatherByCityIdByDate";
+      variables: GetWeatherByCityIdByDateVariables;
     }
   | {
       path: "/api/v1/sync";

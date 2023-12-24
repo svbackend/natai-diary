@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {TextField} from "../../src/modules/common/components/textField";
 import {useTranslations} from "use-intl";
 import {useForm} from "react-hook-form";
@@ -35,10 +35,12 @@ import {useAtom} from "jotai";
 import {diaryStateAtom} from "../../src/modules/diary/atoms/diaryStateAtom";
 import {useDiaryStateManager} from "../../src/modules/diary/diaryStateManager";
 import {defaultMetadata} from "../../src/utils/seo";
+import {loadWeatherTag} from "../../src/modules/diary/hooks/loadWeatherTag";
 
 export async function generateMetadata(props: { params: any, searchParams: any }) {
     return defaultMetadata;
 }
+
 export default function DiaryNewNote() {
     return (
         <DiaryLayout>
@@ -160,6 +162,20 @@ function DiaryNewNotePageContent() {
     const deleteFile = (f: LocalNoteAttachment) => {
         setFiles(oldFiles => oldFiles.filter(file => file.id !== f.id))
     }
+
+    const cityId = diaryState.user?.profile.city.id
+    useEffect(() => {
+        if (!cityId) {
+            return
+        }
+        loadWeatherTag({
+            cityId: cityId,
+            date: actualDate,
+            onWeatherLoaded: (weatherScore: number) => {
+                addTag({tag: "weather", score: weatherScore} as CloudTagDto)
+            }
+        })
+    }, [actualDate, cityId]);
 
     return (
         <div className={"px-4"}>

@@ -308,6 +308,10 @@ export type GetSuggestionLinksErrorRef = {
   code: "feature_not_available";
 };
 
+export type WeatherResponse = {
+  code: number;
+};
+
 export type LoadLinkRequest = {
   url: string;
 };

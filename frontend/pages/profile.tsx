@@ -18,7 +18,7 @@ type FormValues = {
 }
 
 export default function ProfilePage() {
-    const {user, setUser, isLoaded} = useAppStateManager()
+    const {user, setUser} = useAppStateManager()
 
     if (!user) {
         return UserLoadingScreen
@@ -26,18 +26,17 @@ export default function ProfilePage() {
 
     return (
         <UserLayout>
-            <ProfilePageInner user={user}/>
+            <ProfilePageInner user={user} setUser={setUser}/>
         </UserLayout>
     )
 }
 
 
-function ProfilePageInner({user}: { user: UserDto }) {
+function ProfilePageInner({user, setUser}: { user: UserDto, setUser: (user: UserDto) => void }) {
     const t = useTranslations("ProfilePage");
 
     const [showSuccess, setShowSuccess] = useState(false)
     const [cityId, setCityId] = useState<number | null>(user?.profile?.city.id || null)
-
 
     const enableEmailNotifications = typeof user.profile?.enableEmailNotifications === 'undefined' ? true : user.profile.enableEmailNotifications
     const {register, handleSubmit, formState: {errors}, setError} = useForm<FormValues>({
@@ -64,6 +63,7 @@ function ProfilePageInner({user}: { user: UserDto }) {
                     timezoneOffset: (new Date()).getTimezoneOffset()
                 }
             })
+            setUser(res.user)
             setShowSuccess(true)
             setTimeout(() => {
                 setShowSuccess(false)

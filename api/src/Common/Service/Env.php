@@ -64,4 +64,9 @@ class Env
     {
         return self::get('GOOGLE_PLACES_API_KEY');
     }
+
+    public static function getOpenWeatherApiKey(): string
+    {
+        return self::get('OPEN_WEATHER_API_KEY');
+    }
 }
