@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
+import com.svbackend.natai.android.entity.User
 import com.svbackend.natai.android.ui.AppDateRow
 import com.svbackend.natai.android.ui.NPrimaryButton
 import com.svbackend.natai.android.ui.NTextField

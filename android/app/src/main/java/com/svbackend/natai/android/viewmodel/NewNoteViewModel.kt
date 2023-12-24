@@ -5,19 +5,28 @@ import android.content.SharedPreferences
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.svbackend.natai.android.DiaryApplication
-import com.svbackend.natai.android.entity.*
+import com.svbackend.natai.android.entity.AttachmentEntityDto
+import com.svbackend.natai.android.entity.LocalNote
+import com.svbackend.natai.android.entity.NewAttachmentDto
+import com.svbackend.natai.android.entity.Tag
+import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.repository.DiaryRepository
 import com.svbackend.natai.android.service.TitleGenerator
 import com.svbackend.natai.android.utils.getUserCloudId
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class NewNoteViewModel(application: Application) : AndroidViewModel(application) {
     val repository: DiaryRepository = (application as DiaryApplication).appContainer.diaryRepository
+    val userRepository = (application as DiaryApplication).appContainer.userRepository
     val prefs: SharedPreferences = (application as DiaryApplication).appContainer.sharedPrefs
     val titleGenerator: TitleGenerator =
         (application as DiaryApplication).appContainer.titleGenerator
+
+    val api = (application as DiaryApplication).appContainer.apiClient
 
     val title = mutableStateOf(
         TextFieldValue(prefs.getString("new_note_title", null) ?: "")
@@ -104,6 +113,7 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
 
     fun actualDateChanged(newDate: LocalDate) {
         actualDate.value = newDate
+        loadWeatherTag()
     }
 
     fun addTag(tag: TagEntityDto) {
@@ -119,5 +129,32 @@ class NewNoteViewModel(application: Application) : AndroidViewModel(application)
     fun replaceTag(tag: TagEntityDto) {
         tags.value = tags.value.minus(tag)
         tags.value = tags.value.plus(tag)
+    }
+
+    private fun loadWeatherTag() {
+        val cloudUserId = prefs.getUserCloudId() ?: return
+
+        viewModelScope.launch {
+            val user = userRepository.getUserByCloudIdSync(cloudUserId) ?: return@launch
+
+            val cityId = user.cloudCityId ?: return@launch
+
+            try {
+                val weatherScore = api.loadWeatherTag(cityId, actualDate.value)
+
+                addTag(
+                    TagEntityDto(
+                        tag = "weather",
+                        score = weatherScore
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    init {
+        loadWeatherTag()
     }
 }

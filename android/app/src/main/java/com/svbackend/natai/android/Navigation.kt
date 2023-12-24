@@ -57,9 +57,11 @@ fun Navigation(
         }
 
         composable(route = Route.NewNoteRoute.route) {
-            NewNoteScreen(onSuccess = {
-                controller.popBackStack()
-            })
+            NewNoteScreen(
+                onSuccess = {
+                    controller.popBackStack()
+                }
+            )
         }
 
         composable(

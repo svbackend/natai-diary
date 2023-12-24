@@ -38,6 +38,7 @@ import com.svbackend.natai.android.http.response.SuggestionLinksResponse
 import com.svbackend.natai.android.http.response.SuggestionsResponse
 import com.svbackend.natai.android.http.response.UserSuccessResponse
 import com.svbackend.natai.android.query.UserQueryException
+import com.svbackend.natai.android.utils.LocalDateTimeFormatter
 import com.svbackend.natai.android.utils.UtcDateTimeFormatter
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -67,6 +68,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InputStream
 import java.time.Instant
+import java.time.LocalDate
 
 //const val BASE_URL = BuildConfig.API_BASE_URL
 //const val BASE_URL = "https://natai.app"
@@ -379,9 +381,24 @@ class ApiClient(
         }
 
         if (response.status != HttpStatusCode.OK) {
+            Log.e(TAG, response.body())
             throw GenericHttpErrorException(response)
         }
 
         return response.body()
+    }
+
+    suspend fun loadWeatherTag(cityId: Int, date: LocalDate): Int {
+        val url = "/api/v1/weather/${cityId}/${date.format(LocalDateTimeFormatter.ymd)}"
+
+        data class WeatherResponse(val code: Int)
+
+        val response = client.get(url)
+
+        if (response.status != HttpStatusCode.OK) {
+            throw GenericHttpErrorException(response)
+        }
+
+        return response.body<WeatherResponse>().code
     }
 }

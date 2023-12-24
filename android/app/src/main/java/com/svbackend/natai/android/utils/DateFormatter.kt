@@ -12,6 +12,10 @@ object LocalDateTimeFormatter {
         .ofPattern("dd.MM.y")
         .withZone(ZoneId.systemDefault())
 
+    val ymd: DateTimeFormatter = DateTimeFormatter
+        .ofPattern("yyyy-MM-dd")
+        .withZone(ZoneId.systemDefault())
+
     val day: DateTimeFormatter = DateTimeFormatter
         .ofPattern("dd")
         .withZone(ZoneId.systemDefault())
