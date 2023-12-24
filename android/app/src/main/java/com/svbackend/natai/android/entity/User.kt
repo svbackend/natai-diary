@@ -14,5 +14,4 @@ data class User(
     var isEmailVerified: Boolean = false,
     var name: String,
     var apiToken: String,
-    var profile: UserProfile
 )

@@ -64,4 +64,7 @@
     <string name="accountDeleteError">Error! Account note deleted. Please make sure you have internet connection.</string>
     <string name="deleteAccountWarning">You will lose access to all of your notes. This action cannot be undone.</string>
     <string name="updateProfile">Update Profile</string>
+    <string name="enableEmailNotifications">Enable Email Notifications?</string>
+    <string name="profileUpdated">Profile successfuly updated!</string>
+    <string name="errorUpdatingProfile">Error! Please make sure the data is valid and try again!</string>
 </resources>

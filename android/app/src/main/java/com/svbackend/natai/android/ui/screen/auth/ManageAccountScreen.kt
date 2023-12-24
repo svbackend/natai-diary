@@ -1,12 +1,28 @@
 package com.svbackend.natai.android.ui.screen.auth
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -17,11 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.User
+import com.svbackend.natai.android.ui.NCheckbox
 import com.svbackend.natai.android.ui.NPrimaryButton
+import com.svbackend.natai.android.ui.NTextField
+import com.svbackend.natai.android.ui.component.CityAutocomplete
+import com.svbackend.natai.android.ui.screen.LoadingScreen
 import com.svbackend.natai.android.viewmodel.ManageAccountViewModel
 import com.svbackend.natai.android.viewmodel.NoteViewModel
 import com.svbackend.natai.android.viewmodel.UpdateProfileViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -100,11 +119,7 @@ fun Authorized(
                 EmailVerificationUi(manageAccountViewModel, checkEmailVerification)
             }
 
-            UpdateProfileUi(
-                user = user,
-                vm = vm,
-                scope = scope,
-            )
+            UpdateProfileUi()
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -140,11 +155,17 @@ fun Authorized(
 
 @Composable
 fun UpdateProfileUi(
-    user: User,
     vm: UpdateProfileViewModel = viewModel(),
-    scope: CoroutineScope
 ) {
-    vm.initData(user)
+    if (vm.isLoading()) {
+        LoadingScreen()
+    } else {
+        UpdateProfileForm(vm)
+    }
+}
+
+@Composable
+fun UpdateProfileForm(vm: UpdateProfileViewModel) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -159,15 +180,72 @@ fun UpdateProfileUi(
                 .padding(bottom = 8.dp),
         )
 
-        TextField(
-            value = user.name,
-            label = @Composable { Text(stringResource(R.string.name)) },
-            onValueChange = { vm.onChangeName(it) },
-            singleLine = true,
+        if (vm.showSuccess.value) {
+            Text(
+                text = stringResource(id = R.string.profileUpdated),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            )
+        }
+
+        if (vm.showError.value) {
+            Text(
+                text = stringResource(id = R.string.errorUpdatingProfile),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+            )
+        }
+
+        NTextField(
+            value = vm.name.value,
+            label = stringResource(R.string.name),
+            onChange = {
+                vm.onChangeName(it)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
         )
+
+        NCheckbox(
+            label = { Text(stringResource(R.string.enableEmailNotifications)) },
+            value = vm.enableEmailNotifications.value
+        ) {
+            vm.onChangeEnableEmailNotifications()
+        }
+
+        CityAutocomplete(
+            input = vm.cityInput.value,
+            selectedCityId = vm.selectedCity.value,
+            onCitySelected = { vm.onChangeCity(it) },
+            cities = vm.cities.value,
+            onInputChanged = { vm.onCityInputChange(it) },
+            isLoadingAutocomplete = vm.isLoadingAutocomplete.value,
+            expanded = vm.isExpanded.value,
+            onToggleListVisibility = { vm.onToggleListVisibility() },
+        )
+
+        NPrimaryButton(
+            onClick = { vm.updateProfile() },
+            isLoading = vm.isSaving.value,
+            modifier = Modifier
+                .padding(bottom = 16.dp),
+        ) {
+            Icon(
+                Icons.Filled.AccountCircle,
+                stringResource(R.string.updateProfile)
+            )
+            Text(
+                text = stringResource(R.string.updateProfile),
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
     }
 }
 

@@ -23,6 +23,7 @@ import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.svbackend.natai.android.R
 import com.svbackend.natai.android.entity.TagEntityDto
 import com.svbackend.natai.android.http.dto.CloudSuggestionDto
+import com.svbackend.natai.android.ui.component.LoadingState
 import com.svbackend.natai.android.ui.component.SuggestionLinks
 import com.svbackend.natai.android.ui.component.TagPreviewBadge
 import com.svbackend.natai.android.viewmodel.TherapyViewModel
@@ -338,16 +339,3 @@ fun SuggestionDetailsDialog(vm: TherapyViewModel, suggestionId: String) {
     )
 }
 
-@Composable
-fun LoadingState() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}

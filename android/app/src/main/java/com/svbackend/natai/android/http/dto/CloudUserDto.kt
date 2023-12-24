@@ -5,5 +5,6 @@ data class CloudUserDto(
     val email: String,
     val isEmailVerified: Boolean,
     val name: String,
-    val roles: List<String>
+    val roles: List<String>,
+    val profile: CloudUserProfileDto? = null
 )

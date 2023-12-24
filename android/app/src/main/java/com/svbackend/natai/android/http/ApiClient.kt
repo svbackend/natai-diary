@@ -12,6 +12,7 @@ import com.svbackend.natai.android.http.exception.CloudIdMissingException
 import com.svbackend.natai.android.http.exception.DownloadAttachmentErrorException
 import com.svbackend.natai.android.http.exception.FeatureNotAvailableException
 import com.svbackend.natai.android.http.exception.GeneralFeedbackErrorException
+import com.svbackend.natai.android.http.exception.GenericHttpErrorException
 import com.svbackend.natai.android.http.exception.LoginErrorException
 import com.svbackend.natai.android.http.exception.NewNoteErrorException
 import com.svbackend.natai.android.http.exception.RegistrationErrorException
@@ -22,6 +23,7 @@ import com.svbackend.natai.android.http.request.GeneralFeedbackRequest
 import com.svbackend.natai.android.http.request.LoginRequest
 import com.svbackend.natai.android.http.request.RegisterRequest
 import com.svbackend.natai.android.http.request.SuggestionFeedbackRequest
+import com.svbackend.natai.android.http.request.UpdateProfileRequest
 import com.svbackend.natai.android.http.response.AttachmentSignedUrlResponse
 import com.svbackend.natai.android.http.response.AttachmentsResponse
 import com.svbackend.natai.android.http.response.BuyFeatureResponse
@@ -369,5 +371,15 @@ class ApiClient(
         }
 
         throw SuggestionLinksErrorException(response)
+    }
+
+    suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest) {
+        val response = client.put("/api/v1/me") {
+            setBody(updateProfileRequest)
+        }
+
+        if (response.status != HttpStatusCode.NoContent) {
+            throw GenericHttpErrorException(response)
+        }
     }
 }
