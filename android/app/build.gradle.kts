@@ -26,6 +26,7 @@ android {
         }
         getByName("release") {
             isMinifyEnabled = true
+            isDebuggable = false
             buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -107,5 +108,5 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3")
 }
