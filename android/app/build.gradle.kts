@@ -10,8 +10,8 @@ android {
         applicationId = "com.svbackend.natai"
         minSdk = 29
         targetSdk = 34
-        versionCode = 16
-        versionName = "1.6.0"
+        versionCode = 17
+        versionName = "1.6.1"
         buildConfigField("String", "API_BASE_URL", "\"https://legally-ideal-macaw.ngrok-free.app\"")
         buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", "\"pk_test_51N47wRCN1hwEuS9VkiczMeL0YVViEvifpBeiULw6ZXzEdPUPAX7DmPzNcLCqsTfp9xEdrChnICgdER61zvnhgqMc00oEooAKPk\"")
         //buildConfigField("String", "API_BASE_URL", "\"https://natai.app\"")
