@@ -33,7 +33,8 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     val isLoading = mutableStateOf(false)
     val suggestions = mutableStateOf<List<CloudSuggestionDto>>(emptyList())
     val selectedSuggestion = mutableStateOf<String?>(null) // id of suggestion or null
-    val selectedSuggestionBackup = mutableStateOf<String?>(null) // id of suggestion that was open before payment or null
+    val selectedSuggestionBackup =
+        mutableStateOf<String?>(null) // id of suggestion that was open before payment or null
 
     val isUserLoggedIn = prefs.isLoggedIn()
 
@@ -49,13 +50,15 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
             loadSuggestions()
 
             (application as DiaryApplication).appContainer.paymentSheetCallback = {
-                when(it) {
+                when (it) {
                     is PaymentSheetResult.Canceled -> {
                         Log.i(TAG, "Payment Sheet Canceled")
                     }
+
                     is PaymentSheetResult.Failed -> {
                         paymentSheetResult.value = it
                     }
+
                     is PaymentSheetResult.Completed -> {
                         selectSuggestionBackup(selectedSuggestion.value)
                         selectSuggestion(null)
@@ -68,11 +71,11 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun loadSuggestions() = viewModelScope.launch {
-            isLoading.value = true
-            val response = api.getSuggestions()
-            suggestions.value = response.suggestions
-            isLoading.value = false
-        }
+        isLoading.value = true
+        val response = api.getSuggestions()
+        suggestions.value = response.suggestions
+        isLoading.value = false
+    }
 
     private fun selectSuggestionBackup(suggestionId: String?) {
         selectedSuggestionBackup.value = suggestionId
@@ -88,7 +91,7 @@ class TherapyViewModel(application: Application) : AndroidViewModel(application)
         val suggestion = suggestions.value.find { it.id == suggestionId }
         selectedSuggestion.value = suggestionId
 
-        if (suggestion != null) {
+        if (suggestion != null && suggestion.suggestionLinksCount > 0) {
             viewModelScope.launch {
                 suggestionLinksLoading.value = true
                 suggestionLinksError.value = null
