@@ -5,6 +5,7 @@ import android.util.Log
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.svbackend.natai.android.BuildConfig
 import com.svbackend.natai.android.entity.LocalNote
 import com.svbackend.natai.android.http.dto.NewNoteRequest
 import com.svbackend.natai.android.http.dto.UpdateNoteRequest
@@ -70,9 +71,7 @@ import java.io.InputStream
 import java.time.Instant
 import java.time.LocalDate
 
-//const val BASE_URL = BuildConfig.API_BASE_URL
-//const val BASE_URL = "https://natai.app"
-const val BASE_URL = "https://legally-ideal-macaw.ngrok-free.app"
+const val BASE_URL = BuildConfig.API_BASE_URL
 
 class ApiClient(
     private val getApiToken: () -> String?
