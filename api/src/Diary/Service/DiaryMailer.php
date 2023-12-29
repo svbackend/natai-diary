@@ -19,7 +19,8 @@ class DiaryMailer
 
     public function sendNotificationAboutNewSuggestion(User $user, Suggestion $suggestion): void
     {
-        if ($user->isEmailVerified() === false) {
+        $notificationEnabled = $user->getProfile()?->isEnableEmailNotifications() === true;
+        if ($notificationEnabled === false || $user->isEmailVerified() === false) {
             return;
         }
 
