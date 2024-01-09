@@ -17,7 +17,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.13",
         "intervention/image": "^2.7",
-        "nelmio/api-doc-bundle": "^4.10",
+        "nelmio/api-doc-bundle": "^4.16",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.12",
         "stripe/stripe-php": "10.13.*",
