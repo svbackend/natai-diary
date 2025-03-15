@@ -22,7 +22,7 @@ export default function App({Component, pageProps}: AppProps) {
     return (
         <NextIntlProvider messages={messages} locale={locale}>
             <GlobalSeo canonical={router.pathname}/>
-            <Script data-domain={"natai.app"} src="https://plausible.ukraidian.com/js/plausible.js"/>
+            <Script data-domain={"natai.app"} src="https://plausible.welsot.com/js/script.pageview-props.tagged-events.js"/>
 
             <Script
                 id={"ggl-tag"}
